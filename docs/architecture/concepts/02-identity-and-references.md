@@ -23,7 +23,7 @@
    - Documents use ObjectIds.
    - Content entries use a **key that is unique within the region** and survives export/import/clone.
 2. **Canon catalog uses Showdown IDs.** Showdown's `toID()` keys (`mrmime`, `kingsrock`, `hiddenpowerfire`) are what the simulator, the team validator, `@smogon/calc`, and sprite CDNs all use. Storing `speciesId: "pikachu"` means no translation layer on the battle hot path.
-3. **Custom content gets namespaced IDs.** Server library content uses `<publisherId>:<slug>` (e.g. `p7k2m9x4:sparkitten`), where `publisherId` is an opaque, immutable, system-generated namespace. Its display name (default: server name) is shown in the UI, and ownership can move between servers. Showdown IDs never contain `:`, so these can never collide with canon (current or future) or with other servers' content. **Overrides** of canon species deliberately reuse the canon ID. See [12 § Species identity](12-content-catalog-species-moves-items.md#species-identity-canon-custom-species-variants-overrides--sharing-decided-oct-2026-q19).
+3. **Custom content gets namespaced IDs.** Server library content uses `<publisherId>:<slug>` (e.g. `p7k2m9x4:sparkitten`), where `publisherId` is an opaque, immutable, system-generated namespace. Its display name (default: server name) is shown in the UI, and ownership can move between servers. Showdown IDs never contain `:`, so these can never collide with canon (current or future) or with other servers' content. **Overrides** of canon species deliberately reuse the canon ID. See [27 § Species identity](27-server-content-library-and-overrides.md#species-identity-canon-custom-species-variants-overrides--sharing-decided-oct-2026-q19).
 4. **One-directional ownership.** The child stores the parent ID and the parent doesn't store a child list. Query by indexed parent ID, and keep explicit ordering in an `ordinal` field (as `Location.ordinal` already does).
 5. **Keys are opaque.** Never parse meaning out of a key. Display names live in fields.
 
@@ -87,7 +87,7 @@ Server event content that isn't specific to one region (e.g. an event island eve
 
 ## Open questions
 - ~~Regions shared across servers?~~ **Decided (Q23):** no live sharing. Each region belongs to one server, and sharing means importing a copy, so `Region.serverId` is enough.
-- ~~DexEntry `_id` vs Showdown ID?~~ **Decided (Oct 2026):** `_id` stays an ObjectId. The existing `showdownName` field is **renamed `speciesId`** (it already holds the Showdown ID) and becomes the reference key everywhere, including DexEntry's own `baseSpecies`/`prevo`/`evos`/`formes` links. It's unique among canon entries only; library overrides and imports share species IDs by design (see [12 § Mongo shape](12-content-catalog-species-moves-items.md#mongo-shape)).
+- ~~DexEntry `_id` vs Showdown ID?~~ **Decided (Oct 2026):** `_id` stays an ObjectId. The existing `showdownName` field is **renamed `speciesId`** (it already holds the Showdown ID) and becomes the reference key everywhere, including DexEntry's own `baseSpecies`/`prevo`/`evos`/`formes` links. It's unique among canon entries only; library overrides and imports share species IDs by design (see [27 § Identity and uniqueness](27-server-content-library-and-overrides.md#identity-and-uniqueness)).
 
 ## Worked example: copying a template region to another server
 

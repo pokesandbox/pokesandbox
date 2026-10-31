@@ -7,7 +7,7 @@ Refs: concept [12](../architecture/concepts/12-content-catalog-species-moves-ite
 ## E-M1-2 · Catalog: Moves & Learnsets
 `Type: Epic` · `Priority: P0`
 
-Import every canon move and learnset from a pinned Showdown version into the DB catalog, with per-generation data, so authoring, display, validation, and TM/HM lists ([E-M3-1](m3-region-authoring.md)) can read them. Showdown stays the battle engine; the catalog holds data only ([12 § Moves](../architecture/concepts/12-content-catalog-species-moves-items.md#moves-import-overrides-and-showdown-callbacks-decided-oct-2026)).
+Import every canon move and learnset from a pinned Showdown version into the DB catalog, with per-generation data, so authoring, display, validation, and TM/HM lists ([E-M3-1](m3-region-authoring.md)) can read them. Showdown stays the battle engine; the catalog holds data only ([12 § Moves](../architecture/concepts/12-content-catalog-species-moves-items.md#moves-import-and-showdown-callbacks-decided-oct-2026)).
 
 ### Start here (no prior context needed)
 
@@ -74,7 +74,7 @@ Local setup: `npm run setup` (env file, Mongo in Docker, seed), then `npm run db
 ### M1-01 · `MoveDefinition` model
 `Type: Task` · `Parent: E-M1-2` · `Priority: P0` · `Size: S` · `Labels: area:shared-models, domain:catalog` · `Blocked by: —` · `agent-ready: yes` · `Owner: any`
 
-**Summary:** The catalog model for moves ([12 § Moves](../architecture/concepts/12-content-catalog-species-moves-items.md#moves-import-overrides-and-showdown-callbacks-decided-oct-2026)): a resolved Gen 9 `base`, per-gen `genOverrides` holding only differences, and per-gen behavior `hooks`. Availability (`isNonstandard`) is an ordinary `MoveData` field; text has its own `text` sub-field with the same per-gen override pattern.
+**Summary:** The catalog model for moves ([12 § Moves](../architecture/concepts/12-content-catalog-species-moves-items.md#moves-import-and-showdown-callbacks-decided-oct-2026)): a resolved Gen 9 `base`, per-gen `genOverrides` holding only differences, and per-gen behavior `hooks`. Availability (`isNonstandard`) is an ordinary `MoveData` field; text has its own `text` sub-field with the same per-gen override pattern.
 
 ```ts
 MoveDefinition {
@@ -107,7 +107,7 @@ MoveData = {
 - `moveDefinitionSchema` (Zod) and `moveDefinitionDbSchema` (Mongoose) following the model conventions above, matching the shape above. `GenId` is `'gen1' | … | 'gen9'`.
 - `MoveData` covers every plain-data field Showdown has for moves (the list above is the common ones; include any other non-function field present in the source). No functions, and no text: text lives in `text`.
 - A helper `resolveMove(def, gen) → { data: MoveData; desc: string; shortDesc: string }` that applies `genOverrides[gen]` over `base` and `text.genOverrides[gen]` over `text`, with unit tests.
-- A shared `MoveId` type that accepts both canon IDs (`thunderbolt`) and namespaced publisher IDs (`<publisherId>:<slug>`, used by custom moves later). Only the canon `MoveDefinition` collection validates the plain Showdown format on its own records, so fields typed `MoveId` elsewhere never reject custom moves ([12 § Keeping overrides additive](../architecture/concepts/12-content-catalog-species-moves-items.md#keeping-overrides-additive-mvp)).
+- A shared `MoveId` type that accepts both canon IDs (`thunderbolt`) and namespaced publisher IDs (`<publisherId>:<slug>`, used by custom moves later). Only the canon `MoveDefinition` collection validates the plain Showdown format on its own records, so fields typed `MoveId` elsewhere never reject custom moves ([27 § Keeping it additive](../architecture/concepts/27-server-content-library-and-overrides.md#keeping-it-additive-mvp)).
 - Unique index on `moveId`. A DTO for the read path.
 - `CatalogVersion` model (`_id`, `showdownVersion`, `importedAt`, `notes?`, `counts`), shared by every catalog collection. **Why:** it keeps the catalog in sync with the Showdown version running battles, lets releases pin and embed the data they were validated against, gives overrides a base to merge upgrades from, and makes a partial import detectable ([12 § Catalog versions](../architecture/concepts/12-content-catalog-species-moves-items.md#catalog-versions-decided-oct-2026)).
 
@@ -137,7 +137,7 @@ MoveData = {
 
 **Changes later:** re-point to the fork package once it's published, then re-run and review the diff.
 
-**Refs:** [12 § Moves](../architecture/concepts/12-content-catalog-species-moves-items.md#moves-import-overrides-and-showdown-callbacks-decided-oct-2026)
+**Refs:** [12 § Moves](../architecture/concepts/12-content-catalog-species-moves-items.md#moves-import-and-showdown-callbacks-decided-oct-2026)
 
 ### M1-03 · `Learnset` model and import
 `Type: Task` · `Parent: E-M1-2` · `Priority: P0` · `Size: M` · `Labels: area:shared-models, domain:catalog` · `Blocked by: M1-02 (reuses its import setup)` · `agent-ready: yes` · `Owner: any`

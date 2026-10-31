@@ -48,8 +48,8 @@ ArenaFormat {
 ```
 
 - **Built-in formats** (e.g. National Dex Lv50, a Gen 1 151 format) ship by default, so the Arena works on a fresh server with zero setup.
-- Admins can create server formats that mix canon and **server library** content (see [12](12-content-catalog-species-moves-items.md#server-content-library-decided-oct-2026)). `fromRegionDex` is just a convenience source. A format never depends on a region being deployed.
-- Compiles to a custom format whose data (canon + selected library entries + overrides) is injected into its own isolated dex, so `TeamValidator` enforces it. See [12 § Species identity](12-content-catalog-species-moves-items.md#species-identity-canon-custom-species-variants-overrides--sharing-decided-oct-2026-q19).
+- Admins can create server formats that mix canon and **server library** content (see [27](27-server-content-library-and-overrides.md#server-content-library-decided-oct-2026)). `fromRegionDex` is just a convenience source. A format never depends on a region being deployed.
+- Compiles to a custom format whose data (canon + selected library entries + overrides) is injected into its own isolated dex, so `TeamValidator` enforces it. See [27 § Species identity](27-server-content-library-and-overrides.md#species-identity-canon-custom-species-variants-overrides--sharing-decided-oct-2026-q19).
 - Pausing a region has **no effect** on Arena battles. (Only Phase 3 in-game PvP with *adventure parties* is region-bound.)
 
 ## Timers and AI opponents

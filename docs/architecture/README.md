@@ -39,7 +39,7 @@ An audit of the current models and commands, plus concept-by-concept proposals f
 | 09 | [Transportation Networks](concepts/09-transportation.md) | Medium |
 | 10 | [Wild Encounters](concepts/10-encounters.md) | High |
 | 11 | [NPCs, Trainers & Battle Definitions](concepts/11-npcs-trainers-and-battle-definitions.md) | High |
-| 12 | [Content Catalog: Species, Moves, Items, TMs](concepts/12-content-catalog-species-moves-items.md) | High |
+| 12 | [Content Catalog: Species, Moves, Learnsets, Items](concepts/12-content-catalog-species-moves-items.md) | High |
 | 13 | [Pokémon Instances & Trading](concepts/13-pokemon-instances-and-trading.md) | Very high |
 | 14 | [Battle System & the Showdown Fork](concepts/14-battle-system-and-showdown.md) | Very high |
 | 15 | [Persistence, Concurrency & Runtime Topology](concepts/15-persistence-concurrency-and-runtime.md) | High |
@@ -54,5 +54,6 @@ An audit of the current models and commands, plus concept-by-concept proposals f
 | 24 | [Shared State: Region & Server](concepts/24-shared-state-region-and-server.md) | None now (post-MVP) |
 | 25 | [Arena](concepts/25-arena.md) | Very high (public release #1) |
 | 26 | [Discord Surface & UX Patterns](concepts/26-discord-surface-and-ux-patterns.md) | High |
+| 27 | [Server Content Library & Overrides](concepts/27-server-content-library-and-overrides.md) | Low now (post-MVP; two reservations) |
 
-Each concept doc follows roughly the same outline: **TL;DR → current shape → gaps → options (pros/cons) → recommendation → decisions → MVP scope → open questions.** Struck-through open questions are answered, with a pointer to the Q-number. Concepts 23–26 were split out of earlier docs (Oct 2026) so each doc covers one topic; the source docs keep a one-line pointer where content moved. The remaining ones are smaller and can be settled while the related issue is worked.
+Each concept doc follows roughly the same outline: **TL;DR → current shape → gaps → options (pros/cons) → recommendation → decisions → MVP scope → open questions.** Struck-through open questions are answered, with a pointer to the Q-number. Concepts 23–27 were split out of earlier docs (Oct 2026) so each doc covers one topic; the source docs keep a one-line pointer where content moved. The remaining ones are smaller and can be settled while the related issue is worked.

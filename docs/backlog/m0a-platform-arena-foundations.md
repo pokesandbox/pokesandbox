@@ -250,7 +250,7 @@ Make the data layer safe for real player state: transactions, constraints, a saf
 
 **Acceptance criteria**
 - `DexEntry.showdownName` renamed to `speciesId` in the model, Zod schema, DTOs, seed data, and `apps/bot/src/utils/searchPokemon.ts`.
-- A unique index on `speciesId`. Canon entries only: library overrides and imports share species IDs by design and live in the library model later ([12 § Mongo shape](../architecture/concepts/12-content-catalog-species-moves-items.md#mongo-shape)).
+- A unique index on `speciesId`. Canon entries only: library overrides and imports share species IDs by design and live in the library model later ([27 § Identity and uniqueness](../architecture/concepts/27-server-content-library-and-overrides.md#identity-and-uniqueness)).
 - DexEntry's own links (`baseSpecies`, `prevo`, `evos`, `formes`) store `speciesId` strings instead of `{ id: ObjectId, name }`.
 - Encounter slots (`wildTable` `speciesId`, today an ObjectId) and region pokedex slots reference `speciesId` strings. DTOs updated.
 - Seed fix: `Unown-!` / `Unown-?` use Showdown's IDs `unownexclamation` / `unownquestion` (currently `unown!` / `unown?`). A test asserts every seed `speciesId` equals Showdown's `toID` of its Showdown name.

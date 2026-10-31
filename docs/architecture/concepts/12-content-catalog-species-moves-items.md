@@ -1,6 +1,6 @@
-# 12: Content Catalog: Species, Moves, Items, TMs
+# 12: Content Catalog: Species, Moves, Learnsets, Items
 
-> **TL;DR:** The **DB catalog is the record** for species, moves, learnsets, and items, imported from a pinned Showdown version with per-generation data and keyed by Showdown ID. Showdown stays the **battle engine**: it receives assembled data per battle and runs all move behavior. **ItemDefinition** adds overworld behavior (bag pocket, price, field use) that Showdown items lack. Custom content lives in a **server library** (original and linked entries). Region-level choices (regional dex, TM/HM list, item availability, prices) are region content.
+> **TL;DR:** The **catalog** is the canon game data every region shares: species, moves, learnsets, and items. It's imported into MongoDB from a pinned Showdown version as a **catalog version**, with per-generation data, keyed by Showdown ID. Showdown stays the **battle engine**: it receives assembled data per battle and runs all move behavior. Everything else reads resolved, single-generation views (`resolveMove`, `resolveLearnset`). **ItemDefinition** adds overworld behavior that Showdown items lack, and **TM/HM lists** are per-region. Custom content and overrides are a separate layer on top: the server content library ([27](27-server-content-library-and-overrides.md)).
 
 **MVP impact:** High · **Cost to change later:** Medium
 
@@ -31,150 +31,40 @@ Battle   Per release/format: assemble Layers 1–3 (+ chosen generations) → is
 ```
 
 - **Per-generation data:** a `MoveDefinition` holds a base record plus per-gen overrides (e.g. Bite: Normal in Gen 1, Dark from Gen 2). Learnsets keep Showdown's per-gen source codes (`1L15`, `1M`, …), so `rules.data.learnsets: 'gen1'` filters to Gen 1 sources. Species stats follow the same pattern.
-- **Overrides and custom learnsets** are *linked* library entries patching the canon learnset (add/remove moves, change levels), the same mechanism as species overrides (see Species identity below).
-- **TMs/HMs:** a region's TM/HM list maps machine slots to `MoveId`s. Compatibility comes from the (possibly overridden) learnset's machine sources, or explicit additions in a custom learnset.
-- **Showdown upgrades:** re-run the canon import, then diff. Changes to canon data reach regions at their next publish (releases pin catalog versions).
+- **Overrides and custom content** (species, learnsets, moves) are server library entries layered on the catalog, never edits to it ([27](27-server-content-library-and-overrides.md)).
+- **TMs/HMs:** a region's TM/HM list maps machine slots to `MoveId`s. Compatibility comes from the (possibly overridden) resolved learnset's `machine` list (see [TM/HM lists](#tmhm-lists-decided-oct-2026)).
+- **Showdown upgrades:** re-run the canon import, then diff. Changes to canon data reach regions at their next publish (releases pin catalog versions, see [Catalog versions](#catalog-versions-decided-oct-2026)).
 
-## Server content library (decided Oct 2026)
-
-Custom content belongs to the **server**, not to a region. A region is one game, and a server can host several (sequels, side stories, remakes). A creator should be able to make a fakemon, custom move, or custom item once and use it in any of their regions without recreating it.
-
-| Scope | Holds | Examples |
-|---|---|---|
-| **Global** (Layer 0–1) | Canon catalog + enrichment | Bulbasaur, Thunderbolt, Potion |
-| **Server library** (Layer 2) | Custom species/forms/types/moves/abilities/items, plus reusable registries (trainer classes, custom encounter methods) | `newlogora:sparkitten`, a "Ranger" trainer class |
-| **Region** (Layer 3, in the release) | Which library and canon entries this game *uses*, and how: regional dex order, TM list, shop prices, rules | "Kanto 2 uses Sparkitten as dex #152" |
-
-Consequences:
-- Region releases **reference** library entries by ID. They don't copy them. Publishing a region validates that every referenced library entry exists. Editing a library entry (e.g. rebalancing a fakemon's stats) affects every region that uses it at that region's next publish. The release pins a **library snapshot version**, so live play doesn't change under players until the admin republishes.
-- The engine assembles one Showdown data set per **battle context**: each region release and each Arena format. Preferred delivery is **runtime injection into an isolated dex** (evolving the fork's `dynamic-dex-data` POC, see [14](14-battle-system-and-showdown.md#current-state-of-the-fork-branch-inventory-oct-2026)), not generated mod files. A server-wide mod can't work, because two regions on the same server may use different overrides of the same species (see below).
-- Library content can also be **published for other servers to import** (private by default). See "Species identity" below.
-
-## Species identity: canon, custom species, variants, overrides & sharing (decided Oct 2026, Q19)
-
-Requirements from the owner:
-- Global canon species.
-- Servers can add their own species, plus **variants of existing species**.
-- Servers can **publish** custom content for other servers to import (private by default).
-- Everything must work in Showdown **without conflicting with canon**.
-- An **override** of a canon species/form and the original **can't both be in one region**. If a creator wants both, the variant must be a separate **form**.
-
-### Namespaces & publishers (decided Oct 2026)
-The namespace in custom IDs is an **opaque, immutable publisher ID**. It's never a user-chosen handle, and it's not the raw Discord guild ID. A **presentation layer** shows a human name wherever IDs would surface.
+## Catalog versions (decided Oct 2026)
+Every catalog import is a **catalog version**, and every catalog record says which one it came from:
 
 ```ts
-Publisher {
-  _id: string;                     // short opaque ID, e.g. 'p7k2m9x4'. The namespace in `<ns>:<slug>`. Never changes.
-  displayName: string;             // defaults to the server name; changeable any time
-  iconUrl?; description?;
-  ownerServerIds: ObjectId[];      // MVP: exactly one (auto-created, lazily, the first time a server makes library content)
-}
+CatalogVersion { _id: string;                 // e.g. 'cat-2026-10-31-1'
+                 showdownVersion: string;     // the exact Showdown package version imported
+                 importedAt: Date;
+                 notes?: string;              // our own import fixes (e.g. the Unown ID correction) that don't change Showdown's version
+                 counts: { species: number; moves: number; learnsets: number } }
+MoveDefinition / Learnset / SpeciesDefinition { …; catalogVersion: string }
 ```
 
-Why not the alternatives:
+**Why it matters (more than auditing):**
+1. **Catalog and battle engine stay in sync.** Players see catalog data (Thunderbolt: 90 power) while Showdown runs the battle. If a move changed upstream between the import and the Showdown version the bot runs, the screen and the battle disagree. At boot, the game host compares the installed Showdown version with the latest catalog version's `showdownVersion` and warns on a mismatch.
+2. **Releases pin it.** A published release ([01](01-content-vs-state-and-publishing.md)) must keep meaning the same thing after a re-import. Each release records the `catalogVersion` it was validated against and **embeds the catalog data it uses** (the resolved species, moves, and learnsets its rules select), so a release is self-contained. That also keeps battle recovery deterministic: replaying a battle's input log uses exactly the data the battle started with.
+3. **Overrides can merge upgrades.** A linked override (a tweaked Thunderbolt, a custom learnset) records the catalog version it patched **and a snapshot of that base**, so a new import can be merged in three ways rather than overwriting anyone's changes ([27 § Upgrades](27-server-content-library-and-overrides.md#base-snapshots-and-upgrades)). Snapshots mean old catalog versions never need to be kept around.
+4. **Partial imports are caught.** A failed or half-finished import is visible (records with different `catalogVersion`s), and a CI check can require every catalog record to share one.
+5. **Support and debugging.** "Why does this move say X?" traces to a specific Showdown release and import.
 
-| Option | For | Against |
-|---|---|---|
-| User-chosen, set-once handle (`newlogora`) | Readable in raw IDs | Needs a claim flow, uniqueness checks, squatting/impersonation moderation, and "I regret my handle" support. It's permanent, so a typo or an outgrown name sticks forever. Readability only matters in raw IDs, which users shouldn't see. |
-| Discord guild ID (`1010726453974925402`) | Already unique and immutable, no claim flow. This was the original plan. | Couples content identity to one Discord guild: if a creator rebuilds their server or moves to a new guild, their whole library's IDs point at a dead guild. It also ties IDs to Discord specifically. |
-| **Opaque publisher ID + display name** (chosen) | No claim flow, no collisions, rename-safe. **Ownership can move** between servers (rebuilt server, a creator running two servers that share one library) without touching a single ID. | One small model. The UI must always resolve IDs to names (it should anyway). |
+**Rules:**
+- The live catalog collections hold the **latest** import only. Older versions live on only where something needs them: inside releases (embedded data) and inside linked overrides (base snapshots).
+- A new import never changes a published region. The region picks it up at its next publish, and the publish review lists what the catalog changed for the species and moves the region uses ([16](16-authoring-validation-and-portability.md)).
 
-Presentation rules:
-- Users see "Sparkitten · by **New Logora**" (publisher display name + icon), never `p7k2m9x4:sparkitten`.
-- Display names don't need to be unique. Public browsing shows the icon, the server name, and later a "verified" badge for disambiguation.
-- Raw IDs appear only in JSON export/import, logs, and developer tools, where the readable `slug` half is enough for humans.
+## Species (canon)
+- **Today:** canon species live in `DexEntry`, which mirrors Showdown's species fields and adds what Showdown lacks (catch rate, EXP yield, EV yields, growth rate, base happiness, hatch cycles, sprites). Later it becomes `SpeciesDefinition`, imported per catalog version like moves.
+- **Identity:** `speciesId` (renamed from `showdownName`, M0A-19) is the Showdown ID and the only way anything refers to a species. It's unique among canon entries; library overrides and imports share species IDs by design ([27 § Identity and uniqueness](27-server-content-library-and-overrides.md#identity-and-uniqueness)).
+- **Per generation:** `DexEntry.baseStats` holds current-generation stats only. Gen 1's single Special stat and other per-gen stat changes come from the species import, with the same base + per-gen differences pattern as moves (`rules.data.speciesStats`, [18](18-rules-time-and-randomness.md)).
+- **Forms and variants** that a server adds (a "Surfer" Pikachu, a fakemon) are library entries, not canon ([27](27-server-content-library-and-overrides.md)).
 
-MVP needs no publisher UI. It needs only the auto-created Publisher per server and name resolution in the builder.
-
-### Two identities per species entry
-| Identity | What it is | Used by |
-|---|---|---|
-| **Species ID** (in-game identity) | What a Pokémon *is*: `pikachu`, `newlogora:sparkitten`, `newlogora:pikachu-surfer` | Pokémon instances, encounter slots, trainer parties, regional dex, conditions, team presets |
-| **Definition ref** (authoring identity) | *Which version of which library entry* supplies the data: `{ entryId, version }` | Region releases and Arena formats (what they compile), import/sharing, update notices |
-
-They're usually 1:1. **Overrides** are the reason they're separate: an override is a library entry whose species ID *is a canon ID*.
-
-### Two kinds of library entry: *original* and *linked* (decided Oct 2026)
-Every library entry is one of two kinds. Overrides of canon and imports from other servers turn out to be **the same mechanism**: a *linked* entry, which is a pinned base definition plus a local patch.
-
-| Kind | What it is | Species ID | Examples |
-|---|---|---|---|
-| **Original** | Data authored from scratch | `<ns>:<slug>` (the creator's namespace) | A new fakemon `newlogora:sparkitten`. A new **form** of an existing species `newlogora:pikachu-surfer` (`baseSpecies: Pikachu`, `forme: Surfer`). |
-| **Linked** | `base` (a pinned definition: canon@dataVersion or another publisher's entry@vN) **+ `patch`** (local field changes, possibly empty) | **the base's ID** (unchanged) | **Canon override:** base = canon Pikachu, patch = new stats. **Import:** base = `newlogora:sparkitten@v3`, patch = {} or local tweaks. |
-
-```ts
-LibraryEntry {
-  entryId; publisherId; visibility: 'private' | 'public';     // private by default
-  subject: 'species';                                           // later: 'move' | 'ability' | 'item' | 'type'
-  kind: 'original' | 'linked';
-  // original
-  speciesId?: `${ns}:${slug}`; versions?: { version; publishedAt; data; dependencies: DefinitionRef[] }[];  // immutable once published
-  // linked
-  base?: { ref: DefinitionRef; pinnedVersion: string; snapshot: SpeciesData };   // canon@<catalogVersion> or <ns>:<slug>@vN; snapshot = the base as patched, for upgrade merges
-  patch?: Partial<SpeciesData>;                                 // field-level local changes; effective = base ⊕ patch
-  detachedFrom?: DefinitionRef;                                 // provenance after "detach"
-}
-```
-
-- **`<ns>`** is the **publisher ID**: an opaque, immutable, system-generated ID (see "Namespaces & publishers" below). Examples in this doc use `newlogora` as a readable stand-in. A real ID looks like `p7k2m9x4:sparkitten`.
-- Showdown IDs are lowercase alphanumeric only, so **any ID containing `:` can never collide with canon**, now or in future generations.
-- A rename changes the display name, never the species ID.
-
-### Why this fits Showdown naturally
-A linked entry *is* Showdown's mod pattern: `inherit: true` + changed fields. Each region release / Arena format compiles its **own** mod, so:
-- **A region using a linked entry** gets `base ⊕ patch` under the base's ID. Every content reference (`pikachu`, `newlogora:sparkitten` in encounter tables, trainer parties) picks it up with no reference changes. Switching between the original and a linked version never touches content.
-- **The "not both in one region" rule is structural:** a region's species set maps each species ID to exactly one definition, so canon Pikachu and a linked (overridden) Pikachu can't coexist. The validator explains: "Pikachu is overridden by *Rebalanced Pikachu*. To use both, create it as a new form instead."
-
-### Compiling to Showdown without name clashes
-Inside one compiled mod, Showdown keys species by `toID(name)`. The compiler:
-1. **Originals (species/forms):** emits the display name. If it collides with a canon name or another selected entry in the *same* region/format, publish is blocked with a "set a local display name" fix. (Two servers' "Sparkitten"s only clash if one region imports both.)
-2. **Linked entries:** emit under the base's key with `inherit: true` + patch (for canon bases), or the base's compiled data + patch (for imported bases).
-3. Keeps a per-release **translation table** (species ID ↔ Showdown ID) so battle logs map back to our IDs.
-
-Future canon additions are safe: a new real "Sparkitten" just becomes a name clash, caught at that region's next publish. Existing instances keep `newlogora:sparkitten`.
-
-### Importing from another server
-1. **Import** creates a *linked* entry in your library: `base = author's entry @ latest published version`, `patch = {}`. It's immediately usable, and it's **editable locally**: any field you change goes into your patch. The author's data is never modified.
-2. **Updates:** when the author publishes v4, you get a notice listing what changed. **Upgrading** re-pins the base to v4 and re-applies your patch:
-   - Fields only the author changed → you get the new values.
-   - Fields only you changed → your values stay.
-   - Fields **both** changed → shown as conflicts; your value wins unless you pick theirs.
-   Nothing changes until you upgrade, and live play only changes at your next region publish.
-3. **Detach** (optional): flatten `base ⊕ patch` into an *original* under **your** namespace (new species ID, `detachedFrom` provenance). Use it when your version has become its own thing and you want to publish it yourself.
-4. **Dependencies** (custom moves/abilities/types the species needs) import together as linked entries at pinned versions.
-5. If the author **unpublishes or goes private**: you keep your pinned base (published versions are immutable). New imports stop, and you can still detach.
-
-**Identity choice:** a linked entry keeps the base's species ID even with local tweaks, the same way a canon override keeps `pikachu`. A locally patched Sparkitten is still a Sparkitten that "works differently in this game". If cross-server trading or travel ever arrives, a Pokémon battles with the definition of the place it's in. Detaching is how a creator says "this is a different species now".
-
-**Why not the alternatives:**
-| Option | Problem |
-|---|---|
-| Pinned reference only (no local edits) | Fails the requirement: importers must be able to tweak locally. |
-| Plain copy with a source link | Local edits are easy, but upstream updates become a manual re-import that loses your edits, and each copy needs a new ID (or else two servers own the same ID). |
-| **Linked: pinned base + local patch** | Local edits *and* clean upgrades. Same mechanism as canon overrides. Keeps IDs stable. |
-
-### Later: moves, abilities, items, types (post-MVP)
-The same original/linked scheme applies, but it's deferred until custom moves/abilities/items are designed. Their behavior is code in Showdown, so patches must be limited to safe, data-only fields (power, accuracy, type, PP, effect chances) on existing behaviors.
-
-### What happens to owned Pokémon when definitions change
-- **Linked entries (overrides or tweaked imports):** the Pokémon's species ID is the base's ID either way. It battles with whatever definition the current region uses.
-- **Version bumps / upgrades:** apply at the region's next publish, same as any content change ([01](01-content-vs-state-and-publishing.md)).
-- **Deleted entry:** blocked while any published release or instance references it. Archive instead.
-
-### Mongo shape
-A species ID names what a Pokémon *is*. It is **not** a unique document key: a server library can hold several linked entries for `pikachu` (e.g. "Rebalanced Pikachu" for one region, "Hard-mode Pikachu" for another), and every server that imports Sparkitten holds an entry with the same ID.
-
-| Where | Unique key | Species ID unique? |
-|---|---|---|
-| Canon catalog (`DexEntry`, later `SpeciesDefinition`) | `speciesId` (renamed from `showdownName`), plus the data version if more than one canon import is kept | Yes, among canon entries only |
-| Server library | `entryId` (+ version) | No. Overrides and imports share IDs by design. |
-| Region release | Its species map: each species ID → exactly one `DefinitionRef` | Yes, enforced by the publish validator, not a DB index |
-
-- `_id` stays an ObjectId. All references store `speciesId` (plus a definition ref where pinning matters), never the `_id`.
-- A region's Pokédex slot picks the definition: `{ speciesId: 'pikachu', definition: { entryId, version } }`. Instances, encounter slots, and trainer parties store only `'pikachu'`.
-- The existing `isCanon` / `isPublic` / `originServer` fields map onto `kind`, `visibility`, and `ownerServerId`. Non-canon entries move to the library model instead of sharing the canon collection (the seed has none today).
-
-## Moves: import, overrides, and Showdown callbacks (decided Oct 2026)
+## Moves: import and Showdown callbacks (decided Oct 2026)
 
 ### How Showdown stores per-generation moves
 - Each generation is a **mod** (`data/mods/gen1` … `gen8`; base `data/` is Gen 9), chained through `scripts.ts`: `gen1` inherits `gen2`, which inherits `gen3`, up to base.
@@ -193,7 +83,7 @@ A species ID names what a Pokémon *is*. It is **not** a unique document key: a 
 
 ```ts
 MoveDefinition {
-  moveId: MoveId;                 // unique; Showdown toID
+  moveId: MoveId;                 // unique; Showdown toID (the shared MoveId type also accepts publisher IDs, see 27)
   num: number; name: string;
   introducedGen: number;          // Showdown's `gen` field
   base: MoveData;                 // the resolved Gen 9 record (base Dex)
@@ -216,74 +106,12 @@ MoveData = {
 ```
 - **Text has its own sub-field**, mirroring Showdown's split between `data/moves.ts` (data) and `data/text/moves.ts` (text). `MoveData` stays exactly what a battle uses (what overrides patch and custom-move recipes change), and `text` can later become per-language without touching battle data. `resolveMove(def, gen)` merges both override maps and returns data and text together. The resolved Dex already applies Showdown's text fallback (a generation without its own block uses the nearest older-generation block above it, then the current text).
 - **Availability is `isNonstandard`**, so it's per generation through `genOverrides` too, with no separate map.
-- **Battle message templates** in the same text file (`start`, `activate`, `end`, `damage`, …) aren't stored. The battle renderer reads them from Showdown at runtime ([26](26-discord-surface-and-ux-patterns.md#battles)); custom moves (post-MVP) inherit their template move's messages.
+- **Battle message templates** in the same text file (`start`, `activate`, `end`, `damage`, …) aren't stored. The battle renderer reads them from Showdown at runtime ([26](26-discord-surface-and-ux-patterns.md#battles)); custom moves (post-MVP, [27](27-server-content-library-and-overrides.md#custom-moves-post-mvp-q28)) inherit their template move's messages.
 
 ### Behavior stays in Showdown
 The catalog never replicates callbacks. At battle time the isolated custom-data dex is a child of the region's mechanics-gen mod, so canon moves keep Showdown's own callbacks, including that generation's versions.
 
-### Overrides (post-MVP)
-A region's override of a canon move (a *linked* library entry) is injected as `{ inherit: true, …changedFields }`. Showdown's merge keeps every key the override doesn't set, **callbacks included**, so "Thunderbolt at 95 power" behaves normally. Some fields are **controlled by callbacks** (power for Low Kick, Return, Gyro Ball, Eruption via `basePowerCallback`; type for Weather Ball and Hidden Power via `onModifyType`/`onModifyMove`; hit counts). The builder reads `hooks` and blocks or explains those fields ("this move's power is calculated, so a power override has no effect").
-
-- **Canon documents stay untouched.** An override is a separate linked library entry (`subject: 'move'`) owned by a publisher: the canon `moveId` it overrides, the `catalogVersion` and a **snapshot** of the base it patched, and a data-only patch on the resolved form for one generation (plus optional text changes). Each region picks at most one definition per move, and its release embeds the result. `MoveDefinition` needs no override fields.
-
-#### When the canon catalog is upgraded
-A bot-wide catalog upgrade never breaks an override or changes a region by itself:
-1. **Published releases are unaffected.** They embed the resolved data, override applied. Battles inject that data; behavior comes from the installed Showdown, which normally means upstream bug fixes.
-2. **The next compile keeps working.** It uses the override's base snapshot plus its patch, not the new canon. The publish review flags the drift: "Thunderbolt override is based on `cat-2026-10-31-1`; canon changed in `cat-2027-01-15-1`: accuracy 100 → 95. [Upgrade] [Keep current base]".
-3. **Upgrading is a three-way merge** (old base, new base, patch): fields only upstream changed are taken, fields only the author changed are kept, and fields both changed are shown as conflicts, with the author's value winning unless they pick upstream's. Keeping the current base is always allowed.
-
-Errors happen only on real conflicts, each with a named fix in the review:
-
-| Situation | Result | Fix offered |
-|---|---|---|
-| The base move no longer exists in the catalog (removed or renamed upstream) | Error | **Detach** into an original custom move (`<ns>:<slug>`) built from the snapshot, or remove the override |
-| A patched field is now controlled by a callback (the move's `hooks` changed) | Warning: "power is now calculated; your override has no effect" | Drop the field from the patch, or keep the old base |
-| A patched value is no longer valid (a field's allowed values changed) | Error naming the field | Edit the value |
-| A custom move's template behaves differently after the upgrade | Warning, from the archetype sim tests | Review the template |
-
-#### Keeping overrides additive (MVP)
-- **`MoveId` accepts namespaced IDs.** The shared type allows canon IDs (`thunderbolt`) and publisher IDs (`p7k2m9x4:sparkbolt`); only the canon collection enforces the plain Showdown format on its own records. Otherwise every field typed `MoveId` (learnsets, TM lists, trainer movesets) would reject custom moves later. Species IDs already work this way.
-- **Everything reads moves through the catalog read service**, `getMove(moveId, { gen, region? })`, never raw documents. `region` is unused in the MVP; overrides later plug into that one function instead of every caller.
-
-### Custom moves (post-MVP, Q28)
-- A custom move (`<ns>:<slug>`) **borrows an existing move's mechanics and changes data only**. At battle time its dex entry is built from the template move's entry (functions included) with the overrides applied, under the new ID.
-- **Store a recipe, not functions:** `{ template: MoveId; overrides: Partial<MoveData> }`. Battles are persisted as seed + input log and replayed on recovery, so everything crossing into a battle must be serializable; functions are re-attached when the dex is built.
-- **Templates come from a curated list of archetypes**, not any move: plain damage; damage + secondary effect (status, flinch, stat drop); stat changes; multi-hit; recoil; drain; priority; status-only. Some Showdown behavior is keyed by move ID elsewhere (Gust hitting targets mid-Fly, Metronome's exclusion lists), so a copy of an arbitrary move could silently lose interactions. Each archetype gets a sim test.
-
-## TM/HM lists (decided Oct 2026)
-Machine numbering is per generation (Gen 1 TM01 is Mega Punch; Gen 2 TM01 is DynamicPunch), so a machine's move can't live on a global item. Machines are **region content** (Layer 3):
-
-```ts
-Region.moveMachines: { label: string;               // 'TM01', 'HM02'; unique within the region
-                       kind: 'tm' | 'hm';
-                       move: MoveId;
-                       reusable: boolean }[]        // Gen 1: TMs single-use, HMs reusable
-```
-- **Bag items** for machines use a reserved item namespace, `machine:<label>` (e.g. `machine:tm24`), resolved through the region's list for display ("TM24 Thunderbolt") and use. One generic machine `ItemDefinition` (pocket `tms`, field use "teach") covers them all, so there are no per-region item documents.
-- **Compatibility** ("can this Pokémon learn TM24?") comes from the region's learnset generation: Showdown's machine sources (`1M` = a TM/HM in Gen 1), plus additions in custom learnsets. The Kanto Classic list (numbering) comes from the template generator, since Showdown doesn't store TM numbers.
-- **Validation:** labels unique, every move exists and is available in the region's move generation, and each machine has at least one compatible species in the regional dex (warning).
-
-Showdown knows that Leftovers heal in battle. It doesn't know:
-- what bag pocket an item belongs in
-- what it costs or sells for
-- that a Potion can be used from the bag outside battle
-- that a Fire Stone evolves Vulpix
-- what Repel and Escape Rope do
-- that a Bicycle exists
-- what TMs teach in *this* region
-
-```ts
-ItemDefinition {
-  id: ItemId;                       // showdown id where one exists ('potion'), else custom ('x_bicycle')
-  name; pocket: 'items' | 'medicine' | 'balls' | 'tms' | 'berries' | 'key' | string;
-  buyPrice?; sellPrice?;            // region overlays override
-  fieldUse?: Effect[] | FieldUseHandlerId;   // potion → heal target 20; rarecandy → levelUp; firestone → evolve
-  battleUse?: BattleUseHandlerId;   // pokeball → catch(rate 1x); potion → heal (needs sim hook, see 14)
-  holdable: boolean; consumable: boolean;
-}
-```
-
-Machines (TMs/HMs) are region content resolved through `machine:<label>` item IDs, not items with a fixed move (see TM/HM lists above).
+Overrides and custom moves (a tweaked Thunderbolt, a fakemon's signature move) are publisher library entries layered on top; canon `MoveDefinition` documents never change for them. See [27](27-server-content-library-and-overrides.md).
 
 ## Learnsets & generation (decided Oct 2026)
 
@@ -306,60 +134,54 @@ resolveLearnset(learnset, gen) → ResolvedLearnset
 ```
 Move display, trainer default movesets ([11](11-npcs-trainers-and-battle-definitions.md)), level-up move prompts, and TM/HM compatibility ([TM/HM lists](#tmhm-lists-decided-oct-2026)) all read the resolved form.
 
-### Overrides and custom learnsets (post-MVP)
-- **A canon override** is a *linked* library entry ([Species identity](#species-identity-canon-custom-species-variants-overrides--sharing-decided-oct-2026-q19)): a pinned base (the canon learnset at a catalog version, resolved for a generation, with a snapshot of it kept on the entry for upgrade merges; see [Catalog versions](#catalog-versions-decided-oct-2026)) plus a **patch on the resolved form**:
-  ```ts
-  LearnsetPatch {
-    add?:     { move: MoveId; method: 'levelUp' | 'machine' | 'tutor' | 'egg'; level?: number }[];
-    remove?:  { move: MoveId; method?: 'levelUp' | 'machine' | 'tutor' | 'egg' }[];   // no method = remove entirely
-    relevel?: { move: MoveId; from: number; to: number }[];
-  }
-  effective = applyPatch(resolveLearnset(base, gen), patch)
-  ```
-- **Why patch the resolved form, not codes:** it matches how authors think ("Charmander learns Flamethrower at 30", "remove Fly from Charizard's TMs"); a region only ever uses one generation, so per-gen codes would be noise; and it keeps the builder simple.
-- **Upgrades** use the same three-way merge as species overrides: changes only the base made are taken, local changes stay, and conflicts are shown. The base records which generation it was resolved for, so changing a region's learnset generation re-resolves the base and re-applies the patch.
-- **Custom species** (originals, `<ns>:<slug>`) author a `ResolvedLearnset` directly, with no codes or generations.
-- **One definition per species per region,** like species overrides: a server can hold several learnset overrides for `pikachu`, and each region picks one.
-- **TM compatibility follows automatically:** a patch adding Surf to `machine` makes that species compatible with the region's Surf machine.
+Learnset overrides and custom species' learnsets patch or replace this resolved form; see [27 § Learnsets](27-server-content-library-and-overrides.md#learnsets).
 
-## Custom content (Full / Pie-in-sky)
-Your roadmap wants "custom fakemon, forms, and types per server: predictable, simple descriptor-field-fed data". Custom species need entries in pokedex, learnsets, formats-data, and (for types) the typechart. Path:
-1. Custom content is stored in Mongo as server library entries (Layer 2) with the same descriptor fields.
-2. At battle start, BattleService injects the release's or format's assembled data into an **isolated custom-data dex** (patch 4 in [14](14-battle-system-and-showdown.md#fork-strategy-options)). No mod files are generated, and nothing restarts on publish.
-3. Custom *moves/abilities* are limited to retuning existing behaviors (your "strict dynamic templates" idea): a custom move inherits an existing move's mechanics plus overrides. Designing this is post-MVP (Q28).
-
-## Catalog versions (decided Oct 2026)
-Every catalog import is a **catalog version**, and every catalog record says which one it came from:
+## Items
+Showdown knows that Leftovers heal in battle. It doesn't know:
+- what bag pocket an item belongs in
+- what it costs or sells for
+- that a Potion can be used from the bag outside battle
+- that a Fire Stone evolves Vulpix
+- what Repel and Escape Rope do
+- that a Bicycle exists
+- what TMs teach in *this* region
 
 ```ts
-CatalogVersion { _id: string;                 // e.g. 'cat-2026-10-31-1'
-                 showdownVersion: string;     // the exact Showdown package version imported
-                 importedAt: Date;
-                 notes?: string;              // our own import fixes (e.g. the Unown ID correction) that don't change Showdown's version
-                 counts: { species: number; moves: number; learnsets: number } }
-MoveDefinition / Learnset / SpeciesDefinition { …; catalogVersion: string }
+ItemDefinition {
+  id: ItemId;                       // showdown id where one exists ('potion'), else custom ('x_bicycle')
+  name; pocket: 'items' | 'medicine' | 'balls' | 'tms' | 'berries' | 'key' | string;
+  buyPrice?; sellPrice?;            // region overlays override
+  fieldUse?: Effect[] | FieldUseHandlerId;   // potion → heal target 20; rarecandy → levelUp; firestone → evolve
+  battleUse?: BattleUseHandlerId;   // pokeball → catch(rate 1x); potion → heal (needs sim hook, see 14)
+  holdable: boolean; consumable: boolean;
+}
 ```
 
-**Why it matters (more than auditing):**
-1. **Catalog and battle engine stay in sync.** Players see catalog data (Thunderbolt: 90 power) while Showdown runs the battle. If a move changed upstream between the import and the Showdown version the bot runs, the screen and the battle disagree. At boot, the game host compares the installed Showdown version with the latest catalog version's `showdownVersion` and warns on a mismatch.
-2. **Releases pin it.** A published release ([01](01-content-vs-state-and-publishing.md)) must keep meaning the same thing after a re-import. Each release records the `catalogVersion` it was validated against and **embeds the catalog data it uses** (the resolved species, moves, and learnsets its rules select), so a release is self-contained. That also keeps battle recovery deterministic: replaying a battle's input log uses exactly the data the battle started with.
-3. **Overrides can merge upgrades.** A linked override (a tweaked Thunderbolt, a custom learnset) records the catalog version it patched **and a snapshot of that base**. When a new import changes canon, the three-way merge compares old base, new base, and the local patch to tell "upstream changed this" from "the author changed this". Snapshots mean old catalog versions never need to be kept around.
-4. **Partial imports are caught.** A failed or half-finished import is visible (records with different `catalogVersion`s), and a CI check can require every catalog record to share one.
-5. **Support and debugging.** "Why does this move say X?" traces to a specific Showdown release and import.
+Machines (TMs/HMs) are region content resolved through `machine:<label>` item IDs, not items with a fixed move (see [TM/HM lists](#tmhm-lists-decided-oct-2026)).
 
-**Rules:**
-- The live catalog collections hold the **latest** import only. Older versions live on only where something needs them: inside releases (embedded data) and inside linked overrides (base snapshots).
-- A new import never changes a published region. The region picks it up at its next publish, and the publish review lists what the catalog changed for the species and moves the region uses ([16](16-authoring-validation-and-portability.md)).
+## TM/HM lists (decided Oct 2026)
+Machine numbering is per generation (Gen 1 TM01 is Mega Punch; Gen 2 TM01 is DynamicPunch), so a machine's move can't live on a global item. Machines are **region content** (Layer 3):
+
+```ts
+Region.moveMachines: { label: string;               // 'TM01', 'HM02'; unique within the region
+                       kind: 'tm' | 'hm';
+                       move: MoveId;
+                       reusable: boolean }[]        // Gen 1: TMs single-use, HMs reusable
+```
+- **Bag items** for machines use a reserved item namespace, `machine:<label>` (e.g. `machine:tm24`), resolved through the region's list for display ("TM24 Thunderbolt") and use. One generic machine `ItemDefinition` (pocket `tms`, field use "teach") covers them all, so there are no per-region item documents.
+- **Compatibility** ("can this Pokémon learn TM24?") comes from the region's learnset generation: Showdown's machine sources (`1M` = a TM/HM in Gen 1), plus additions in custom learnsets. The Kanto Classic list (numbering) comes from the template generator, since Showdown doesn't store TM numbers.
+- **Validation:** labels unique, every move exists and is available in the region's move generation, and each machine has at least one compatible species in the regional dex (warning).
 
 ## Where canon data lives (decided Oct 2026)
 
 The **DB catalog is the record** (see Layering above): canon data is imported from a pinned Showdown version into Mongo, and the import is re-run and diffed on Showdown upgrades. Showdown stays the battle executor and receives the assembled data per battle context. The alternatives considered were "Showdown canonical, Mongo only enriches" (rejected: admins need overrides, custom learnsets, TM assignments, and readable move details) and a third-party API at runtime (latency, rate limits, no custom content).
 
 ## MVP scope
-- Reference species/moves/items by Showdown ID. Rename DexEntry `showdownName` to `speciesId` and reference by it.
-- ItemDefinition for the Gen 1 item set (balls, medicine, repels, escape rope, stones, key items, TMs/HMs) with field/battle handlers.
-- Region TM list and learnset policy.
-- Not MVP: custom species UI and custom moves. The isolated custom-data dex (M1) is still built for the MVP because piecemeal Gen 1 data and Arena formats use it.
+- Reference species, moves, and items by Showdown ID. Rename DexEntry `showdownName` to `speciesId` and reference by it.
+- `CatalogVersion`, `MoveDefinition`, and `Learnset` imported per catalog version; the catalog read service (`getMove`, `getLearnset` with `{ gen, region? }`).
+- ItemDefinition for the Gen 1 item set (balls, medicine, repels, escape rope, stones, key items, the generic machine item) with field/battle handlers.
+- Region TM/HM lists and the learnset policy.
+- Not MVP: the server library (custom species UI, overrides, custom moves; see [27](27-server-content-library-and-overrides.md)). The isolated custom-data dex (M1) is still built for the MVP because piecemeal Gen 1 data and Arena formats use it.
 
 ## Open questions
 - ~~What does `baseGeneration` control?~~ **Decided (Q26):** replaced by `RegionRules`; the default `10` is removed.
