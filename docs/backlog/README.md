@@ -1,11 +1,14 @@
 # Backlog Drafts
 
+New here? Start with [`docs/start-here.md`](../start-here.md).
+
 Issue drafts reviewed here before they're created in GitHub. Once created, the issue is the source of truth, and the mapping table below records where each draft went.
 
 | File | Milestone |
 |---|---|
-| [`m0a-platform-arena-foundations.md`](m0a-platform-arena-foundations.md) | M0a: Platform & Arena Foundations |
-| [`m0b-content-foundations.md`](m0b-content-foundations.md) | M0b: Content Foundations |
+| [`m0a-platform-hygiene.md`](m0a-platform-hygiene.md) | M0a: Platform Hygiene |
+| [`m0c-arena-foundations.md`](m0c-arena-foundations.md) | M0c: Arena Foundations (the Arena track's first step) |
+| [`m0b-content-foundations.md`](m0b-content-foundations.md) | M0b: Engine & Content Foundations |
 | [`m1-battle-core-and-catalog.md`](m1-battle-core-and-catalog.md) | M1: Battle Core & Catalog (moves and learnsets catalog, so far) |
 | [`m2-launch-readiness.md`](m2-launch-readiness.md) | M2: Arena Release (FlowCord dependencies, launch readiness, and the Arena multiplayer surface, so far) |
 | [`m3-region-authoring.md`](m3-region-authoring.md) | M3: Region Authoring (TM/HM lists, so far) |
@@ -35,7 +38,9 @@ Bodies use **Summary**, **Acceptance criteria**, and **Refs** (concept docs). Ac
 ## Drafting more issues (for new sessions)
 Everything needed to draft the remaining milestones is in the repo. Nothing depends on the conversations that produced these docs.
 
-**Still to draft:** the rest of M1 (fork modernization, BattleService, items, rules, teams, AI; the moves and learnsets catalog is drafted), the rest of M2 (`/arena` hub, PvAI setup, battle history, alpha test, release notes), the rest of M3 (TM/HM lists are drafted), and M4–M6. The candidate issues are the checklists in [`mvp.md`](../roadmap/mvp.md). Expand each into drafts in a new `<milestone>.md` file here, using the existing files as the style reference.
+**Still to draft:** the rest of M1 (fork patches, BattleService, items, rules, teams, AI; the moves and learnsets catalog is drafted), the rest of M2 (`/arena` hub, PvAI setup, battle history, alpha test, release notes), the rest of M3 (TM/HM lists are drafted), and M4–M6. The candidate issues are the checklists in [`mvp.md`](../roadmap/mvp.md). Expand each into drafts in a new `<milestone>.md` file here, using the existing files as the style reference.
+
+**Every milestone file starts with a "Start here" section** giving a newcomer the context for that file (what it is, what to read, where the code goes, the order), linking to [`docs/start-here.md`](../start-here.md) for everything general. Keep that pattern for new files.
 
 **Read first, in this order:**
 1. [`open-questions.md`](../architecture/open-questions.md): Q1–Q35 and the "Smaller decisions" index. This is the decision record.
@@ -45,7 +50,7 @@ Everything needed to draft the remaining milestones is in the repo. Nothing depe
 **Rules:**
 - Every issue links its concept doc(s) and the Q-numbers it implements, and has checkable acceptance criteria.
 - Split anything bigger than `L`. Mark `agent-ready: yes` only when no design judgement is left.
-- Keep the Arena critical path (M0a → M1 → M2) lean. Hosting stays at the end of M2.
+- Keep the Arena critical path (M0c → M1 → M2, needing only `libs/core` from M0a) lean. Hosting stays at the end of M2.
 - If drafting surfaces a question the docs don't answer, don't decide it inside an issue. Ask the owner, then record it as the next Q-number (or in the Smaller decisions index), update the concept doc's Decisions, and update `mvp.md`/`roadmap.md`.
 - Use the player terms from [23](../architecture/concepts/23-players-characters-journeys-and-scopes.md) (character, journey, and the `user` / `character` / `journey` scopes). Issues that render anything in Discord follow [26](../architecture/concepts/26-discord-surface-and-ux-patterns.md).
 - **FlowCord** is a separate org (`flowcord-dev`). Never create or comment on its issues without the owner's approval. Current dependencies: flowcord#105–#107 (see [M2 § FlowCord dependencies](m2-launch-readiness.md#flowcord-dependencies)).

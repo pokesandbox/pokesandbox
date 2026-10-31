@@ -1,10 +1,19 @@
-# M0a: Platform & Arena Foundations (backlog draft)
+# M0a: Platform Hygiene (backlog draft)
 
-**Outcome:** the org and CI exist. The library skeletons (`core`, `engine`, `battle`) and their enforced boundaries are in place. The data layer is safe for real player state. This milestone blocks M1 (Battle Core) → M2 (Arena).
+**Outcome:** the org and CI exist, contributors and agents have the rules, `libs/core` and the enforced package boundaries are in place, and the data layer is safe for real player state. Everything else builds on this, but **most of it doesn't block Arena work**: the Arena path needs only `libs/core` (M0A-09) from here before M0c can start. See [M0c](m0c-arena-foundations.md).
 
-**Hosting and production environments moved to M2** ("Launch Readiness", see [`m2-launch-readiness.md`](m2-launch-readiness.md)). Nothing in M0a/M1 needs a deployed environment. Development runs locally, and hosting is the last step before the bot and Arena go live.
+**Hosting and production environments are in M2** ("Launch Readiness", see [`m2-launch-readiness.md`](m2-launch-readiness.md)). Development runs locally; hosting is the last step before going live.
 
-Refs: [`mvp.md`](../roadmap/mvp.md) · [`github-project-setup.md`](../roadmap/github-project-setup.md) · concepts [03](../architecture/concepts/03-engine-boundary-and-game-loop.md), [14](../architecture/concepts/14-battle-system-and-showdown.md), [15](../architecture/concepts/15-persistence-concurrency-and-runtime.md)
+The adventure engine skeleton (`libs/engine`, `dispatch`, the test harness) moved to [M0b](m0b-content-foundations.md#e-m0b-5--engine-skeleton), and `libs/battle` and `Clock`/`Rng` to [M0c](m0c-arena-foundations.md) (Oct 2026), so this milestone is only shared hygiene.
+
+Refs: [`mvp.md`](../roadmap/mvp.md) · [`github-project-setup.md`](../roadmap/github-project-setup.md) · concepts [03](../architecture/concepts/03-engine-boundary-and-game-loop.md), [15](../architecture/concepts/15-persistence-concurrency-and-runtime.md)
+
+## Start here
+New to the project? Read [`docs/start-here.md`](../start-here.md) first (what PokeSandbox is, the plan, the repo, how work flows). Context specific to this file:
+- **What M0a is:** plumbing that every later milestone relies on. Most issues are small and well specified, and several are good first issues (`agent-ready: yes`).
+- **What you'll touch:** GitHub settings and workflows (`.github/`), Nx configuration (`nx.json`, `project.json` files), `shared/src/models` (indexes, the `speciesId` rename), and `docker-compose.yml` (local Mongo).
+- **Order:** M0A-01 → M0A-02/03 are owner-led (the org move). M0A-04 (CI), M0A-05 (agent rules), M0A-09 (`libs/core`), M0A-16 (replica set), and M0A-20 (sprites) can start any time. M0A-17 → M0A-19 build on each other.
+- **The one Arena dependency:** M0A-09 (`libs/core`). If you're here to help the Arena, do that one and then go to [M0c](m0c-arena-foundations.md).
 
 ---
 
@@ -104,10 +113,10 @@ Move the repos to the org, get CI gating every PR, and give contributors and age
 
 ---
 
-## E-M0A-2 · Library Skeleton & Boundaries
+## E-M0A-2 · Shared Library Foundations
 `Type: Epic` · `Priority: P0`
 
-Create `libs/core`, `libs/engine`, and `libs/battle` with enforced layering and port-based construction, so the engine can run in both the bot and the webapp now and be extracted later.
+Create `libs/core` and the enforced package boundaries, plus shared logging. The libraries built on it come later: `libs/battle` in [M0c](m0c-arena-foundations.md), `libs/engine` in [M0b](m0b-content-foundations.md#e-m0b-5--engine-skeleton), `libs/authoring` in M0b.
 
 ### M0A-08 · Structured logging; keep debug events out of Mongo
 `Type: Task` · `Parent: E-M0A-2` · `Priority: P1` · `Size: S` · `Labels: area:infra` · `Blocked by: M0A-09` · `agent-ready: yes` · `Owner: agent`
@@ -133,9 +142,9 @@ Create `libs/core`, `libs/engine`, and `libs/battle` with enforced layering and 
 **Refs:** [03 § Package layout](../architecture/concepts/03-engine-boundary-and-game-loop.md#package-layout--encapsulation-rules-decided-oct-2026)
 
 ### M0A-10 · Enforce module boundaries
-`Type: Task` · `Parent: E-M0A-2` · `Priority: P0` · `Size: S` · `Labels: area:infra` · `Blocked by: M0A-09, M0A-11, M0A-15` · `agent-ready: yes` · `Owner: agent`
+`Type: Task` · `Parent: E-M0A-2` · `Priority: P0` · `Size: S` · `Labels: area:infra` · `Blocked by: M0A-09` · `agent-ready: yes` · `Owner: agent`
 
-**Summary:** Nx project tags plus the `@nx/enforce-module-boundaries` lint rule for the decided layering.
+**Summary:** Nx project tags plus the `@nx/enforce-module-boundaries` lint rule for the decided layering. Lands as soon as `libs/core` exists; each later library scaffold (M0C-01 `libs/battle`, M0B-23 `libs/engine`, M0B-16 `libs/authoring`) adds its own tag to the rules.
 
 **Acceptance criteria**
 - Tags: `scope:core`, `scope:engine`, `scope:battle`, `scope:authoring`, `scope:app-bot`, `scope:app-webapp`, `scope:shared`.
@@ -144,69 +153,6 @@ Create `libs/core`, `libs/engine`, and `libs/battle` with enforced layering and 
 - A deliberately violating import fails `nx lint` (verified in the PR description).
 
 **Refs:** [03 § Package layout](../architecture/concepts/03-engine-boundary-and-game-loop.md#package-layout--encapsulation-rules-decided-oct-2026)
-
-### M0A-11 · Scaffold `libs/engine` with ports and base action/event types
-`Type: Task` · `Parent: E-M0A-2` · `Priority: P0` · `Size: M` · `Labels: area:engine` · `Blocked by: M0A-09` · `agent-ready: no` · `Owner: senior`
-
-**Summary:** The engine package constructed entirely from injected ports: repositories, `ContentProvider`, `BattlePort`, `Clock`, `Rng`, `EventSink`, logger.
-
-**Acceptance criteria**
-- `createEngine(ports): Engine`, with no module-level singletons.
-- Port interfaces are defined with serializable inputs and outputs.
-- `GameAction` and `GameEvent` base discriminated unions (an extensible pattern; a no-op `ping` action for tests).
-- The journey `mode` type (`overworld` | `script` | `battle`, with `participants[]`).
-- A README explaining how apps wire the engine.
-
-**Refs:** [03](../architecture/concepts/03-engine-boundary-and-game-loop.md)
-
-### M0A-12 · `dispatch()` with a per-journey DB lease, revisions, preconditions, and session claims
-`Type: Task` · `Parent: E-M0A-2` · `Priority: P0` · `Size: L` · `Labels: area:engine` · `Blocked by: M0A-11` · `agent-ready: no` · `Owner: senior`
-
-**Summary:** The engine's write path, with all four checks from [03 § Per-journey serialization](../architecture/concepts/03-engine-boundary-and-game-loop.md#per-journey-serialization-revisions-preconditions-and-sessions-decided-oct-2026). Consider splitting the session claim into its own PR.
-
-**Acceptance criteria**
-- `dispatch(journeyId, action)` acquires a short lease (`locks` collection with a TTL index, via a `LockPort`), runs the handler, and releases.
-- Lease contention waits up to ~1s, then returns `actionRejected: busy`.
-- **Revisions:** `Journey.rev` increments once per action that writes any of the journey's game data (Journey, PokemonInstances, bag, flags), in the same transaction. Actions declare whether they're view-dependent. A view-dependent action with a stale `rev` is not applied and returns a `staleView` result so the client re-renders.
-- **Preconditions:** each action declares its allowed modes. A precondition hook evaluates rules and content requirements (the first user is box access: `RegionRules.systems.storage.access` + location `services`). `availableActions(journey)` returns each action's availability with an explanation.
-- **Session claim:** `claimSession(journeyId, client)` sets `Journey.activeSession` under the lease (newest wins). Session-bound actions with a non-active session ID are rejected as `sessionSuperseded`. Game-driven events and non-session clients are exempt.
-- An optimistic-concurrency conflict retries once, only for actions without a `rev`.
-- An action-cost step exists (always returns 0; reserved for pacing).
-- An idempotency hook: an `actionId` is recorded and replays are ignored.
-- A typed error model (`actionRejected` with an explanation vs internal errors).
-- Tests: double dispatch (second press is stale, applied once), conflict retry (only for actions without a `rev`), lease expiry, a precondition rejection with its explanation, and a session takeover rejecting the old session.
-
-**Refs:** [03 § Per-journey serialization](../architecture/concepts/03-engine-boundary-and-game-loop.md), [15](../architecture/concepts/15-persistence-concurrency-and-runtime.md)
-
-### M0A-13 · `Clock` and seeded `Rng`
-`Type: Task` · `Parent: E-M0A-2` · `Priority: P1` · `Size: S` · `Labels: area:engine` · `Blocked by: M0A-09` · `agent-ready: yes` · `Owner: agent`
-
-**Acceptance criteria**
-- `Clock` port: a system implementation and a fixed/test implementation.
-- `Rng` port: a deterministic PRNG seeded by `hash(journeyId, actionId)`, with `int`, `float`, `pick`, and `weighted` helpers.
-- Tests prove the same seed gives the same sequence.
-
-**Refs:** [18 § Randomness](../architecture/concepts/18-rules-time-and-randomness.md)
-
-### M0A-14 · In-memory test harness
-`Type: Task` · `Parent: E-M0A-2` · `Priority: P1` · `Size: M` · `Labels: area:engine` · `Blocked by: M0A-11` · `agent-ready: yes` · `Owner: agent`
-
-**Acceptance criteria**
-- In-memory implementations of every engine port, plus a `createTestEngine({ fixtures })` helper.
-- Fixture builders for a tiny region (2–3 locations) and a journey.
-- An example test dispatches an action and asserts on the emitted events.
-
-### M0A-15 · Scaffold `libs/battle` with its interfaces
-`Type: Task` · `Parent: E-M0A-2` · `Priority: P0` · `Size: S` · `Labels: area:battle` · `Blocked by: M0A-09` · `agent-ready: yes` · `Owner: agent`
-
-**Summary:** The package and types only. The Showdown implementation is M1.
-
-**Acceptance criteria**
-- `BattlePort` (start/choose/inject/subscribe), `BattleSpec` (including the reserved `turnGate`), `StatePatch`, `BattleEvent`, `ExternalActionResolver`, `ExternalActionContext`/`Outcome`, and `TurnDigest` types.
-- Everything crossing these interfaces is serializable (a test round-trips through `JSON`).
-- No Showdown dependency yet.
-
-**Refs:** [14 § Package placement](../architecture/concepts/14-battle-system-and-showdown.md), [22](../architecture/concepts/22-adventure-log-and-narration.md)
 
 ---
 

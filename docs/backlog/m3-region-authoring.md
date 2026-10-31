@@ -4,12 +4,16 @@ Drafted so far: the **TM/HM lists** epic (E-M3-1). The rest of M3 (region config
 
 Refs: concept [12 § TM/HM lists](../architecture/concepts/12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026), [`mvp.md` § M3](../roadmap/mvp.md#m3-region-authoring)
 
+## Start here
+New to the project? Read [`docs/start-here.md`](../start-here.md) first, then the moves and learnsets primer in [E-M1-2 § Start here](m1-battle-core-and-catalog.md#start-here-no-prior-context-needed), since these issues build on that catalog. Context specific to this file:
+- **What M3 is:** the region builder: everything admins use to author a region. This draft covers only TM/HM lists so far.
+- **In Pokémon terms:** every region gets its own TM case, so "TM24" means whatever that region says (Thunderbolt in Gen 1). HMs are reusable; Gen 1 TMs are single-use.
+- **Order:** M3-01 and M3-02 can start once M1-01/M1-02 exist; M3-03 needs the validator skeleton (M0B-22); M3-04 (the builder menu) waits for the authoring layer (M0B-16).
+
 ## E-M3-1 · TM/HM Lists
 `Type: Epic` · `Priority: P0`
 
 Each region defines its own TM/HM list: machine labels mapped to moves, with Gen 1's single-use TMs and reusable HMs. Machine numbering differs per generation, so machines are **region content**, not global items. Bag items use the reserved `machine:<label>` namespace and resolve through the region's list. Compatibility comes from the region's learnset generation ([12 § TM/HM lists](../architecture/concepts/12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026)).
-
-**New to the project?** Read the "Start here" section of [E-M1-2](m1-battle-core-and-catalog.md#start-here-no-prior-context-needed) first; it covers the repo layout, Showdown, and the terms used here. In Pokémon terms: every region gets its own TM case, so "TM24" means whatever that region says (Thunderbolt in Gen 1), and HMs are reusable while Gen 1 TMs are single-use.
 
 Using a TM from the bag (teaching it to a Pokémon) belongs to the M5 bag work, and shops selling TMs to the M3 shops work; both read this list.
 

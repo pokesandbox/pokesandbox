@@ -6,6 +6,13 @@ Drafted so far: the FlowCord dependencies and the M2-13 upgrade, the **launch-re
 
 Refs: concepts [14](../architecture/concepts/14-battle-system-and-showdown.md), [21](../architecture/concepts/21-hosting-and-environments.md)
 
+## Start here
+New to the project? Read [`docs/start-here.md`](../start-here.md) first, then [M0c § Start here](m0c-arena-foundations.md#start-here) for how the Arena fits together. Context specific to this file:
+- **What M2 is:** the Discord side of the Arena (challenges, the public battle message, private move prompts, the `/arena` hub) and getting it live (hosting, backups, deploys, monitoring, staging, dependency security).
+- **Read before starting:** concept [25](../architecture/concepts/25-arena.md) (Arena design, especially "Multiplayer boundary" and "Acceptance scenarios"), [26](../architecture/concepts/26-discord-surface-and-ux-patterns.md) (Discord UI rules), and [21](../architecture/concepts/21-hosting-and-environments.md) for E-M2-1.
+- **What you'll touch:** `apps/bot` (a new Arena module and its interaction router), GitHub Actions, the host's configuration, and Atlas.
+- **Order:** E-M2-2 starts once BattleService (M1) can run a PvP battle headless. E-M2-1 (hosting) is the last step before going live.
+
 ## FlowCord dependencies
 
 The Arena doesn't wait on FlowCord's multi-user work (Q34). Its shared surfaces are plain discord.js handlers behind `BattleSurface` (E-M2-2), and FlowCord runs the single-user `/arena` hub. The minimum FlowCord release is the one pinned today (`0.1.0-alpha.0`, or `alpha.2` after M2-13).
@@ -30,7 +37,6 @@ To use them at launch, alpha.3 has to ship before M2-11 starts (mid-M2). If they
 **Not in scope:** the **alpha.4** migration (flowcord#43/#44: one `setComponents()` replaces `setButtons`/`setSelectMenu`/`setLayout`, and reserved buttons are reworked). It touches about 15 `setButtons`/`setSelectMenu` call sites across the 23 files that import FlowCord. Schedule it after M0B-17–19, which touch the same admin menus, and not during the Arena launch window. Draft it when alpha.4 is released.
 
 **Refs:** [flowcord CHANGELOG 0.1.0-alpha.2](https://github.com/flowcord-dev/flowcord/blob/develop/packages/core/CHANGELOG.md)
-
 
 ---
 

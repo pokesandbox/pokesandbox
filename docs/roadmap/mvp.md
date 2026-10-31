@@ -8,9 +8,10 @@ This doc breaks Phases 0–2 of [`roadmap.md`](roadmap.md) into **GitHub milesto
 
 | # | Milestone | Outcome | Depends on |
 |---|---|---|---|
-| M0a | **Platform & Arena Foundations** | Org/CI, library skeletons + boundaries, persistence basics, species IDs | — |
-| M0b | **Content Foundations** | Conditions/effects/gates, content keys + model cleanup, authoring layer, releases | M0a |
-| M1 | **Battle Core & Catalog** | BattleService + slim Showdown fork + catalog + team presets | M0a |
+| M0a | **Platform Hygiene** | Org/CI, agent rules, `libs/core` + boundaries, persistence basics, species IDs | — |
+| M0c | **Arena Foundations** | `libs/battle` interfaces, `Clock`/`Rng`, the fork cleaned up, rebased, and packaged | `libs/core` (M0A-09) only |
+| M0b | **Engine & Content Foundations** | Engine skeleton (`libs/engine`, `dispatch`), conditions/effects/gates, content keys + model cleanup, authoring layer, releases | M0a, M0c's battle interfaces |
+| M1 | **Battle Core & Catalog** | BattleService + fork patches + catalog + team presets | M0c |
 | M2 | **Arena Release (Pre-MVP)** 🚀 | Public PvP/PvAI in Discord; hosting & operations (launch readiness) | M1 |
 | M3 | **Region Authoring** | Locations, encounters, transport, shops, rules, validate | M0b (parallel with M1/M2) |
 | M4 | **Interaction Engine** | Scripts, triggers, NPCs, trainers, templates | M0b, M3 |
@@ -18,17 +19,17 @@ This doc breaks Phases 0–2 of [`roadmap.md`](roadmap.md) into **GitHub milesto
 | M6 | **Kanto Classic & MVP Release** 🚀 | Kanto built with the tools, playtested, released | M5 |
 
 ```
-M0a ──► M1 ──► M2 🚀 (Arena)
-  └──► M0b ──► M3 ──► M4 ──► M5 ──► M6 🚀 (MVP)
-                (M1 also feeds M5)
+M0a (libs/core) ──► M0c ──► M1 ──► M2 🚀 (Arena)
+      └──────────► M0b ──► M3 ──► M4 ──► M5 ──► M6 🚀 (MVP)
+                               (M1 also feeds M5)
 ```
 
-The battle track (M0a → M1 → M2) and the content track (M0b → M3 → M4) run in parallel.
+The Arena track (M0c → M1 → M2) needs only `libs/core` from M0a; the rest of M0a is hygiene that runs alongside. The content track (M0b → M3 → M4) runs in parallel.
 
 ### Re-sequencing: Arena critical path (decided Oct 2026, after Q29)
-With ~1 senior full-time-ish, possibly a second senior, 2 junior-to-mid devs, and every PR reviewed by the owner, M0 as written is too big to sit in front of the Arena. **The Arena doesn't need most of M0.** It needs no conditions/effects, scripts, content keys, releases, or authoring layer. Decision: split M0 into M0a and M0b, as in the table above.
-- The battle track (M0a → M1 → M2) and the content track (M0b → M3…) can run in parallel. Seniors own the foundation-heavy work (engine, fork rebase/patches, BattleService, conditions/effects). Juniors take well-specified issues: catalog seed data, item definitions, renderers, builder menus, webapp editors, tests.
-- **Timeline honesty:** an end-of-year Arena (~9 weeks from late Oct) would need M0a + M1 + M2 done with this team while also standing up hosting/CI. That's possible only if the Arena scope stays tight: paste import, built-in formats, `basic` AI, timers, restart recovery. Hosting and operations sit at the end of M2 (launch readiness), not in front of development. Plan for **end of year as a stretch, Q1 as realistic**, and re-estimate once M0a's issues are sized.
+With ~1 senior full-time-ish, possibly a second senior, 2 junior-to-mid devs, and every PR reviewed by the owner, M0 as written is too big to sit in front of the Arena. **The Arena doesn't need most of M0.** It needs no conditions/effects, scripts, content keys, releases, or authoring layer. Decision: split M0 into M0a and M0b, as in the table above. **Refined (Oct 2026):** M0a became shared hygiene only, Arena-specific foundations moved to a new **M0c** (so an Arena contributor isn't queued behind hygiene), and the adventure engine skeleton moved into M0b.
+- The Arena track (M0c → M1 → M2) and the content track (M0b → M3…) can run in parallel. Seniors own the foundation-heavy work (engine, fork rebase/patches, BattleService, conditions/effects). Juniors take well-specified issues: catalog seed data, item definitions, renderers, builder menus, webapp editors, tests.
+- **Timeline honesty:** an end-of-year Arena (~9 weeks from late Oct) would need `libs/core`, M0c, M1, and M2 done with this team while also standing up hosting/CI. That's possible only if the Arena scope stays tight: paste import, built-in formats, `basic` AI, timers, restart recovery. Hosting and operations sit at the end of M2 (launch readiness), not in front of development. Plan for **end of year as a stretch, Q1 as realistic**, and re-estimate once M0a's and M0c's issues are sized.
 
 ---
 
@@ -88,9 +89,9 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 ---
 
-## M0a: Platform & Arena Foundations
+## M0a: Platform Hygiene
 
-> Issue-level drafts: [`../backlog/m0a-platform-arena-foundations.md`](../backlog/m0a-platform-arena-foundations.md)
+> Issue-level drafts: [`../backlog/m0a-platform-hygiene.md`](../backlog/m0a-platform-hygiene.md)
 
 **Epic: Org & Delivery Setup**
 - [ ] Move `pokesandbox` and `pokemon-showdown` (→ `pokesandbox-showdown`) to the org; update README links, CODEOWNERS, agents.md (S)
@@ -98,14 +99,24 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Create labels (incl. `agent-ready`), issue types, milestones, and project board per [`github-project-setup.md`](github-project-setup.md) (S)
 - [ ] Switch slash commands to global registration with per-server feature gating (M)
 
-**Epic: Engine Skeleton** (Q18)
+**Epic: Shared Library Foundations**
 - [ ] Structured logging port; debug events out of Mongo (S)
-- [ ] Scaffold `libs/engine` (pure TS, no discord.js) with repository and ContentProvider interfaces (M)
-- [ ] `dispatch(journeyId, action)` with per-journey lock, revisions, action preconditions, session claims, action/event types, and error model (L)
-- [ ] Injected `Clock` and seeded `Rng` (S)
-- [ ] In-memory test harness (M)
 - [ ] Scaffold `libs/core` (shared schemas, registries home) (S)
-- [ ] Scaffold `libs/battle` + `BattlePort`/`ExternalActionResolver` interfaces. Nx module-boundary tags + lint rule enforcing core/engine/battle/authoring layering (webapp must not import battle) (M)
+- [ ] Nx module-boundary tags + lint rule enforcing core/engine/battle/authoring layering (webapp must not import battle); each later library adds its tag (S)
+
+## M0c: Arena Foundations
+
+> Issue-level drafts: [`../backlog/m0c-arena-foundations.md`](../backlog/m0c-arena-foundations.md)
+
+**Epic: Battle Library Scaffold**
+- [ ] Scaffold `libs/battle` + `BattlePort`/`ExternalActionResolver` interfaces (S)
+- [ ] `Clock`, `Scheduler`, and seeded `Rng` ports in `libs/core` (S)
+
+**Epic: Showdown Fork Clean-up & Packaging** (Q20, decided)
+- [ ] Preserve the 10 custom moves on an archive branch. Remove them from `master` and restore the 3 commented-out upstream tests (S)
+- [ ] Rebase onto current upstream (fallback: fresh from upstream + re-apply kept changes as new commits) (M)
+- [ ] Remove debug code (`pause`/`resume`/`sendToJSON`) (S)
+- [ ] Publish as a versioned package consumed by the monorepo (then re-point the catalog imports M1-02/M1-03 at it and re-run). Set up the monthly upstream-sync PR. Rename after the org move (M)
 
 **Epic: Persistence & Data Basics**
 - [ ] docker-compose Mongo as a replica set (transactions) for local dev (S)
@@ -113,9 +124,14 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Indexes and unique constraints across models (S)
 - [ ] Reference species/items by Showdown ID. Rename DexEntry `showdownName` → `speciesId`. Fix the 3 broken Gen 2 shiny sprite links (M)
 
-## M0b: Content Foundations
+## M0b: Engine & Content Foundations
 
 > Issue-level drafts: [`../backlog/m0b-content-foundations.md`](../backlog/m0b-content-foundations.md)
+
+**Epic: Engine Skeleton** (Q18)
+- [ ] Scaffold `libs/engine` (pure TS, no discord.js) with repository and ContentProvider interfaces (M)
+- [ ] `dispatch(journeyId, action)` with per-journey lock, revisions, action preconditions, session claims, action/event types, and error model (L)
+- [ ] In-memory test harness (M)
 
 **Epic: Conditions & Effects** (Q17)
 - [ ] Condition tree (`all/any/not`) + fact/operator registry (evaluate/explain/validate/references) + scoped evaluation context (M)
@@ -138,14 +154,10 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 ## M1: Battle Core & Catalog
 
-**Epic: Showdown Fork Modernization** (Q20, decided)
-- [ ] Preserve the 10 custom moves on an archive branch. Remove them from `master` and restore the 3 commented-out upstream tests (S)
-- [ ] Rebase onto current upstream (fallback: fresh from upstream + re-apply kept patches as new commits) (M)
+**Epic: Showdown Fork Patches** (Q20; clean-up, rebase, and packaging are M0c)
 - [ ] Patch: generalized state injection (any side; HP/status/PP/fainted state; level/stats/move slots mid-battle for authentic level-ups), every injection recorded in the input log so recovery replays it, with sim tests (M)
 - [ ] Patch: external choice hook (bag/catch/run consume turn) + `caught`/`ran` end reasons (L)
 - [ ] Patch: isolated custom-data dexes (per content hash) for `Battle` + `TeamValidator`, evolved from `dynamic-dex-data` (L)
-- [ ] Remove debug code (`pause`/`resume`/`sendToJSON`) (S)
-- [ ] Publish as a versioned package consumed by the monorepo (then re-point the catalog imports M1-02/M1-03 at it and re-run). Set up the monthly upstream-sync PR. Rename to `pokesandbox-showdown` after the org move (M)
 
 **Epic: Catalog**
 - [ ] Canon catalog import from Showdown (pinned version): SpeciesDefinition, MoveDefinition (per-gen data via the resolved Dex, behavior `hooks`, text), Learnset (per-gen sources) into Mongo; re-runnable with diff on upgrades (L). Moves and learnsets drafted as E-M1-2 ([`m1-battle-core-and-catalog.md`](../backlog/m1-battle-core-and-catalog.md))

@@ -66,7 +66,6 @@ Check current pricing and plan terms before committing. Free-tier limits change,
 
 **Revised database path:** Atlas Free (MVP, your server, plus nightly dumps) → **Atlas Flex or DigitalOcean Managed MongoDB (~$15)** before opening to other servers → a 3-node replica / M10 only if growth demands it.
 
-
 **Decided path (Q30):**
 1. **MVP (your server only):** managed app host (~$5–15) + Atlas Free + nightly `mongodump` to free object storage. Roughly **$5–15/month total**, less if the family host works out.
 2. **Before opening to other servers:** move to **Atlas Flex or DigitalOcean Managed MongoDB** for managed daily backups (keep the nightly dump as a second copy). Roughly **$20–45/month total.**

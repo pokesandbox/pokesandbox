@@ -1,6 +1,6 @@
 # M1: Battle Core & Catalog (backlog draft, partial)
 
-Drafted so far: the **moves and learnsets catalog** epic (E-M1-2), which can start now and run in parallel with M0a. The rest of M1 (fork modernization, BattleService, items, rules, teams, AI) is drafted later; E-M1-1 is reserved for the fork modernization epic.
+Drafted so far: the **moves and learnsets catalog** epic (E-M1-2), which can start now and run in parallel with M0a. The rest of M1 (fork patches, BattleService, items, rules, teams, AI) is drafted later; E-M1-1 is reserved for the fork patches epic. Fork clean-up, rebase, and packaging moved to [M0c](m0c-arena-foundations.md).
 
 Refs: concept [12](../architecture/concepts/12-content-catalog-species-moves-items.md), [`mvp.md` § M1](../roadmap/mvp.md#m1-battle-core--catalog)
 
@@ -13,16 +13,7 @@ Import every canon move and learnset from a pinned Showdown version into the DB 
 
 **What you're building, in Pokémon terms.** PokeSandbox lets Discord servers build their own Pokémon regions (Kanto remakes, fan regions) and play them in Discord. Regions can follow any generation's rules piece by piece, so the app needs every canon move and every species' learnset **for every generation**: Gen 1 Bite is Normal-type with a 10% flinch, Gen 2+ Bite is Dark; Gen 1 Pikachu learns Thunderbolt by TM, and so on. This epic imports that data into our MongoDB so the rest of the app can read it. Then E-M3-1 lets each region define its own TM/HM case (Gen 1's TM24 is Thunderbolt; other generations number differently).
 
-**Where things live in this repo**
-| What | Where | Copy the pattern from |
-|---|---|---|
-| Models (Zod + Mongoose) | `shared/src/models/` (export new ones from `index.ts`) | `dexentry.model.ts`; `region/region.model.ts` for `zMapHydrator` (in `models/utils.ts`) |
-| DTOs (read shapes for the bot/webapp) | `shared/src/dtos/` | `region.dto.ts` |
-| Seed data and loader | `scripts/seed/data/*.json`, registered in `scripts/seed/collections.ts` (`collectionSeedMap`) | the `dexentries` entry |
-| Pokédex builder menus (for M1-04) | `apps/bot/src/interactions/guilds/<dev guild>/slashCommands/regionManagement/pokedex/` | `managePokedex.ts`, `pokedex.embeds.ts` |
-| Design decisions | `docs/architecture/concepts/12-content-catalog-species-moves-items.md` | sections "Moves" and "Learnsets" |
-
-Local setup: `npm run setup` (env file, Mongo in Docker, seed), then `npm run db:seed` after changing seed data. Tests run with Jest through Nx (e.g. `npx nx test shared`). One PR per issue; every PR is reviewed by the owner.
+**Repo layout, setup, and conventions** are in [`docs/start-here.md`](../start-here.md) (models in `shared/src/models/`, seed data in `scripts/seed/`, the Pokédex builder menus under `apps/bot/src/interactions/…/regionManagement/pokedex/` for M1-04). Design decisions for this epic: concept [12](../architecture/concepts/12-content-catalog-species-moves-items.md), sections "Moves" and "Learnsets".
 
 **Pokémon Showdown in five minutes**
 - Showdown is the open-source battle simulator behind play.pokemonshowdown.com. It has complete, maintained data for every generation, which is why we import from it. It also runs our battles later, but this epic only reads its data.
@@ -58,7 +49,7 @@ Local setup: `npm run setup` (env file, Mongo in Docker, seed), then `npm run db
 **Notes for whoever picks this up**
 - **Where models live for now:** `shared/src/models`, next to `DexEntry`. They move to `libs/core` when M0A-09 lands; keep them free of Discord and bot imports so the move is mechanical.
 - **Model conventions:** the Zod schema is the source of truth (`moveDefinitionSchema`), mirrored by the Mongoose schema (`moveDefinitionDbSchema`). Embedded sub-schemas are standalone `Schema` consts with `{ _id: false }`. Map fields are parsed with `zMapHydrator`.
-- **Which Showdown:** until the fork is published as a package (fork modernization epic), import from the upstream `pokemon-showdown` npm package at an exact pinned version, as a dev dependency of the import script. Each import writes one `CatalogVersion` (M1-01) and stamps its ID on every record.
+- **Which Showdown:** until the fork is published as a package (M0C-06), import from the upstream `pokemon-showdown` npm package at an exact pinned version, as a dev dependency of the import script. Each import writes one `CatalogVersion` (M1-01) and stamps its ID on every record.
 - **IDs:** moves and species are keyed by Showdown IDs (`toID`), never ObjectIds. Species use the same string `DexEntry.showdownName` holds today; M0A-19 renames that field to `speciesId`.
 
 **Changes once foundations land.** This epic starts before the foundations it will eventually sit on, so some issues get small follow-ups. Each one is also listed on the foundation issue that triggers it, so it isn't lost:
@@ -66,7 +57,7 @@ Local setup: `npm run setup` (env file, Mongo in Docker, seed), then `npm run db
 | When this lands | Follow-up | Affects |
 |---|---|---|
 | `libs/core` (M0A-09) + module boundaries (M0A-10) | Move the catalog models and helpers from `shared/` into `libs/core`. Mechanical if they stay free of Discord/bot imports. | M1-01, M1-03 (and M3-01) |
-| The fork is published as a package (M1 fork modernization) | Point the import scripts at the fork package instead of upstream `pokemon-showdown`, re-run, and review the diff. | M1-02, M1-03 |
+| The fork is published as a package (M0C-06) | Point the import scripts at the fork package instead of upstream `pokemon-showdown`, re-run, and review the diff. | M1-02, M1-03 |
 | The `speciesId` rename (M0A-19) | Learnsets already use `speciesId`; the orphan test switches from `DexEntry.showdownName` to `DexEntry.speciesId`. | M1-03 |
 | `RegionRules` (M1) | Replace the "default Gen 1" generation choice with the region's `rules.data.moves` / `rules.data.learnsets`. | M1-04 |
 | Pokédex builder on authoring commands (M0B-17) | The move views stay read-only (no authoring commands needed), but they live in the same menus M0B-17 restructures. Whichever lands second rebases onto the other. | M1-04 |

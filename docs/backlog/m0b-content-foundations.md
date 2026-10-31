@@ -1,6 +1,6 @@
-# M0b: Content Foundations (backlog draft)
+# M0b: Engine & Content Foundations (backlog draft)
 
-**Outcome:** the content-side primitives exist and are tested: conditions, gates, effects, content keys, the authoring layer, and draft → published region releases. The existing admin menus run on the authoring layer. This milestone blocks M3 (Region Authoring) → M4 → M5 → M6, and runs in parallel with the battle track (M1 → M2).
+**Outcome:** the adventure engine skeleton (`libs/engine`, `dispatch`, the test harness) and the content-side primitives exist and are tested: conditions, gates, effects, content keys, the authoring layer, and draft → published region releases. The existing admin menus run on the authoring layer. This milestone blocks M3 (Region Authoring) → M4 → M5 → M6, and runs in parallel with the battle track (M1 → M2).
 
 **Out of scope here (deliberately):**
 - `givePokemon` and `heal` effects (need `PokemonInstance`, M5).
@@ -9,7 +9,17 @@
 
 Refs: [`mvp.md`](../roadmap/mvp.md) · concepts [01](../architecture/concepts/01-content-vs-state-and-publishing.md), [02](../architecture/concepts/02-identity-and-references.md), [04](../architecture/concepts/04-progression-and-flags.md), [05](../architecture/concepts/05-requirements.md), [06](../architecture/concepts/06-effects.md), [16](../architecture/concepts/16-authoring-validation-and-portability.md)
 
-Depends on M0a: `libs/core` (M0A-09), boundaries (M0A-10), the engine skeleton (M0A-11/19), the test harness (M0A-14), and the local replica set (M0A-16).
+Depends on: `libs/core` and boundaries (M0A-09, M0A-10), the local replica set (M0A-16), the species ID rename (M0A-19, for the Pokédex builder migration), and from [M0c](m0c-arena-foundations.md) the `BattlePort` types (M0C-01) and `Clock`/`Rng` ports (M0C-02). The engine skeleton itself is E-M0B-5 below (moved here from M0a, Oct 2026).
+
+---
+
+## Start here
+New to the project? Read [`docs/start-here.md`](../start-here.md) first. Context specific to this file:
+- **What M0b is:** the foundations of *adventure play* and *region building*, the part that comes after the Arena. The engine is where game rules live (actions in, events out); conditions, gates, and effects are how every region gates and rewards things; the authoring layer is how admins edit regions; releases are how edits go live.
+- **Read before starting:** concepts [03](../architecture/concepts/03-engine-boundary-and-game-loop.md) (engine boundary), [05](../architecture/concepts/05-requirements.md) (conditions), [06](../architecture/concepts/06-effects.md) (effects), [01](../architecture/concepts/01-content-vs-state-and-publishing.md) (releases), and [16](../architecture/concepts/16-authoring-validation-and-portability.md) (authoring).
+- **Where code goes:** `libs/engine`, `libs/core`, and `libs/authoring` (new Nx libraries), plus `shared/src/models` for model changes. Admin menus live under `apps/bot/src/interactions/…/regionManagement/`.
+- **Order:** the engine skeleton (E-M0B-5) and conditions (E-M0B-1) start first; effects need `dispatch` (M0B-24); the authoring layer (E-M0B-4) can run in parallel once `libs/core` exists.
+- **Not needed for the Arena.** None of this blocks M0c, M1, or M2.
 
 ---
 
@@ -91,7 +101,7 @@ One gating primitive for everything: a condition tree of fact + operator + value
 Typed, declarative state changes, applied atomically and idempotently, which emit renderable events.
 
 ### M0B-07 · Effect registry and atomic executor
-`Type: Task` · `Parent: E-M0B-2` · `Priority: P0` · `Size: L` · `Labels: area:engine, domain:conditions-effects` · `Blocked by: M0A-12` · `agent-ready: no` · `Owner: senior`
+`Type: Task` · `Parent: E-M0B-2` · `Priority: P0` · `Size: L` · `Labels: area:engine, domain:conditions-effects` · `Blocked by: M0B-24` · `agent-ready: no` · `Owner: senior`
 
 **Acceptance criteria**
 - An `Effect` discriminated union plus `registerEffect(type, { schema, apply(draft, params, ctx), validate, references })`.
@@ -257,3 +267,53 @@ All admin edits flow through `libs/authoring`, and players only ever play immuta
 - Exposed via an authoring query (for a later Region Health view).
 
 **Refs:** [16](../architecture/concepts/16-authoring-validation-and-portability.md)
+
+---
+
+## E-M0B-5 · Engine Skeleton
+`Type: Epic` · `Priority: P0`
+
+The adventure engine package: constructed from injected ports, one `dispatch` write path with all its checks, and an in-memory harness so engine rules are tested without Discord or Mongo. Moved here from M0a (Oct 2026) because the Arena doesn't use it ([25](../architecture/concepts/25-arena.md)).
+
+### M0B-23 · Scaffold `libs/engine` with ports and base action/event types
+`Type: Task` · `Parent: E-M0B-5` · `Priority: P0` · `Size: M` · `Labels: area:engine` · `Blocked by: M0A-09, M0C-01, M0C-02` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** The engine package constructed entirely from injected ports: repositories, `ContentProvider`, `BattlePort` (defined in M0C-01), `Clock` and `Rng` (M0C-02), `EventSink`, logger.
+
+**Acceptance criteria**
+- `createEngine(ports): Engine`, with no module-level singletons.
+- Port interfaces are defined with serializable inputs and outputs.
+- `GameAction` and `GameEvent` base discriminated unions (an extensible pattern; a no-op `ping` action for tests).
+- The journey `mode` type (`overworld` | `script` | `battle`, with `participants[]`).
+- A README explaining how apps wire the engine.
+- Adds `scope:engine` to the module-boundary rules (M0A-10).
+
+**Refs:** [03](../architecture/concepts/03-engine-boundary-and-game-loop.md)
+
+### M0B-24 · `dispatch()` with a per-journey DB lease, revisions, preconditions, and session claims
+`Type: Task` · `Parent: E-M0B-5` · `Priority: P0` · `Size: L` · `Labels: area:engine` · `Blocked by: M0B-23, M0A-16` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** The engine's write path, with all four checks from [03 § Per-journey serialization](../architecture/concepts/03-engine-boundary-and-game-loop.md#per-journey-serialization-revisions-preconditions-and-sessions-decided-oct-2026). Consider splitting the session claim into its own PR.
+
+**Acceptance criteria**
+- `dispatch(journeyId, action)` acquires a short lease (`locks` collection with a TTL index, via a `LockPort`), runs the handler, and releases.
+- Lease contention waits up to ~1s, then returns `actionRejected: busy`.
+- **Revisions:** `Journey.rev` increments once per action that writes any of the journey's game data (Journey, PokemonInstances, bag, flags), in the same transaction. Actions declare whether they're view-dependent. A view-dependent action with a stale `rev` is not applied and returns a `staleView` result so the client re-renders.
+- **Preconditions:** each action declares its allowed modes. A precondition hook evaluates rules and content requirements (the first user is box access: `RegionRules.systems.storage.access` + location `services`). `availableActions(journey)` returns each action's availability with an explanation.
+- **Session claim:** `claimSession(journeyId, client)` sets `Journey.activeSession` under the lease (newest wins). Session-bound actions with a non-active session ID are rejected as `sessionSuperseded`. Game-driven events and non-session clients are exempt.
+- An optimistic-concurrency conflict retries once, only for actions without a `rev`.
+- An action-cost step exists (always returns 0; reserved for pacing).
+- An idempotency hook: an `actionId` is recorded and replays are ignored.
+- A typed error model (`actionRejected` with an explanation vs internal errors).
+- Tests: double dispatch (second press is stale, applied once), conflict retry (only for actions without a `rev`), lease expiry, a precondition rejection with its explanation, and a session takeover rejecting the old session.
+
+**Refs:** [03 § Per-journey serialization](../architecture/concepts/03-engine-boundary-and-game-loop.md), [15](../architecture/concepts/15-persistence-concurrency-and-runtime.md)
+
+### M0B-25 · In-memory test harness
+`Type: Task` · `Parent: E-M0B-5` · `Priority: P1` · `Size: M` · `Labels: area:engine` · `Blocked by: M0B-23` · `agent-ready: yes` · `Owner: agent`
+
+**Acceptance criteria**
+- In-memory implementations of every engine port, plus a `createTestEngine({ fixtures })` helper.
+- Fixture builders for a tiny region (2–3 locations) and a journey.
+- An example test dispatches an action and asserts on the emitted events.
+
