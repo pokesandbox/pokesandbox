@@ -147,7 +147,7 @@ MoveData = {
 **Acceptance criteria**
 - `Learnset { speciesId; moves: Record<MoveId, string[]>; catalogVersion }` with the model conventions above; unique index on `speciesId`.
 - Imported through the Showdown API per generation, like M1-02 (`Dex.mod('genN').species.getLearnsetData(id)`; the API already merges old-generation learnset data, so no raw files are read). Forms without their own learnset get their base species' (see the gotchas in Start here). Deterministic output to `scripts/seed/data/learnsets.json`, registered in `scripts/seed/collections.ts`.
-- `resolveLearnset(learnset, gen) → ResolvedLearnset` (`levelUp` sorted by level, `machine`, `tutor`, `egg`, `event`), the shape every consumer uses ([12 § Learnsets](../architecture/concepts/12-content-catalog-species-moves-items.md#learnsets--generation-decided-oct-2026)). Nothing outside the catalog reads raw source codes. Override patches are post-MVP, but the resolved shape is what they'll patch.
+- `resolveLearnset(learnset, gen) → ResolvedLearnset` (`levelUp` sorted by level, `machine`, `tutor`, `egg`, `event`), the shape every consumer uses ([12 § Learnsets](../architecture/concepts/12-content-catalog-species-moves-items.md#learnsets--generation-decided-oct-2026)). Nothing outside the catalog reads raw source codes. Override patches are post-MVP, but the resolved shape is what they'll patch ([27 § Learnsets](../architecture/concepts/27-server-content-library-and-overrides.md#learnsets)).
 - Every species ID matches an existing `DexEntry` (a test fails on orphans). Coordinate with M0A-19 if it lands at the same time.
 - Tests (verify each against the source): Pikachu's Gen 1 resolved learnset has Thunderbolt in `machine`; Bulbasaur's Gen 1 `levelUp` includes Vine Whip; a move that only exists from Gen 2 never appears in Gen 1 results.
 
@@ -164,7 +164,7 @@ MoveData = {
 - From a Pokédex entry in the builder: a paginated move list for a chosen generation (default: Gen 1 until regions have rules), grouped by method (level-up with levels, TM/HM, other).
 - Reads the species' `ResolvedLearnset` for the chosen generation.
 - Selecting a move shows its details for that generation: type, category, power, accuracy, PP, priority, and the short description (the generation's text block when there is one).
-- Reads through a small catalog read service in `shared/`, not direct queries from the menu: `getMove(moveId, { gen, region? })` and `getLearnset(speciesId, { gen, region? })`. `region` is accepted but unused in the MVP, so publisher overrides can plug into these functions later without touching callers.
+- Reads through a small catalog read service in `shared/`, not direct queries from the menu: `getMove(moveId, { gen, region? })` and `getLearnset(speciesId, { gen, region? })`. `region` is accepted but unused in the MVP, so publisher overrides can plug into these functions later without touching callers ([27 § Keeping it additive](../architecture/concepts/27-server-content-library-and-overrides.md#keeping-it-additive-mvp)).
 - Locked or unavailable options follow [26 § Menus and feedback](../architecture/concepts/26-discord-surface-and-ux-patterns.md#menus-and-feedback).
 
 **Changes later:** the generation comes from `RegionRules` once it exists; rebase alongside M0B-17's Pokédex builder migration.
