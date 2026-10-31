@@ -196,7 +196,7 @@ Region-scoped content keys, one-directional references, and the progression/flag
 
 All admin edits flow through `libs/authoring`, and players only ever play immutable published releases.
 
-**Discord builders and the webapp (Q36).** MVP authoring is webapp-first and mobile-first ([28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). The existing Discord builders (Pokédex, progressions, locations) are migrated here onto authoring commands, so both clients share the rules. They **stay visible and working** until the webapp has parity with each one; retiring any of them is a separate change made only after parity.
+**Discord builders and the webapp (Q36).** MVP authoring is webapp-first and mobile-first ([28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). The existing Discord builders (Pokédex, progressions, locations) are migrated here onto authoring commands, so both clients share the rules. They stay in the code and working until the webapp has parity with each one, and stay **hidden in production** behind the `discord.authoring` flag (M0A-21, on in dev) until they're ready for a full release. Removing one for good is a separate change made only after parity.
 
 ### M0B-16 · Scaffold `libs/authoring`
 `Type: Task` · `Parent: E-M0B-4` · `Priority: P0` · `Size: M` · `Labels: area:authoring` · `Blocked by: M0A-09, M0A-10` · `agent-ready: no` · `Owner: senior`
@@ -216,7 +216,7 @@ All admin edits flow through `libs/authoring`, and players only ever play immuta
 
 **Acceptance criteria**
 - Pokédex menu actions (add slot, edit, swap, forms) call `authoring.execute`. No direct model writes in handlers.
-- Behavior unchanged (manual test checklist in the PR). The builder stays visible in `/region` (Q36).
+- Behavior unchanged (manual test checklist in the PR). The builder stays available in `/region` behind the `discord.authoring` flag (Q36).
 - **Follow-up:** if the read-only move views (M1-04) already exist in these menus, keep them working (they need no authoring commands).
 
 ### M0B-18 · Migrate the progression builder to authoring commands
@@ -224,7 +224,7 @@ All admin edits flow through `libs/authoring`, and players only ever play immuta
 
 **Acceptance criteria**
 - Progression and milestone create/edit/delete/reorder go through authoring commands.
-- Behavior unchanged. Deletes show "used by" once M0B-15 lands. The builder stays visible in `/region` (Q36).
+- Behavior unchanged. Deletes show "used by" once M0B-15 lands. The builder stays available in `/region` behind the `discord.authoring` flag (Q36).
 
 ### M0B-19 · Migrate the location builder to authoring commands
 `Type: Task` · `Parent: E-M0B-4` · `Priority: P1` · `Size: M` · `Labels: area:bot, area:authoring` · `Blocked by: M0B-16, M0B-10` · `agent-ready: yes` · `Owner: junior`
@@ -232,7 +232,7 @@ All admin edits flow through `libs/authoring`, and players only ever play immuta
 **Acceptance criteria**
 - Location create, rename, and delete go through authoring commands, using content keys.
 - The "coming soon" buttons stay as they are. Connections etc. are built in the webapp in M3, and these buttons become Open in builder links then (Q36).
-- The builder stays visible in `/region` (Q36).
+- The builder stays available in `/region` behind the `discord.authoring` flag (Q36).
 
 ### M0B-20 · Deployment and discovery settings models
 `Type: Task` · `Parent: E-M0B-4` · `Priority: P0` · `Size: M` · `Labels: area:shared-models` · `Blocked by: M0B-16` · `agent-ready: yes` · `Owner: agent`

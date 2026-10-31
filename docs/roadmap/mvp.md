@@ -97,7 +97,8 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Move `pokesandbox` and `pokemon-showdown` (→ `pokesandbox-showdown`) to the org; update README links, CODEOWNERS, agents.md (S)
 - [ ] CI: lint + typecheck + unit tests on PR (M)
 - [ ] Create labels (incl. `agent-ready`), issue types, milestones, and project board per [`github-project-setup.md`](github-project-setup.md) (S)
-- [ ] Switch slash commands to global registration with per-server feature gating (M)
+- [ ] Feature flag registry: env override (`FEATURE_FLAGS=*` in dev), per-server override, per-environment defaults; `discord.authoring` off in prod (M0A-21) (S)
+- [ ] Switch slash commands to global registration; flag-off commands only as guild commands on override servers (M0A-07) (M)
 
 **Epic: Shared Library Foundations**
 - [ ] Structured logging port; debug events out of Mongo (S)
@@ -149,7 +150,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 **Epic: Authoring Layer & Releases** (Q15, Q18)
 - [ ] Scaffold `libs/authoring` (`execute(actor, command)`, per-entity OCC, role checks, `ContentChange` + `suggestions` output) (M)
-- [ ] Migrate existing admin menus (pokedex, progression, locations) onto `libs/authoring` commands; they stay visible and working in Discord until the webapp has parity with them (Q36) (M)
+- [ ] Migrate existing admin menus (pokedex, progression, locations) onto `libs/authoring` commands; they keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (Q36) (M)
 - [ ] `RegionRelease` model + publish/compile + `ContentProvider` + deployment status (draft/live/paused) separate from discovery (L)
 
 ## M1: Battle Core & Catalog
@@ -210,7 +211,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Release notes + admin/player docs (S)
 
 ## M3: Region Authoring
-> **Authoring is webapp-first and mobile-first (decided Oct 2026, Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).** Each builder item below is a webapp screen on `libs/authoring` commands. Discord keeps Region Health, publishing, and Open in builder links; the existing Pokédex, progression, and location builders stay visible and working until the webapp has parity with them.
+> **Authoring is webapp-first and mobile-first (decided Oct 2026, Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).** Each builder item below is a webapp screen on `libs/authoring` commands. Discord keeps Region Health, publishing, and Open in builder links; the existing Pokédex, progression, and location builders keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (on in dev).
 
 - [ ] Region config screen: currency object, starting location, respawn, rules preset (M)
 - [ ] Location kinds, grouping (`parentKey`), description/image with conditioned `descriptionVariants`, services, tags (M)

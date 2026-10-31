@@ -102,14 +102,30 @@ Move the repos to the org, get CI gating every PR, and give contributors and age
 **Refs:** [github-project-setup § Team & workflow](../roadmap/github-project-setup.md#team--workflow-decided-oct-2026-q29)
 
 ### M0A-07 · Global slash command registration with per-server feature gating
-`Type: Task` · `Parent: E-M0A-1` · `Priority: P1` · `Size: M` · `Labels: area:bot` · `Blocked by: —` · `agent-ready: no` · `Owner: junior`
+`Type: Task` · `Parent: E-M0A-1` · `Priority: P1` · `Size: M` · `Labels: area:bot` · `Blocked by: M0A-21` · `agent-ready: no` · `Owner: junior`
 
 **Summary:** Replace dev-guild-only registration (`interactions/guilds/1010726453974925402`) with global registration, plus a dev-guild override for local development.
 
 **Acceptance criteria**
 - Production registers commands globally. Dev mode registers to a configured test guild (env var).
-- Commands not yet released can be hidden behind a per-server feature flag (`Server.settings.features`).
-- Existing admin commands keep working. The old guild-folder structure is removed or documented as dev-only.
+- Each command declares an optional feature flag (M0A-21). Commands whose flag is on by default register globally; flag-off commands register as guild commands only on servers with an override (and to the dev test guild). The interaction handler checks the flag before running a command.
+- The existing admin commands (`/region` and its builders) are tagged `discord.authoring`, so they're hidden in production and visible in dev (Q36).
+- Fix while here: in `structures/managers/slashCommands.ts`, an ignored global command `return`s out of the whole manager (it should `continue`), and the commented-out global `rest.put` sends the command objects instead of the collected JSON bodies.
+- Existing admin commands keep working in dev. The old guild-folder structure is removed or documented as dev-only.
+
+### M0A-21 · Feature flag registry
+`Type: Task` · `Parent: E-M0A-1` · `Priority: P1` · `Size: S` · `Labels: area:shared-models, area:bot, area:webapp` · `Blocked by: —` · `agent-ready: yes` · `Owner: agent`
+
+**Summary:** A free, in-repo way to keep unreleased features off in production and on in dev ([21 § Feature flags](../architecture/concepts/21-hosting-and-environments.md#feature-flags-decided-oct-2026)). No hosted service.
+
+**Acceptance criteria**
+- `defineFlag(key, { description, defaults: { dev, staging, prod } })` and `isEnabled(key, { env, guildId? })`, with flag keys as a typed union so an unknown key is a compile error. Lives in `shared/` for now and moves to `libs/core` with M0A-09.
+- Resolution order: `FEATURE_FLAGS` env var (`*` for all, `a,b` to enable, `-a` to disable), then `Server.settings.features[key]`, then the environment's default. Unit tests for each step.
+- `.env.example` sets `FEATURE_FLAGS=*` for dev, so every command is visible locally.
+- The first flag is `discord.authoring` (`dev: true, staging: true, prod: false`).
+- A short section in the contributor docs: how to add a flag, and that a flag is removed when its feature is fully released.
+
+**Refs:** [21 § Feature flags](../architecture/concepts/21-hosting-and-environments.md#feature-flags-decided-oct-2026), [28 § Transition](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#transition-the-existing-discord-builders)
 
 ---
 

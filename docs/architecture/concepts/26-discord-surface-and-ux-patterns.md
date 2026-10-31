@@ -7,7 +7,7 @@
 ## Principles
 - **Rules emit, renderers draw.** The engine and BattleService return events ([03](03-engine-boundary-and-game-loop.md)); renderers turn them into Components v2 messages. No game logic lives in a menu handler.
 - **Pure view builders.** Renderers are functions from a view model to Components v2 JSON, with no I/O, so they can be snapshot-tested and reused by FlowCord menus, plain handlers, and the webapp builder's Discord previews ([28](28-webapp-authoring-and-mobile-first-ux.md#mobile-first-rules)).
-- **Discord-complete play.** Every player action works from Discord; the webapp adds richer screens (profiles, logs) but is never needed to play. **Authoring is webapp-first** (Q36): Discord keeps Region Health, publishing, Open in builder links, and the existing builders until the webapp reaches parity ([28](28-webapp-authoring-and-mobile-first-ux.md)).
+- **Discord-complete play.** Every player action works from Discord; the webapp adds richer screens (profiles, logs) but is never needed to play. **Authoring is webapp-first** (Q36): Discord keeps Region Health, publishing, Open in builder links, and the existing builders (flag-gated: on in dev, hidden in production until released) until the webapp reaches parity ([28](28-webapp-authoring-and-mobile-first-ux.md)).
 - **Components v2** for dense layouts: containers, sections with thumbnails, media galleries. FlowCord supports them.
 
 ## Where adventure play is shown (decided Oct 2026, Q2)
@@ -24,7 +24,7 @@
 ## Commands
 - **One `/play` hub** per region with contextual buttons (Travel, Explore, Talk, Shop, Party, Bag, Map) instead of dozens of slash commands. `/play` is the only player command in the MVP. Shortcuts (`/bag`, `/party`) come later as deep links into the matching `/play` screen, and they claim the play session like `/play` does ([03](03-engine-boundary-and-game-loop.md)).
 - **`/arena`** is the Arena hub ([25](25-arena.md)).
-- **Global commands.** Register commands globally and gate features by per-server config, instead of the current per-guild folder registration.
+- **Global commands.** Register released commands globally, instead of the current per-guild folder registration. Unreleased commands (the Discord authoring commands first) sit behind feature flags: on in dev, off in production except on servers with an override ([21 § Feature flags](21-hosting-and-environments.md#feature-flags-decided-oct-2026)).
 
 ## Menus and feedback
 - **Locked options always explain themselves.** An option shown as locked (gate presentation `locked`, [05](05-requirements.md)) stays in the list with a 🔒 marker, and its explanation is always reachable: shown inline (the option's description or text under the list), or the option stays pressable and replies with it. A disabled Discord button can't be pressed, so on its own it gives the player no way to learn why. The engine's `availableActions(journey)` provides the explanation ([03](03-engine-boundary-and-game-loop.md)).
@@ -70,7 +70,7 @@ Script text is authored as **passages**: prose, dialogue lines, and images inter
 - **Caveat: 15-minute ephemeral edits.** FlowCord's `DiscordAdapter` edits ephemeral messages through the **entry** interaction's token, so an ephemeral session likely can't re-render 15 minutes after its slash command. This comes from reading the code and hasn't been reproduced. It affects long `/play` sessions (ephemeral is the Q2 default) more than the Arena. Filed as [flowcord#107](https://github.com/flowcord-dev/flowcord/issues/107) (`bug: unconfirmed`, milestone alpha.3). Until it's fixed, `/play` must handle an expired token by asking the player to press `/play` again, which resumes exactly where they were.
 
 ## Authoring screens
-Authoring is webapp-first (Q36). The webapp builder's UX rules are in [28](28-webapp-authoring-and-mobile-first-ux.md); builder behavior (Region Health, "used by" before deletes, templates over raw editors) is in [16](16-authoring-validation-and-portability.md). In Discord, `/region` keeps Region Health, publishing, Open in builder links, and the existing Pokédex, progression, and location builders until the webapp has parity.
+Authoring is webapp-first (Q36). The webapp builder's UX rules are in [28](28-webapp-authoring-and-mobile-first-ux.md); builder behavior (Region Health, "used by" before deletes, templates over raw editors) is in [16](16-authoring-validation-and-portability.md). In Discord, `/region` keeps Region Health, publishing, Open in builder links, and the existing Pokédex, progression, and location builders until the webapp has parity, behind the `discord.authoring` feature flag (hidden in production until released).
 
 ## MVP scope
 - Ephemeral `/play` hub and its renderers; locked-option explanations; grouped, paginated lists with costs.

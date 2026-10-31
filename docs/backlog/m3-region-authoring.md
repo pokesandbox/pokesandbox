@@ -92,7 +92,7 @@ MVP authoring is webapp-first and mobile-first (Q36, [28](../architecture/concep
 **Summary:** antd is used in seven files (`HeaderPrivate`, `HeaderPublic`, `SearchBar`, `ServerCard`, `ProfilePage`, `DiscordIcon`, `ThemeProvider`) alongside Tailwind. Replace it with Tailwind plus a headless component library, so every builder screen can be built mobile-first with one styling system ([28 § UI stack](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#ui-stack-off-antd-onto-tailwind-plus-a-headless-library)).
 
 **Acceptance criteria**
-- **Spike first (time-boxed to a day), written up in the PR:** build a dialog, a species search combobox, and a sortable list with **shadcn/ui (Radix)**, the recommended choice, and with **React Aria**; compare touch behavior on a phone, accessibility, bundle size, and React 19 / Next 16 support. The owner confirms the choice before the migration.
+- **Spike first (time-boxed to a day), written up in the PR:** with shadcn/ui on **React Aria** (recommended) and on **Base UI** (fallback), build a dialog/bottom sheet, a species search combobox over 1,000+ species, and a drag-to-reorder list; compare touch behavior on a real phone, screen-reader behavior, bundle size, and React 19 / Next 16 support. The owner confirms the base before the migration.
 - Every antd usage replaced; `antd` and `@ant-design/*` removed from `package.json`; the dark/light theme handled with Tailwind (CSS variables) instead of antd's `ConfigProvider`.
 - Tailwind upgraded to v4 if the chosen library's current components expect it.
 - The existing pages look and behave the same on desktop and work at phone width (a Playwright screenshot at 390×844 and at desktop for each page, attached to the PR).

@@ -1,6 +1,6 @@
 # 28: Webapp Authoring & Mobile-first UX
 
-> **TL;DR:** MVP region authoring happens in the **webapp**, designed **mobile-first**, because most server admins are on their phones and Discord's components are too cramped for scripts, maps, and grids (Q36). Discord stays the place to **play**, and keeps entry points for authors (Region Health, publish, "Open in builder" links). Both clients call the same `libs/authoring` commands, so rules are never duplicated. The **existing Discord builders** (Pokédex, progressions, locations) stay visible and working until the webapp covers everything they do. The webapp moves **off antd** to Tailwind plus a headless component library.
+> **TL;DR:** MVP region authoring happens in the **webapp**, designed **mobile-first**, because most server admins are on their phones and Discord's components are too cramped for scripts, maps, and grids (Q36). Discord stays the place to **play**, and keeps entry points for authors (Region Health, publish, "Open in builder" links). Both clients call the same `libs/authoring` commands, so rules are never duplicated. The **existing Discord builders** (Pokédex, progressions, locations) stay in the code and working until the webapp covers everything they do, but the Discord authoring commands are **hidden in production behind a feature flag** until they're ready for a full release (on in dev). The webapp moves **off antd** to Tailwind plus a headless component library.
 
 **MVP impact:** High (every MVP builder feature) · **Cost to change later:** Medium (the commands are shared, so a client can be added later; the UI work is what's at stake)
 
@@ -22,13 +22,14 @@ The earlier plan was Discord-complete authoring with targeted webapp editors for
 |---|---|
 | **Webapp builder** | Every new MVP builder feature: region settings and rules, locations and connections (list/detail, plus the map canvas on wide screens), encounters, NPCs and placements, trainers and parties, scripts and templates, shops, transport, TM/HM lists, progressions, the shared condition builder, Region Health, the publish review, JSON import/export. |
 | **Discord (`/region`)** | Region Health summary, publish (review then confirm, [16](16-authoring-validation-and-portability.md#open-questions)), "Play draft as test journey" (later), and **Open in builder** link buttons that deep-link into the webapp. |
-| **Existing Discord builders** | Pokédex, progressions, and locations keep working, migrated onto `libs/authoring` commands (M0B-17..19). See [Transition](#transition-the-existing-discord-builders). |
+| **Existing Discord builders** | Pokédex, progressions, and locations keep working, migrated onto `libs/authoring` commands (M0B-17..19), behind the `discord.authoring` flag (on in dev, off in production). See [Transition](#transition-the-existing-discord-builders). |
 | **Discord authoring for new features** | Post-MVP, per feature, where it's worth it (a Discord step-list editor for small script edits, quick encounter tweaks). Large graphs may never get a Discord editor. |
 
 ## Transition: the existing Discord builders
-- The Pokédex, progression, and location builders **stay visible and usable** until the webapp reaches parity with each one: everything the Discord builder can do, the webapp can do too. They are **not hidden before that**.
+- The Pokédex, progression, and location builders **stay in the code and keep working** until the webapp reaches parity with each one: everything the Discord builder can do, the webapp can do too. They aren't removed before that, and bugs in them are still fixed.
+- **They're hidden in production until they're ready for a full release.** The Discord authoring commands sit behind the `discord.authoring` feature flag ([21 § Feature flags](21-hosting-and-environments.md#feature-flags-decided-oct-2026)): on in dev (`FEATURE_FLAGS=*`), off in production except on servers with an override (e.g. the HQ server). Releasing them is turning the flag on; nothing has to be rebuilt.
 - They move onto `libs/authoring` commands as planned (M0B-17, M0B-18, M0B-19), so both clients share rules and edits made in either are visible in the other.
-- Once the webapp has parity for a builder, retiring that Discord builder (hiding it from `/region`) is a separate, per-builder change, made after parity is checked against the builder's feature list. Until then, bugs in the Discord builders are still fixed.
+- Removing a Discord builder for good is a separate, per-builder decision, made only after webapp parity is checked against that builder's feature list.
 
 ## Mobile-first rules
 Every builder screen is designed for a phone first and enhanced for wider screens.
@@ -50,7 +51,8 @@ Every builder screen is designed for a phone first and enhanced for wider screen
 The webapp uses antd 6 in a handful of files (headers, the search bar, server cards, the profile page, the theme provider) alongside Tailwind. It moves fully to **Tailwind plus a headless component library**.
 
 - **What "headless" means:** a library that provides component **behavior** without any styling: focus management, keyboard navigation, ARIA attributes for screen readers, positioning for popovers and menus, dismiss-on-outside-tap, and scroll locking for dialogs. You write all the markup classes yourself in Tailwind. Examples: Radix UI, React Aria, Headless UI, Ark UI. A styled library like antd ships its own look, which is hard to make mobile-first and fights Tailwind.
-- **Choice: shadcn/ui on Radix primitives** (recommended; confirm in the migration issue's spike). shadcn/ui isn't a dependency: it copies small Tailwind-styled components built on Radix into our repo, so we own the code and can adapt it for touch. React Aria is the strongest alternative (excellent touch and accessibility handling, more verbose); the spike compares the two on a dialog, a combobox (species search), and a sortable list.
+- **shadcn/ui is a layer, not the behavior library.** It copies small Tailwind-styled components into our repo, so we own the code. Since 2026 it can sit on one of three headless bases: **Base UI** (its default for new projects), **Radix** (still supported, maintained more slowly than it once was), or **React Aria** (a first-class base since July 2026). So the decision is "shadcn/ui, on which base".
+- **Recommendation (pending the owner's decision): shadcn/ui on React Aria**, with Base UI as the fallback. Our builder is phone-first and list-heavy, and React Aria is strongest exactly there: press handling that behaves the same for touch, mouse, and keyboard; built-in drag-to-reorder for lists and grids with accessible non-drag alternatives (Base UI and Radix need a separate drag library such as dnd-kit); a combobox with async loading and virtualization for 1,000+ species; and color and date pickers for later (region themes). Its costs: a more verbose API and a larger bundle, which only the webapp pays. Radix isn't recommended for new work. The M3-05 spike checks this on a real phone before the migration.
 - **Migration:** replace the antd usages, remove antd and `@ant-design/*`, and add the chosen primitives. The current Tailwind is 3.4; upgrading to Tailwind 4 is part of the migration if the chosen library's current templates expect it.
 - **Shared builder components** (built once, used by every editor): a list/detail shell, a species/move/item search combobox, a sortable list, the condition builder, a passage editor with preview, and a confirm dialog.
 
@@ -62,4 +64,4 @@ The webapp uses antd 6 in a handful of files (headers, the search bar, server ca
 - Not MVP: Discord editors for new authoring features, retiring the existing Discord builders (only after parity), a native app.
 
 ## Open questions
-- Headless library: shadcn/ui (Radix) as recommended, or React Aria? Settled by the migration spike.
+- Headless base under shadcn/ui: React Aria (recommended) or Base UI? The owner decides; the M3-05 spike checks it on a phone.

@@ -129,5 +129,25 @@ Keeping the **database managed (Atlas)** removes the hardest self-hosting parts 
 
 Start with dev + prod, and add staging before the Arena goes public (decided, Q30).
 
+## Feature flags (decided Oct 2026)
+Unreleased features (the Discord authoring commands first of all) stay in the code and keep working, but are **off in production and on in dev**. One free, in-repo flag system covers this; no hosted flag service.
+
+```ts
+// libs/core/flags: the only list of flags (typed keys, so a typo is a compile error)
+defineFlag('discord.authoring', {
+  description: 'Discord authoring commands (/region builders)',
+  defaults: { dev: true, staging: true, prod: false },
+});
+isEnabled(flag, { env, guildId? }) → boolean
+```
+
+- **Resolution order:** an env override, then a per-server override, then the environment's default.
+  - **Env override:** `FEATURE_FLAGS=*` turns everything on (the dev `.env` default, so a developer sees every command); `FEATURE_FLAGS=discord.authoring,-arena.pvai` turns individual flags on or off.
+  - **Per-server override:** `Server.settings.features: Record<FlagKey, boolean>`, for alpha servers (e.g. the PokeSandbox HQ server) in production. Set by the owner, not by server admins.
+- **Commands declare their flag** (`flag: 'discord.authoring'`). Registration follows from it: a command whose flag is on by default is registered **globally**; a command whose flag is off is registered only as a **guild command** on servers with an override (Discord can't hide a global command from one server), and in dev to the test guild. Interaction handlers check the flag too, so a stale registration can't run a hidden command.
+- **The webapp reads the same flags** (for example, to hide Open in builder links to screens that aren't released).
+- **Lifecycle:** a flag is removed once its feature is fully released. The flag list doubles as the list of unreleased features.
+- **If this outgrows env vars** (percentage rollouts, a UI for toggling), OpenFeature with flagd, Unleash, or GrowthBook are free self-hosted or free-tier options. Keep `isEnabled` as the only call site so the backend can be swapped.
+
 ## Open questions
 - ~~Self-managed VPS vs managed host?~~ **Decided (Q30):** managed host to start. Which one (the family host or Railway/Fly/Render) is decided in M2-01.

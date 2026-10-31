@@ -98,11 +98,11 @@ Zod command schemas double as form schemas in the webapp and modal validation in
 
 **What each client is for (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)):**
 - **Webapp builder (mobile-first):** all MVP authoring: settings and rules, locations and the map, encounters, NPCs, trainers, scripts and templates, shops, transport, TM/HM lists, Region Health, the publish review, and JSON import/export.
-- **Discord (`/region`):** Region Health summary, publishing, and Open in builder links. The existing Discord builders stay until the webapp reaches parity with them.
+- **Discord (`/region`):** Region Health summary, publishing, and Open in builder links. The existing Discord builders stay until the webapp reaches parity with them, behind a feature flag that hides them in production.
 
 Both call the same commands, so a Discord editor can be added for any feature later without duplicating rules.
 
-**Migration:** new builder features (connections, encounters, NPCs, scripts, shops) go through `libs/authoring` from day one, with webapp UIs. The existing Pokédex, progression, and locations menus move onto authoring commands during M0b (M0B-17..19), which is also when they adopt content keys and conditions. They stay visible and usable in Discord until the webapp has parity ([28 § Transition](28-webapp-authoring-and-mobile-first-ux.md#transition-the-existing-discord-builders)).
+**Migration:** new builder features (connections, encounters, NPCs, scripts, shops) go through `libs/authoring` from day one, with webapp UIs. The existing Pokédex, progression, and locations menus move onto authoring commands during M0b (M0B-17..19), which is also when they adopt content keys and conditions. They keep working until the webapp has parity, hidden in production behind the `discord.authoring` feature flag (on in dev) until they're ready for a full release ([28 § Transition](28-webapp-authoring-and-mobile-first-ux.md#transition-the-existing-discord-builders)).
 
 ## Builder UX notes
 - The builder should surface **"used by"** before deletes ("Badges is used by 4 conditions. Delete anyway?").

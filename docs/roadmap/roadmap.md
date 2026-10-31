@@ -64,7 +64,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 **Goal:** An admin can build a complete Kanto (Pallet → Champion) using only PokeSandbox tools, publish it, and players can play it start to finish.
 
 ### Region building (admin)
-**Webapp-first, mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)):** every builder feature below is a webapp screen on the shared `libs/authoring` commands, designed for phones first. Discord keeps Region Health, publishing, and Open in builder links, and the existing Pokédex, progression, and location builders stay visible until the webapp has parity with them.
+**Webapp-first, mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)):** every builder feature below is a webapp screen on the shared `libs/authoring` commands, designed for phones first. Discord keeps Region Health, publishing, and Open in builder links, and the existing Pokédex, progression, and location builders keep working until the webapp has parity with them, hidden in production behind a feature flag until they're ready for a full release.
 - Region config: name, currency, rules preset, starting location, respawn default.
 - Regional pokedex (exists) + TM/HM list + learnset policy.
 - Locations: kinds, grouping, directional edges with conditions, services, two-way toggle.
@@ -116,7 +116,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 | Environment | Weather/terrain by location, swarms, visible-spawn UI | Encounter conditions |
 | Staff ops | Grant items/Pokémon/money/TMs with audit log | Effect executor |
 | Webapp | Battle replays, richer journey and log views, bulk editing | MVP webapp builder, adventure log, region bundles |
-| Discord authoring parity | Discord editors for new authoring features where worth it (a script step-list editor for small edits, quick encounter tweaks); retire each existing Discord builder only once the webapp has parity with it | `libs/authoring` commands shared by both clients ([28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)) |
+| Discord authoring parity | Discord editors for new authoring features where worth it (a script step-list editor for small edits, quick encounter tweaks); turn the `discord.authoring` flag on in production once ready; remove an existing Discord builder only once the webapp has parity with it | `libs/authoring` commands shared by both clients ([28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)) |
 | Narration | Narration on adventure log entries by the owner, invited co-authors, and narration moderators; thread capture; AI drafts | Adventure log ([22](../architecture/concepts/22-adventure-log-and-narration.md)) |
 | Arena + adventure | Arena battles with copies of adventure Pokémon (format level scaling, stat-investment overrides) | PokemonInstance in Showdown set shape |
 | Systems | Shop purchase limits and restocking, timed script waits (`timer` kind), level scaling, configurable trade evolution without trading, regional forms for Gen 2+ regions, `/bag`/`/party` shortcuts | Reserved fields in shops and `RegionRules` |

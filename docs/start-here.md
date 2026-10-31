@@ -25,7 +25,7 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 6. **Conditions, gates, and effects** are the only way content gates and rewards anything; **scripts** are how story happens ([05](architecture/concepts/05-requirements.md), [06](architecture/concepts/06-effects.md), [07](architecture/concepts/07-scripts-triggers-and-events.md)).
 7. **Players:** a *character* is the persona you play as; a *journey* is that character's playthrough of one region ([23](architecture/concepts/23-players-characters-journeys-and-scopes.md)).
 8. **Rules are chosen per region, generation by generation**; the MVP is authentic Gen 1 ([18](architecture/concepts/18-rules-time-and-randomness.md)).
-9. **Authoring** happens in the webapp, mobile-first, through `libs/authoring` commands; Discord is for play, plus Region Health and publishing. The existing Discord builders stay until the webapp has parity ([16](architecture/concepts/16-authoring-validation-and-portability.md), [28](architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).
+9. **Authoring** happens in the webapp, mobile-first, through `libs/authoring` commands; Discord is for play, plus Region Health and publishing. The existing Discord builders stay until the webapp has parity, hidden in production behind a feature flag ([16](architecture/concepts/16-authoring-validation-and-portability.md), [28](architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).
 10. **Every decision is recorded** in [`architecture/open-questions.md`](architecture/open-questions.md) (Q1–Q36 plus a "Smaller decisions" index). Concept docs' **Decisions** sections win over older text in the same doc.
 
 ## Where things live
