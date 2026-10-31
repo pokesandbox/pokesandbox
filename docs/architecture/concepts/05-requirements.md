@@ -183,7 +183,7 @@ The condition is the same everywhere. What differs is how the caller uses the re
 **Verdict:** conditions remain the one gating primitive for everything. Facts + scopes + the Gate envelope + usage policies make it fit scripts, quests (with objective trackers alongside), and every other access gate without special cases.
 
 ## MVP scope
-- `all` / `any` / `not` with at least one level of grouping in the Discord builder. RBY needs both: *knows Cut **and** has the Cascade Badge*, and the Saffron gate guards accept *Fresh Water **or** Soda Pop **or** Lemonade*.
+- `all` / `any` / `not` with at least one level of grouping in the condition builder (webapp, Q36). RBY needs both: *knows Cut **and** has the Cascade Badge*, and the Saffron gate guards accept *Fresh Water **or** Soda Pop **or** Lemonade*.
 - **MVP facts (decided Oct 2026, scoped to a Red/Blue/Yellow Kanto):**
 
   | Fact | RBY use |

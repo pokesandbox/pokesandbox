@@ -1,6 +1,6 @@
 # M1: Battle Core & Catalog (backlog draft, partial)
 
-Drafted so far: the **moves and learnsets catalog** epic (E-M1-2), which can start now and run in parallel with M0a. The rest of M1 (fork patches, BattleService, items, rules, teams, AI) is drafted later; E-M1-1 is reserved for the fork patches epic. Fork clean-up, rebase, and packaging moved to [M0c](m0c-arena-foundations.md).
+Drafted so far: the **moves and learnsets catalog** epic (E-M1-2), which can start now and run in parallel with M0a, and the **Arena epics** ([E-M1-3 BattleService, E-M1-4 Teams & Formats, E-M1-5 AI Players](#arena-epics-e-m1-3-e-m1-4-e-m1-5)), which M2 builds on. Still to draft: the fork patches (E-M1-1, reserved), items, `RegionRules`, and the Gen 1 implementations; the adventure needs those, the Arena doesn't. Fork clean-up, rebase, and packaging moved to [M0c](m0c-arena-foundations.md).
 
 Refs: concept [12](../architecture/concepts/12-content-catalog-species-moves-items.md), [`mvp.md` § M1](../roadmap/mvp.md#m1-battle-core--catalog)
 
@@ -161,3 +161,218 @@ MoveData = {
 **Changes later:** the generation comes from `RegionRules` once it exists; rebase alongside M0B-17's Pokédex builder migration.
 
 **Refs:** [12](../architecture/concepts/12-content-catalog-species-moves-items.md), [26](../architecture/concepts/26-discord-surface-and-ux-patterns.md)
+
+---
+
+# Arena epics (E-M1-3, E-M1-4, E-M1-5)
+
+Everything the Arena needs from M1 before M2 wires up its Discord side (E-M2-2): battles that run, persist, recover, and time out; teams and formats; and AI opponents. **PvP and PvAI with team presets need none of the Showdown fork patches** (state injection, the external choice hook, isolated custom-data dexes: E-M1-1, not drafted yet). Those serve adventure battles and formats with custom content.
+
+## Start here (Arena)
+New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § Start here](m0c-arena-foundations.md#start-here) (the Arena in Pokémon terms, how the fork, `libs/battle`, and the Arena module fit together, and how to work on the fork). Context specific to these epics:
+- **Design:** [25](../architecture/concepts/25-arena.md) is the Arena (teams, formats, timers, AI, the ownership table and acceptance scenarios); [14](../architecture/concepts/14-battle-system-and-showdown.md) is BattleService; [15 § Sharding](../architecture/concepts/15-persistence-concurrency-and-runtime.md#sharding-deploys-and-who-owns-live-state-decided-oct-2026) is battle ownership; [26 § Battles](../architecture/concepts/26-discord-surface-and-ux-patterns.md#battles) is how battles look.
+- **Showdown's battle API in brief:** a battle is a `BattleStream` (`sim/battle-stream.ts`). You write `>start {"formatid":…,"seed":[…]}`, `>player p1 {"name":…,"team":<packed team>}`, then `>p1 move 1` / `>p2 switch 3`. It writes back protocol lines (`|move|p1a: Pikachu|Thunderbolt|p2a: Onix`, `|-damage|…`, `|turn|2`) and, per side, a `|request|` JSON that lists the legal choices and carries an `rqid`. The same seed and the same choices always produce the same battle, which is what persistence and recovery rely on. `RandomPlayerAI` (`sim/tools/random-player-ai.ts`) is a working example of a side that reads requests and answers them.
+- **Teams** use Showdown's set shape (`PokemonSet`: species, moves, ability, item, level, EVs/IVs, nature). `Teams.import(paste)` / `Teams.export(team)` handle the text format players copy from Showdown's teambuilder, and `TeamValidator.get(formatId).validateTeam(team)` returns a list of problems.
+- **Order:** E-M1-3 first (M1-05 is the root). E-M1-4 can start in parallel once `PokemonSet` exists (M1-11). E-M1-5 needs only M1-05's request events. M2's E-M2-2 builds on M1-05, M1-06, M1-08, and M1-10.
+
+**Changes once foundations land:**
+
+| When this lands | Follow-up | Affects |
+|---|---|---|
+| The fork is published as a package (M0C-06) | Switch `libs/battle` from upstream `pokemon-showdown` (exact pinned version) to the fork package, and re-run the battle tests. | M1-05, M1-12, M1-14 |
+| Fork patches (E-M1-1) | `inject` and the external choice hook stop throwing `NotSupported`; formats with library content compile into isolated dexes; trainer item use (M1-17) is unblocked. | M1-05, M1-12, M1-17 |
+| `RegionRules` (M1) | Adventure battles pass the region's mechanics generation; the Arena keeps using the format's `rules.mechanicsGen`. | M1-05 |
+
+## E-M1-3 · BattleService
+`Type: Epic` · `Priority: P0`
+
+`libs/battle`'s Showdown implementation of `BattlePort` (M0C-01): start battles, take choices, emit events, persist every input, recover after restarts, run each battle in exactly one process, and own the turn timer. Contract: [25 § Ownership](../architecture/concepts/25-arena.md#ownership) and [14 § BattleService](../architecture/concepts/14-battle-system-and-showdown.md#battleservice-in-libsbattle).
+
+### M1-05 · BattleService: start, choose, and events (in-process)
+`Type: Feature` · `Parent: E-M1-3` · `Priority: P0` · `Size: L` · `Labels: area:battle` · `Blocked by: M0C-01` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** The core of `libs/battle`: a `BattleService` implementing `BattlePort` over Showdown's `BattleStream`, running in the game host process behind an interface that can later move battles to worker threads.
+
+**Acceptance criteria**
+- `start(spec)` creates a battle for `kind: 'pvp' | 'ai-arena'` (the adventure kinds `wild` / `trainer` are accepted by the types but not wired until M5), with a format ID, the sides' `PokemonSet[]` teams, and a seed. A missing seed is generated and stored.
+- `choose(battleId, side, choice, rqid)` validates against the side's current request. A stale or already-answered `rqid` is a no-op (returns `{ accepted: false, reason: 'stale' | 'answered' }`), so a request is never resolved twice. Choices for one battle go through **one in-process queue per `battleId`**, so a timer and a press, or two presses, never interleave.
+- `subscribe(battleId, sink)` delivers `BattleEvent`s: `request` (per side, with `rqid` and the legal choices), `turn` (a `TurnDigest`, M1-09), `ended` (winner, reason: `normal | forfeit | timeout`), plus `battleRecovered` (M1-06).
+- `forfeit(battleId, side)`.
+- `inject` and the external choice hook throw `NotSupported` until E-M1-1's fork patches land.
+- Uses upstream `pokemon-showdown` at an exact pinned version until M0C-06 publishes the fork.
+- Tests: a full PvP battle driven by two scripted sides finishes with the right winner; the same seed and choices give the same protocol output; a double `choose` with the same `rqid` is applied once; no Discord imports (module boundaries).
+
+**Changes later:** switches to the fork package (M0C-06); `inject` and the external choice hook come with E-M1-1.
+
+**Refs:** [14 § BattleService](../architecture/concepts/14-battle-system-and-showdown.md#battleservice-in-libsbattle), [25 § Ownership](../architecture/concepts/25-arena.md#ownership)
+
+### M1-06 · Battle persistence and recovery
+`Type: Feature` · `Parent: E-M1-3` · `Priority: P0` · `Size: M` · `Labels: area:battle, area:shared-models` · `Blocked by: M1-05` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** Every battle can be rebuilt from its seed and inputs, so a restart never loses a battle and replays come for free.
+
+**Acceptance criteria**
+- A `Battle` collection: `{ battleId, guildId, kind, formatId, seed, teams (as given to start), inputLog[], status: 'active' | 'ended', result?, lease (M1-07), deadlines (M1-08), createdAt, endedAt? }`. The input log is appended **before** the input is sent to the sim, in the same write as the turn's state.
+- `recover()` rebuilds each active battle it may run (M1-07) by replaying `start` + `inputLog` into a fresh stream, checks that the replayed state matches the last persisted turn number, then emits `battleRecovered`.
+- Retention: Arena battles keep their full log (replays); adventure battles are compressed after they end and kept for 7 days ([14](../architecture/concepts/14-battle-system-and-showdown.md#battleservice-in-libsbattle)). The cleanup is a scheduled job with a test.
+- Tests: kill the service mid-turn (drop the in-memory stream), recover, finish the battle, and get the same result as an uninterrupted run with the same inputs.
+
+**Refs:** [14 § BattleService](../architecture/concepts/14-battle-system-and-showdown.md#battleservice-in-libsbattle), [25 § Ownership](../architecture/concepts/25-arena.md#ownership) (Persistence and recovery)
+
+### M1-07 · Battle leases and server ownership
+`Type: Task` · `Parent: E-M1-3` · `Priority: P0` · `Size: M` · `Labels: area:battle, area:bot` · `Blocked by: M1-06, M0A-16` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** Each battle runs in exactly one process, even during a deploy overlap or a reshard.
+
+**Acceptance criteria**
+- `ownsGuild(guildId)` in the game host: `true` for everything with one process; Discord's shard formula once there are several (a test covers both).
+- A battle lease on the `Battle` record (`ownerInstance`, `leaseExpiresAt`), taken with a conditional update and renewed by a heartbeat. A process runs a battle (accepts choices, fires its timers) only while it holds the lease.
+- `recover()` takes only battles of servers this process owns whose lease is free or expired.
+- A choice that reaches a process without the lease returns `{ accepted: false, reason: 'resuming' }`, which the surfaces show as "Battle is resuming, press again in a moment" ([26](../architecture/concepts/26-discord-surface-and-ux-patterns.md#menus-and-feedback)).
+- Overlap test: two service instances against one database; each battle resolves each turn once, fires one timer, and records one result; the second takes over only after the first releases or its lease expires.
+
+**Refs:** [15 § Sharding](../architecture/concepts/15-persistence-concurrency-and-runtime.md#sharding-deploys-and-who-owns-live-state-decided-oct-2026)
+
+### M1-08 · Turn timers and timeout policy
+`Type: Feature` · `Parent: E-M1-3` · `Priority: P0` · `Size: M` · `Labels: area:battle` · `Blocked by: M1-06, M0C-02` · `agent-ready: yes` · `Owner: any`
+
+**Summary:** The Arena's turn timer, owned and persisted by BattleService (Q13), never by a Discord surface.
+
+**Acceptance criteria**
+- Enabled per format (`rules.timer`, default 90s per decision for PvP); off for PvAI and adventure battles.
+- When a side gets a request, its `deadlineAt` is persisted on the battle and armed through the `Scheduler` port. On expiry the service submits Showdown's `default` choice for that side (through the same queue and `rqid` check as a press) and increments `consecutiveTimeouts[side]`. A real choice resets the counter. Reaching 3 ends the battle as a forfeit (`reason: 'timeout'`).
+- `recover()` re-arms every deadline with a **fresh full window**, so downtime never counts as a timeout.
+- Each `request` event carries the deadline, so surfaces can show it as a Discord relative timestamp.
+- Tests with the fake `Clock`/`Scheduler`: timeout → default move; three in a row → forfeit; the counter resets on a real choice; a press and a timer at the same moment resolve the request once; recovery gives a fresh window.
+
+**Refs:** [25 § Timers](../architecture/concepts/25-arena.md#timers-and-ai-opponents), [25 § Ownership](../architecture/concepts/25-arena.md#ownership)
+
+### M1-09 · Protocol → events, with Showdown's battle text
+`Type: Feature` · `Parent: E-M1-3` · `Priority: P0` · `Size: M` · `Labels: area:battle` · `Blocked by: M1-05` · `agent-ready: yes` · `Owner: any`
+
+**Summary:** Turn Showdown's protocol into a `TurnDigest` the renderers and the engine read: the turn's messages in plain language, and each side's state.
+
+**Acceptance criteria**
+- A `TurnDigest` per turn: `messages: string[]` rendered from Showdown's text templates (`data/text`, the ones the Showdown client uses), and per side the active Pokémon's species, nickname, level, HP (current/max, from the owning side's request, as a percentage for the opponent's), status, and stat stages.
+- Structured events alongside the text (`move`, `damage`, `faint`, `switch`, `status`) for the engine to react to later (EXP on `faint` in M5).
+- Never hand-written message strings and never a second copy of battle state ([26 § Battles](../architecture/concepts/26-discord-surface-and-ux-patterns.md#battles)).
+- Golden tests over recorded protocol: a super-effective hit, a miss, a critical hit, a status move, a faint and switch, and a Gen 1 battle (Gen 1 text differs).
+
+**Refs:** [26 § Battles](../architecture/concepts/26-discord-surface-and-ux-patterns.md#battles), [14](../architecture/concepts/14-battle-system-and-showdown.md)
+
+### M1-10 · Battle view builders (Discord)
+`Type: Feature` · `Parent: E-M1-3` · `Priority: P0` · `Size: M` · `Labels: area:bot` · `Blocked by: M1-09, M0A-20` · `agent-ready: yes` · `Owner: junior`
+
+**Summary:** Pure functions from a `BattleView` (built from a `TurnDigest` plus match info) to Components v2 JSON. M2's public message, private prompts, and PvAI screens all use them; so do adventure battles later.
+
+**Acceptance criteria**
+- `renderBattle(view)`: the turn's messages, then both active Pokémon with level, HP bar, and status, each with its sprite as a separate image (section thumbnails or a media gallery, from `resolveSpriteUrl`, M0A-20), and the deadline when there is one.
+- `renderChoicePrompt(request)`: moves (with PP, type, and disabled moves explained, not just greyed out) and switches, as buttons or a select.
+- `renderBattleResult(result)`.
+- No I/O. Snapshot tests for each, including a fainted active, a forced switch, and a long message list that stays within the Components v2 budget ([26 § Dialogue and passages](../architecture/concepts/26-discord-surface-and-ux-patterns.md#dialogue-and-passages)).
+- A composed side-by-side image is post-MVP, not here.
+
+**Refs:** [26 § Battles](../architecture/concepts/26-discord-surface-and-ux-patterns.md#battles)
+
+## E-M1-4 · Teams & Formats
+`Type: Epic` · `Priority: P0`
+
+User-owned team presets and server-scoped formats, with Showdown's validator enforcing legality ([25 § Teams](../architecture/concepts/25-arena.md#teams-decided-oct-2026-q12), [25 § Arena formats](../architecture/concepts/25-arena.md#arena-formats-decided-oct-2026-server-scoped-not-region-scoped)). The guided team builder follows the Arena launch and isn't drafted here.
+
+### M1-11 · `PokemonSet` type and `TeamPreset` model
+`Type: Task` · `Parent: E-M1-4` · `Priority: P0` · `Size: S` · `Labels: area:shared-models` · `Blocked by: —` · `agent-ready: yes` · `Owner: any`
+
+**Acceptance criteria**
+- A shared `PokemonSet` type and Zod schema in Showdown's set shape (species, name, item, ability, moves, nature, EVs, IVs, level, gender, shiny, happiness), accepting canon IDs and `<publisherId>:<slug>` library IDs. The same type adventure Pokémon convert to later.
+- `TeamPreset { userId; name; intendedFormat?; sets: PokemonSet[] }` (Zod + Mongoose, model conventions as in E-M1-2), owned by the user and usable on any server.
+- A team service: create, rename, update, delete, list by user. Only the owner can change a team. A cap of **50 teams per user**, enforced with a clear error.
+- Tests: the cap, ownership checks, and schema round-trips.
+
+**Refs:** [25 § Teams](../architecture/concepts/25-arena.md#teams-decided-oct-2026-q12)
+
+### M1-12 · `ArenaFormat` model and built-in formats
+`Type: Feature` · `Parent: E-M1-4` · `Priority: P0` · `Size: M` · `Labels: area:battle, area:shared-models` · `Blocked by: M1-05, M1-11` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** Formats decide which teams are legal and how battles run. They compile to Showdown custom formats so `TeamValidator` and the battle enforce them.
+
+**Acceptance criteria**
+- `ArenaFormat` as in [25](../architecture/concepts/25-arena.md#arena-formats-decided-oct-2026-server-scoped-not-region-scoped) (`serverId | 'builtin'`, `pool`, `bans`, `rules`). Never references a region's deployment.
+- `compileFormat(format) → Showdown format` (mod, rule table, bans, team size, level).
+- Built-in formats seeded and available on every server: **National Dex Lv50** and **Kanto 151 Lv50** (Gen 1 mechanics), each in singles; National Dex also in doubles. Flat Lv50 (teams auto-adjusted to 50), standard clauses (Species, Sleep, OHKO, Evasion, Endless Battle), team preview where the generation has it, and the 90s timer.
+- Server formats with **canon pools** (generations, tiers, include/exclude, bans) can be created by server admins through a format service with role checks. Pools using library content are rejected with "needs custom content support" until E-M1-1's isolated dexes land.
+- Tests: each built-in compiles and validates a known legal team; a banned move, an out-of-pool species, and a duplicate species each fail with the right reason.
+
+**Changes later:** library pools compile into isolated dexes with E-M1-1; the admin UI for server formats is a follow-up (format editing isn't part of the launch scope).
+
+**Refs:** [25 § Arena formats](../architecture/concepts/25-arena.md#arena-formats-decided-oct-2026-server-scoped-not-region-scoped), [27](../architecture/concepts/27-server-content-library-and-overrides.md)
+
+### M1-13 · Showdown paste import and export
+`Type: Feature` · `Parent: E-M1-4` · `Priority: P0` · `Size: M` · `Labels: area:bot, area:battle` · `Blocked by: M1-11` · `agent-ready: yes` · `Owner: junior`
+
+**Acceptance criteria**
+- `importPaste(text) → { sets, problems }` and `exportPaste(sets) → text` using Showdown's `Teams.import` / `Teams.export`. Unknown species, moves, items, or abilities are reported per Pokémon with the offending line, instead of being dropped silently.
+- A paste round-trips (import → export → import gives the same sets).
+- In the `/arena` hub (FlowCord): "Import team" opens a modal (name + paste); "Export" shows the paste in a code block. The modal's 4,000-character limit fits a six-Pokémon paste; longer input gets a clear error.
+- Tests with real pastes, including nicknames, gender, shiny, and Gen 1 sets with no ability or item.
+
+**Refs:** [25 § Teams](../architecture/concepts/25-arena.md#teams-decided-oct-2026-q12)
+
+### M1-14 · Team validation messages and random legal teams
+`Type: Feature` · `Parent: E-M1-4` · `Priority: P0` · `Size: M` · `Labels: area:battle` · `Blocked by: M1-12` · `agent-ready: yes` · `Owner: any`
+
+**Acceptance criteria**
+- `validateTeam(sets, format) → { ok, problems: { slot, pokemon, message }[] }`, grouping `TeamValidator`'s output per Pokémon in plain wording ("Pikachu can't learn Surf in this format").
+- `legalTeamsFor(userId, format)` lists the user's presets that pass, used by challenges ("no legal team for this format", M2-09).
+- `randomLegalTeam(format, rng)`: a team of the format's size from its pool, each with a heuristic moveset from its learnset (prefer same-type attacks and coverage, at most one status move, no duplicates), and an ability and item where the generation has them. Always passes `validateTeam`.
+- Tests: 100 seeded random teams for each built-in format all validate; the same seed gives the same team.
+
+**Refs:** [25 § Timers and AI opponents](../architecture/concepts/25-arena.md#timers-and-ai-opponents)
+
+## E-M1-5 · AI Players
+`Type: Epic` · `Priority: P0`
+
+AI sides that answer requests through the same `choose` a human uses ([14 § AI trainers](../architecture/concepts/14-battle-system-and-showdown.md#ai-trainers)). The Arena's PvAI difficulty is an AI profile; adventure trainers reuse the same profiles in M5.
+
+### M1-15 · AI player interface and the `random` profile
+`Type: Task` · `Parent: E-M1-5` · `Priority: P0` · `Size: S` · `Labels: area:battle` · `Blocked by: M1-05` · `agent-ready: yes` · `Owner: any`
+
+**Acceptance criteria**
+- `AiPlayer { profile; choose(request, view) → Promise<string> }`, attached to a side in `BattleSpec`. BattleService calls it on each request for that side and submits the result through `choose` with the request's `rqid`.
+- `random`, built on Showdown's `RandomPlayerAI` logic, seeded from the battle seed so recovery replays the same AI choices.
+- An AI side never has a timer.
+- Tests: an AI-vs-AI battle finishes for every built-in format; replay after recovery gives the same choices.
+
+**Refs:** [14 § AI trainers](../architecture/concepts/14-battle-system-and-showdown.md#ai-trainers)
+
+### M1-16 · `basic` profile with damage calculation
+`Type: Feature` · `Parent: E-M1-5` · `Priority: P0` · `Size: M` · `Labels: area:battle` · `Blocked by: M1-15` · `agent-ready: yes` · `Owner: any`
+
+**Acceptance criteria**
+- Picks the move with the highest expected damage against the current opponent using `@smogon/calc` (the generation from the format), never switches unless forced, and picks a sensible replacement after a faint (best expected damage against the opponent's active).
+- Expected damage counts accuracy; status moves are used only when no attack does damage.
+- Tests over fixed matchups: it picks Thunderbolt over Tackle against Gyarados, and Earthquake over Thunderbolt against Onix.
+
+**Refs:** [14 § AI trainers](../architecture/concepts/14-battle-system-and-showdown.md#ai-trainers)
+
+### M1-17 · Trainer item use for AI profiles
+`Type: Feature` · `Parent: E-M1-5` · `Priority: P1` · `Size: S` · `Labels: area:battle` · `Blocked by: M1-16, E-M1-1 (external choice hook)` · `agent-ready: yes` · `Owner: any`
+
+**Summary:** Not needed for the Arena (Arena teams carry no bag); needed for adventure trainers in M5.
+
+**Acceptance criteria**
+- Every profile except `random` uses a trainer party's `items`: a healing item when the active Pokémon's HP is low, or a status cure for a status it cures, submitted through the external choice hook. Counts are tracked per battle.
+- Tests: a trainer with two Potions uses them at low HP and stops when they run out.
+
+**Refs:** [14 § AI trainers](../architecture/concepts/14-battle-system-and-showdown.md#ai-trainers), [11](../architecture/concepts/11-npcs-trainers-and-battle-definitions.md)
+
+### M1-18 · `smart` profile
+`Type: Feature` · `Parent: E-M1-5` · `Priority: P1` · `Size: L` · `Labels: area:battle` · `Blocked by: M1-16` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** Type-aware switching and sensible status moves, for gym leaders, rivals, and the Arena's harder difficulty. The Arena can launch with `random` and `basic` if this isn't ready.
+
+**Acceptance criteria**
+- Switches out of a bad matchup when a teammate resists the opponent's likely attack and threatens it back (with a cap on consecutive switches so it doesn't loop).
+- Uses status and setup moves when the opponent isn't already statused and the AI isn't threatened with a KO this turn.
+- Beats `basic` in a majority of seeded AI-vs-AI battles across the built-in formats (a test with a fixed seed set; the threshold is recorded in the test).
+
+**Refs:** [14 § AI trainers](../architecture/concepts/14-battle-system-and-showdown.md#ai-trainers)

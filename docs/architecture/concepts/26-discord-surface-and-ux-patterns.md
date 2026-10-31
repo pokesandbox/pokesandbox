@@ -6,8 +6,8 @@
 
 ## Principles
 - **Rules emit, renderers draw.** The engine and BattleService return events ([03](03-engine-boundary-and-game-loop.md)); renderers turn them into Components v2 messages. No game logic lives in a menu handler.
-- **Pure view builders.** Renderers are functions from a view model to Components v2 JSON, with no I/O, so they can be snapshot-tested and reused by FlowCord menus, plain handlers, and later the webapp.
-- **Discord-complete.** Every player action and every authoring capability works from Discord. The webapp adds richer screens; it's never the only path ([16](16-authoring-validation-and-portability.md#principle-discord-complete-authoring-decided-oct-2026)).
+- **Pure view builders.** Renderers are functions from a view model to Components v2 JSON, with no I/O, so they can be snapshot-tested and reused by FlowCord menus, plain handlers, and the webapp builder's Discord previews ([28](28-webapp-authoring-and-mobile-first-ux.md#mobile-first-rules)).
+- **Discord-complete play.** Every player action works from Discord; the webapp adds richer screens (profiles, logs) but is never needed to play. **Authoring is webapp-first** (Q36): Discord keeps Region Health, publishing, Open in builder links, and the existing builders until the webapp reaches parity ([28](28-webapp-authoring-and-mobile-first-ux.md)).
 - **Components v2** for dense layouts: containers, sections with thumbnails, media galleries. FlowCord supports them.
 
 ## Where adventure play is shown (decided Oct 2026, Q2)
@@ -39,7 +39,7 @@
 ## Dialogue and passages
 Script text is authored as **passages**: prose, dialogue lines, and images interleaved ([07](07-scripts-triggers-and-events.md#passages-prose-and-dialogue-decided-oct-2026)). The renderer turns them into Components v2 messages.
 
-- **Always Components v2 under the hood.** Every renderer emits Components v2. What's limited is author customization: authors choose named styles and themes; they never hand-write component layouts. Raw layouts can't be edited sensibly in Discord modals (Discord-complete authoring), break when Discord changes its component rules, and would fight the engine's paging and choice placement.
+- **Always Components v2 under the hood.** Every renderer emits Components v2. What's limited is author customization: authors choose named styles and themes; they never hand-write component layouts. Raw layouts are hard for authors to get right, break when Discord changes its component rules, and would fight the engine's paging and choice placement.
 - **Styles** (mapped to Components v2 by the renderer):
 
   | Style | Renders as | Use | When |
@@ -70,7 +70,7 @@ Script text is authored as **passages**: prose, dialogue lines, and images inter
 - **Caveat: 15-minute ephemeral edits.** FlowCord's `DiscordAdapter` edits ephemeral messages through the **entry** interaction's token, so an ephemeral session likely can't re-render 15 minutes after its slash command. This comes from reading the code and hasn't been reproduced. It affects long `/play` sessions (ephemeral is the Q2 default) more than the Arena. Filed as [flowcord#107](https://github.com/flowcord-dev/flowcord/issues/107) (`bug: unconfirmed`, milestone alpha.3). Until it's fixed, `/play` must handle an expired token by asking the player to press `/play` again, which resumes exactly where they were.
 
 ## Authoring screens
-Builder-specific UX (Region Health, "used by" before deletes, templates over raw editors, the webapp editors) is in [16](16-authoring-validation-and-portability.md).
+Authoring is webapp-first (Q36). The webapp builder's UX rules are in [28](28-webapp-authoring-and-mobile-first-ux.md); builder behavior (Region Health, "used by" before deletes, templates over raw editors) is in [16](16-authoring-validation-and-portability.md). In Discord, `/region` keeps Region Health, publishing, Open in builder links, and the existing Pokédex, progression, and location builders until the webapp has parity.
 
 ## MVP scope
 - Ephemeral `/play` hub and its renderers; locked-option explanations; grouped, paginated lists with costs.

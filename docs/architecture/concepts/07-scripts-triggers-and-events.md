@@ -112,8 +112,8 @@ PassageBlock =
 
 ### Mitigating the authoring cost of option B
 1. **Templates** generate whole scripts from forms: "Gym Leader" (name, party, badge, TM, intro/defeat text), "Starter Gift" (N options), "Forced Rival Encounter", "Item Gift NPC", "Gauntlet". Most admins never see a raw step list, so the friendly builder UIs from option A survive *as templates over B*.
-2. A **step-list editor** in Discord for small edits: add/remove/reorder steps, edit a step via modal.
-3. **JSON/YAML import** for power users, and later a **webapp visual editor**. A webapp script step editor is in the MVP (Q24).
+2. A **webapp step editor**, mobile-first, for everything templates don't cover: reorder, insert, edit steps and passages with a Discord preview (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)). A Discord step-list editor for small edits is post-MVP.
+3. **JSON/YAML import** for power users.
 
 ## Guardrails
 - No arbitrary loops without a blocking step (the VM caps steps per dispatch to prevent infinite `goto`).
@@ -131,7 +131,7 @@ Option B was adopted: one Script + Trigger system, **on the condition that build
 
 1. **NPC interaction:** a "People here" list, where each NPC has a talk (interact) trigger. Confirmed (Oct 2026). Underneath it's the same trigger as an offered trigger, so this is a UI decision only.
 2. **Presentation (revised Oct 2026):** text steps are **passages** (prose, dialogue lines, and images interleaved; see Passages above), rendered as Components v2 and auto-paged. Content stays separate from presentation through named **styles**. **MVP:** passages with the `dialogue` and `prose` styles. **Later:** `cutscene`, `document`, and `system` styles, region themes, and author-defined styles, all without migrating scripts ([26](26-discord-surface-and-ux-patterns.md#dialogue-and-passages)).
-3. **Discord-complete authoring (principle, applies to every builder feature, not just scripts):** everything must be editable in Discord, even where it's less friendly than the webapp. Some creators will never leave Discord. The webapp is an *additional* client of the same `libs/authoring` commands, never the only place a feature can be edited. For scripts this means a Discord **step-list editor** (list steps, add/insert/move/delete, edit a step via modal, pick step types from select menus), on top of templates. It leans on Components v2 where it helps: sections with per-step edit accessories, separators between labels, and text displays for long dialogue previews.
+3. **Authoring surface (revised Oct 2026, Q36):** scripts are authored in the **webapp**, mobile-first, on top of templates ([28](28-webapp-authoring-and-mobile-first-ux.md)). This replaces the earlier Discord-complete principle. Because the step editor is a client of `libs/authoring` commands, a Discord **step-list editor** (list steps, add/insert/move/delete, edit a step via modal, Components v2 sections with per-step edit accessories) can still be added post-MVP for creators who prefer Discord.
 4. **Guardrails:** confirmed. No script-calls-script in MVP (add `call` later with a depth limit), and a step cap per dispatch so a bad `goto` can't loop forever.
 
 ## Open questions

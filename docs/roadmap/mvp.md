@@ -149,7 +149,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 **Epic: Authoring Layer & Releases** (Q15, Q18)
 - [ ] Scaffold `libs/authoring` (`execute(actor, command)`, per-entity OCC, role checks, `ContentChange` + `suggestions` output) (M)
-- [ ] Migrate existing admin menus (pokedex, progression, locations) onto `libs/authoring` commands (M)
+- [ ] Migrate existing admin menus (pokedex, progression, locations) onto `libs/authoring` commands; they stay visible and working in Discord until the webapp has parity with them (Q36) (M)
 - [ ] `RegionRelease` model + publish/compile + `ContentProvider` + deployment status (draft/live/paused) separate from discovery (L)
 
 ## M1: Battle Core & Catalog
@@ -167,24 +167,24 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Gen 1 implementations for every dimension: Gen 1 mechanics (Showdown `gen1`), species stats, types, moves, learnsets, catch rates, EXP/catch/escape/payout formulas, original sprites, DVs/Stat Exp, the four Gen 1 growth curves (floored, level 1 clamped: intended behavior, no glitches). Reference: pret/pokered, with test vectors ([18](../architecture/concepts/18-rules-time-and-randomness.md#reference-test-vectors)). "Classic Gen 1" preset (L)
 - [ ] Assemble per-release data mixes from Showdown gen mods into isolated custom-data dexes (M)
 
-**Epic: Teams**
-- [ ] `PokemonSet` shared type and `TeamPreset` model (S)
-- [ ] `ArenaFormat` model (server-scoped) + built-in canon formats → Showdown custom format + TeamValidator (M)
-- [ ] Showdown paste import/export (M)
+**Epic: Teams** (drafted as E-M1-4 in [`m1-battle-core-and-catalog.md`](../backlog/m1-battle-core-and-catalog.md#e-m1-4--teams--formats))
+- [ ] `PokemonSet` shared type and `TeamPreset` model (M1-11) (S)
+- [ ] `ArenaFormat` model (server-scoped) + built-in canon formats → Showdown custom format + TeamValidator (M1-12) (M)
+- [ ] Showdown paste import/export (M1-13) (M)
 - [ ] Guided team builder (Components v2 + FlowCord submenu/pagination flows; reuse the Pokédex builder's Pokémon search flow; autocomplete for moves). Can follow the Arena launch (L)
-- [ ] Random legal team for a format + per-Pokémon validation error messages (M)
+- [ ] Random legal team for a format + per-Pokémon validation error messages (M1-14) (M)
 
-**Epic: BattleService**
-- [ ] BattleService start/choose/events API, in-process (L)
-- [ ] Battle persistence (seed + input log, `guildId`), battle leases (`ownerInstance` + heartbeat) and `ownsGuild` ownership, recovery on boot of owned unleased battles only (test: two overlapping processes run each battle once), compressed retention (7-day support window for adventure battles; Arena per replay policy) (M)
-- [ ] Protocol → GameEvent translation; battle text from Showdown's text data, not hand-written strings (M)
-- [ ] Discord battle view builders (pure `BattleView` → Components v2: turn messages, both actives with level/HP/status, the two sprites as separate images, choice prompts; a composed side-by-side image is post-MVP). The Arena wiring is in M2 E-M2-2 (L)
-- [ ] Turn timers and timeout policy in BattleService: persisted per-side deadlines, `default` choice on timeout, forfeit after 3 consecutive, fresh window on recovery, `choose` with `rqid` + per-battle queue (M). Contract in [25 § Ownership](../architecture/concepts/25-arena.md#ownership)
+**Epic: BattleService** (drafted as E-M1-3)
+- [ ] BattleService start/choose/events API, in-process (M1-05) (L)
+- [ ] Battle persistence (seed + input log, `guildId`), battle leases (`ownerInstance` + heartbeat) and `ownsGuild` ownership, recovery on boot of owned unleased battles only (test: two overlapping processes run each battle once), compressed retention (7-day support window for adventure battles; Arena per replay policy) (M1-06, M1-07) (M)
+- [ ] Protocol → GameEvent translation; battle text from Showdown's text data, not hand-written strings (M1-09) (M)
+- [ ] Discord battle view builders (pure `BattleView` → Components v2: turn messages, both actives with level/HP/status, the two sprites as separate images, choice prompts; a composed side-by-side image is post-MVP). The Arena wiring is in M2 E-M2-2 (M1-10) (M)
+- [ ] Turn timers and timeout policy in BattleService: persisted per-side deadlines, `default` choice on timeout, forfeit after 3 consecutive, fresh window on recovery, `choose` with `rqid` + per-battle queue (M1-08) (M). Contract in [25 § Ownership](../architecture/concepts/25-arena.md#ownership)
 
-**Epic: AI Players**
-- [ ] AI player interface + `random` profile (S)
-- [ ] `basic` profile using `@smogon/calc`, plus trainer item use (heal at low HP, cure status) shared by all non-random profiles (M)
-- [ ] `smart` profile (switching, status, items) (L)
+**Epic: AI Players** (drafted as E-M1-5)
+- [ ] AI player interface + `random` profile (M1-15) (S)
+- [ ] `basic` profile using `@smogon/calc` (M1-16) (M), plus trainer item use (heal at low HP, cure status) shared by all non-random profiles, needing the external choice hook and not needed for the Arena (M1-17) (S)
+- [ ] `smart` profile (switching, status, items); the Arena can launch without it (M1-18) (L)
 
 ## M2: Arena Release 🚀
 
@@ -210,22 +210,27 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Release notes + admin/player docs (S)
 
 ## M3: Region Authoring
-- [ ] Region config menu: currency object, starting location, respawn, rules preset (M)
+> **Authoring is webapp-first and mobile-first (decided Oct 2026, Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).** Each builder item below is a webapp screen on `libs/authoring` commands. Discord keeps Region Health, publishing, and Open in builder links; the existing Pokédex, progression, and location builders stay visible and working until the webapp has parity with them.
+
+- [ ] Region config screen: currency object, starting location, respawn, rules preset (M)
 - [ ] Location kinds, grouping (`parentKey`), description/image with conditioned `descriptionVariants`, services, tags (M)
 - [ ] Connections editor with two-way toggle and labels (M)
 - [ ] Condition builder UI (flat "all of" + one nesting level + templates) (L)
 - [ ] Encounter method registry + conditioned encounter tables + builder (L)
-- [ ] TM/HM list + learnset policy menu (M). TM/HM lists drafted as E-M3-1 ([`m3-region-authoring.md`](../backlog/m3-region-authoring.md))
+- [ ] TM/HM list + learnset policy screen (M). TM/HM lists drafted as E-M3-1 ([`m3-region-authoring.md`](../backlog/m3-region-authoring.md))
 - [ ] Transport networks + Fly/Ferry templates (M)
 - [ ] Shops with conditioned entries and progression-priced entries (M)
-- [ ] Validator Tier 1 + basic Tier 2 + "Region Health" view (L)
+- [ ] Validator Tier 1 + basic Tier 2 + "Region Health" (webapp view, plus a `/region` summary in Discord) (L)
 - [ ] Release chunking for large regions + rollback hooks (publish core lands in M0b) (M)
 - [ ] Region bundle export/import (JSON) (M)
 
-**Epic: Webapp Authoring (Q24)** (can run in parallel with M3/M4 once the matching `libs/authoring` commands exist)
-- [ ] Webapp authoring shell: Discord-role-checked access to a region's draft, entity-level conflict handling (M)
+**Epic: Webapp Builder (Q24, Q36)** (drafted as E-M3-2 in [`m3-region-authoring.md`](../backlog/m3-region-authoring.md#e-m3-2--webapp-builder); the shell and UI stack come first; each editor can start once its `libs/authoring` commands exist)
+- [ ] Move off antd: Tailwind + a headless component library (spike: shadcn/ui on Radix vs React Aria), remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it (M3-05) (M)
+- [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width (M3-06) (M)
+- [ ] Shared builder components: search combobox (species/moves/items), sortable list, confirm dialog, passage editor with Discord preview (M)
+- [ ] Open in builder links from `/region` (plain URLs, Discord OAuth sign-in) (S)
 - [ ] Shared condition builder component (M)
-- [ ] Region map canvas (locations, directional/two-way edges, grouping, gate badges) (L)
+- [ ] Region map: list/detail on phones, canvas on wide screens (locations, directional/two-way edges, grouping, gate badges) (L)
 - [ ] Encounter table grid (M)
 - [ ] Trainer party editor with conditioned variants; unset moves default to the last 4 level-up moves from the region's learnsets (M)
 - [ ] Script step editor (L)
@@ -239,7 +244,6 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Trigger dispatch: journeyStarted (payload: `newCharacter`, `carriedPokemon`), enterLocation (optional `from`/`via` filters; any arrival counts), interact, battleEnd, explore; once/priority/forced (M)
 - [ ] TrainerClass registry (canon seed) + Trainer with conditioned party variants (M)
 - [ ] NPC model (placements with single/everywhere presence and per-placement interact, trainer, engagement) (M)
-- [ ] Script step-list editor in Discord (L)
 - [ ] Templates: Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet, Simple Talker (L)
 
 ## M5: Adventure Core

@@ -3,7 +3,7 @@
 The one-page orientation for anyone joining PokeSandbox. Read this first, then the "Start here" section of whichever backlog file you're working from.
 
 ## What PokeSandbox is
-A Discord bot plus a web app that lets Discord servers **build their own Pokémon games ("regions")** and play them in Discord: a faithful Kanto remake, a fan region with custom Pokémon, a story-driven roleplay server. Server admins author regions (maps, encounters, trainers, story scripts, rules); players play them through a `/play` menu, battle in a Showdown-powered battle system, and trade. The first public piece is the **Arena**: Showdown-style PvP and PvAI battles between server members, before any region exists. It's a non-commercial fan project.
+A Discord bot plus a web app that lets Discord servers **build their own Pokémon games ("regions")** and play them in Discord: a faithful Kanto remake, a fan region with custom Pokémon, a story-driven roleplay server. Server admins author regions (maps, encounters, trainers, story scripts, rules) in the web app, built for phones first; players play them through a `/play` menu, battle in a Showdown-powered battle system, and trade. The first public piece is the **Arena**: Showdown-style PvP and PvAI battles between server members, before any region exists. It's a non-commercial fan project.
 
 ## The plan
 
@@ -25,8 +25,8 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 6. **Conditions, gates, and effects** are the only way content gates and rewards anything; **scripts** are how story happens ([05](architecture/concepts/05-requirements.md), [06](architecture/concepts/06-effects.md), [07](architecture/concepts/07-scripts-triggers-and-events.md)).
 7. **Players:** a *character* is the persona you play as; a *journey* is that character's playthrough of one region ([23](architecture/concepts/23-players-characters-journeys-and-scopes.md)).
 8. **Rules are chosen per region, generation by generation**; the MVP is authentic Gen 1 ([18](architecture/concepts/18-rules-time-and-randomness.md)).
-9. **Authoring** goes through `libs/authoring` commands, shared by the Discord builder and the webapp ([16](architecture/concepts/16-authoring-validation-and-portability.md)).
-10. **Every decision is recorded** in [`architecture/open-questions.md`](architecture/open-questions.md) (Q1–Q35 plus a "Smaller decisions" index). Concept docs' **Decisions** sections win over older text in the same doc.
+9. **Authoring** happens in the webapp, mobile-first, through `libs/authoring` commands; Discord is for play, plus Region Health and publishing. The existing Discord builders stay until the webapp has parity ([16](architecture/concepts/16-authoring-validation-and-portability.md), [28](architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).
+10. **Every decision is recorded** in [`architecture/open-questions.md`](architecture/open-questions.md) (Q1–Q36 plus a "Smaller decisions" index). Concept docs' **Decisions** sections win over older text in the same doc.
 
 ## Where things live
 | What | Where | Pattern to copy |
@@ -35,7 +35,7 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 | DTOs (read shapes for bot and webapp) | `shared/src/dtos/` | `region.dto.ts` |
 | Seed data | `scripts/seed/data/*.json`, registered in `scripts/seed/collections.ts` | the `dexentries` entry |
 | Bot commands and menus | `apps/bot/src/interactions/` (admin builders under `…/regionManagement/`) | the Pokédex builder (`pokedex/`) |
-| Webapp | `apps/webapp/` | existing tRPC routers |
+| Webapp | `apps/webapp/` (moving off antd to Tailwind + a headless library, M3-05) | existing tRPC routers |
 | New libraries | `libs/core`, `libs/battle`, `libs/engine`, `libs/authoring` (being created in M0a, M0c, M0b) | their scaffold issues |
 | Showdown fork | separate repo, `nbely/pokemon-showdown` (moving to the org) | [M0c § Start here](backlog/m0c-arena-foundations.md#start-here) |
 | Design docs | `docs/architecture/concepts/` (one per topic) | the concept index in [`architecture/README.md`](architecture/README.md) |
@@ -70,8 +70,9 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 ## Where to go next
 | You want to work on | Start with |
 |---|---|
-| The Arena | [M0c: Arena Foundations](backlog/m0c-arena-foundations.md) |
+| The Arena | [M0c: Arena Foundations](backlog/m0c-arena-foundations.md), then [M1: Arena epics](backlog/m1-battle-core-and-catalog.md#arena-epics-e-m1-3-e-m1-4-e-m1-5) |
 | Moves, learnsets, TMs | [M1: Catalog](backlog/m1-battle-core-and-catalog.md), then [M3: TM/HM lists](backlog/m3-region-authoring.md) |
+| The webapp builder | [M3: Webapp Builder](backlog/m3-region-authoring.md#e-m3-2--webapp-builder) and concept [28](architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md) |
 | Platform, CI, data hygiene | [M0a: Platform Hygiene](backlog/m0a-platform-hygiene.md) |
 | The engine and content primitives | [M0b: Engine & Content Foundations](backlog/m0b-content-foundations.md) |
 | Going live (hosting, operations, the Arena's Discord side) | [M2: Arena Release](backlog/m2-launch-readiness.md) |

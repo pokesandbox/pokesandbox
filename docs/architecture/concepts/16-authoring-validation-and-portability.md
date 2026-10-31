@@ -96,20 +96,20 @@ authoring.execute(actor, command) → { ok: true; changes: ContentChange[]; warn
 
 Zod command schemas double as form schemas in the webapp and modal validation in Discord.
 
-**What each client is good for:**
-- **Discord builder:** quick edits, mobile, templates ("Add Gym Leader"), Region Health checks, publishing.
-- **Webapp builder:** the location graph canvas, script step editor, encounter-table grids, bulk edits, and JSON import/export.
+**What each client is for (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)):**
+- **Webapp builder (mobile-first):** all MVP authoring: settings and rules, locations and the map, encounters, NPCs, trainers, scripts and templates, shops, transport, TM/HM lists, Region Health, the publish review, and JSON import/export.
+- **Discord (`/region`):** Region Health summary, publishing, and Open in builder links. The existing Discord builders stay until the webapp reaches parity with them.
 
-Both call the same commands, so either can be the "complete" one without duplicating rules.
+Both call the same commands, so a Discord editor can be added for any feature later without duplicating rules.
 
-**Migration:** new builder features (connections, encounters, NPCs, scripts, shops) go through `libs/authoring` from day one. The existing pokedex, progression, and locations menus move over during M0/M3, which is also when they adopt content keys and conditions.
+**Migration:** new builder features (connections, encounters, NPCs, scripts, shops) go through `libs/authoring` from day one, with webapp UIs. The existing Pokédex, progression, and locations menus move onto authoring commands during M0b (M0B-17..19), which is also when they adopt content keys and conditions. They stay visible and usable in Discord until the webapp has parity ([28 § Transition](28-webapp-authoring-and-mobile-first-ux.md#transition-the-existing-discord-builders)).
 
-## Builder UX notes (Discord)
+## Builder UX notes
 - The builder should surface **"used by"** before deletes ("Badges is used by 4 conditions. Delete anyway?").
-- A **"Region Health"** button on `/region` shows validator output grouped by severity, with jump links into the relevant menu.
+- **Region Health** shows validator output grouped by severity, with jump links into the relevant editor. `/region` shows a summary with Open in builder links.
 - **Templates over raw editors** (Gym Leader, Route, Pokémon Center, Starter Gift) keep the "learn by building" goal while preventing 30-step setups.
 - **Preview/playtest:** "Play draft as test journey". It's the fastest feedback loop for authors (later, but design the engine to support it: a release built from the draft, and a journey flagged `isTest`).
-- Discord is good for quick edits and poor for 200-node graphs, which is why targeted webapp editors are in the MVP (see [Webapp editors in MVP](#webapp-editors-in-mvp-decided-oct-2026)).
+- Discord is good for quick actions and poor for 200-node graphs and long step lists, which is why MVP authoring is webapp-first ([28](28-webapp-authoring-and-mobile-first-ux.md)).
 
 ## MVP scope
 - Tier 1 and basic Tier 2 (reachability ignoring conditions, plus "grants exist for required milestones/flags"), the Region Health view, delete-guard "used by", and JSON export/import of a region.
@@ -142,24 +142,19 @@ Editing afterwards works either way: fix it in the tools on the HQ server and re
 
 **Data-source caution:** prefer openly licensed sources (e.g. PokeAPI) for generated data, and keep the generator plus its sources documented in the repo.
 
-## Webapp editors in MVP (decided Oct 2026)
-Targeted webapp editors for the authoring tasks that are **most painful in Discord**. They're built on the same `libs/authoring` commands (per-entity optimistic concurrency, role checks), so Discord stays complete.
+## Webapp editors (decided Oct 2026; revised by Q36)
+MVP authoring is **webapp-first and mobile-first** ([28](28-webapp-authoring-and-mobile-first-ux.md)). This replaces the earlier plan of Discord-complete authoring with targeted webapp editors. The editors below are the ones that most need a real screen; every other MVP builder feature (region settings and rules, progressions, shops, transport networks, NPC basics, TM/HM lists) gets a webapp form too. All of them are built on the same `libs/authoring` commands (per-entity optimistic concurrency, role checks), so a Discord editor can be added for any of them later.
 
-| Editor | Why Discord struggles | Webapp shape |
+| Editor | Why Discord struggles | Webapp shape (phone first; wide screens get more) |
 |---|---|---|
-| **Script step editor** | Long ordered step lists, labels/branches, multi-paragraph dialogue | Step list with drag-reorder, inline dialogue editing, branch/label visualization, template insertion |
-| **Region map canvas** | Hundreds of locations and directional edges, grouping, traversal gates | Node-edge canvas (e.g. React Flow) with two-way edge drawing, parent grouping, gate badges on edges |
-| **Encounter table grid** | Species × level range × weight × method × condition | Spreadsheet-style grid with species search, weight-percentage preview, condition column |
-| **Trainer party editor** | Up to 6 Pokémon × moves/levels × conditioned party variants | Variant tabs, each with a party table; learnset-aware move pickers; condition per variant |
+| **Script step editor** | Long ordered step lists, labels/branches, multi-paragraph dialogue | Step list with drag handles and move up/down, a full-screen step editor, inline passage editing with a Discord preview, template insertion |
+| **Region map** | Hundreds of locations and directional edges, grouping, traversal gates | List/detail of locations with their connections on phones; a node-edge canvas (e.g. React Flow) with two-way edge drawing and gate badges on wide screens |
+| **Encounter table grid** | Species × level range × weight × method × condition | One row per encounter as a card on phones, a spreadsheet-style grid on wide screens, with species search and a weight-percentage preview |
+| **Trainer party editor** | Up to 6 Pokémon × moves/levels × conditioned party variants | Variant tabs, each with a party list; learnset-aware move pickers; condition per variant |
 | **Condition builder** (shared component) | Nested any/all/not trees | Tree editor used inside every editor above |
 | **Region Health** (read-only) | Long validator reports with cross-links | Grouped issue list linking to the relevant editor |
-
-Stays Discord-first (small, form-like): region settings and rules, progression definitions, Pokédex slotting (exists), shops, transport networks, NPC basics. They get webapp forms later as needed.
-
-## Principle: Discord-complete authoring (decided Oct 2026)
-Every authoring capability must be usable from Discord. The webapp builder is a richer, *additional* client for graphs, scripts, grids, and bulk edits, but never the only path. Both call the same `libs/authoring` commands (see [Authoring](#authoring-the-same-pattern-for-region-building) above), so this costs UI work, not duplicated rules. Lean on Discord Components v2 for denser, more editor-like builder screens. FlowCord supports Components v2 (confirmed Oct 2026).
 
 ## Open questions
 - ~~Block publish on errors only?~~ **Decided (Oct 2026):** yes. Errors block. Warnings and info never block, but they are **shown before the publish button is pressed**: publishing is two steps, a review (validation results plus the release diff) and then a confirm. The confirm is tied to the reviewed draft, so if the draft changes in between, the review runs again.
 - ~~Official Kanto template?~~ **Decided (Q25):** yes, see [Official templates](#official-templates-decided-oct-2026).
-- ~~Webapp builder in MVP?~~ **Decided (Q24):** targeted editors, see [Webapp editors in MVP](#webapp-editors-in-mvp-decided-oct-2026).
+- ~~Webapp builder in MVP?~~ **Decided (Q24, revised by Q36):** MVP authoring is webapp-first and mobile-first, see [Webapp editors](#webapp-editors-decided-oct-2026-revised-by-q36) and [28](28-webapp-authoring-and-mobile-first-ux.md).

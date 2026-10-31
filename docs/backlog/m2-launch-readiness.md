@@ -133,7 +133,7 @@ Everything needed to run the bot and webapp for real players: a managed host for
 
 The Discord side of PvP and PvAI, following [25 § Multiplayer boundary](../architecture/concepts/25-arena.md#multiplayer-boundary-with-flowcord-decided-oct-2026-q34). BattleService (M1) owns rounds, timers, and recovery. This epic owns challenges, the public battle message, participant checks, and private choice prompts, all restart-safe and behind a `BattleSurface` port. Scenario numbers below refer to the table in that section.
 
-**Depends on M1 BattleService items** (drafted with M1, contract in 14 § Ownership): `choose` with `rqid` validation and a per-battle queue; per-side persisted deadlines with default-on-timeout and a consecutive-timeout forfeit; `recover()` re-arming timers with a fresh window and emitting `battleRecovered`.
+**Depends on M1** ([Arena epics](m1-battle-core-and-catalog.md#arena-epics-e-m1-3-e-m1-4-e-m1-5)): `choose` with `rqid` validation and a per-battle queue (M1-05); persistence and `recover()` emitting `battleRecovered` (M1-06); battle leases (M1-07); per-side persisted deadlines with default-on-timeout, a consecutive-timeout forfeit, and a fresh window on recovery (M1-08); the battle view builders (M1-10); legal-team checks (M1-14); and AI players (M1-15, M1-16).
 
 ### M2-08 · Arena interaction router with stable custom IDs
 `Type: Task` · `Parent: E-M2-2` · `Priority: P0` · `Size: S` · `Labels: area:bot` · `Blocked by: —` · `agent-ready: yes` · `Owner: junior`
@@ -148,7 +148,7 @@ The Discord side of PvP and PvAI, following [25 § Multiplayer boundary](../arch
 **Refs:** [25 § Ownership](../architecture/concepts/25-arena.md#ownership)
 
 ### M2-09 · Challenges: direct and open, atomic claim, expiry
-`Type: Feature` · `Parent: E-M2-2` · `Priority: P0` · `Size: M` · `Labels: area:bot, area:shared-models` · `Blocked by: M2-08` · `agent-ready: yes` · `Owner: junior`
+`Type: Feature` · `Parent: E-M2-2` · `Priority: P0` · `Size: M` · `Labels: area:bot, area:shared-models` · `Blocked by: M2-08, M1-05, M1-14` · `agent-ready: yes` · `Owner: junior`
 
 **Summary:** A `Challenge` record (`challengerId`, `targetUserId?`, `formatId`, `teamId`, `channelId`, `messageId`, `status: open|claimed|declined|cancelled|expired`, `expiresAt`) and the public challenge message. The `/arena` hub (FlowCord) creates challenges. Responses go through M2-08.
 
@@ -162,21 +162,21 @@ The Discord side of PvP and PvAI, following [25 § Multiplayer boundary](../arch
 **Refs:** [25 § Acceptance scenarios](../architecture/concepts/25-arena.md#acceptance-scenarios) (1, 2)
 
 ### M2-10 · Public battle message projector (`BattleSurface`)
-`Type: Feature` · `Parent: E-M2-2` · `Priority: P0` · `Size: M` · `Labels: area:bot` · `Blocked by: M2-08` · `agent-ready: no` · `Owner: senior`
+`Type: Feature` · `Parent: E-M2-2` · `Priority: P0` · `Size: M` · `Labels: area:bot` · `Blocked by: M2-08, M1-06, M1-10` · `agent-ready: no` · `Owner: senior`
 
-**Summary:** Subscribes to BattleService events and keeps one public channel message per match current. It's the only writer of that message. Defines the `BattleSurface` port and the pure `BattleView → Components v2` builders.
+**Summary:** Subscribes to BattleService events and keeps one public channel message per match current. It's the only writer of that message. Defines the `BattleSurface` port and renders through the pure view builders from M1-10.
 
 **Acceptance criteria**
 - An `ArenaMatch` record (`battleId`, `challengeId?`, `guildId`, `channelId`, `messageId`, `players[]`) in `apps/bot`. `libs/battle` holds no Discord IDs.
 - One message edit per resolved turn (coalesced), showing both sides, HP, the last turn's log, and the current deadline as a Discord relative timestamp. Buttons are **Choose** and **Forfeit**.
 - On `battleRecovered`, the stored message is re-rendered in place. If the message is gone, a new one is posted and `messageId` updated.
-- View builders are pure functions with snapshot tests. A fake `BattleSurface` lets scenario tests run without Discord.
+- A fake `BattleSurface` lets scenario tests run without Discord.
 - Rate-limit errors back off and retry without dropping the final state.
 
 **Refs:** [25 § Ownership](../architecture/concepts/25-arena.md#ownership) (scenarios 3, 6, 8), [26 § Battles](../architecture/concepts/26-discord-surface-and-ux-patterns.md#battles)
 
 ### M2-11 · Private choice prompts
-`Type: Feature` · `Parent: E-M2-2` · `Priority: P0` · `Size: M` · `Labels: area:bot` · `Blocked by: M2-08, M2-10` · `agent-ready: no` · `Owner: senior`
+`Type: Feature` · `Parent: E-M2-2` · `Priority: P0` · `Size: M` · `Labels: area:bot` · `Blocked by: M2-08, M2-10, M1-08` · `agent-ready: no` · `Owner: senior`
 
 **Summary:** A participant pressing **Choose** gets an ephemeral prompt for their current request (moves, switches). Built on plain handlers, unless flowcord#105 (and ideally #106/#107) has shipped in a release, planned for alpha.3, before this starts (see [FlowCord dependencies](#flowcord-dependencies)).
 
@@ -189,7 +189,7 @@ The Discord side of PvP and PvAI, following [25 § Multiplayer boundary](../arch
 **Refs:** [25 § Acceptance scenarios](../architecture/concepts/25-arena.md#acceptance-scenarios) (3, 5, 7), [26 § FlowCord patterns](../architecture/concepts/26-discord-surface-and-ux-patterns.md#flowcord-patterns)
 
 ### M2-12 · Arena scenario tests and a restart drill
-`Type: Task` · `Parent: E-M2-2` · `Priority: P1` · `Size: S` · `Labels: area:bot, area:battle` · `Blocked by: M2-09, M2-10, M2-11` · `agent-ready: yes` · `Owner: agent`
+`Type: Task` · `Parent: E-M2-2` · `Priority: P1` · `Size: S` · `Labels: area:bot, area:battle` · `Blocked by: M2-09, M2-10, M2-11, M1-07, M1-15` · `agent-ready: yes` · `Owner: agent`
 
 **Acceptance criteria**
 - Headless tests for scenarios 1–8, using BattleService with a fake `Clock`/scheduler and the fake `BattleSurface`: 90s timeout → default move, 3 consecutive → forfeit, the counter resets on a real choice, parallel accepts, and spectator presses.

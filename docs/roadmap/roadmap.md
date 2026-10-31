@@ -64,6 +64,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 **Goal:** An admin can build a complete Kanto (Pallet → Champion) using only PokeSandbox tools, publish it, and players can play it start to finish.
 
 ### Region building (admin)
+**Webapp-first, mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)):** every builder feature below is a webapp screen on the shared `libs/authoring` commands, designed for phones first. Discord keeps Region Health, publishing, and Open in builder links, and the existing Pokédex, progression, and location builders stay visible until the webapp has parity with them.
 - Region config: name, currency, rules preset, starting location, respawn default.
 - Regional pokedex (exists) + TM/HM list + learnset policy.
 - Locations: kinds, grouping, directional edges with conditions, services, two-way toggle.
@@ -75,7 +76,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 - Transportation networks: Fly and Ferry templates.
 - Shops: conditioned entries, buy/sell, entries priced in a numeric progression (e.g. Game Corner coins).
 - **Publish:** review (validator results + release diff, warnings shown before confirming) → immutable release. Rule changes on a live region are reviewed like any content. Pause/undeploy is separate from discovery. Release notes are opt-in.
-- **Targeted webapp editors** on the same authoring commands (Discord stays complete): script step editor, region map canvas, encounter table grid, trainer party editor, shared condition builder, read-only Region Health.
+- **Webapp builder** on the authoring commands: list/detail editors for every feature, plus the script step editor, region map (canvas on wide screens), encounter table grid, trainer party editor, shared condition builder, and Region Health. The webapp moves off antd to Tailwind plus a headless component library.
 - Region export/import (JSON bundle) → the official "Kanto Classic" template (generator script for bulk data, builder tools for story, repo bundle as the source of truth).
 
 ### Playing
@@ -114,7 +115,8 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 | Living region | Region state players shape together: first-X NPCs and gifts, NPCs that remember, shared goals, story chapters, trainer ghosts | `RegionState`, region facts/effects ([24](../architecture/concepts/24-shared-state-region-and-server.md)) |
 | Environment | Weather/terrain by location, swarms, visible-spawn UI | Encounter conditions |
 | Staff ops | Grant items/Pokémon/money/TMs with audit log | Effect executor |
-| Webapp | Full builder beyond the MVP editors, battle replays, richer journey and log views | MVP webapp editors, adventure log, region bundles |
+| Webapp | Battle replays, richer journey and log views, bulk editing | MVP webapp builder, adventure log, region bundles |
+| Discord authoring parity | Discord editors for new authoring features where worth it (a script step-list editor for small edits, quick encounter tweaks); retire each existing Discord builder only once the webapp has parity with it | `libs/authoring` commands shared by both clients ([28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)) |
 | Narration | Narration on adventure log entries by the owner, invited co-authors, and narration moderators; thread capture; AI drafts | Adventure log ([22](../architecture/concepts/22-adventure-log-and-narration.md)) |
 | Arena + adventure | Arena battles with copies of adventure Pokémon (format level scaling, stat-investment overrides) | PokemonInstance in Showdown set shape |
 | Systems | Shop purchase limits and restocking, timed script waits (`timer` kind), level scaling, configurable trade evolution without trading, regional forms for Gen 2+ regions, `/bag`/`/party` shortcuts | Reserved fields in shops and `RegionRules` |
@@ -136,7 +138,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 ---
 
 ## Cross-cutting tracks (run alongside every phase)
-- **Docs & onboarding:** admin guides per builder menu, template walkthroughs, player help.
+- **Docs & onboarding:** admin guides per builder screen, template walkthroughs, player help.
 - **Quality:** engine unit tests per predicate/effect/step; validator tests; Showdown patch tests; e2e smoke on a test guild.
 - **Observability:** structured logs keyed by `journeyId`/`battleId`/`actionId`; error reporting; basic metrics (active players, battles/hour).
 - **Community:** alpha server, feedback channels, release notes generated from region and bot releases.

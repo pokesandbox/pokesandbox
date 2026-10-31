@@ -9,9 +9,9 @@ Issue drafts reviewed here before they're created in GitHub. Once created, the i
 | [`m0a-platform-hygiene.md`](m0a-platform-hygiene.md) | M0a: Platform Hygiene |
 | [`m0c-arena-foundations.md`](m0c-arena-foundations.md) | M0c: Arena Foundations (the Arena track's first step) |
 | [`m0b-content-foundations.md`](m0b-content-foundations.md) | M0b: Engine & Content Foundations |
-| [`m1-battle-core-and-catalog.md`](m1-battle-core-and-catalog.md) | M1: Battle Core & Catalog (moves and learnsets catalog, so far) |
+| [`m1-battle-core-and-catalog.md`](m1-battle-core-and-catalog.md) | M1: Battle Core & Catalog (moves and learnsets catalog; Arena epics: BattleService, teams and formats, AI) |
 | [`m2-launch-readiness.md`](m2-launch-readiness.md) | M2: Arena Release (FlowCord dependencies, launch readiness, and the Arena multiplayer surface, so far) |
-| [`m3-region-authoring.md`](m3-region-authoring.md) | M3: Region Authoring (TM/HM lists, so far) |
+| [`m3-region-authoring.md`](m3-region-authoring.md) | M3: Region Authoring (TM/HM lists and the webapp builder foundation, so far) |
 | *(M1, the rest of M2, and M3–M6 drafted once M0a is underway)* | |
 
 ## Format
@@ -43,7 +43,7 @@ Everything needed to draft the remaining milestones is in the repo. Nothing depe
 **Every milestone file starts with a "Start here" section** giving a newcomer the context for that file (what it is, what to read, where the code goes, the order), linking to [`docs/start-here.md`](../start-here.md) for everything general. Keep that pattern for new files.
 
 **Read first, in this order:**
-1. [`open-questions.md`](../architecture/open-questions.md): Q1–Q35 and the "Smaller decisions" index. This is the decision record.
+1. [`open-questions.md`](../architecture/open-questions.md): Q1–Q36 and the "Smaller decisions" index. This is the decision record.
 2. The relevant concept docs' **Decisions** sections. Where a concept's Options or Design text differs from its Decisions, the Decisions win. Struck-through open questions are answered.
 3. [`mvp.md`](../roadmap/mvp.md) for milestone scope, the gap matrix, and the Kanto Classic adaptations (M6).
 

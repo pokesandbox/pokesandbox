@@ -1,14 +1,15 @@
 # M3: Region Authoring (backlog draft, partial)
 
-Drafted so far: the **TM/HM lists** epic (E-M3-1). The rest of M3 (region config, location kinds and connections, encounters, transport, shops, validator tiers, bundles) is drafted later.
+Drafted so far: the **TM/HM lists** epic (E-M3-1) and the start of the **Webapp Builder** epic (E-M3-2: the UI stack and the builder shell). The rest of M3 (region config, location kinds and connections, encounters, transport, shops, validator tiers, bundles) is drafted later.
 
 Refs: concept [12 § TM/HM lists](../architecture/concepts/12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026), [`mvp.md` § M3](../roadmap/mvp.md#m3-region-authoring)
 
 ## Start here
 New to the project? Read [`docs/start-here.md`](../start-here.md) first, then the moves and learnsets primer in [E-M1-2 § Start here](m1-battle-core-and-catalog.md#start-here-no-prior-context-needed), since these issues build on that catalog. Context specific to this file:
 - **What M3 is:** the region builder: everything admins use to author a region. This draft covers only TM/HM lists so far.
+- **Where it's built:** the **webapp**, mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). Rules live in `libs/authoring` commands; the webapp screen is a thin client of them. Phone-first layouts, list/detail editors, 44px touch targets, no hover-only interactions, Playwright tests at phone width.
 - **In Pokémon terms:** every region gets its own TM case, so "TM24" means whatever that region says (Thunderbolt in Gen 1). HMs are reusable; Gen 1 TMs are single-use.
-- **Order:** M3-01 and M3-02 can start once M1-01/M1-02 exist; M3-03 needs the validator skeleton (M0B-22); M3-04 (the builder menu) waits for the authoring layer (M0B-16).
+- **Order:** M3-01 and M3-02 can start once M1-01/M1-02 exist; M3-03 needs the validator skeleton (M0B-22); M3-04 (the builder screen) waits for the authoring layer (M0B-16) and the webapp builder shell (M3-06). E-M3-2 has no game dependencies: M3-05 can start any time.
 
 ## E-M3-1 · TM/HM Lists
 `Type: Epic` · `Priority: P0`
@@ -67,15 +68,49 @@ Using a TM from the bag (teaching it to a Pokémon) belongs to the M5 bag work, 
 
 **Refs:** [12 § TM/HM lists](../architecture/concepts/12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026), [16](../architecture/concepts/16-authoring-validation-and-portability.md)
 
-### M3-04 · TM/HM list builder (Discord)
-`Type: Feature` · `Parent: E-M3-1` · `Priority: P0` · `Size: M` · `Labels: area:bot, area:authoring, domain:catalog` · `Blocked by: M0B-16, M3-01, M3-02, M3-03` · `agent-ready: no` · `Owner: junior`
+### M3-04 · TM/HM list builder (webapp)
+`Type: Feature` · `Parent: E-M3-1` · `Priority: P0` · `Size: M` · `Labels: area:webapp, area:authoring, domain:catalog` · `Blocked by: M0B-16, M3-01, M3-02, M3-03, M3-06` · `agent-ready: no` · `Owner: junior`
 
-**Summary:** A region menu for managing the TM/HM list, built on `libs/authoring` commands so the webapp can reuse them later.
+**Summary:** A webapp screen for managing a region's TM/HM list, built on `libs/authoring` commands (so a Discord editor can be added later without new rules).
 
 **Acceptance criteria**
 - Authoring commands: `region.moveMachines.set` (add/edit one machine), `.remove`, `.reorder`, and `.applyPreset` (e.g. Gen 1). Each validates input and returns warnings from M3-03.
-- Discord menu: a paginated list ("TM24 · Thunderbolt · 12 species"), add/edit via move search (autocomplete, filtered to moves available in the region's move generation), remove with confirmation, and "Apply Gen 1 preset" (confirms before replacing an existing list).
+- Webapp screen, mobile-first list/detail: a list ("TM24 · Thunderbolt · 12 species"), tap to edit in a detail view with move search (the shared search combobox, filtered to moves available in the region's move generation), remove with confirmation, reorder with drag handles and move up/down, and "Apply Gen 1 preset" (confirms before replacing an existing list). Warnings show next to the affected machine.
 - Selecting a machine shows the compatible species from the regional dex.
-- Follows [26](../architecture/concepts/26-discord-surface-and-ux-patterns.md) (locked options explain themselves; long lists grouped and paginated).
+- Follows [28 § Mobile-first rules](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#mobile-first-rules), with a Playwright test at phone width.
 
-**Refs:** [16 § Authoring](../architecture/concepts/16-authoring-validation-and-portability.md#authoring-the-same-pattern-for-region-building), [26](../architecture/concepts/26-discord-surface-and-ux-patterns.md)
+**Refs:** [16 § Authoring](../architecture/concepts/16-authoring-validation-and-portability.md#authoring-the-same-pattern-for-region-building), [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)
+
+## E-M3-2 · Webapp Builder
+`Type: Epic` · `Priority: P0`
+
+MVP authoring is webapp-first and mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). This epic sets up the webapp's UI stack and the builder shell every editor uses. The editors themselves (region map, encounter grid, trainer parties, script steps, condition builder, Region Health) are drafted with their features; the list is in [`mvp.md` § M3](../roadmap/mvp.md#m3-region-authoring).
+
+### M3-05 · Move the webapp off antd onto Tailwind and a headless library
+`Type: Task` · `Parent: E-M3-2` · `Priority: P1` · `Size: M` · `Labels: area:webapp, dependencies` · `Blocked by: —` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** antd is used in seven files (`HeaderPrivate`, `HeaderPublic`, `SearchBar`, `ServerCard`, `ProfilePage`, `DiscordIcon`, `ThemeProvider`) alongside Tailwind. Replace it with Tailwind plus a headless component library, so every builder screen can be built mobile-first with one styling system ([28 § UI stack](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#ui-stack-off-antd-onto-tailwind-plus-a-headless-library)).
+
+**Acceptance criteria**
+- **Spike first (time-boxed to a day), written up in the PR:** build a dialog, a species search combobox, and a sortable list with **shadcn/ui (Radix)**, the recommended choice, and with **React Aria**; compare touch behavior on a phone, accessibility, bundle size, and React 19 / Next 16 support. The owner confirms the choice before the migration.
+- Every antd usage replaced; `antd` and `@ant-design/*` removed from `package.json`; the dark/light theme handled with Tailwind (CSS variables) instead of antd's `ConfigProvider`.
+- Tailwind upgraded to v4 if the chosen library's current components expect it.
+- The existing pages look and behave the same on desktop and work at phone width (a Playwright screenshot at 390×844 and at desktop for each page, attached to the PR).
+- `npx nx lint webapp`, typecheck, and the webapp tests pass.
+
+**Refs:** [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)
+
+### M3-06 · Webapp builder shell, mobile-first
+`Type: Feature` · `Parent: E-M3-2` · `Priority: P0` · `Size: M` · `Labels: area:webapp, area:authoring` · `Blocked by: M3-05, M0B-16` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** The frame every builder screen lives in: who can open a region's draft, the list/detail layout, saving through authoring commands, and conflict handling.
+
+**Acceptance criteria**
+- A route per region draft (`/regions/<regionId>/build/...`), reachable only by members with the server's admin/mod roles. Roles are resolved server-side (bot or Discord API), never from the browser ([16](../architecture/concepts/16-authoring-validation-and-portability.md#authoring-the-same-pattern-for-region-building)). Others get a clear "You don't have builder access for this server".
+- A tRPC mutation that wraps `authoring.execute(actor, command)` and returns warnings and issues to the form.
+- A list/detail layout: full-screen list and detail on phones (with back navigation), side by side from `md:` up.
+- Conflicts (`version` mismatch) show "This was changed by X, reload" with a reload button, never a silent overwrite.
+- Playwright tests at 390×844 and desktop: open a draft, edit one field of a location through the shell, see the conflict message when the version changed underneath.
+- Follows [28 § Mobile-first rules](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#mobile-first-rules).
+
+**Refs:** [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md), [16](../architecture/concepts/16-authoring-validation-and-portability.md)
