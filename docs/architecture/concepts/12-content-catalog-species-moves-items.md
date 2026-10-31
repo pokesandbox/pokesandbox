@@ -224,6 +224,27 @@ The catalog never replicates callbacks. At battle time the isolated custom-data 
 ### Overrides (post-MVP)
 A region's override of a canon move (a *linked* library entry) is injected as `{ inherit: true, …changedFields }`. Showdown's merge keeps every key the override doesn't set, **callbacks included**, so "Thunderbolt at 95 power" behaves normally. Some fields are **controlled by callbacks** (power for Low Kick, Return, Gyro Ball, Eruption via `basePowerCallback`; type for Weather Ball and Hidden Power via `onModifyType`/`onModifyMove`; hit counts). The builder reads `hooks` and blocks or explains those fields ("this move's power is calculated, so a power override has no effect").
 
+- **Canon documents stay untouched.** An override is a separate linked library entry (`subject: 'move'`) owned by a publisher: the canon `moveId` it overrides, the `catalogVersion` and a **snapshot** of the base it patched, and a data-only patch on the resolved form for one generation (plus optional text changes). Each region picks at most one definition per move, and its release embeds the result. `MoveDefinition` needs no override fields.
+
+#### When the canon catalog is upgraded
+A bot-wide catalog upgrade never breaks an override or changes a region by itself:
+1. **Published releases are unaffected.** They embed the resolved data, override applied. Battles inject that data; behavior comes from the installed Showdown, which normally means upstream bug fixes.
+2. **The next compile keeps working.** It uses the override's base snapshot plus its patch, not the new canon. The publish review flags the drift: "Thunderbolt override is based on `cat-2026-10-31-1`; canon changed in `cat-2027-01-15-1`: accuracy 100 → 95. [Upgrade] [Keep current base]".
+3. **Upgrading is a three-way merge** (old base, new base, patch): fields only upstream changed are taken, fields only the author changed are kept, and fields both changed are shown as conflicts, with the author's value winning unless they pick upstream's. Keeping the current base is always allowed.
+
+Errors happen only on real conflicts, each with a named fix in the review:
+
+| Situation | Result | Fix offered |
+|---|---|---|
+| The base move no longer exists in the catalog (removed or renamed upstream) | Error | **Detach** into an original custom move (`<ns>:<slug>`) built from the snapshot, or remove the override |
+| A patched field is now controlled by a callback (the move's `hooks` changed) | Warning: "power is now calculated; your override has no effect" | Drop the field from the patch, or keep the old base |
+| A patched value is no longer valid (a field's allowed values changed) | Error naming the field | Edit the value |
+| A custom move's template behaves differently after the upgrade | Warning, from the archetype sim tests | Review the template |
+
+#### Keeping overrides additive (MVP)
+- **`MoveId` accepts namespaced IDs.** The shared type allows canon IDs (`thunderbolt`) and publisher IDs (`p7k2m9x4:sparkbolt`); only the canon collection enforces the plain Showdown format on its own records. Otherwise every field typed `MoveId` (learnsets, TM lists, trainer movesets) would reject custom moves later. Species IDs already work this way.
+- **Everything reads moves through the catalog read service**, `getMove(moveId, { gen, region? })`, never raw documents. `region` is unused in the MVP; overrides later plug into that one function instead of every caller.
+
 ### Custom moves (post-MVP, Q28)
 - A custom move (`<ns>:<slug>`) **borrows an existing move's mechanics and changes data only**. At battle time its dex entry is built from the template move's entry (functions included) with the overrides applied, under the new ID.
 - **Store a recipe, not functions:** `{ template: MoveId; overrides: Partial<MoveData> }`. Battles are persisted as seed + input log and replayed on recovery, so everything crossing into a battle must be serializable; functions are re-attached when the dex is built.

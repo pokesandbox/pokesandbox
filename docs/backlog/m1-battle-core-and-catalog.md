@@ -107,6 +107,7 @@ MoveData = {
 - `moveDefinitionSchema` (Zod) and `moveDefinitionDbSchema` (Mongoose) following the model conventions above, matching the shape above. `GenId` is `'gen1' | … | 'gen9'`.
 - `MoveData` covers every plain-data field Showdown has for moves (the list above is the common ones; include any other non-function field present in the source). No functions, and no text: text lives in `text`.
 - A helper `resolveMove(def, gen) → { data: MoveData; desc: string; shortDesc: string }` that applies `genOverrides[gen]` over `base` and `text.genOverrides[gen]` over `text`, with unit tests.
+- A shared `MoveId` type that accepts both canon IDs (`thunderbolt`) and namespaced publisher IDs (`<publisherId>:<slug>`, used by custom moves later). Only the canon `MoveDefinition` collection validates the plain Showdown format on its own records, so fields typed `MoveId` elsewhere never reject custom moves ([12 § Keeping overrides additive](../architecture/concepts/12-content-catalog-species-moves-items.md#keeping-overrides-additive-mvp)).
 - Unique index on `moveId`. A DTO for the read path.
 - `CatalogVersion` model (`_id`, `showdownVersion`, `importedAt`, `notes?`, `counts`), shared by every catalog collection. **Why:** it keeps the catalog in sync with the Showdown version running battles, lets releases pin and embed the data they were validated against, gives overrides a base to merge upgrades from, and makes a partial import detectable ([12 § Catalog versions](../architecture/concepts/12-content-catalog-species-moves-items.md#catalog-versions-decided-oct-2026)).
 
@@ -163,7 +164,7 @@ MoveData = {
 - From a Pokédex entry in the builder: a paginated move list for a chosen generation (default: Gen 1 until regions have rules), grouped by method (level-up with levels, TM/HM, other).
 - Reads the species' `ResolvedLearnset` for the chosen generation.
 - Selecting a move shows its details for that generation: type, category, power, accuracy, PP, priority, and the short description (the generation's text block when there is one).
-- Reads through a small catalog read service (`getMove(moveId, gen)`, `getLearnset(speciesId, gen)`) in `shared/`, not direct queries from the menu.
+- Reads through a small catalog read service in `shared/`, not direct queries from the menu: `getMove(moveId, { gen, region? })` and `getLearnset(speciesId, { gen, region? })`. `region` is accepted but unused in the MVP, so publisher overrides can plug into these functions later without touching callers.
 - Locked or unavailable options follow [26 § Menus and feedback](../architecture/concepts/26-discord-surface-and-ux-patterns.md#menus-and-feedback).
 
 **Changes later:** the generation comes from `RegionRules` once it exists; rebase alongside M0B-17's Pokédex builder migration.
