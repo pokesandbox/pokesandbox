@@ -249,7 +249,7 @@ Make the data layer safe for real player state: transactions, constraints, a saf
 `Type: Task` · `Parent: E-M0A-3` · `Priority: P2` · `Size: S` · `Labels: area:shared-models` · `Blocked by: —` · `agent-ready: yes` · `Owner: agent`
 
 **Acceptance criteria**
-- `resolveSpriteUrl(species, { gen, game, palette, shiny, facing })` is the only way UI code gets sprite URLs. It falls back to the Showdown sprite CDN, and returns `null` when nothing exists (e.g. a custom species with no art), so callers show text instead of a broken image.
+- `resolveSpriteUrl(species, { gen, game, palette, shiny, facing })` is the only way UI code gets sprite URLs. It falls back to the Showdown sprite CDN, and returns `null` when nothing exists (e.g. a custom species with no art), so callers show text instead of a broken image. When the requested generation lacks the species, it tries the next generation up, then down ([18 § Sprite settings](../architecture/concepts/18-rules-time-and-randomness.md#sprite-settings-decided-nov-2026); the configurable `missing` policy and per-entry overrides come later). `facing: 'back'` falls back to the front sprite.
 - Fix the 3 Gen 2 shiny entries that point at `imgur.com/<id>` pages (Weedle, Kakuna, Beedrill) to direct `i.imgur.com/<id>.png` images.
 - Footprint/shape Bulbagarden hotlinks are listed in an issue for later mirroring (not fixed here).
 

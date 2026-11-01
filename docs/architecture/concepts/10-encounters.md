@@ -122,6 +122,7 @@ IntroPool = { variants: { passage: Passage; weight?: number; condition?: Conditi
 - **`firstSighting` is computed in the MVP** (the species isn't in `journey.dex.seen` yet), because the Pokédex needs it anyway.
 - **Species text lives on the regional Pokédex entry**, not the species, so the same Pokémon can read differently in different regions. A server-library species may later carry a default that regions fall back to ([27](27-server-content-library-and-overrides.md)).
 - **Legendaries and event Pokémon stay scripts** with a `wildBattle` step and their own passages. The step's reserved `intro: 'auto' | 'none'` decides whether the species' first-sighting text is also shown.
+- **Intros are independent of graphics.** They show in sprite regions too, as flavor above the battle view's sprites; in text-mode regions they're the only depiction, which is where they matter most. A first-sighting passage can carry its own `image` block (e.g. a legendary's splash art) regardless of the region's sprite set.
 - **First sightings in trainer battles** (the rival's starter, a gym leader's ace) are post-MVP too. They come from the battle's send-out events and appear in the turn view ([26](26-discord-surface-and-ux-patterns.md#battles)).
 
 ## MVP scope

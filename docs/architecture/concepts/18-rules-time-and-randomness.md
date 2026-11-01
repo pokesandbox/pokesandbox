@@ -35,7 +35,8 @@ RegionRules {
     payout: GenId;                            // trainer prize money
   };
   graphics: {
-    sprites: { mode: 'sprites' | 'text'; gen: GenId; game?: string; palette?: 'normal' | 'gray' | 'color' };   // MVP: original Gen 1 sprites. Kanto Classic default: sprites, g1 'y', palette 'color'. 'text': no images anywhere (Pokémon shown by name and type)
+    sprites: { mode: 'sprites' | 'text'; gen: GenId; game?: string; palette?: 'normal' | 'gray' | 'color';
+               facing: 'back' | 'front'; missing: 'newer' | 'older' | 'text' };   // see Sprite settings below.   // MVP: original Gen 1 sprites. Kanto Classic default: sprites, g1 'y', palette 'color'. 'text': no images anywhere (Pokémon shown by name and type)
     shinies: boolean;                         // Gen 1 has none
   };
   systems: {                                  // gameplay systems, mostly not generation-bound
@@ -114,6 +115,15 @@ Unit-test vectors for formula implementations. Gen 1 vectors are worked from pok
 | Whiteout, Gen 4+: `base(badges) × highest party level`, capped at money; bases for 0–8 badges 8, 16, 24, 36, 48, 64, 80, 100, 120 | 2 badges, highest level 20, money ≥ 480 | lose 480 |
 | Whiteout, Gen 4+ | 8 badges, highest level 50, money 3000 | lose 3000 (capped) |
 
+## Sprite settings (decided Nov 2026)
+- **Region default, entry override.** `graphics.sprites` sets the region's set (e.g. Gen 3, Emerald). A regional Pokédex entry can override it: `RegionDexEntry.sprite?: { set: { gen: GenId; game?: string } } | { custom: SpriteUrls } | 'none'` (another set, custom art, or text for that species).
+- **Player's side:** `facing: 'back' | 'front'`, default `back` (the classic look). A Pokémon with no back sprite shows its front sprite.
+- **Missing from the chosen set:** `missing: 'newer' | 'older' | 'text'`, default `newer`: try the next generation up, then down. The usual gap is a species newer than the set (a Gen 4 species in a Gen 3-sprite region), where nothing older exists. `text` keeps one consistent style. A per-entry override always wins.
+- **Last resort is always text** (name and type), never a broken image, and `mode: 'text'` turns images off for the whole region.
+- **One resolver:** all of this lives in `resolveSpriteUrl` (M0A-20), which takes the region's settings and the entry override and returns a URL or `null`.
+- **The Arena** has no region, so it uses the format's mechanics generation with `facing: 'back'` and `missing: 'newer'`.
+- **MVP:** the region-wide set, `facing` with the front fallback, and the text fallback (Kanto Classic's 151 species all have Gen 1 sprites). **Post-MVP, with custom content:** the per-entry override and the `missing` setting (until then the resolver behaves as `newer`).
+
 ## Time
 - **Real-time in the server's timezone** is the most "Pokémon" option (Gen 2+ day/night, weekly NPCs) and the easiest to reason about for a community.
 - **Accelerated** (e.g. a 4-hour day) makes time-of-day encounters accessible to players in one timezone who always play at night.
@@ -140,7 +150,4 @@ Unit-test vectors for formula implementations. Gen 1 vectors are worked from pok
 ## Open questions
 - ~~Authentic Gen 1 or RBY content on modern mechanics?~~ **Decided (Q1):** authentic Gen 1, see Decisions above.
 - ~~Lock rules after publish?~~ **Decided (Oct 2026):** no lock. Every rule change goes through a publish, and the publish review warns about mid-game changes and blocks save-breaking ones unless they include a fix-up rule. See [Changing rules on a live region](#decisions-oct-2026-piecemeal-rules-gen-1-first).
-- **Sprite settings (open, Nov 2026):** three questions, with recommendations awaiting the owner's decision:
-  1. *Region-wide or per Pokédex entry?* Recommended: both, with the region set as the default (`graphics.sprites`) and an optional per-regional-Pokédex-entry override (another set, custom art, or none). Same pattern as other region defaults with entry overrides.
-  2. *Back sprites?* Recommended: a region setting for the player's side, `facing: 'back' | 'front'`, default `back`, falling back per Pokémon to its front sprite when it has no back sprite.
-  3. *The chosen set lacks a sprite (e.g. Gen 3 set, Gen 4 species)?* Recommended: a region setting `missing: 'newer' | 'older' | 'text'`, default `newer` (the next generation up, then down), because the common gap is a species newer than the set, where nothing older exists. `text` suits regions that want one consistent style. A per-entry override always wins, and text is the last resort either way.
+- ~~Sprite settings: region-wide or per entry, back sprites, missing sprites?~~ **Decided (Nov 2026):** see [Sprite settings](#sprite-settings-decided-nov-2026).

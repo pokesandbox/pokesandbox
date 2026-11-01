@@ -105,7 +105,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 | Quests v2 | Active quests (scripts + quest log), passive objectives (event listeners), loaner Pokémon, quiz stages, repeatable quests, passive-slot limits, tutorial-as-quest | Script VM, engine events |
 | Narrative | Persistent dialogue choices (choice kind is already MVP), quest-local choices as script locals; authored encounter intros (location and method scenes, species first sightings and lines, also in trainer battles) | Conditions, scripts, passages, `journey.dex.seen` ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) |
 | Effects++ | Teleport, start-script, new attach points (transport hops, quest stages) | Effect registry |
-| Custom content | Server content library (fakemon/forms/types/moves/items reusable across a server's regions) injected into isolated Showdown dexes | Catalog layering, isolated custom-data dexes |
+| Custom content | Server content library (fakemon/forms/types/moves/items reusable across a server's regions) injected into isolated Showdown dexes; per-Pokédex-entry sprite overrides (custom art, another set, or text) and the region's missing-sprite policy | Catalog layering, isolated custom-data dexes |
 | Social | In-game PvP with adventure parties; Wonder Trade; GTS-style listings; cross-region trades (player trading is MVP) | PokemonInstance collection, BattleService |
 | Breeding | Contained service + server pool; eggs; hatching | `storage.kind` |
 | Happiness | Friendship evolutions, move unlocks | PokemonInstance.friendship |

@@ -266,7 +266,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § 
 **Summary:** Pure functions from a `BattleView` (built from a `TurnDigest` plus match info) to Components v2 JSON. M2's public message, private prompts, and PvAI screens all use them; so do adventure battles later.
 
 **Acceptance criteria**
-- `renderBattle(view)`: the turn's messages, then both active Pokémon with level, HP bar, and status, each with its sprite as a separate image (section thumbnails or a media gallery, from `resolveSpriteUrl`, M0A-20), and the deadline when there is one.
+- `renderBattle(view)`: the turn's messages, then both active Pokémon with level, HP bar, and status, each with its sprite as a separate image (section thumbnails or a media gallery, from `resolveSpriteUrl`, M0A-20; the player's side faces back, the opponent's front; the Arena uses the format's generation), and the deadline when there is one.
 - A Pokémon with no resolvable sprite (`resolveSpriteUrl` returns `null`), or a region in text mode, is shown by name and type instead of an image.
 - `renderChoicePrompt(request)`: moves (with PP, type, and disabled moves explained, not just greyed out) and switches, as buttons or a select.
 - `renderBattleResult(result)`.
