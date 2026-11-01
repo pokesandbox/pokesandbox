@@ -98,6 +98,8 @@ How it maps onto existing primitives (no special engine path):
 Option B means **the trip itself can be interrupted**. You pick "Go to Viridian City" from Route 1, and the engine rolls encounters *along the way* (e.g. a chance per step of the route's length). You might be ambushed by a Rattata or a trainer before arriving, and you can't decline the encounter except via Repel or running. With option A (MVP), choosing a destination moves you instantly, and encounters only happen when you press Explore. **Decision: B won't be built.** Authors who want routes to cost something every time use `traversal.everyPass` instead.
 
 ### Encounter intros (decided Nov 2026: post-MVP; the MVP shows the default line)
+> **Proposal pending:** [29](29-flavor-text-and-prose.md) would store these as flavor entries (`encounter.scene`, `encounter.subject`, `encounter.firstSighting`) in a uniform flavor system, replacing the per-model fields below. The MVP behavior is the same either way.
+
 The text shown when a wild encounter starts. It matters most in text-first regions, where a fakemon may have no art at all, and for legendary and event Pokémon.
 
 **MVP:** the default line per method ("A wild {species} appeared!"; fishing "Oh! A bite! A wild {species} appeared!"). Nothing else is authored.
