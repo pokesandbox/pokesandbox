@@ -83,7 +83,7 @@ Get the fork onto current upstream with only our deliberate changes left, and ma
 ### M0C-04 · Rebase onto current upstream
 `Type: Task` · `Parent: E-M0C-2` · `Priority: P0` · `Size: M` · `Labels: area:showdown-fork` · `Blocked by: M0C-03` · `agent-ready: no` · `Owner: senior`
 
-**Summary:** Bring the fork from its Aug 2023 base to current `smogon/pokemon-showdown` `master`, keeping only the deliberate changes.
+**Summary:** Bring the fork from its Aug 2023 base to current `smogon/pokemon-showdown` `master`, keeping only the deliberate changes. Among other upstream gains, this brings Showdown's localized text (`data/text/<lang>`: names, descriptions, and battle message templates in 8 languages), which translation will use later ([30](../architecture/concepts/30-internationalization-readiness.md#showdowns-translations)).
 
 **Acceptance criteria**
 - `upstream` remote configured; `master` rebased (or merged) onto current upstream, with our remaining changes as a short, named list of commits: the `updatePlayerState` command, the `RandomPlayerAI`/`Moves` exports, and the callable `buildSimulator()`.

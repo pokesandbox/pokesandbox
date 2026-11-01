@@ -11,8 +11,8 @@
 | **Authored content**: location names and descriptions, script passages and choices, NPC names, progression and milestone names, shop names, gate `lockedText`, region discovery text | the region | `Translation` records |
 | **Flavor** (canon pack, server packs, region entries) | pack or region | `Translation` records per variant, or locale-only entries (below) |
 | **Server library content**: custom species, move, and item names and descriptions | the server's library ([27](27-server-content-library-and-overrides.md)) | `Translation` records |
-| **Canon catalog**: species, move, and item names and descriptions | the project (imported data) | Localized names imported as catalog data from a licensed source; Showdown's text is English only |
-| **Battle log** | Showdown text templates | A translated copy of the battle text table per locale (separate project) |
+| **Canon catalog**: species, move, ability, and item names and descriptions | the project (imported data) | Imported from **Showdown's own localized text** (see [Showdown's translations](#showdowns-translations)) |
+| **Battle log** | Showdown text templates | **Showdown's localized battle message templates** (see [Showdown's translations](#showdowns-translations)) |
 | **System text**: engine responses, explanations, reward lines, validator messages, Arena messages, menus | the project | Message catalogs per locale |
 | **Discord commands**: names, descriptions, options | the project | Discord's built-in command localizations |
 | **Player-written text**: narration, nicknames, character names | players | Never translated |
@@ -84,6 +84,26 @@ A translation of a flavor variant is usually enough, but jokes and wordplay ofte
 - **Shared messages** (the Arena's public battle message, trade messages) are seen by several people at once, so they use the **server's** locale; private prompts use each player's.
 - **Webapp:** the same preference chain, through a standard Next.js i18n library when the time comes.
 
+## Showdown's translations
+Current upstream Showdown ships localized text in `data/text/<lang>/` for **German, Spanish, French, Italian, Japanese, Korean, and Simplified and Traditional Chinese** (`de`, `es`, `fr`, `it`, `ja`, `ko`, `zh-cn`, `zh-tw`), verified against upstream `master` in Nov 2026:
+- **Names and descriptions** of species, moves, abilities, and items (sourced by Showdown from PokeAPI), plus stat, type, and tag names. Untranslated entries are `null` and fall back to English.
+- **Battle message templates** (`default.ts`: "{POKEMON} est K.O. !") with a small grammar: placeholder modifiers for articles, case, and particles (`[POKEMON:de]`, `[TRAINER:definite:capitalize]`, Korean `topic`/`object`) and `[INFLECT:…]` for gender and number agreement.
+- `Dex.loadTextData(lang)` in the sim returns the merged table for a language, with English fallback.
+
+What this means for us:
+- **Our fork predates this** (upstream base Aug 2023), so the rebase (M0C-04) is what brings it in. Nothing to build for the MVP.
+- **Canon names need no other source.** When translation ships, the catalog import (M1-02) also reads each language's names and descriptions into the catalog's `text`, per locale.
+- **Localized battle logs need a template renderer that understands the modifiers.** The sim ships the templates; the renderer that applies them lives in Showdown's client. M1-09's text rendering is written so it can take a locale later (port or depend on the client's parser at that point, and check its license then).
+- **Coverage is Showdown's**, not ours: other languages (e.g. Portuguese) would need our own catalog translations, through the same `Translation` model as custom content.
+
+## Images with text
+The post-MVP composed battle image ([26 § Battles](26-discord-surface-and-ux-patterns.md#battles)) **could** draw translated names, since it's rendered server-side per request. Recommended: keep names, levels, HP, and status as Components v2 **text** next to the image, and draw only sprites (and at most HP bars) into the image:
+- Text is already localized, accessible to screen readers, and copyable; text inside an image is none of these.
+- An image with text must be rendered and cached **per locale** (the locale joins the cache key), which multiplies the cache.
+- Drawing CJK names needs fonts that cover them (e.g. Noto Sans CJK) bundled with the renderer.
+
+If a region's design does want names in the image (e.g. a Game Boy-style HUD), it's possible with those three costs, and the image should carry alt text with the same information.
+
 ## MVP scope (readiness only, no translations)
 - `sourceLocale` on regions (default `en`).
 - Stable `id`s on script steps, passage blocks, choice options, and description variants (and flavor variants when flavor ships).
@@ -92,5 +112,5 @@ A translation of a flavor variant is usually enough, but jokes and wordplay ofte
 - Not MVP: `Translation` records, translation tools in the builder, localized catalog names, translated battle text, other locales' message catalogs, Discord command localizations, player locale preference.
 
 ## Open questions
-- Which licensed source to use for localized canon names (species, moves, items) when the time comes.
-- Whether to translate Showdown's battle text ourselves or contribute to an upstream effort.
+- ~~Source for localized canon names?~~ Showdown's own `data/text/<lang>` (see [Showdown's translations](#showdowns-translations)).
+- Languages Showdown doesn't cover (e.g. Portuguese): our own translations, or contribute upstream?
