@@ -200,7 +200,7 @@ Create `libs/core` and the enforced package boundaries, plus shared logging. The
 **Summary:** Translation ships much later, but system text must be translatable from the start ([30](../architecture/concepts/30-internationalization-readiness.md)).
 
 **Acceptance criteria**
-- A `t(key, params, locale?)` helper in `libs/core` using ICU MessageFormat (e.g. `intl-messageformat`), with an English message catalog. Unknown keys fail a test, not silently at runtime.
+- A `t(key, params, locale?)` helper in `libs/core` using FormatJS's `intl-messageformat` (ICU MessageFormat), with an English message catalog in a format `next-intl` can also read, so the webapp shares it later. Unknown keys fail a test, not silently at runtime.
 - Locale resolution helper: player preference (later) → interaction `locale` → server locale → `'en'`. Shared messages take the server locale.
 - Numbers and money formatted with `Intl`.
 - A lint rule or test that flags string literals passed directly as message content in renderers (new code only; existing menus are migrated as they're touched).
