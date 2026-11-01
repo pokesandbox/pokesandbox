@@ -55,10 +55,18 @@ M0c: Arena Foundations|libs/battle scaffold (port types in libs/core), Clock/Sch
 M0b: Engine & Content Foundations|Engine skeleton, conditions/gates, effects, content keys, authoring layer, region releases
 M1: Battle Core & Catalog|Moves/learnsets catalog, BattleService, teams and formats, AI; fork patches (adventure)
 M2: Arena Release|Public PvP/PvAI in Discord (bot only): Arena surface, hosting, backups, deploys, monitoring, staging, verification, data deletion
-M3: Region Authoring|Webapp builder (headless UI trial first, mobile-first), locations, encounters, transport, shops, TM/HM lists, rules, validation
-M4: Interaction Engine|Scripts, triggers, NPCs, trainers and their lines, templates
-M5: Adventure Core|Characters, travel, explore, battles, party/PC/bag, trading, progression, adventure log
-M6: Kanto Classic & MVP Release|Kanto Classic template, webapp hosting, trust and safety, playtest, release
+CP0a: Pallet Town, talk & walk|New journey, Oak's intro, starter, naming the rival, Pallet to Viridian; engine, scripts, publishing (no battles)
+CP0b: Pallet Town, first battle|The rival battle in Oak's lab: adventure battles in /play, trainer lines, EXP and level-ups
+CP0c: Pallet Town, into the grass|Route 1 wild battles, Oak's Parcel, catching, bag, mart, Pokemon Center, whiteout
+CP1: Boulder Badge|Viridian Forest, Brock, Route 22 rival; webapp builder (private) and its first screens, TM/HM lists
+CP2: Cascade Badge|Mt. Moon, Cerulean, Nugget Bridge, Misty; player trading and Gen 1 obedience
+CP3: Thunder Badge|S.S. Anne, Cut, Lt. Surge; ferries, fishing
+CP4: Rainbow Badge|Rock Tunnel, Lavender, Celadon, Game Corner, Erika; public playtest #1 on the PokeSandbox server
+CP5: Soul & Marsh|Pokemon Tower, Snorlax, Fuchsia, Silph Co., Saffron; Fly
+CP6: Volcano & Earth|Surf, Seafoam, Cinnabar, Power Plant, Giovanni
+CP7: Champion|Victory Road, Elite Four, Champion; public playtest #2 on the PokeSandbox server
+CP8: Mewtwo|Cerulean Cave and Mewtwo: Kanto Classic complete
+MVP Release|Webapp public, trust and safety, load test, guides, discovery
 MS
     ;;
 

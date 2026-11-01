@@ -134,7 +134,7 @@ Admin authoring follows the same pattern (`libs/authoring`, commands in, results
 - Renderers for each event type in the bot.
 - `/play` hub.
 - Headless test harness (`engine.dispatch` against in-memory repos).
-- `libs/core` + `libs/authoring` with commands for the M3/M4 builder features. Existing admin menus migrate onto them.
+- `libs/core` + `libs/authoring` with commands for the builder features the checkpoints need. Existing admin menus migrate onto them.
 
 ## Open questions
 - ~~Ephemeral or public adventure play?~~ **Decided (Q2):** server-configurable, ephemeral by default and the only mode in MVP (see [26](26-discord-surface-and-ux-patterns.md#where-adventure-play-is-shown-decided-oct-2026-q2)).

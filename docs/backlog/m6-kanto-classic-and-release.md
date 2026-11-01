@@ -1,11 +1,13 @@
-# M6: Kanto Classic & MVP Release (backlog draft, partial)
+# Trust & Safety for the MVP (backlog draft, partial)
 
-Drafted so far: the **Trust & Safety** epic (E-M6-1). The rest of M6 (the Kanto Classic generator and authoring, playtests, webapp hosting, release) is drafted later; the list is in [`mvp.md` § M6](../roadmap/mvp.md#m6-kanto-classic--mvp-release-).
+> **Milestones (Nov 2026):** the old M6 milestone was replaced by the Kanto checkpoints and the MVP Release. **M6-02 lands in CP4** (before community members play the first public playtest), **M6-01 in the MVP Release**. Draft IDs keep their `M6-` names.
+
+Drafted so far: the **Trust & Safety** epic (E-M6-1). The Kanto Classic generator, authoring, playtests, webapp hosting, and release work are listed per checkpoint in [`mvp.md`](../roadmap/mvp.md#the-kanto-checkpoints-cp0acp8) and drafted later.
 
 ## Start here
 New to the project? Read [`docs/start-here.md`](../start-here.md) first. Context specific to this file:
-- **What M6 is:** Kanto Classic built with the tools, and the MVP's public release, when the webapp goes public for the first time.
-- **Why trust and safety lands here:** the MVP release is the first time content crosses servers (region discovery, public webapp pages, narration) and the first time users have adventure data to delete. The Arena release already has verification, policies, and Arena data deletion (M2-15, M2-16).
+- **Where this fits:** the MVP is built as Kanto checkpoints; the MVP Release is when the webapp goes public and Kanto Classic opens beyond the PokeSandbox server.
+- **Why trust and safety lands here:** community members create adventure data from the CP4 public playtest (so deletion must cover it by then), and the MVP Release is the first time content crosses servers (region discovery, public webapp pages, narration). The Arena release already has verification, policies, and Arena data deletion (M2-15, M2-16).
 - **Read before starting:** concept [31](../architecture/concepts/31-trust-safety-and-compliance.md).
 
 ## E-M6-1 · Trust & Safety
@@ -14,7 +16,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md) first. Context
 Reporting and takedown for content shown beyond its server, and user data deletion extended to adventure data ([31](../architecture/concepts/31-trust-safety-and-compliance.md)).
 
 ### M6-01 · Report content and owner takedown tools
-`Type: Feature` · `Parent: E-M6-1` · `Priority: P0` · `Size: L` · `Labels: area:webapp, area:bot, area:shared-models` · `Blocked by: webapp hosting (M6), discovery listing, public profile pages` · `agent-ready: no` · `Owner: senior`
+`Type: Feature` · `Parent: E-M6-1` · `Priority: P0` · `Size: L` · `Labels: area:webapp, area:bot, area:shared-models` · `Blocked by: webapp hosting (CP1), discovery listing, public profile pages (MVP Release)` · `agent-ready: no` · `Owner: senior`
 
 **Summary:** Anything shown beyond the server it came from can be reported, and project staff can hide it.
 

@@ -123,7 +123,7 @@ Both call the same commands, so a Discord editor can be added for any feature la
 | Step | How |
 |---|---|
 | 1. **Bulk canon data by script** | A one-time generator turns datamined game data into a region bundle: locations and connections, encounter tables (e.g. PokeAPI has Red/Blue/Yellow encounter data), trainers and parties with their pre-battle and defeat lines (from pret/pokered's text), marts, items, TM list. Hundreds of trainers and tables by hand in Discord would take weeks and add nothing. |
-| 2. **Story and polish in the tools** | Import the generated bundle on the PokeSandbox HQ server, then author scripts, dialogue, gates, and gym templates **with the builder**. This is M6's dogfooding: every friction point found becomes a builder issue. |
+| 2. **Story and polish in the tools** | Import the generated bundle on the PokeSandbox HQ server, then author scripts, dialogue, gates, and gym templates **with the builder**. This is the checkpoints' dogfooding (CP1 onward): every friction point found becomes a builder issue. |
 | 3. **Export to the repo** | The exported bundle (`templates/kanto-classic/`) is the canonical version. Stable content keys and `_label`s make diffs reviewable in PRs, and export must be deterministic (sorted keys, stable ordering). |
 | 4. **CI validates it** | The validator runs on the bundle, and the headless engine playthrough (to badge 2, later the whole game) runs against it. The template doubles as the MVP acceptance test. |
 | 5. **Deploy from the repo** | Releases install or update the official template from the repo bundle (a seed/migration step). Servers import it like any template. |

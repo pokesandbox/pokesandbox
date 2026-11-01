@@ -11,9 +11,11 @@ Issue drafts reviewed here before they're created in GitHub. Once created, the i
 | [`m0b-content-foundations.md`](m0b-content-foundations.md) | M0b: Engine & Content Foundations |
 | [`m1-battle-core-and-catalog.md`](m1-battle-core-and-catalog.md) | M1: Battle Core & Catalog (moves and learnsets catalog; Arena epics: BattleService, teams and formats, AI) |
 | [`m2-launch-readiness.md`](m2-launch-readiness.md) | M2: Arena Release (FlowCord dependencies, launch readiness, and the Arena multiplayer surface, so far) |
-| [`m3-region-authoring.md`](m3-region-authoring.md) | M3: Region Authoring (TM/HM lists and the webapp builder foundation, so far) |
-| [`m6-kanto-classic-and-release.md`](m6-kanto-classic-and-release.md) | M6: Kanto Classic & MVP Release (trust and safety, so far) |
-| *(the rest of M1–M3, M4–M5, and the rest of M6 drafted once M0a is underway)* | |
+| [`m3-region-authoring.md`](m3-region-authoring.md) | Region authoring epics (TM/HM lists, webapp builder foundation), landing in **CP1** |
+| [`m6-kanto-classic-and-release.md`](m6-kanto-classic-and-release.md) | Trust & safety (M6-02 lands in **CP4**, M6-01 in the **MVP Release**) |
+| *(the rest of M1 and the checkpoint issues, CP0a onward, drafted once M0a is underway)* | |
+
+**Milestones vs file names (Nov 2026):** the MVP's milestones are now the Kanto checkpoints (CP0a–CP8, then the MVP Release; see [`mvp-checkpoints.md`](../roadmap/mvp-checkpoints.md)). Files and draft IDs keep their original `M3`/`M6` names as stable references; each issue's milestone is the checkpoint that first needs it, as listed in [`mvp.md`](../roadmap/mvp.md#the-kanto-checkpoints-cp0acp8).
 
 ## Format
 Each issue is a `###` heading with a **stable draft ID** (`M0A-07`, `M0B-12`) followed by a field line, then the body.
@@ -39,14 +41,14 @@ Bodies use **Summary**, **Acceptance criteria**, and **Refs** (concept docs). Ac
 ## Drafting more issues (for new sessions)
 Everything needed to draft the remaining milestones is in the repo. Nothing depends on the conversations that produced these docs.
 
-**Still to draft:** the rest of M1 (fork patches, BattleService, items, rules, teams, AI; the moves and learnsets catalog is drafted), the rest of M2 (`/arena` hub, PvAI setup, battle history, alpha test, release notes), the rest of M3 (TM/HM lists are drafted), and M4–M6. The candidate issues are the checklists in [`mvp.md`](../roadmap/mvp.md). Expand each into drafts in a new `<milestone>.md` file here, using the existing files as the style reference.
+**Still to draft:** the rest of M1 (catalog read service details, if needed), the rest of M2 (`/arena` hub, PvAI setup, battle history, alpha test, release notes), and the checkpoint issues (CP0a onward; TM/HM lists, the webapp builder foundation, and trust and safety are drafted). The candidate issues are the checklists in [`mvp.md`](../roadmap/mvp.md). Expand them into drafts in a new file per checkpoint (e.g. `cp0a-pallet-town.md`), using the existing files as the style reference.
 
 **Every milestone file starts with a "Start here" section** giving a newcomer the context for that file (what it is, what to read, where the code goes, the order), linking to [`docs/start-here.md`](../start-here.md) for everything general. Keep that pattern for new files.
 
 **Read first, in this order:**
 1. [`open-questions.md`](../architecture/open-questions.md): Q1–Q38 and the "Smaller decisions" index. This is the decision record.
 2. The relevant concept docs' **Decisions** sections. Where a concept's Options or Design text differs from its Decisions, the Decisions win. Struck-through open questions are answered.
-3. [`mvp.md`](../roadmap/mvp.md) for milestone scope, the gap matrix, and the Kanto Classic adaptations (M6).
+3. [`mvp.md`](../roadmap/mvp.md) for milestone scope, the gap matrix, and the Kanto Classic adaptations (in the checkpoints section).
 
 **Rules:**
 - Every issue links its concept doc(s) and the Q-numbers it implements, and has checkable acceptance criteria.

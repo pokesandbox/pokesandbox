@@ -38,7 +38,7 @@ Server moderators already govern what happens inside their server; PokeSandbox n
 
 ## MVP scope
 - Arena release (M2): no privileged intents, prefix system removed, policies published, verification application, `/account delete` for Arena data.
-- MVP release (M6): deletion extended to adventure data, Report and the staff queue with takedown actions.
+- Deletion extended to adventure data by CP4 (the first public playtest); Report and the staff queue with takedown actions at the MVP Release.
 - Later: data export, shared-content reporting (library, bundles), automated filters.
 
 ## Open questions

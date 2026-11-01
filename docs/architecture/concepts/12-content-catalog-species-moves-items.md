@@ -181,7 +181,7 @@ The **DB catalog is the record** (see Layering above): canon data is imported fr
 - `CatalogVersion`, `MoveDefinition`, and `Learnset` imported per catalog version; the catalog read service (`getMove`, `getLearnset` with `{ gen, region? }`).
 - ItemDefinition for the Gen 1 item set (balls, medicine, repels, escape rope, stones, key items, the generic machine item) with field/battle handlers.
 - Region TM/HM lists and the learnset policy.
-- Not MVP: the server library (custom species UI, overrides, custom moves; see [27](27-server-content-library-and-overrides.md)). The isolated custom-data dex (M1) is still built for the MVP because piecemeal Gen 1 data and Arena formats use it.
+- Not MVP: the server library (custom species UI, overrides, custom moves; see [27](27-server-content-library-and-overrides.md)). The isolated custom-data dex is also post-MVP (revised Nov 2026): Kanto Classic is pure Gen 1, which Showdown's own `gen1` mod covers, the MVP ships only the Classic Gen 1 preset (so no mixed-generation data), and the built-in Arena formats use Showdown's own formats. It arrives with custom content and mixed-generation rules.
 
 ## Open questions
 - ~~What does `baseGeneration` control?~~ **Decided (Q26):** replaced by `RegionRules`; the default `10` is removed.

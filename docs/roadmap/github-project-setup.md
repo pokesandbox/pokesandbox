@@ -23,7 +23,7 @@ Use **sub-issues** for Epic → Feature/Task.
 | Flags | `good first issue`, `help wanted`, `needs-decision`, `blocked`, `breaking-change`, `agent-ready`, `dependencies` |
 
 ## Milestones
-Create M0a, M0b, M0c, and M1–M6 exactly as in [`mvp.md`](mvp.md). Phase 3/4 items go into the backlog without milestones until MVP ships.
+Create M0a, M0c, M0b, M1, M2, the Kanto checkpoints CP0a–CP8, and MVP Release exactly as in [`mvp.md`](mvp.md) (see [`mvp-checkpoints.md`](mvp-checkpoints.md)). Phase 3/4 items go into the backlog without milestones until MVP ships.
 
 ## Project (Projects v2) fields
 | Field | Type | Values |

@@ -38,7 +38,7 @@ So the database requirements are: **transactions across a few documents, per-jou
 - ✅ JSONB stores content bundles and condition trees nearly as comfortably as Mongo.
 - ✅ Great analytics, mature tooling, and cheap managed hosting (Neon, Supabase, RDS).
 - ❌ **Migration cost now:** rewrite 5 models, the DTO layer, seeds, the ERD generator, and the conventions. That's roughly 1–2 weeks of work that delivers no player value.
-- ❌ Schema migrations add friction while the model is still changing fast (which it will be through M0–M4).
+- ❌ Schema migrations add friction while the model is still changing fast (which it will be through M0 and the early checkpoints).
 
 ### C. SpacetimeDB: not recommended as the primary store
 SpacetimeDB (Clockwork Labs) is a database and server in one. You write a **module** (Rust, C#, TypeScript, C++). Its **reducers** are transactional functions that run inside the database, against in-memory tables, and clients subscribe to queries and get live updates. TypeScript modules are mature (v2.x in 2026, with submodules added in v2.8). There's hosted Maincloud (Free / $25 Pro / $250 Team) or self-hosted.

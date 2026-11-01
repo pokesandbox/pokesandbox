@@ -48,11 +48,11 @@ Move the repos to the org, get CI gating every PR, and give contributors and age
 ### M0A-03 · GitHub bootstrap: labels, milestones, project
 `Type: Task` · `Parent: E-M0A-1` · `Priority: P0` · `Size: S` · `Labels: area:infra` · `Blocked by: M0A-01` · `agent-ready: no` · `Owner: owner`
 
-**Summary:** Run `scripts/github/bootstrap.sh` (authored alongside this backlog) to create the labels and milestones (M0a, M0b, M1–M6), and create the org Projects v2 board with the fields from `github-project-setup.md`.
+**Summary:** Run `scripts/github/bootstrap.sh` (authored alongside this backlog) to create the labels and milestones (M0a, M0c, M0b, M1, M2, CP0a–CP8, MVP Release), and create the org Projects v2 board with the fields from `github-project-setup.md`.
 
 **Acceptance criteria**
 - All labels from `github-project-setup.md` exist, including `agent-ready`.
-- Milestones M0a, M0b, and M1–M6 exist.
+- Milestones M0a, M0c, M0b, M1, M2, CP0a–CP8, and MVP Release exist.
 - The project has the Status, Priority, Size, Phase, Area, and Track fields and the views described.
 
 ### M0A-04 · CI: lint, typecheck, and unit tests on every PR

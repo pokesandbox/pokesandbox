@@ -43,7 +43,7 @@ To use them at launch, alpha.3 has to ship before M2-11 starts (mid-M2). If they
 ## E-M2-1 · Launch Readiness: Hosting & Operations
 `Type: Epic` · `Priority: P0`
 
-Everything needed to run the **bot** for real players: a managed host for the always-on bot, MongoDB Atlas with backups, a deploy pipeline, monitoring, and a staging environment. **The Arena release is bot-only, and webapp hosting is deferred entirely** (decided Nov 2026) to the MVP track ([`mvp.md` § M6](../roadmap/mvp.md#m6-kanto-classic--mvp-release-)), so each surface gets its own hypercare window. Choose a host that can add a second (webapp) service later. Scheduled **at the end of the Arena track**, once the Arena works locally.
+Everything needed to run the **bot** for real players: a managed host for the always-on bot, MongoDB Atlas with backups, a deploy pipeline, monitoring, and a staging environment. **The Arena release is bot-only, and webapp hosting is deferred entirely** (decided Nov 2026) to the MVP track (private from [`mvp.md` § CP1](../roadmap/mvp.md#cp1-boulder-badge), public at the MVP Release), so each surface gets its own hypercare window. Choose a host that can add a second (webapp) service later. Scheduled **at the end of the Arena track**, once the Arena works locally.
 
 ### M2-01 · Choose the host and provision prod app services
 `Type: Task` · `Parent: E-M2-1` · `Priority: P0` · `Size: M` · `Labels: area:infra` · `Blocked by: M2-02` · `agent-ready: no` · `Owner: owner`
@@ -122,7 +122,7 @@ Everything needed to run the **bot** for real players: a managed host for the al
 - Dependabot security updates and grouped version updates are enabled (`.github/dependabot.yml`), with a weekly schedule.
 - CI fails on new critical or high advisories in production dependencies (`npm audit --omit=dev --audit-level=high`, or the equivalent).
 - Major upgrades that need code changes are split into their own issues rather than bundled here.
-- Re-checked before the MVP release (M6).
+- Re-checked before the MVP Release.
 
 **Refs:** [21](../architecture/concepts/21-hosting-and-environments.md)
 
@@ -143,7 +143,7 @@ Everything needed to run the **bot** for real players: a managed host for the al
 ### M2-16 · `/account delete`: delete a user's Arena data
 `Type: Feature` · `Parent: E-M2-1` · `Priority: P0` · `Size: M` · `Labels: area:bot, area:shared-models` · `Blocked by: M1-06, M1-11` · `agent-ready: no` · `Owner: senior`
 
-**Summary:** A self-serve way for a user to delete their data, required by the privacy policy. Arena data now; adventure data is added for the MVP (M6-02).
+**Summary:** A self-serve way for a user to delete their data, required by the privacy policy. Arena data now; adventure data is added by CP4 (M6-02).
 
 **Acceptance criteria**
 - `/account delete` lists what will be deleted (teams, battle history, account record), asks for confirmation (a button, then a second confirm), and runs one deletion job.

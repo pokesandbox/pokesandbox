@@ -27,7 +27,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md) first. Context
 **Order**
 1. Fork: M0C-03 (archive the custom moves) → M0C-04 (rebase) → M0C-05 (remove debug code) → M0C-06 (publish as a package).
 2. Monorepo, in parallel once M0A-09 exists: M0C-01 (`libs/battle` scaffold, with the port types in `libs/core`) and M0C-02 (`Clock`/`Rng`).
-3. Then M1's Arena epics ([E-M1-3..5](m1-battle-core-and-catalog.md#arena-epics-e-m1-3-e-m1-4-e-m1-5)). The Arena needs none of the sim patches; those (E-M1-1) serve the adventure.
+3. Then M1's Arena epics ([E-M1-3..5](m1-battle-core-and-catalog.md#arena-epics-e-m1-3-e-m1-4-e-m1-5)). The Arena needs none of the sim patches; those land in the Kanto checkpoints (CP0b, CP0c, CP2) and serve the adventure.
 
 ---
 

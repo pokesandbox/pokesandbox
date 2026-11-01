@@ -1,6 +1,6 @@
 # MVP Checkpoints: Building Kanto Badge by Badge
 
-> **Status: proposal (Nov 2026), awaiting the owner's decisions** (see [Decisions needed](#decisions-needed)).
+> **Status: decided (Nov 2026).** The checkpoints are the MVP's GitHub milestones (CP0a–CP8, then the MVP Release), replacing M3–M6. The issue lists per checkpoint are in [`mvp.md`](mvp.md#the-kanto-checkpoints-cp0acp8). One question is still open: [what the MVP Release opens to other servers](#open-question-what-the-mvp-release-opens-up).
 
 The MVP milestones in [`mvp.md`](mvp.md) are organized by system (M3 authoring, M4 scripts, M5 adventure core, M6 Kanto). Built in that order, nothing is playable until M6. **Checkpoints turn the MVP into a series of playable slices of Kanto Classic**, each one a published release that can be played start to finish up to that point. Each checkpoint pulls in only the systems its stretch of Kanto needs, so every system is built when it first matters, and every checkpoint proves the whole stack end to end.
 
@@ -18,7 +18,9 @@ The MVP milestones in [`mvp.md`](mvp.md) are organized by system (M3 authoring, 
 
 | CP | Stretch of Kanto | What it proves | Systems it pulls in first |
 |---|---|---|---|
-| **CP0 · Pallet Town slice** | New journey, Oak's lab, starter, first rival battle, Route 1, Viridian, Oak's Parcel, Pokédex + Poké Balls, catching on Route 1 | The whole stack: engine, scripts, battles, catching, release | Character and journey start, `/play` hub, passage renderer, script VM (passage, choice, askName, battle, effects, heal), travel, explore (wild), wild and trainer battles with catch (fork patches: state injection, external choice hook, caught/ran), EXP and level-ups, party, bag basics, mart, Pokémon Center heal and respawn, rival trainer lines, publish |
+| **CP0a · Pallet Town: talk & walk** | New journey, Oak's intro, starter pick, naming the rival, Pallet ↔ Route 1 ↔ Viridian | The engine, scripts, and publishing, with no battles | Generator and bundle import, headless playthrough harness, `RegionRules` (Classic Gen 1), journey and character start, script VM core steps, triggers, NPCs, `givePokemon`, passage renderer, `/play` hub, travel, party view, the `adventure.play` flag |
+| **CP0b · Pallet Town: first battle** | The rival battle in Oak's lab | Adventure battles in `/play`, end to end | State-injection patch, BattleService `trainer` battles in `/play`, the `battle` step, trainers and party variants, trainer lines, Gen 1 EXP and payout, mid-battle level-ups and move learning |
+| **CP0c · Pallet Town: into the grass** | Route 1 wild battles, Oak's Parcel, the Pokédex and Poké Balls, catching, the Viridian Mart, the Pokémon Center | Catching and the core loop | External choice hook and caught/ran patch, `ItemDefinition` (Gen 1), catch and escape formulas, encounter tables, Explore (wild), wild battles with catch/run/bag, bag and key items, mart, heal, respawn, whiteout |
 | **CP1 · Boulder Badge** | Route 2, Viridian Forest, Pewter, Brock; Route 22 rival | Authoring with the builder; gyms and route trainers | Webapp builder shell (after the headless UI trial), location/encounter/trainer screens, route trainers on Explore with lines, hidden items, traversal requirements, Gym Leader template, badges, TM/HM list, `enterLocation` triggers, whiteout, evolution and move-learn prompts, badge case, adventure log |
 | **CP2 · Cascade Badge** | Route 3, Mt. Moon, Route 4, Cerulean, Nugget Bridge, Bill, Misty | Dungeons, choices, multiplayer trading | Cave traversal costs, choice progressions (fossil), Gauntlet template, stone evolution, Repel, PC boxes, in-game trades, **player trading**, Gen 1 traded-Pokémon EXP and **obedience** |
 | **CP3 · Thunder Badge** | Routes 5–6, Underground Path, Vermilion, S.S. Anne, Lt. Surge, Diglett's Cave, Route 11 | Key items and field moves as gates | Ticket and Cut gates (conditions on bag and party moves), ferry transport, fishing methods (Old Rod), gifts with a full party (swap offer) |
@@ -32,13 +34,18 @@ The **MVP release** adds the release work from M6 on top of the last checkpoint:
 
 ## How this maps onto the existing plan
 - **Nothing in the architecture changes.** Checkpoints change the **order** systems are built in, not what they are.
-- **CP0 is the engine vertical slice** recommended after the cohesion audit: it's where the riskiest integration (engine + scripts + BattleService + catching + publish) gets proven, before builder breadth.
+- **CP0 is the engine vertical slice** recommended after the cohesion audit: it's where the riskiest integration (engine + scripts + BattleService + catching + publish) gets proven, before builder breadth. **It's by far the biggest checkpoint**, because it builds the core of what used to be M4 and M5 (about 35 issues on top of M0b and M1's BattleService), so it's split into three playable sub-checkpoints: **CP0a** (no battles), **CP0b** (one trainer battle), **CP0c** (wild battles and catching). From CP1 on, checkpoints mostly add content, builder screens, and incremental systems.
+- **Two sim patches and the obedience rule moved out of M1** into the checkpoints that need them (CP0b, CP0c, CP2), and **isolated custom-data dexes moved past the MVP**: Kanto Classic is pure Gen 1, so Showdown's own `gen1` mod covers it. M1 now holds only what the Arena needs plus the catalog.
 - **Systems split across checkpoints where it helps.** For example, the explore outcome table needs only `wild` at CP0, adds `trainer` and `item` at CP1; the builder starts with the screens CP1 needs and grows per checkpoint.
 - **The Arena track is independent** and runs as before (M0c → M1 → M2), sharing BattleService with CP0.
 
-## Decisions needed
-1. **Milestones: replace M3–M6 with checkpoint milestones, or keep them and add a Checkpoint field?**
-   - **Recommended: checkpoint milestones** (`CP0 · Pallet Town` … `CP8 · Mewtwo`, plus `MVP Release`). The scheduled agent and the board both work from "the current milestone", so a checkpoint milestone automatically orders the work by what the next playable stretch needs. The M3–M5 system groupings become epics whose issues are spread across the checkpoints that first need them. Draft IDs (`M3-01`) stay as stable references; only the milestone assignment changes.
-   - Alternative: keep M3–M6 and tag each issue with a Checkpoint field. Less churn now, but "current milestone" no longer means "next playable step".
-2. **Who plays the checkpoints?** Recommended: the team and the alpha community server from CP0, with public access decided at a later checkpoint (CP4 or CP7 are natural "chapter" moments). Releasing by chapter is native to the release design, but each public chapter also means support load, so it's worth choosing deliberately.
-3. **Is Mewtwo (CP8) part of the MVP release, or a fast follow after the Champion (CP7)?** Recommended: part of the MVP, since the template is the MVP's acceptance test and "complete Kanto" includes the post-game legendary; it's a small stretch.
+## Decisions (Nov 2026)
+1. **Checkpoint milestones replace M3–M6:** `CP0a`, `CP0b`, `CP0c`, `CP1` … `CP8`, then `MVP Release`. The scheduled agent and the board work from the current milestone, so work is ordered by the next playable stretch. The old M3–M5 groupings live on as epics; draft IDs (`M3-01`, `M6-01`) keep their names.
+2. **Who plays:** the team and invited members of the Pokémon community. **CP4 and CP7 are public playtests on the PokeSandbox server only**, not a general release: adventure play is behind the `adventure.play` feature flag ([21 § Feature flags](../architecture/concepts/21-hosting-and-environments.md#feature-flags-decided-oct-2026)), on only for that server until the MVP Release. The Arena keeps running everywhere as released in M2.
+3. **Mewtwo (CP8) is part of the MVP.**
+
+## Open question: what the MVP Release opens up
+The owner's view: support more modern generations before allowing true custom content authoring. Recommendation, pending the owner's confirmation:
+- **Playing Kanto Classic opens to every server** at the MVP Release (install the official template, `adventure.play` on generally).
+- **Region authoring for other servers starts as an invite-only creator beta** (per-server flag), because Gen 1-only authoring (151 species, no abilities or held items) is a narrow toolset most server owners will outgrow, and every creator adds support load. Opening it broadly waits for Gen 2/3 rule support.
+- **Custom content (fakemon, custom moves, overrides) is post-MVP regardless**: it needs the server content library and isolated custom-data dexes ([27](../architecture/concepts/27-server-content-library-and-overrides.md)).

@@ -1,12 +1,14 @@
-# M3: Region Authoring (backlog draft, partial)
+# Region Authoring: TM/HM Lists & Webapp Builder (backlog draft, partial)
 
-Drafted so far: the **TM/HM lists** epic (E-M3-1) and the start of the **Webapp Builder** epic (E-M3-2: the headless library trial, the antd migration, and the builder shell). The rest of M3 (region config, location kinds and connections, encounters, transport, shops, validator tiers, bundles) is drafted later.
+> **Milestones (Nov 2026):** the old M3 milestone was replaced by the Kanto checkpoints. Everything in this file lands in **CP1** (Boulder Badge: Brock's TM34 and the first builder screens); M3-05, the headless library trial, can start any time. Draft IDs keep their `M3-` names.
 
-Refs: concept [12 § TM/HM lists](../architecture/concepts/12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026), [`mvp.md` § M3](../roadmap/mvp.md#m3-region-authoring)
+Drafted so far: the **TM/HM lists** epic (E-M3-1) and the start of the **Webapp Builder** epic (E-M3-2: the headless library trial, the antd migration, and the builder shell). The other builder and region work (region config, locations and connections, encounters, transport, shops, validator tiers, bundles) is listed per checkpoint in [`mvp.md`](../roadmap/mvp.md#the-kanto-checkpoints-cp0acp8) and drafted later.
+
+Refs: concept [12 § TM/HM lists](../architecture/concepts/12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026), [`mvp.md` § CP1](../roadmap/mvp.md#cp1-boulder-badge)
 
 ## Start here
 New to the project? Read [`docs/start-here.md`](../start-here.md) first, then the moves and learnsets primer in [E-M1-2 § Start here](m1-battle-core-and-catalog.md#start-here-no-prior-context-needed), since these issues build on that catalog. Context specific to this file:
-- **What M3 is:** the region builder: everything admins use to author a region. This draft covers only TM/HM lists so far.
+- **What this is:** parts of the region builder (everything admins use to author a region): TM/HM lists and the webapp builder's foundation, both needed by CP1.
 - **Where it's built:** the **webapp**, mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). Rules live in `libs/authoring` commands; the webapp screen is a thin client of them. Phone-first layouts, list/detail editors, 44px touch targets, no hover-only interactions, Playwright tests at phone width.
 - **In Pokémon terms:** every region gets its own TM case, so "TM24" means whatever that region says (Thunderbolt in Gen 1). HMs are reusable; Gen 1 TMs are single-use.
 - **Order:** M3-01 and M3-02 can start once M1-01/M1-02 exist; M3-03 needs the validator skeleton (M0B-22); M3-04 (the builder screen) waits for the authoring layer (M0B-16) and the webapp builder shell (M3-06). The headless library trial (M3-05) comes before any webapp authoring work; it has no dependencies, so it can start any time, ideally while M0b is in progress.
@@ -16,7 +18,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md) first, then th
 
 Each region defines its own TM/HM list: machine labels mapped to moves, with Gen 1's single-use TMs and reusable HMs. Machine numbering differs per generation, so machines are **region content**, not global items. Bag items use the reserved `machine:<label>` namespace and resolve through the region's list. Compatibility comes from the region's learnset generation ([12 § TM/HM lists](../architecture/concepts/12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026)).
 
-Using a TM from the bag (teaching it to a Pokémon) belongs to the M5 bag work, and shops selling TMs to the M3 shops work; both read this list.
+Using a TM from the bag (teaching it to a Pokémon) is CP1 work too (Brock's TM34), and shops selling TMs come with the CP4 shops work (Celadon); both read this list.
 
 **Changes once foundations land.** M3-04 is already blocked on the authoring layer, so it's built once, on the final foundation. The others start earlier and get small follow-ups (also listed on the triggering foundation issues):
 
@@ -84,7 +86,7 @@ Using a TM from the bag (teaching it to a Pokémon) belongs to the M5 bag work, 
 ## E-M3-2 · Webapp Builder
 `Type: Epic` · `Priority: P0`
 
-MVP authoring is webapp-first and mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). This epic sets up the webapp's UI stack and the builder shell every editor uses. **Rule: no webapp authoring work starts before the headless library trial (M3-05) is decided.** Every webapp editor issue, drafted now or later, lists M3-05 (directly or through M3-06) as a blocker. The editors themselves (region map, encounter grid, trainer parties, script steps, condition builder, Region Health) are drafted with their features; the list is in [`mvp.md` § M3](../roadmap/mvp.md#m3-region-authoring).
+MVP authoring is webapp-first and mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). This epic sets up the webapp's UI stack and the builder shell every editor uses. **Rule: no webapp authoring work starts before the headless library trial (M3-05) is decided.** Every webapp editor issue, drafted now or later, lists M3-05 (directly or through M3-06) as a blocker. The editors themselves (region map, encounter grid, trainer parties, script steps, condition builder, Region Health) are drafted with their features; the list is in [`mvp.md` § CP1](../roadmap/mvp.md#cp1-boulder-badge) onward.
 
 ### M3-05 · Headless library trial: React Aria vs Base UI
 `Type: Task` · `Parent: E-M3-2` · `Priority: P0` · `Size: S` · `Labels: area:webapp` · `Blocked by: —` · `agent-ready: no` · `Owner: senior`

@@ -211,7 +211,7 @@ The event carries a **reference**, not the text: the presentation layer resolves
 Nothing in this doc is MVP content, but these keep it cheap to add:
 - **Events carry identities and perspective:** BattleService's structured events (M1-09) include side, species, move, item, status, and the acting Pokémon's instance ID (adventure) so later flavor can resolve tags. Engine events for evolution, level-up, catch, travel, and healing carry the same.
 - **The battle view keeps a flavor slot** (empty in the MVP), so adding flavor is a new section, not a re-layout (M1-10).
-- **Location descriptions are `Passage`s** from the start (M3).
+- **Location descriptions are `Passage`s** from the start (CP0a, CP1).
 - **`PokemonInstance.tags`** is reserved ([13](13-pokemon-instances-and-trading.md)).
 - **`Region.flavor` and `FlavorEntry`** are reserved names only; no storage or UI in the MVP.
 

@@ -11,26 +11,34 @@ This doc breaks Phases 0–2 of [`roadmap.md`](roadmap.md) into **GitHub milesto
 | M0a | **Platform Hygiene** | Org/CI, agent rules, `libs/core` + boundaries, persistence basics, species IDs | — |
 | M0c | **Arena Foundations** | `libs/battle` interfaces, `Clock`/`Rng`, the fork cleaned up, rebased, and packaged | `libs/core` (M0A-09) only |
 | M0b | **Engine & Content Foundations** | Engine skeleton (`libs/engine`, `dispatch`), conditions/effects/gates, content keys + model cleanup, authoring layer, releases | M0a, M0c's battle interfaces |
-| M1 | **Battle Core & Catalog** | BattleService + fork patches + catalog + team presets | M0c |
+| M1 | **Battle Core & Catalog** | BattleService, moves/learnsets catalog, teams and formats, AI (the sim patches moved to the checkpoints) | M0c |
 | M2 | **Arena Release (Pre-MVP)** 🚀 | Public PvP/PvAI in Discord; hosting & operations (launch readiness) | M1 |
-| M3 | **Region Authoring** | Locations, encounters, transport, shops, rules, validate | M0b (parallel with M1/M2) |
-| M4 | **Interaction Engine** | Scripts, triggers, NPCs, trainers, templates | M0b, M3 |
-| M5 | **Adventure Core** | Journey, travel, explore, wild/trainer battles, party/PC/bag, progression | M1, M3, M4 |
-| M6 | **Kanto Classic & MVP Release** 🚀 | Kanto built with the tools, playtested, released | M5 |
+| CP0a | **Pallet Town: talk & walk** | New journey, Oak's intro, starter, rival's name, Pallet ↔ Route 1 ↔ Viridian, published from the generated bundle | M0b |
+| CP0b | **Pallet Town: first battle** | The rival battle in Oak's lab: adventure battles in `/play`, trainer lines, EXP and level-ups | CP0a, M1 BattleService |
+| CP0c | **Pallet Town: into the grass** | Route 1 wild battles, Oak's Parcel, Pokédex and Poké Balls, catching, bag, mart, Pokémon Center, whiteout | CP0b |
+| CP1 | **Boulder Badge** | Viridian Forest, Brock, Route 22 rival; the webapp builder (private) authoring its first stretch | CP0c, the headless UI trial |
+| CP2 | **Cascade Badge** | Mt. Moon, Cerulean, Nugget Bridge, Misty; player trading and Gen 1 obedience | CP1 |
+| CP3 | **Thunder Badge** | S.S. Anne, Cut, Lt. Surge; ferries, fishing | CP2 |
+| CP4 | **Rainbow Badge** 🧪 | Rock Tunnel, Lavender, Celadon, Game Corner, Erika. **Public playtest #1** on the PokeSandbox server | CP3 |
+| CP5 | **Soul & Marsh (6 badges)** | Pokémon Tower, Snorlax, Fuchsia, Silph Co., Saffron; Fly | CP4 |
+| CP6 | **Volcano & Earth (8 badges)** | Surf, Seafoam, Cinnabar, Power Plant, Giovanni | CP5 |
+| CP7 | **Champion** 🧪 | Victory Road, Elite Four, Champion. **Public playtest #2** on the PokeSandbox server | CP6 |
+| CP8 | **Mewtwo** | Cerulean Cave and Mewtwo: Kanto Classic complete | CP7 |
+| MVP | **MVP Release** 🚀 | Webapp public, trust and safety, load test, guides, discovery | CP8 |
 
 ```
-M0a (libs/core) ──► M0c ──► M1 ──► M2 🚀 (Arena)
-      └──────────► M0b ──► M3 ──► M4 ──► M5 ──► M6 🚀 (MVP)
-                               (M1 also feeds M5)
+M0a (libs/core) ──► M0c ──► M1 ──► M2 🚀 (Arena, bot only)
+      └──────────► M0b ──► CP0a ► CP0b ► CP0c ► CP1 ► … ► CP7 ► CP8 ► MVP 🚀
+                                (M1's BattleService feeds CP0b)
 ```
 
-The Arena track (M0c → M1 → M2) needs only `libs/core` from M0a; the rest of M0a is hygiene that runs alongside. The content track (M0b → M3 → M4) runs in parallel.
+The Arena track (M0c → M1 → M2) needs only `libs/core` from M0a; the rest of M0a is hygiene that runs alongside. The content track (M0b → CP0a → …) runs in parallel.
 
-> **Proposal:** build the MVP as playable **Kanto checkpoints** (CP0 Pallet Town slice → CP1 Boulder Badge → … → CP7 Champion → CP8 Mewtwo), each a published release with a headless playthrough test, instead of system by system. See [`mvp-checkpoints.md`](mvp-checkpoints.md).
+> **The MVP is built as playable Kanto checkpoints (decided Nov 2026):** CP0a–CP0c (Pallet Town), then badge by badge to CP7 (Champion) and CP8 (Mewtwo), then the MVP Release. Each checkpoint is a published release of Kanto Classic with a headless playthrough test, and each pulls in the systems its stretch first needs. They replace the old system milestones M3 (Region Authoring), M4 (Interaction Engine), M5 (Adventure Core), and M6 (Kanto Classic & MVP Release); how a checkpoint works is in [`mvp-checkpoints.md`](mvp-checkpoints.md). Draft IDs like `M3-01` keep their names; only their milestone changed.
 
 ### Re-sequencing: Arena critical path (decided Oct 2026, after Q29)
 With ~1 senior full-time-ish, possibly a second senior, 2 junior-to-mid devs, and every PR reviewed by the owner, M0 as written is too big to sit in front of the Arena. **The Arena doesn't need most of M0.** It needs no conditions/effects, scripts, content keys, releases, or authoring layer. Decision: split M0 into M0a and M0b, as in the table above. **Refined (Oct 2026):** M0a became shared hygiene only, Arena-specific foundations moved to a new **M0c** (so an Arena contributor isn't queued behind hygiene), and the adventure engine skeleton moved into M0b.
-- The Arena track (M0c → M1 → M2) and the content track (M0b → M3…) can run in parallel. Seniors own the foundation-heavy work (engine, fork rebase/patches, BattleService, conditions/effects). Juniors take well-specified issues: catalog seed data, item definitions, renderers, builder menus, webapp editors, tests.
+- The Arena track (M0c → M1 → M2) and the content track (M0b → CP0a…) can run in parallel. Seniors own the foundation-heavy work (engine, fork rebase/patches, BattleService, conditions/effects). Juniors take well-specified issues: catalog seed data, item definitions, renderers, builder menus, webapp editors, tests.
 - **Timeline honesty:** an end-of-year Arena (~9 weeks from late Oct) would need `libs/core`, M0c, M1, and M2 done with this team while also standing up hosting/CI. That's possible only if the Arena scope stays tight: paste import, built-in formats, `basic` AI, timers, restart recovery. Hosting and operations sit at the end of M2 (launch readiness), not in front of development. Plan for **end of year as a stretch, Q1 as realistic**, and re-estimate once M0a's and M0c's issues are sized.
 
 ---
@@ -51,43 +59,43 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 | Feature | Status | Milestone | Notes |
 |---|---|---|---|
 | Create/configure region: name | ✅ | — | |
-| Currency, starters, starting location | 🟡 (`currencyType` only) | M3/M4 | Starter = pick-1 gift script |
+| Currency, starters, starting location | 🟡 (`currencyType` only) | CP0a/CP1 | Starter = pick-1 gift script |
 | Regional pokedex | ✅ | — | Switch refs to species IDs (M0a) |
 | Locations: create | ✅ | — | |
-| Locations: connect (directional) / gate | 🟡 (schema only, builder "coming soon") | M3 | Conditions replace requirements |
-| Wild encounter tables | 🟡 (schema only) | M3 | Method registry, conditions |
-| Trainers/NPCs (dialogue, rewards, placement, gym-leader tier) | ❌ | M4 | |
-| NPC party variants by progression | ❌ | M4 | Conditioned parties |
-| Conditional triggers (forced dialogue/battles/effects, once/repeatable) | ❌ | M4 | Script system |
+| Locations: connect (directional) / gate | 🟡 (schema only, builder "coming soon") | CP0a (engine), CP1 (builder) | Conditions replace requirements |
+| Wild encounter tables | 🟡 (schema only) | CP0c (engine), CP1 (builder) | Method registry, conditions |
+| Trainers/NPCs (dialogue, rewards, placement, gym-leader tier) | ❌ | CP0a–CP1 | |
+| NPC party variants by progression | ❌ | CP0b | Conditioned parties |
+| Conditional triggers (forced dialogue/battles/effects, once/repeatable) | ❌ | CP0a–CP1 | Script system |
 | Effects primitive | ❌ | M0b | |
-| Pick-1 gift rewards | ❌ | M4 | Script template |
-| Battle gauntlets (Elite 4) | ❌ | M4 | Script template |
-| Transportation networks (Fly, ferry…) | ❌ (`transportationTypes: string[]`) | M3 | |
-| Shops | ❌ | M3 | |
-| TM/HM list | ❌ | M3 | |
+| Pick-1 gift rewards | ❌ | CP0a | Script template |
+| Battle gauntlets (Elite 4) | ❌ | CP2, CP7 | Script template |
+| Transportation networks (Fly, ferry…) | ❌ (`transportationTypes: string[]`) | CP3, CP5 | |
+| Shops | ❌ | CP0c, CP4 | |
+| TM/HM list | ❌ | CP1 | |
 | Progression definitions (milestone/numeric/boolean) | ✅ | — | |
 | Progression `choice` kind | ❌ | M0b | |
-| Deploy/undeploy with playability validation | 🟡 (toggle only, `deployable` never computed) | M3 | Publish → release |
+| Deploy/undeploy with playability validation | 🟡 (toggle only, `deployable` never computed) | M0b, CP1 | Publish → release |
 
 ### Playing
 | Feature | Status | Milestone |
 |---|---|---|
-| Create character + start journey (1 active journey per user per region), onboarding, starter, rival setup | ❌ | M5 (+M4 scripts) |
-| Travel graph with gating; map/current location | ❌ | M5 |
-| Fly / transport | ❌ | M5 |
-| Wild encounters (random, fishing, time) | ❌ | M5 |
-| Battles: fight/switch | ❌ | M1 |
-| Battles: run, bag items, catch | ❌ | M1 (sim hook) + M5 |
-| Trainer battles, rival, gyms, Elite 4 | ❌ | M5 |
-| EXP, level-ups, moves, evolution | ❌ | M5 |
-| Party management, summaries | ❌ | M5 |
-| Trading between players (same region) | ❌ | M5 |
-| PC boxes | ❌ | M5 |
-| Inventory/bag | ❌ | M5 |
-| Shops buy/sell; money from battles | ❌ | M5 |
-| Heal at centers; respawn on whiteout | ❌ | M5 |
-| Profile/character view | ❌ | M5 |
-| Progression tracking (badges, visited) | ❌ | M5 |
+| Create character + start journey (1 active journey per user per region), onboarding, starter, rival setup | ❌ | CP0a |
+| Travel graph with gating; map/current location | ❌ | CP0a |
+| Fly / transport | ❌ | CP3, CP5 |
+| Wild encounters (random, fishing, time) | ❌ | CP0c, CP3 |
+| Battles: fight/switch | ❌ | M1, CP0b |
+| Battles: run, bag items, catch | ❌ | CP0c |
+| Trainer battles, rival, gyms, Elite 4 | ❌ | CP0b–CP7 |
+| EXP, level-ups, moves, evolution | ❌ | CP0b–CP2 |
+| Party management, summaries | ❌ | CP0a, CP2 |
+| Trading between players (same region) | ❌ | CP2 |
+| PC boxes | ❌ | CP2 |
+| Inventory/bag | ❌ | CP0c |
+| Shops buy/sell; money from battles | ❌ | CP0b, CP0c |
+| Heal at centers; respawn on whiteout | ❌ | CP0c |
+| Profile/character view | ❌ | CP0c (Discord), MVP Release (webapp) |
+| Progression tracking (badges, visited) | ❌ | CP1 |
 
 ---
 
@@ -145,7 +153,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] MVP facts: `milestone.has`, `milestone.count`, `choice.value`, `flag`, `bag.count`, `visited` (incl. `$target`), `party.knowsMove`, `party.hasSpecies`, `dex.caughtCount`, `progression.value`, `location.cleared`, `location.visit.*`, `location.trainersDefeated` (L)
 - [ ] Gate envelope (`presentation`, `latch`, `cost`) + `checkGate` + `gateBlocked` event (M)
 - [ ] Effect union + registry + atomic executor with idempotency (L)
-- [ ] MVP effects: currency, item, progression, milestone (grant/revoke), choice, flag, setRespawn, `teleport: respawn` (Escape Rope / Dig / Teleport), random (L). `givePokemon` (PC + swap offer) and `heal` land in M5 with `PokemonInstance`.
+- [ ] MVP effects: currency, item, progression, milestone (grant/revoke), choice, flag, setRespawn, `teleport: respawn` (Escape Rope / Dig / Teleport), random (L). `givePokemon` (PC + swap offer) and `heal` land in CP0a with `PokemonInstance`.
 
 **Epic: Model Cleanup & Identity** (Q19, Q21)
 - [ ] ContentKey type + generator. Add `key` to Location with `{ regionId, key }` unique index (S)
@@ -161,19 +169,11 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 ## M1: Battle Core & Catalog
 
-**Epic: Showdown Fork Patches** (Q20; clean-up, rebase, and packaging are M0c)
-- [ ] Patch: generalized state injection (any side; HP/status/PP/fainted state; level/stats/move slots mid-battle for authentic level-ups), every injection recorded in the input log so recovery replays it, with sim tests (M)
-- [ ] Patch: external choice hook (bag/catch/run consume turn) + `caught`/`ran` end reasons (L)
-- [ ] Patch: isolated custom-data dexes (per content hash) for `Battle` + `TeamValidator`, evolved from `dynamic-dex-data` (L)
-- [ ] Patch: Gen 1 obedience as an additive custom rule (`onBeforeMove`, cap on `pokemon.m` set via state injection, pret/pokered `CheckForDisobedience` behavior and test vectors). First, a sim test proving a format rule's `onBeforeMove` fires; if not, find the narrowest hook before touching sim core ([14](../architecture/concepts/14-battle-system-and-showdown.md#fork-strategy-options)) (M)
+**Adventure-only items moved to the checkpoints (Nov 2026).** M1 holds what the Arena needs plus the moves and learnsets catalog. The sim patches, `ItemDefinition`, `RegionRules`, and the Gen 1 formulas moved to the checkpoint that first needs them (CP0a–CP2). The **isolated custom-data dexes** (and assembling mixed-generation data into them) moved **past the MVP**: Kanto Classic is pure Gen 1, so Showdown's own `gen1` mod covers it, and the MVP ships only the Classic Gen 1 preset. They return with custom content, mixed-generation rules, and library-based Arena formats ([27](../architecture/concepts/27-server-content-library-and-overrides.md)).
 
 **Epic: Catalog**
 - [ ] Canon catalog import from Showdown (pinned version): SpeciesDefinition, MoveDefinition (per-gen data via the resolved Dex, behavior `hooks`, text), Learnset (per-gen sources) into Mongo; re-runnable with diff on upgrades (L). Moves and learnsets drafted as E-M1-2 ([`m1-battle-core-and-catalog.md`](../backlog/m1-battle-core-and-catalog.md))
 - [ ] Catalog read service + move detail display (M)
-- [ ] ItemDefinition model + Gen 1 item seed (pockets, prices, field/battle handlers) (L)
-- [ ] Piecemeal `RegionRules` model (holistic battle mechanics gen + per-dimension data/formula/graphics choices + gimmick toggles) with compatibility validation; then switch M1-04 and M3-03 from their "default Gen 1" to the region's rules (M)
-- [ ] Gen 1 implementations for every dimension: Gen 1 mechanics (Showdown `gen1`), species stats, types, moves, learnsets, catch rates, EXP/catch/escape/payout formulas, original sprites, DVs/Stat Exp, the four Gen 1 growth curves (floored, level 1 clamped: intended behavior, no glitches). Reference: pret/pokered, with test vectors ([18](../architecture/concepts/18-rules-time-and-randomness.md#reference-test-vectors)). "Classic Gen 1" preset (L)
-- [ ] Assemble per-release data mixes from Showdown gen mods into isolated custom-data dexes (M)
 
 **Epic: Teams** (drafted as E-M1-4 in [`m1-battle-core-and-catalog.md`](../backlog/m1-battle-core-and-catalog.md#e-m1-4--teams--formats))
 - [ ] `PokemonSet` shared type and `TeamPreset` model (M1-11) (S)
@@ -219,86 +219,130 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Discord verification readiness: no privileged intents (prefix commands removed in M0A-25), privacy policy and terms published, verification application at 75 servers (M2-15) (M)
 - [ ] `/account delete` for Arena data (M2-16) (M)
 
-## M3: Region Authoring
-> **Authoring is webapp-first and mobile-first (decided Oct 2026, Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).** Each builder item below is a webapp screen on `libs/authoring` commands. Discord keeps Region Health, publishing, and Open in builder links; the existing Pokédex, progression, and location builders keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (on in dev).
+## The Kanto checkpoints (CP0a–CP8)
+> **Authoring is webapp-first and mobile-first (decided Oct 2026, Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).** Builder items are webapp screens on `libs/authoring` commands. Discord keeps Region Health, publishing, and Open in builder links; the existing Pokédex, progression, and location builders keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (on in dev).
 
-- [ ] Region config screen: currency object, starting location, respawn, rules preset (M)
-- [ ] Location kinds, grouping (`parentKey`), description and conditioned `descriptionVariants` as `Passage`s (Q37), services, tags (M)
-- [ ] Connections editor with two-way toggle and labels (M)
-- [ ] Condition builder UI (flat "all of" + one nesting level + templates) (L)
-- [ ] Encounter method registry + conditioned encounter tables + builder (L)
-- [ ] TM/HM list + learnset policy screen (M). TM/HM lists drafted as E-M3-1 ([`m3-region-authoring.md`](../backlog/m3-region-authoring.md))
-- [ ] Transport networks + Fly/Ferry templates (M)
-- [ ] Shops with conditioned entries and progression-priced entries (M)
-- [ ] Validator Tier 1 + basic Tier 2 + "Region Health" (webapp view, plus a `/region` summary in Discord) (L)
-- [ ] Release chunking for large regions + rollback hooks (publish core lands in M0b) (M)
-- [ ] Region bundle export/import (JSON) (M)
-
-**Epic: Webapp Builder (Q24, Q36)** (drafted as E-M3-2 in [`m3-region-authoring.md`](../backlog/m3-region-authoring.md#e-m3-2--webapp-builder); the shell and UI stack come first; each editor can start once its `libs/authoring` commands exist)
-- [ ] **First, before any webapp authoring work:** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks (M3-05) (S)
-- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it (M3-07) (M)
-- [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width; blocked by M3-05 and M3-07 (M3-06) (M)
-- [ ] Shared builder components: search combobox (species/moves/items), sortable list, confirm dialog, passage editor with Discord preview (M)
-- [ ] Open in builder links from `/region` (plain URLs, Discord OAuth sign-in) (S)
-- [ ] Shared condition builder component (M)
-- [ ] Region map: list/detail on phones, canvas on wide screens (locations, directional/two-way edges, grouping, gate badges) (L)
-- [ ] Encounter table grid (M)
-- [ ] Trainer party editor with conditioned variants; unset moves default to the last 4 level-up moves from the region's learnsets (M)
-- [ ] Script step editor (L)
-- [ ] Region Health view (read-only) (S)
-- [ ] Player profile + character pages (with their journeys) and privacy settings (M)
-
-## M4: Interaction Engine (Q16)
-- [ ] Script + Trigger models (M)
-- [ ] Script VM: steps `passage` (prose, dialogue lines, images; `say` as shorthand) and `choice/if/effects/battle/wildBattle/npcTrade/askName/heal/shop/travel/goto/end`, `{name:<slot>}` placeholders (L)
-- [ ] Mode machine + persisted script cursor + resume on input (M)
-- [ ] Trigger dispatch: journeyStarted (payload: `newCharacter`, `carriedPokemon`), enterLocation (optional `from`/`via` filters; any arrival counts), interact, battleEnd, explore; once/priority/forced (M)
-- [ ] TrainerClass registry (canon seed) + Trainer with conditioned party variants (M)
-- [ ] Trainer intro and defeat lines: minimal flavor slice (`FlavorEntry` in the region layer, resolver for `battle.trainerIntro` / `battle.trainerDefeat` matching trainer → class → default, the trainer "Lines" tab) ([29](../architecture/concepts/29-flavor-text-and-prose.md#mvp-scope)) (M)
-- [ ] NPC model (placements with single/everywhere presence and per-placement interact, trainer, engagement) (M)
-- [ ] Templates: Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet, Simple Talker (L)
-
-## M5: Adventure Core
-- [ ] Journey + PokemonInstance models (with reserved `tags`, Q37), OCC, transactions; engine events (evolution, level-up, catch, travel, heal) carry the Pokémon's identity for later flavor (M)
-- [ ] Character creation (with an `idNo`; the character is the original trainer of Pokémon it obtains) + journey start (1 active journey per user per region) + name slots (`Journey.names`; Kanto Classic names the rival) + restart (archive, 24h cooldown) + admin reset + onboarding trigger + release-version migration rules (M)
-- [ ] Passage renderer: Components v2, `dialogue` and `prose` styles, markdown, auto-paging by text/component budget, choices on the last page (M)
-- [ ] `/play` hub renderer (mode-aware): claims the session (newest wins), resumes any mode incl. mid-battle requests and pending prompts, and shuts down superseded sessions cleanly (L)
-- [ ] Travel action (conditions, locked explanations, enter triggers, `visited:<key>` flags) (M)
-- [ ] Transport action (Fly menu): destinations grouped by area, fares shown, unaffordable options locked with the reason (S)
-- [ ] Explore action: weighted outcome table (wild/trainer/hidden item), Repel safe steps, trainer engagement (M)
-- [ ] Traversal requirements: location progress counters (lifetime/visit), one-time + permanent costs, compiled exit gates with explanations (M)
-- [ ] Wild battles: catch formula, run odds, bag in battle (via hook); the default intro line, with the encounter start event carrying `firstSighting` and a resolved `intro` passage so authored intros can be added later ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) (L)
-- [ ] Trainer battles: party variant selection, AI profile, payout, defeat flags, whiteout (M)
-- [ ] EXP and level-ups mid-battle (state injection), in-battle move-learn prompts, post-battle and post-trade evolution (level/stone/trade), Gen 1 traded-Pokémon EXP bonus and obedience by original trainer (the engine computes each traded Pokémon's cap from badges and passes it in the `BattleSpec`; the fork rule enforces it) (L)
-- [ ] Party view/reorder/summary; full party → PC + "Swap into party?" offer for gifts and catches (M)
-- [ ] PC boxes: deposit/withdraw/release, overflow, access per `RegionRules.systems.storage.access` (M)
-- [ ] Bag: pockets, use/give/take outside battle; Escape Rope uses the `teleport: respawn` effect (M)
-- [ ] Shops buy/sell, including entries priced in a numeric progression (coins); money never below 0 (S)
-- [ ] Heal points (restore HP, status, and PP) + respawn (S)
-- [ ] Profile: badge case, milestones, visited, dex (M)
-- [ ] **Trading** (Q35): `Trade` record + shared trade message + private Pokémon pickers (reusing the M2 Arena surface patterns), confirm-reset on offer change, expiry (M)
-- [ ] Two-journey engine action: ordered leases, re-checks, owner swap in one transaction, both revisions and Pokédexes updated; `trading.access` precondition; per-user rate limit (M)
-- [ ] Adventure log: engine-written entries (trainer battles with turn digests, catches, trades, releases, wild rollups, milestones, evolutions, scenes; Pokémon stored as snapshots so entries survive the 30-day release purge) + webapp log view; ephemeral opponent Pokémon from recipes (M)
-
-## M6: Kanto Classic & MVP Release 🚀
+**Every checkpoint's exit criteria** ([`mvp-checkpoints.md`](mvp-checkpoints.md#how-a-checkpoint-works)): a published Kanto Classic release that plays from a new journey to the checkpoint's end; a headless playthrough test to that point in CI; a human playtest of the new stretch, with friction filed as issues; the stretch's content in the repo bundle; and (from CP1) every builder screen that stretch's content needs. Each checkpoint also adds its stretch of **generated data** (locations, encounters, trainers and lines, marts, TMs) and **authored story** (scripts, gates).
 
 **Kanto Classic adaptations (decided Oct 2026).** These keep MVP scope down without special mechanics:
 - **No Safari Zone in MVP** (bait/rock/ball mechanics deferred). Its key rewards come another way, e.g. a Fuchsia NPC gift script gives HM03 Surf, and the Warden gives HM04 Strength directly or via a simpler fetch.
 - **No unidentifiable-ghost mechanic.** Pokémon Tower's upper floors are gated on `bag.count silph-scope ≥ 1` (presentation `attemptable`, with a "the ghosts block your way" script). The rival battle stays reachable *outside* that gate (lobby/first floor), so story order matches RBY. The Marowak ghost is a scripted `wildBattle` behind the gate.
 
-**Epic: Webapp Hosting** (deferred from M2, decided Nov 2026: the Arena release is bot-only). Lands **before** Kanto Classic authoring on the HQ server starts, since MVP authoring is webapp-first; until the MVP release it's private (staff and testers).
+## CP0a: Pallet Town, talk & walk
+- [ ] Generator script, first stretch: bulk Kanto data → region bundle; extended stretch by stretch at every checkpoint (L)
+- [ ] Region bundle export/import (JSON), deterministic and lossless; canonical bundle in repo (`templates/kanto-classic/`); CI validation; deploy-time install (M)
+- [ ] Headless playthrough harness: scripted journeys run against the bundle in CI (each checkpoint adds its path) (M)
+- [ ] Piecemeal `RegionRules` model with compatibility validation and the "Classic Gen 1" preset (data dimensions now; formulas arrive with the checkpoints that use them); switch M1-04 and M3-03 from their "default Gen 1" to the region's rules (M)
+- [ ] Journey + PokemonInstance models (with reserved `tags`, Q37), OCC, transactions; engine events (evolution, level-up, catch, travel, heal) carry the Pokémon's identity for later flavor (M)
+- [ ] Character creation (with an `idNo`; the character is the original trainer of Pokémon it obtains) + journey start (1 active journey per user per region) + name slots (`Journey.names`; Kanto Classic names the rival) + restart (archive, 24h cooldown) + admin reset + onboarding trigger + release-version migration rules (M)
+- [ ] Script + Trigger models (M)
+- [ ] Script VM, core steps: `passage` (prose, dialogue lines, images; `say` as shorthand), `choice`, `if`, `effects`, `askName`, `heal`, `travel`, `goto/label/end`, `{name:<slot>}` placeholders (L)
+- [ ] Mode machine + persisted script cursor + resume on input (M)
+- [ ] Trigger dispatch: journeyStarted (payload: `newCharacter`, `carriedPokemon`), enterLocation (optional `from`/`via` filters; any arrival counts), interact; once/priority/forced (M)
+- [ ] NPC model (placements with single/everywhere presence and per-placement interact, trainer, engagement) (M)
+- [ ] `givePokemon` effect (PC + swap offer) and the Starter/Pick-N Gift and Simple Talker templates (M)
+- [ ] Passage renderer: Components v2, `dialogue` and `prose` styles, markdown, auto-paging by text/component budget, choices on the last page (M)
+- [ ] `/play` hub renderer (mode-aware): claims the session (newest wins), resumes any mode incl. mid-battle requests and pending prompts, and shuts down superseded sessions cleanly (L)
+- [ ] Travel action (conditions, locked explanations, enter triggers, `visited:<key>` flags) (M)
+- [ ] Party view/summary (S)
+- [ ] `adventure.play` feature flag: adventure play only on servers with the override (the PokeSandbox server) until the MVP Release (S)
+
+## CP0b: Pallet Town, first battle
+- [ ] Fork patch: generalized state injection (any side; HP/status/PP/fainted state; level/stats/move slots mid-battle for authentic level-ups), every injection recorded in the input log so recovery replays it, with sim tests (M)
+- [ ] Adventure battles in `/play`: BattleService `trainer` kind, the await-in-action pattern, the M1-10 battle view, resume after restart (M)
+- [ ] Script VM `battle` step (`canLose`, `onWin`/`onLose`; the first rival battle can be lost without a whiteout) (S)
+- [ ] TrainerClass registry (canon seed) + Trainer with conditioned party variants (the rival's team by starter) (M)
+- [ ] Trainer intro and defeat lines: minimal flavor slice (`FlavorEntry` in the region layer, resolver for `battle.trainerIntro` / `battle.trainerDefeat` matching trainer → class → default) ([29](../architecture/concepts/29-flavor-text-and-prose.md#mvp-scope)) (M)
+- [ ] Trainer battles: party variant selection, AI profile, payout, defeat flags (M)
+- [ ] Gen 1 EXP and payout formulas, DVs/Stat Exp, the four growth curves (floored, level 1 clamped: intended behavior, no glitches), with pret/pokered test vectors ([18](../architecture/concepts/18-rules-time-and-randomness.md#reference-test-vectors)) (M)
+- [ ] EXP and level-ups mid-battle (state injection), in-battle move-learn prompts (M)
+
+## CP0c: Pallet Town, into the grass
+- [ ] Fork patch: external choice hook (bag/catch/run consume the turn) + `caught`/`ran` end reasons (L)
+- [ ] ItemDefinition model + Gen 1 item seed (pockets, prices, field/battle handlers) (L)
+- [ ] Gen 1 catch and escape formulas, with test vectors (S)
+- [ ] Encounter method registry + conditioned encounter tables (engine side; the builder screen is CP1) (M)
+- [ ] Explore action: the weighted outcome table with `wild` outcomes (trainer and item outcomes arrive in CP1) (S)
+- [ ] Wild battles: catch, run odds, bag in battle (via the hook), Script VM `wildBattle` step; the default intro line, with the encounter start event carrying `firstSighting` and a resolved `intro` reference so authored intros can be added later ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) (L)
+- [ ] Bag: pockets, use outside battle, key items (Oak's Parcel) (M)
+- [ ] Shops: buy/sell (the Viridian Mart), Script VM `shop` step; money never below 0 (S)
+- [ ] Heal points (restore HP, status, and PP) + respawn + whiteout (S)
+- [ ] Pokédex seen/caught on the profile (S)
+
+## CP1: Boulder Badge
+**Epic: Webapp Builder (Q24, Q36)** (drafted as E-M3-2 in [`m3-region-authoring.md`](../backlog/m3-region-authoring.md#e-m3-2--webapp-builder))
+- [ ] **First, before any webapp authoring work (can start any time):** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks (M3-05) (S)
+- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it (M3-07) (M)
+- [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width; blocked by M3-05 and M3-07 (M3-06) (M)
+- [ ] Shared builder components: search combobox (species/moves/items), sortable list, confirm dialog, passage editor with Discord preview (M)
+- [ ] Open in builder links from `/region` (plain URLs, Discord OAuth sign-in) (S)
+- [ ] Shared condition builder component (flat "all of" + one nesting level + templates) (L)
+- [ ] Region config screen: currency object, starting location, respawn, rules preset (M)
+- [ ] Location screens: kinds, grouping (`parentKey`), description and conditioned `descriptionVariants` as `Passage`s (Q37), services, tags; connections with the two-way toggle and labels; list/detail region map (L)
+- [ ] Encounter table grid (M)
+- [ ] Trainer party editor with conditioned variants (unset moves default to the last 4 level-up moves from the region's learnsets) and the "Lines" tab (M)
+- [ ] Validator Tier 1 + basic Tier 2 + Region Health (webapp view, plus a `/region` summary in Discord) (L)
+
+**Epic: Webapp Hosting (private)** (deferred from M2, decided Nov 2026: the Arena release is bot-only). Lands before CP1's stretch is authored on the PokeSandbox server; staff and testers only until the MVP Release.
 - [ ] Webapp Dockerfile and compose profile (S)
 - [ ] Webapp service on the host, domain with TLS, Discord OAuth redirect URIs, secrets (M)
 - [ ] Webapp in the deploy pipeline and staging; Sentry and an uptime check (S)
 
-- [ ] Generator script: bulk Kanto data (locations, connections, encounters, trainers/parties, marts, TM list) → region bundle (L)
-- [ ] Author Kanto Classic story/scripts/gates in the tools on the HQ server (dogfooding; track every builder friction as an issue) (XL → split per area)
-- [ ] Canonical bundle in repo (`templates/kanto-classic/`), deterministic lossless export/import, CI validation + headless playthrough, deploy-time install (M)
-- [ ] Headless engine playthrough test to badge 2 (M)
+**Adventure**
+- [ ] Explore outcomes `trainer` and `item`, trainer engagement (`onTalk`, `onExplore`, `onEnter`), hidden items (M)
+- [ ] Trigger events `battleEnd` and `explore` (S)
+- [ ] Traversal requirements: location progress counters (lifetime/visit), one-time + permanent costs, compiled exit gates with explanations (M)
+- [ ] Templates: Gym Leader, Forced Encounter (the Route 22 rival), Gift NPC (M)
+- [ ] TM/HM lists (E-M3-1, [`m3-region-authoring.md`](../backlog/m3-region-authoring.md)) and teaching a TM from the bag (M)
+- [ ] Post-battle level evolution (S)
+- [ ] AI trainer item use (M1-17) (S)
+- [ ] Profile: badge case, milestones, visited (M)
+- [ ] Adventure log: engine-written entries (trainer battles with turn digests, catches, trades, releases, wild rollups, milestones, evolutions, scenes; Pokémon stored as snapshots so entries survive the 30-day release purge); ephemeral opponent Pokémon from recipes. The webapp log view arrives with the MVP Release (M)
+
+## CP2: Cascade Badge
+- [ ] Script step editor (webapp) (L)
+- [ ] Templates: Gauntlet (Nugget Bridge), In-game Trade; Script VM `npcTrade` step (M)
+- [ ] Stone evolution, Repel (safe steps), Escape Rope / Dig / Teleport via `teleport: respawn` (M)
+- [ ] PC boxes: deposit/withdraw/release, overflow, access per `RegionRules.systems.storage.access`; party reorder; full party → PC + "Swap into party?" offer for gifts and catches (M)
+- [ ] **Trading** (Q35): `Trade` record + shared trade message + private Pokémon pickers (reusing the M2 Arena surface patterns), confirm-reset on offer change, expiry (M)
+- [ ] Two-journey engine action: ordered leases, re-checks, owner swap in one transaction, both revisions and Pokédexes updated; `trading.access` precondition; per-user rate limit (M)
+- [ ] Post-trade evolution (Kadabra, Machoke, Graveler, Haunter); Gen 1 traded-Pokémon EXP bonus (S)
+- [ ] Fork patch: Gen 1 obedience as an additive custom rule (`onBeforeMove`, cap on `pokemon.m` set via state injection, pret/pokered `CheckForDisobedience` behavior and test vectors). First, a sim test proving a format rule's `onBeforeMove` fires; if not, find the narrowest hook before touching sim core ([14](../architecture/concepts/14-battle-system-and-showdown.md#fork-strategy-options)) (M)
+- [ ] Engine side of obedience: each traded Pokémon's cap from badges and `RegionRules.obedience`, passed in the `BattleSpec` (S)
+
+## CP3: Thunder Badge
+- [ ] Transport networks + the Ferry template + the transport builder screen (M)
+- [ ] Transport action: destinations grouped by area, fares shown, unaffordable options locked with the reason (S)
+- [ ] Fishing methods (Old/Good/Super Rod) in the encounter method registry (S)
+- [ ] Key-item and field-move gates (S.S. Ticket, Cut) through conditions, with locked explanations (S)
+
+## CP4: Rainbow Badge 🧪 (public playtest #1)
+- [ ] Shops with conditioned entries and progression-priced entries (Game Corner coins) + the shop builder screen (M)
+- [ ] Release chunking for large regions + rollback hooks (publish core lands in M0b) (M)
+- [ ] Extend `/account delete` to adventure data (M6-02), before community members start playing (M)
+- [ ] Public playtest on the PokeSandbox server: `adventure.play` stays limited to that server; feedback triage (M)
+
+## CP5: Soul & Marsh (6 badges)
+- [ ] Fly network (template, HM02), Fly destination lists grouped and paginated (S)
+- [ ] Region map canvas for wide screens (directional/two-way edges, grouping, gate badges) (L)
+- [ ] Scripted static encounters (Snorlax), Card Key gates, gifts with a full party (Lapras) (S)
+
+## CP6: Volcano & Earth (8 badges)
+- [ ] Surf (method and gate), Strength gates (simplified), the fossil revival script (S)
+
+## CP7: Champion 🧪 (public playtest #2)
+- [ ] Gauntlet `resetOnLoss` and `lockedUntilComplete`; Hall of Fame milestone and log entry (S)
+- [ ] `smart` AI profile for the League, if not already done in M1 (M1-18) (L)
 - [ ] Human playtest Pallet → Champion; balance pass (L)
+- [ ] Public playtest #2 on the PokeSandbox server; feedback triage (M)
+
+## CP8: Mewtwo
+- [ ] Post-Champion gate, Cerulean Cave, Mewtwo; Kanto Classic complete, with the full headless playthrough in CI (M)
+
+## MVP Release 🚀
+- [ ] Webapp goes public: player profile and character pages (with their journeys), privacy settings, the adventure log view (M)
+- [ ] Report content + staff takedown tools for discovery, public pages, and narration (M6-01) (L)
 - [ ] Load test: N concurrent players + battles on target hosting (M)
 - [ ] Dependency security re-check: no open critical/high Dependabot alerts before release (S)
 - [ ] Admin guide + player guide + template walkthrough (M)
-- [ ] Report content + staff takedown tools for discovery, public pages, and narration (M6-01) (L)
-- [ ] Extend `/account delete` to adventure data (M6-02) (M)
 - [ ] Public release + discovery listing (S)

@@ -65,6 +65,8 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 
 **Goal:** An admin can build a complete Kanto (Pallet → Champion) using only PokeSandbox tools, publish it, and players can play it start to finish.
 
+**Built as playable checkpoints (decided Nov 2026):** Pallet Town in three steps (CP0a–CP0c), then badge by badge to the Champion (CP7) and Mewtwo (CP8), each a published release of Kanto Classic. CP4 and CP7 are public playtests on the PokeSandbox server only (adventure play is behind a feature flag until the MVP Release). See [`mvp-checkpoints.md`](mvp-checkpoints.md).
+
 ### Region building (admin)
 **Webapp-first, mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)):** every builder feature below is a webapp screen on the shared `libs/authoring` commands, designed for phones first. Discord keeps Region Health, publishing, and Open in builder links, and the existing Pokédex, progression, and location builders keep working until the webapp has parity with them, hidden in production behind a feature flag until they're ready for a full release.
 - Region config: name, currency, rules preset, starting location, respawn default.

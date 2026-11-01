@@ -1,6 +1,6 @@
 # M1: Battle Core & Catalog (backlog draft, partial)
 
-Drafted so far: the **moves and learnsets catalog** epic (E-M1-2), which can start now and run in parallel with M0a, and the **Arena epics** ([E-M1-3 BattleService, E-M1-4 Teams & Formats, E-M1-5 AI Players](#arena-epics-e-m1-3-e-m1-4-e-m1-5)), which M2 builds on. Still to draft: the fork patches (E-M1-1, reserved), items, `RegionRules`, and the Gen 1 implementations; the adventure needs those, the Arena doesn't. Fork clean-up, rebase, and packaging moved to [M0c](m0c-arena-foundations.md).
+Drafted so far: the **moves and learnsets catalog** epic (E-M1-2), which can start now and run in parallel with M0a, and the **Arena epics** ([E-M1-3 BattleService, E-M1-4 Teams & Formats, E-M1-5 AI Players](#arena-epics-e-m1-3-e-m1-4-e-m1-5)), which M2 builds on. The sim patches, items, `RegionRules`, and the Gen 1 formulas moved to the Kanto checkpoints that first need them (CP0a–CP2, [`mvp.md`](../roadmap/mvp.md#the-kanto-checkpoints-cp0acp8)); the isolated custom-data dexes moved past the MVP. E-M1-1 is retired as an ID. Fork clean-up, rebase, and packaging moved to [M0c](m0c-arena-foundations.md).
 
 Refs: concept [12](../architecture/concepts/12-content-catalog-species-moves-items.md), [`mvp.md` § M1](../roadmap/mvp.md#m1-battle-core--catalog)
 
@@ -166,7 +166,7 @@ MoveData = {
 
 # Arena epics (E-M1-3, E-M1-4, E-M1-5)
 
-Everything the Arena needs from M1 before M2 wires up its Discord side (E-M2-2): battles that run, persist, recover, and time out; teams and formats; and AI opponents. **PvP and PvAI with team presets need none of the Showdown fork patches** (state injection, the external choice hook, isolated custom-data dexes: E-M1-1, not drafted yet). Those serve adventure battles and formats with custom content.
+Everything the Arena needs from M1 before M2 wires up its Discord side (E-M2-2): battles that run, persist, recover, and time out; teams and formats; and AI opponents. **PvP and PvAI with team presets need none of the Showdown fork patches** (state injection and the external choice hook land in CP0b and CP0c; isolated custom-data dexes after the MVP). Those serve adventure battles and formats with custom content.
 
 ## Start here (Arena)
 New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § Start here](m0c-arena-foundations.md#start-here) (the Arena in Pokémon terms, how the fork, `libs/battle`, and the Arena module fit together, and how to work on the fork). Context specific to these epics:
@@ -180,7 +180,8 @@ New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § 
 | When this lands | Follow-up | Affects |
 |---|---|---|
 | The fork is published as a package (M0C-06) | Switch `libs/battle` from upstream `pokemon-showdown` (exact pinned version) to the fork package, and re-run the battle tests. | M1-05, M1-12, M1-14 |
-| Fork patches (E-M1-1) | `inject` and the external choice hook stop throwing `NotSupported`; formats with library content compile into isolated dexes; trainer item use (M1-17) is unblocked. | M1-05, M1-12, M1-17 |
+| Sim patches (CP0b, CP0c) | `inject` and the external choice hook stop throwing `NotSupported`; trainer item use (M1-17) is unblocked. | M1-05, M1-17 |
+| Isolated custom-data dexes (post-MVP) | Formats with library content compile into isolated dexes. | M1-12 |
 | `RegionRules` (M1) | Adventure battles pass the region's mechanics generation; the Arena keeps using the format's `rules.mechanicsGen`. | M1-05 |
 
 ## E-M1-3 · BattleService
@@ -194,15 +195,15 @@ New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § 
 **Summary:** The core of `libs/battle`: a `BattleService` implementing `BattlePort` over Showdown's `BattleStream`, running in the game host process behind an interface that can later move battles to worker threads.
 
 **Acceptance criteria**
-- `start(spec)` creates a battle for `kind: 'pvp' | 'ai-arena'` (the adventure kinds `wild` / `trainer` are accepted by the types but not wired until M5), with a format ID, the sides' `PokemonSet[]` teams, and a seed. A missing seed is generated and stored.
+- `start(spec)` creates a battle for `kind: 'pvp' | 'ai-arena'` (the adventure kinds `wild` / `trainer` are accepted by the types but not wired until CP0b/CP0c), with a format ID, the sides' `PokemonSet[]` teams, and a seed. A missing seed is generated and stored.
 - `choose(battleId, side, choice, rqid)` validates against the side's current request. A stale or already-answered `rqid` is a no-op (returns `{ accepted: false, reason: 'stale' | 'answered' }`), so a request is never resolved twice. Choices for one battle go through **one in-process queue per `battleId`**, so a timer and a press, or two presses, never interleave.
 - `subscribe(battleId, sink)` delivers `BattleEvent`s: `request` (per side, with `rqid` and the legal choices), `turn` (a `TurnDigest`, M1-09), `ended` (winner, reason: `normal | forfeit | timeout`), plus `battleRecovered` (M1-06).
 - `forfeit(battleId, side)`.
-- `inject` and the external choice hook throw `NotSupported` until E-M1-1's fork patches land.
+- `inject` and the external choice hook throw `NotSupported` until their sim patches land (CP0b, CP0c).
 - Uses upstream `pokemon-showdown` at an exact pinned version until M0C-06 publishes the fork.
 - Tests: a full PvP battle driven by two scripted sides finishes with the right winner; the same seed and choices give the same protocol output; a double `choose` with the same `rqid` is applied once; no Discord imports (module boundaries).
 
-**Changes later:** switches to the fork package (M0C-06); `inject` and the external choice hook come with E-M1-1.
+**Changes later:** switches to the fork package (M0C-06); `inject` and the external choice hook come with their sim patches (CP0b, CP0c).
 
 **Refs:** [14 § BattleService](../architecture/concepts/14-battle-system-and-showdown.md#battleservice-in-libsbattle), [25 § Ownership](../architecture/concepts/25-arena.md#ownership)
 
@@ -254,7 +255,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § 
 
 **Acceptance criteria**
 - A `TurnDigest` per turn: `messages: string[]` rendered from Showdown's text templates (`data/text`, the ones the Showdown client uses), and per side the active Pokémon's species, nickname, level, HP (current/max, from the owning side's request, as a percentage for the opponent's), status, and stat stages.
-- Structured events alongside the text (`move`, `miss`, `crit`, `effectiveness`, `damage`, `faint`, `switch`, `status`, `item`) for the engine to react to later (EXP on `faint` in M5). Each carries the side, species, nickname, and, where relevant, the move and its type, the status, and the item, plus the Pokémon's instance ID when it has one (adventure battles), so flavor can be added later without changing the events ([29](../architecture/concepts/29-flavor-text-and-prose.md#mvp-hooks-recommended)).
+- Structured events alongside the text (`move`, `miss`, `crit`, `effectiveness`, `damage`, `faint`, `switch`, `status`, `item`) for the engine to react to later (EXP on `faint` in CP0b). Each carries the side, species, nickname, and, where relevant, the move and its type, the status, and the item, plus the Pokémon's instance ID when it has one (adventure battles), so flavor can be added later without changing the events ([29](../architecture/concepts/29-flavor-text-and-prose.md#mvp-hooks-recommended)).
 - The text rendering takes a locale parameter (only `en` for now), so Showdown's localized battle templates can be used later ([30 § Showdown's translations](../architecture/concepts/30-internationalization-readiness.md#showdowns-translations)).
 - Never hand-written message strings and never a second copy of battle state ([26 § Battles](../architecture/concepts/26-discord-surface-and-ux-patterns.md#battles)).
 - Golden tests over recorded protocol: a super-effective hit, a miss, a critical hit, a status move, a faint and switch, and a Gen 1 battle (Gen 1 text differs).
@@ -302,10 +303,10 @@ User-owned team presets and server-scoped formats, with Showdown's validator enf
 - `ArenaFormat` as in [25](../architecture/concepts/25-arena.md#arena-formats-decided-oct-2026-server-scoped-not-region-scoped) (`serverId | 'builtin'`, `pool`, `bans`, `rules`). Never references a region's deployment.
 - `compileFormat(format) → Showdown format` (mod, rule table, bans, team size, level).
 - Built-in formats seeded and available on every server: **National Dex Lv50** and **Kanto 151 Lv50** (Gen 1 mechanics), each in singles; National Dex also in doubles. Flat Lv50 (teams auto-adjusted to 50), standard clauses (Species, Sleep, OHKO, Evasion, Endless Battle), team preview where the generation has it, and the 90s timer.
-- Server formats with **canon pools** (generations, tiers, include/exclude, bans) can be created by server admins through a format service with role checks. Pools using library content are rejected with "needs custom content support" until E-M1-1's isolated dexes land.
+- Server formats with **canon pools** (generations, tiers, include/exclude, bans) can be created by server admins through a format service with role checks. Pools using library content are rejected with "needs custom content support" until the isolated custom-data dexes land (post-MVP).
 - Tests: each built-in compiles and validates a known legal team; a banned move, an out-of-pool species, and a duplicate species each fail with the right reason.
 
-**Changes later:** library pools compile into isolated dexes with E-M1-1; the admin UI for server formats is a follow-up (format editing isn't part of the launch scope).
+**Changes later:** library pools compile into isolated dexes (post-MVP); the admin UI for server formats is a follow-up (format editing isn't part of the launch scope).
 
 **Refs:** [25 § Arena formats](../architecture/concepts/25-arena.md#arena-formats-decided-oct-2026-server-scoped-not-region-scoped), [27](../architecture/concepts/27-server-content-library-and-overrides.md)
 
@@ -334,7 +335,7 @@ User-owned team presets and server-scoped formats, with Showdown's validator enf
 ## E-M1-5 · AI Players
 `Type: Epic` · `Priority: P0`
 
-AI sides that answer requests through the same `choose` a human uses ([14 § AI trainers](../architecture/concepts/14-battle-system-and-showdown.md#ai-trainers)). The Arena's PvAI difficulty is an AI profile; adventure trainers reuse the same profiles in M5.
+AI sides that answer requests through the same `choose` a human uses ([14 § AI trainers](../architecture/concepts/14-battle-system-and-showdown.md#ai-trainers)). The Arena's PvAI difficulty is an AI profile; adventure trainers reuse the same profiles from CP0b.
 
 ### M1-15 · AI player interface and the `random` profile
 `Type: Task` · `Parent: E-M1-5` · `Priority: P0` · `Size: S` · `Labels: area:battle` · `Blocked by: M1-05` · `agent-ready: yes` · `Owner: any`
@@ -358,9 +359,9 @@ AI sides that answer requests through the same `choose` a human uses ([14 § AI 
 **Refs:** [14 § AI trainers](../architecture/concepts/14-battle-system-and-showdown.md#ai-trainers)
 
 ### M1-17 · Trainer item use for AI profiles
-`Type: Feature` · `Parent: E-M1-5` · `Priority: P1` · `Size: S` · `Labels: area:battle` · `Blocked by: M1-16, E-M1-1 (external choice hook)` · `agent-ready: yes` · `Owner: any`
+`Type: Feature` · `Parent: E-M1-5` · `Priority: P1` · `Size: S` · `Labels: area:battle` · `Blocked by: M1-16, the external choice hook patch (CP0c)` · `agent-ready: yes` · `Owner: any`
 
-**Summary:** Not needed for the Arena (Arena teams carry no bag); needed for adventure trainers in M5.
+**Summary:** Not needed for the Arena (Arena teams carry no bag); needed for adventure trainers (milestone CP1).
 
 **Acceptance criteria**
 - Every profile except `random` uses a trainer party's `items`: a healing item when the active Pokémon's HP is low, or a status cure for a status it cures, submitted through the external choice hook. Counts are tracked per battle.

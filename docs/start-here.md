@@ -11,10 +11,10 @@ A Discord bot plus a web app that lets Discord servers **build their own Pokémo
 |---|---|---|
 | Foundations | **M0a** Platform Hygiene · **M0c** Arena Foundations · **M0b** Engine & Content Foundations | Org, CI, shared libraries; the battle library interfaces and a clean Showdown fork; the adventure engine and content primitives |
 | Pre-MVP: Arena | **M1** Battle Core & Catalog · **M2** Arena Release 🚀 | Public PvP/PvAI in Discord (public release #1) |
-| MVP: "Recreate Red/Blue/Yellow" | **M3** Region Authoring · **M4** Interaction Engine · **M5** Adventure Core · **M6** Kanto Classic & MVP Release 🚀 | A complete Kanto built with the tools and playable start to finish (public release #2) |
+| MVP: "Recreate Red/Blue/Yellow" | **CP0a–CP0c** Pallet Town · **CP1–CP6** badge by badge · **CP7** Champion · **CP8** Mewtwo · **MVP Release** 🚀 | Kanto Classic built with the tools, playable checkpoint by checkpoint (public playtests at CP4 and CP7 on the PokeSandbox server), then released (public release #2) |
 | Later | Full-feature, then "Pie in the Sky" | Quests, custom content, events, co-op, … |
 
-Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs/core` from M0a) and **content** (M0b → M3 → M4 → M5 → M6). Details: [`roadmap/mvp.md`](roadmap/mvp.md) and [`roadmap/roadmap.md`](roadmap/roadmap.md).
+Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs/core` from M0a) and **content** (M0b → CP0a → … → CP8 → MVP Release). Details on the checkpoints: [`roadmap/mvp-checkpoints.md`](roadmap/mvp-checkpoints.md). Details: [`roadmap/mvp.md`](roadmap/mvp.md) and [`roadmap/roadmap.md`](roadmap/roadmap.md).
 
 ## The architecture in ten lines
 1. **Monorepo** (Nx): `apps/bot` (discord.js + the FlowCord menu library), `apps/webapp` (Next.js + tRPC), `shared/` (Mongoose + Zod models), and new libraries `libs/core`, `libs/engine`, `libs/battle`, `libs/authoring` with enforced boundaries ([03](architecture/concepts/03-engine-boundary-and-game-loop.md)).
@@ -71,8 +71,8 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 | You want to work on | Start with |
 |---|---|
 | The Arena | [M0c: Arena Foundations](backlog/m0c-arena-foundations.md), then [M1: Arena epics](backlog/m1-battle-core-and-catalog.md#arena-epics-e-m1-3-e-m1-4-e-m1-5) |
-| Moves, learnsets, TMs | [M1: Catalog](backlog/m1-battle-core-and-catalog.md), then [M3: TM/HM lists](backlog/m3-region-authoring.md) |
-| The webapp builder | [M3: Webapp Builder](backlog/m3-region-authoring.md#e-m3-2--webapp-builder) and concept [28](architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md) |
+| Moves, learnsets, TMs | [M1: Catalog](backlog/m1-battle-core-and-catalog.md), then [TM/HM lists](backlog/m3-region-authoring.md) (CP1) |
+| The webapp builder | [Webapp Builder](backlog/m3-region-authoring.md#e-m3-2--webapp-builder) (CP1) and concept [28](architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md) |
 | Platform, CI, data hygiene | [M0a: Platform Hygiene](backlog/m0a-platform-hygiene.md) |
 | The engine and content primitives | [M0b: Engine & Content Foundations](backlog/m0b-content-foundations.md) |
 | Going live (hosting, operations, the Arena's Discord side) | [M2: Arena Release](backlog/m2-launch-readiness.md) |

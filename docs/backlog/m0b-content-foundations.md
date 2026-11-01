@@ -1,11 +1,11 @@
 # M0b: Engine & Content Foundations (backlog draft)
 
-**Outcome:** the adventure engine skeleton (`libs/engine`, `dispatch`, the test harness) and the content-side primitives exist and are tested: conditions, gates, effects, content keys, the authoring layer, and draft → published region releases. The existing admin menus run on the authoring layer. This milestone blocks M3 (Region Authoring) → M4 → M5 → M6, and runs in parallel with the battle track (M1 → M2).
+**Outcome:** the adventure engine skeleton (`libs/engine`, `dispatch`, the test harness) and the content-side primitives exist and are tested: conditions, gates, effects, content keys, the authoring layer, and draft → published region releases. The existing admin menus run on the authoring layer. This milestone blocks the Kanto checkpoints (CP0a onward), and runs in parallel with the battle track (M1 → M2).
 
 **Out of scope here (deliberately):**
-- `givePokemon` and `heal` effects (need `PokemonInstance`, M5).
+- `givePokemon` and `heal` effects (need `PokemonInstance`, CP0a).
 - Battle-record retention (M1, when battle records exist).
-- The full validator tiers (M3). Only the publish-time hook and structural checks land here.
+- The full validator tiers (CP1). Only the publish-time hook and structural checks land here.
 
 Refs: [`mvp.md`](../roadmap/mvp.md) · concepts [01](../architecture/concepts/01-content-vs-state-and-publishing.md), [02](../architecture/concepts/02-identity-and-references.md), [04](../architecture/concepts/04-progression-and-flags.md), [05](../architecture/concepts/05-requirements.md), [06](../architecture/concepts/06-effects.md), [16](../architecture/concepts/16-authoring-validation-and-portability.md)
 
@@ -73,7 +73,7 @@ One gating primitive for everything: a condition tree of fact + operator + value
 ### M0B-05 · Facts batch 3: location progress
 `Type: Task` · `Parent: E-M0B-1` · `Priority: P1` · `Size: M` · `Labels: area:engine, domain:map` · `Blocked by: M0B-02` · `agent-ready: yes` · `Owner: agent`
 
-**Summary:** Define the `LocationProgress` state shape in `libs/core` (`{ cleared; lifetime: Counters; visit: Counters }`, where counters cover explores, wild battles, trainer battles, and distinct trainers defeated) and its facts. The engine updates it in M5.
+**Summary:** Define the `LocationProgress` state shape in `libs/core` (`{ cleared; lifetime: Counters; visit: Counters }`, where counters cover explores, wild battles, trainer battles, and distinct trainers defeated) and its facts. The engine updates it from CP1 (traversal requirements).
 
 **Acceptance criteria**
 - Facts: `location.cleared`, `location.visit.<counter>`, `location.trainersDefeated`. Scoped to a location (the exited location for edges, the current location for NPC gates).
@@ -88,7 +88,7 @@ One gating primitive for everything: a condition tree of fact + operator + value
 - `Gate = { condition?, cost?: Effect[], presentation?: 'hidden' | 'locked' | 'attemptable', lockedText?, latch? }` schema in core.
 - `checkGate(gate, ctx) → { allowed, presentation, explanation, cost }`. Each caller supplies a default presentation.
 - `latch: true`: the first pass writes the reserved flag `gate:<ownerRef>:passed`, and later checks pass without re-evaluating (costs still apply).
-- An attempted, blocked `attemptable` gate emits a `gateBlocked` event carrying the owner ref (consumed by triggers in M4).
+- An attempted, blocked `attemptable` gate emits a `gateBlocked` event carrying the owner ref (consumed by triggers from CP0a).
 - Cost preflight: an unaffordable cost blocks with an explanation and applies nothing.
 
 **Refs:** [05 §4](../architecture/concepts/05-requirements.md)
@@ -232,7 +232,7 @@ All admin edits flow through `libs/authoring`, and players only ever play immuta
 
 **Acceptance criteria**
 - Location create, rename, and delete go through authoring commands, using content keys.
-- The "coming soon" buttons stay as they are. Connections etc. are built in the webapp in M3, and these buttons become Open in builder links then (Q36).
+- The "coming soon" buttons stay as they are. Connections etc. are built in the webapp in CP1, and these buttons become Open in builder links then (Q36).
 - The builder stays available in `/region` behind the `discord.authoring` flag (Q36).
 
 ### M0B-20 · Deployment and discovery settings models
@@ -256,7 +256,7 @@ All admin edits flow through `libs/authoring`, and players only ever play immuta
 - `ContentProvider.getRelease(regionId, version?)` returns an immutable in-memory object (LRU). It keeps N and N-1 resident.
 - Retention: keep the last 10 releases plus any referenced (journeys, clones, templates). Older ones are pruned by a job.
 - `compileRelease(regionId, { mode: 'preview' })` exists (unused yet) for future draft preview.
-- `Journey.releaseVersion` plus a migration-rule hook (rules implemented in M5). The review diff lists rule changes (`RegionRules`) explicitly, with the affected journey count; save-breaking rule changes are errors unless they ship with a fix-up rule ([18](../architecture/concepts/18-rules-time-and-randomness.md#decisions-oct-2026-piecemeal-rules-gen-1-first)).
+- `Journey.releaseVersion` plus a migration-rule hook (rules implemented with the checkpoints, CP0a onward). The review diff lists rule changes (`RegionRules`) explicitly, with the affected journey count; save-breaking rule changes are errors unless they ship with a fix-up rule ([18](../architecture/concepts/18-rules-time-and-randomness.md#decisions-oct-2026-piecemeal-rules-gen-1-first)).
 - **Follow-up:** include `Region.moveMachines` (M3-01) in the compiled release, and point machine lookups at the release (M3-03).
 
 **Refs:** [01](../architecture/concepts/01-content-vs-state-and-publishing.md), [21 § Retention](../architecture/concepts/21-hosting-and-environments.md)
@@ -267,7 +267,7 @@ All admin edits flow through `libs/authoring`, and players only ever play immuta
 **Acceptance criteria**
 - `validateRegion(draft) → { errors, warnings, info }` with typed `Issue { code, severity, subject, message, fixHint? }`.
 - Tier 1 checks for current content: edge targets exist, a starting location is set, encounter species are in the regional dex, and conditions/effects pass `validate()`.
-- Pluggable check registry, so M3 can add tiers.
+- Pluggable check registry, so CP1 can add tiers.
 - Exposed via an authoring query (for a later Region Health view).
 
 **Refs:** [16](../architecture/concepts/16-authoring-validation-and-portability.md)
