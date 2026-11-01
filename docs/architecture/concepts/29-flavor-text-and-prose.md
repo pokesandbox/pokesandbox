@@ -124,6 +124,69 @@ Region.flavor: {
 ### 5. System text stays fixed
 Engine responses, explanations, reward lines, and the battle log are never replaced by flavor. Flavor may **add** a line beside them ("You received a Potion!" plus "Mom tucked it into your bag with a note."). This keeps the game legible no matter how a region writes its flavor.
 
+### 6. Where the data lives: embedded prose, standalone flavor
+- **Authored prose is embedded.** A `Passage` is a plain value with no ID of its own, nested in the model that owns it (a script step, a location, a gate). It's read with its owner, published with it, and deleted with it. No references to manage.
+- **Flavor entries are standalone records that point at what they're about**, through their `match` (species IDs, move IDs, location and trainer content keys). The things they describe never point back. That's the right direction because flavor is many-to-many and layered: one entry can cover a whole trainer class or every species, several layers can describe the same trainer, and canon packs describe content they've never seen. It also follows the no-back-references rule ([02](02-identity-and-references.md)): a trainer doesn't need editing when someone writes a line for it.
+- **Storage:** region entries live with the region's other draft content (keyed by `regionId` + `ContentKey`); server packs live in the server's content library ([27](27-server-content-library-and-overrides.md)); the canon pack is a JSON bundle in the repo, installed on deploy like the Kanto Classic template.
+- **Integrity:** an entry's `match` references are reported through `references()`, so deleting a location or trainer shows "used by 3 flavor entries" ([M0B-15](../../backlog/m0b-content-foundations.md)), and the validator flags dangling references and unknown placeholders.
+- **The builder hides the indirection.** A trainer's screen shows a "Lines" tab listing the entries that match it (its own and its class's, with the layer each comes from); editing there creates or updates a flavor entry. The same goes for a location's "Encounter intros" and a Pokédex entry's "First sighting".
+
+**Examples**
+
+```ts
+// 1. Authored prose: embedded in its owner
+Location {
+  key: 'loc-viridian-forest'; name: 'Viridian Forest';
+  description: { blocks: [ { prose: 'Sunlight barely reaches the forest floor.' } ] };          // Passage
+  descriptionVariants: [ { condition: { flag: 'rocket-forest-cleared' },
+                           description: { blocks: [ { prose: 'Birdsong has returned to the trees.' } ] } } ];
+}
+ScriptStep { passage: { blocks: [ { line: { speaker: 'npc-oak', text: 'This is my grandson, {name:rival}.' } } ] } }
+
+// 2. A specific trainer's lines, and a whole trainer class's fallback
+FlavorEntry { key: 'fl-a1', event: 'battle.trainerIntro', match: { trainer: ['npc-bugcatcher-rick'] },
+              variants: [ { passage: { blocks: [ { line: { speaker: 'npc-bugcatcher-rick', text: 'My Weedle will sting you!' } } ] } } ] }
+FlavorEntry { key: 'fl-a2', event: 'battle.trainerIntro', match: { trainerClass: ['youngster'] },
+              variants: [ { passage: { blocks: [ { prose: '{trainer} wants to battle!' } ] } },
+                          { passage: { blocks: [ { prose: '{trainer} spots you from across the route.' } ] } } ] }
+
+// 3. Fainting: generic, side-specific, and the starter
+FlavorEntry { event: 'battle.fainted', match: { side: 'opponent' }, chance: 0.6,
+              variants: [ { passage: { blocks: [ { prose: '{pokemon} crumples. The path ahead is yours.' } ] } } ] }
+FlavorEntry { event: 'battle.fainted', match: { side: 'own' },
+              variants: [ { passage: { blocks: [ { prose: '{pokemon} can\'t go on. You call it back gently.' } ] } } ] }
+FlavorEntry { event: 'battle.fainted', match: { side: 'own', pokemonTags: ['starter'] },
+              variants: [ { passage: { blocks: [ { prose: '{pokemon}, who has been with you since {name:player} left home, falls.' } ] } } ] }
+
+// 4. Evolution: generic, one species, and the starter
+FlavorEntry { event: 'pokemon.evolved', variants: [ /* canon: "What? {from} is evolving!" … */ ] }
+FlavorEntry { event: 'pokemon.evolved', match: { species: ['magikarp'] },
+              variants: [ { passage: { blocks: [ { prose: 'The water explodes. Where a Magikarp flopped, a Gyarados roars.' } ] } } ] }
+FlavorEntry { event: 'pokemon.evolved', match: { pokemonTags: ['starter'] }, combine: 'extend', variants: [ /* … */ ] }
+
+// 5. Encounter intro scene for one location's surfing, and a species first sighting
+FlavorEntry { event: 'encounter.scene', match: { location: ['loc-seafoam'], method: ['surf'] }, variants: [ /* … */ ] }
+FlavorEntry { event: 'encounter.firstSighting', match: { species: ['ps:frostfang'] },
+              variants: [ { passage: { blocks: [ { prose: 'A wolf of blue ice pads out of the mist.' },
+                                                 { image: { url: 'https://…/frostfang.png' } } ] } } ] }
+
+// 6. The region's pack settings
+Region.flavor: { packs: [ { pack: 'canon', version: '1.2.0', enabled: true },
+                          { pack: { libraryId: 'lib-…', key: 'spooky-pack' }, version: '3', enabled: true } ] }
+
+// 7. "Meaningful Pokémon" tags (reserved)
+PokemonInstance { …; tags: ['starter'] }          // or a script effect: { type: 'tagPokemon', target: 'lastReceived', tag: 'ss-anne-lapras' }
+```
+
+**At runtime.** Publishing compiles every enabled layer into one index in the release, keyed by event (`battle.fainted` → its candidate entries, already ordered by layer), so lookups don't touch the database. The engine or BattleService emits a fact event; the resolver filters the candidates by `match`, takes the most specific, rolls `chance`, and picks a variant with the seeded `Rng`. The chosen text rides on the event, so renderers stay pure and a re-render shows the same line:
+
+```ts
+{ type: 'battle.fainted', side: 'own',
+  pokemon: { instanceId: 'pk-…', species: 'charmander', nickname: 'Ember', tags: ['starter'] },
+  flavor?: { entry: 'fl-…', variant: 0, passage: { blocks: [ { prose: 'Ember, who has been with you since …' } ] } } }
+```
+In a battle the log line ("Ember fainted!") is rendered from the same event by Showdown's text, separately from `flavor`.
+
 ## MVP hooks (recommended)
 Nothing in this doc is MVP content, but these keep it cheap to add:
 - **Events carry identities and perspective:** BattleService's structured events (M1-09) include side, species, move, item, status, and the acting Pokémon's instance ID (adventure) so later flavor can resolve tags. Engine events for evolution, level-up, catch, travel, and healing carry the same.
