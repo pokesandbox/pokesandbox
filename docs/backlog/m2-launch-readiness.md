@@ -115,10 +115,11 @@ Everything needed to run the bot and webapp for real players: a managed host for
 ### M2-14 · Dependency security: clear Dependabot alerts and keep them cleared
 `Type: Task` · `Parent: E-M2-1` · `Priority: P0` · `Size: M` · `Labels: area:infra, dependencies` · `Blocked by: M0A-04` · `agent-ready: no` · `Owner: senior`
 
-**Summary:** `master` reports 226 Dependabot alerts (11 critical, 100 high, as of Oct 2026). Resolve them before the Arena goes public, and keep them resolved through the MVP release.
+**Summary:** The default branch reported 236 Dependabot alerts (15 critical, 102 high, 99 moderate, 20 low) on Oct 31, 2026. The **critical** ones were pulled ahead into [M0A-22](m0a-platform-hygiene.md#m0a-22--fix-the-critical-dependabot-alerts-now). This issue resolves the rest before the Arena goes public, and keeps them resolved through the MVP release.
 
 **Acceptance criteria**
-- Every critical and high alert is fixed (upgrade, replace, or remove the package) or dismissed with a written reason (e.g. dev-only, not reachable). Moderate and low alerts are triaged, with fixes where an upgrade is safe.
+- No critical alert has come back since M0A-22 (any new one is fixed here).
+- Every high alert is fixed (upgrade, replace, or remove the package) or dismissed with a written reason (e.g. dev-only, not reachable). Moderate and low alerts are triaged, with fixes where an upgrade is safe.
 - Dependabot security updates and grouped version updates are enabled (`.github/dependabot.yml`), with a weekly schedule.
 - CI fails on new critical or high advisories in production dependencies (`npm audit --omit=dev --audit-level=high`, or the equivalent).
 - Major upgrades that need code changes are split into their own issues rather than bundled here.

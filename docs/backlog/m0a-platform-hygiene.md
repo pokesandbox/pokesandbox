@@ -12,7 +12,7 @@ Refs: [`mvp.md`](../roadmap/mvp.md) · [`github-project-setup.md`](../roadmap/gi
 New to the project? Read [`docs/start-here.md`](../start-here.md) first (what PokeSandbox is, the plan, the repo, how work flows). Context specific to this file:
 - **What M0a is:** plumbing that every later milestone relies on. Most issues are small and well specified, and several are good first issues (`agent-ready: yes`).
 - **What you'll touch:** GitHub settings and workflows (`.github/`), Nx configuration (`nx.json`, `project.json` files), `shared/src/models` (indexes, the `speciesId` rename), and `docker-compose.yml` (local Mongo).
-- **Order:** M0A-01 → M0A-02/03 are owner-led (the org move). M0A-04 (CI), M0A-05 (agent rules), M0A-09 (`libs/core`), M0A-16 (replica set), and M0A-20 (sprites) can start any time. M0A-17 → M0A-19 build on each other.
+- **Order:** M0A-01 → M0A-02/03 are owner-led (the org move). M0A-04 (CI), M0A-05 (agent rules), M0A-09 (`libs/core`), M0A-16 (replica set), M0A-20 (sprites), and M0A-21 (feature flags) can start any time. **M0A-22 (critical Dependabot alerts) is first in line.** M0A-17 → M0A-19 build on each other.
 - **The one Arena dependency:** M0A-09 (`libs/core`). If you're here to help the Arena, do that one and then go to [M0c](m0c-arena-foundations.md).
 
 ---
@@ -126,6 +126,29 @@ Move the repos to the org, get CI gating every PR, and give contributors and age
 - A short section in the contributor docs: how to add a flag, and that a flag is removed when its feature is fully released.
 
 **Refs:** [21 § Feature flags](../architecture/concepts/21-hosting-and-environments.md#feature-flags-decided-oct-2026), [28 § Transition](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#transition-the-existing-discord-builders)
+
+### M0A-22 · Fix the critical Dependabot alerts now
+`Type: Task` · `Parent: E-M0A-1` · `Priority: P0` · `Size: M` · `Labels: area:infra, dependencies` · `Blocked by: —` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** Pulled ahead from M2-14: only the **critical** alerts, fixed now. High, moderate, and low alerts, Dependabot configuration, and the CI audit gate stay in M2-14. GitHub reported 15 critical alerts on the default branch (Oct 31, 2026); a local `npm audit` on the same commit showed 12 critical packages.
+
+**What `npm audit` flagged as critical (Oct 31, 2026; re-check when starting):**
+
+| Package | How it's pulled in | Runs in production? | Fix |
+|---|---|---|---|
+| `next` | direct (webapp) | yes | upgrade within 16.x (16.4.3 or later) |
+| `next-auth`, `@auth/core` | direct (webapp sign-in) | yes | upgrade to the latest v5 beta |
+| `form-data`, `proxy-addr`, `websocket-driver` | transitive | likely (check with `npm ls`) | `npm audit fix`, or bump the parent |
+| `shell-quote` | transitive | check | `npm audit fix` |
+| `koa`, `@module-federation/dts-plugin`, `@nx/vite`, `vitest`, `tinypool` | Nx tooling | no (dev and build only) | the Nx upgrade the advisory points to (`@nx/*` 24.x) |
+
+**Acceptance criteria**
+- Every **critical** alert is fixed (upgrade, replace, or remove) or dismissed in GitHub with a written reason (e.g. dev-only and not reachable). Production dependencies are fixed, not dismissed.
+- The Nx major upgrade, if needed for the tooling alerts, runs through `nx migrate` in its own PR, separate from the runtime fixes.
+- After each upgrade: the bot starts and the webapp signs in with Discord (manual check noted in the PR), and lint, typecheck, and tests pass.
+- High, moderate, and low alerts are **not** in scope (M2-14).
+
+**Refs:** [M2-14](m2-launch-readiness.md#m2-14--dependency-security-clear-dependabot-alerts-and-keep-them-cleared)
 
 ---
 

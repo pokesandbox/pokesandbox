@@ -35,7 +35,7 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 | DTOs (read shapes for bot and webapp) | `shared/src/dtos/` | `region.dto.ts` |
 | Seed data | `scripts/seed/data/*.json`, registered in `scripts/seed/collections.ts` | the `dexentries` entry |
 | Bot commands and menus | `apps/bot/src/interactions/` (admin builders under `…/regionManagement/`) | the Pokédex builder (`pokedex/`) |
-| Webapp | `apps/webapp/` (moving off antd to Tailwind + a headless library, M3-05) | existing tRPC routers |
+| Webapp | `apps/webapp/` (moving off antd to Tailwind + a headless library: trial M3-05, migration M3-07) | existing tRPC routers |
 | New libraries | `libs/core`, `libs/battle`, `libs/engine`, `libs/authoring` (being created in M0a, M0c, M0b) | their scaffold issues |
 | Showdown fork | separate repo, `nbely/pokemon-showdown` (moving to the org) | [M0c § Start here](backlog/m0c-arena-foundations.md#start-here) |
 | Design docs | `docs/architecture/concepts/` (one per topic) | the concept index in [`architecture/README.md`](architecture/README.md) |

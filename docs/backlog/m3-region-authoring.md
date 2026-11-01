@@ -1,6 +1,6 @@
 # M3: Region Authoring (backlog draft, partial)
 
-Drafted so far: the **TM/HM lists** epic (E-M3-1) and the start of the **Webapp Builder** epic (E-M3-2: the UI stack and the builder shell). The rest of M3 (region config, location kinds and connections, encounters, transport, shops, validator tiers, bundles) is drafted later.
+Drafted so far: the **TM/HM lists** epic (E-M3-1) and the start of the **Webapp Builder** epic (E-M3-2: the headless library trial, the antd migration, and the builder shell). The rest of M3 (region config, location kinds and connections, encounters, transport, shops, validator tiers, bundles) is drafted later.
 
 Refs: concept [12 § TM/HM lists](../architecture/concepts/12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026), [`mvp.md` § M3](../roadmap/mvp.md#m3-region-authoring)
 
@@ -9,7 +9,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md) first, then th
 - **What M3 is:** the region builder: everything admins use to author a region. This draft covers only TM/HM lists so far.
 - **Where it's built:** the **webapp**, mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). Rules live in `libs/authoring` commands; the webapp screen is a thin client of them. Phone-first layouts, list/detail editors, 44px touch targets, no hover-only interactions, Playwright tests at phone width.
 - **In Pokémon terms:** every region gets its own TM case, so "TM24" means whatever that region says (Thunderbolt in Gen 1). HMs are reusable; Gen 1 TMs are single-use.
-- **Order:** M3-01 and M3-02 can start once M1-01/M1-02 exist; M3-03 needs the validator skeleton (M0B-22); M3-04 (the builder screen) waits for the authoring layer (M0B-16) and the webapp builder shell (M3-06). E-M3-2 has no game dependencies: M3-05 can start any time.
+- **Order:** M3-01 and M3-02 can start once M1-01/M1-02 exist; M3-03 needs the validator skeleton (M0B-22); M3-04 (the builder screen) waits for the authoring layer (M0B-16) and the webapp builder shell (M3-06). The headless library trial (M3-05) comes before any webapp authoring work; it has no dependencies, so it can start any time, ideally while M0b is in progress.
 
 ## E-M3-1 · TM/HM Lists
 `Type: Epic` · `Priority: P0`
@@ -84,15 +84,30 @@ Using a TM from the bag (teaching it to a Pokémon) belongs to the M5 bag work, 
 ## E-M3-2 · Webapp Builder
 `Type: Epic` · `Priority: P0`
 
-MVP authoring is webapp-first and mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). This epic sets up the webapp's UI stack and the builder shell every editor uses. The editors themselves (region map, encounter grid, trainer parties, script steps, condition builder, Region Health) are drafted with their features; the list is in [`mvp.md` § M3](../roadmap/mvp.md#m3-region-authoring).
+MVP authoring is webapp-first and mobile-first (Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)). This epic sets up the webapp's UI stack and the builder shell every editor uses. **Rule: no webapp authoring work starts before the headless library trial (M3-05) is decided.** Every webapp editor issue, drafted now or later, lists M3-05 (directly or through M3-06) as a blocker. The editors themselves (region map, encounter grid, trainer parties, script steps, condition builder, Region Health) are drafted with their features; the list is in [`mvp.md` § M3](../roadmap/mvp.md#m3-region-authoring).
 
-### M3-05 · Move the webapp off antd onto Tailwind and a headless library
-`Type: Task` · `Parent: E-M3-2` · `Priority: P1` · `Size: M` · `Labels: area:webapp, dependencies` · `Blocked by: —` · `agent-ready: no` · `Owner: senior`
+### M3-05 · Headless library trial: React Aria vs Base UI
+`Type: Task` · `Parent: E-M3-2` · `Priority: P0` · `Size: S` · `Labels: area:webapp` · `Blocked by: —` · `agent-ready: no` · `Owner: senior`
 
-**Summary:** antd is used in seven files (`HeaderPrivate`, `HeaderPublic`, `SearchBar`, `ServerCard`, `ProfilePage`, `DiscordIcon`, `ThemeProvider`) alongside Tailwind. Replace it with Tailwind plus a headless component library, so every builder screen can be built mobile-first with one styling system ([28 § UI stack](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#ui-stack-off-antd-onto-tailwind-plus-a-headless-library)).
+**Summary:** Pick the headless component library the whole webapp builder is built on, by trying the top two contenders side by side ([28 § UI stack](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#ui-stack-off-antd-onto-tailwind-plus-a-headless-library)). **This must finish before any webapp authoring work starts**: M3-06 (the builder shell) and every webapp editor are blocked on it. It has no other dependencies, so it can start any time.
 
 **Acceptance criteria**
-- **Spike first (time-boxed to a day), written up in the PR:** with shadcn/ui on **React Aria** (recommended) and on **Base UI** (fallback), build a dialog/bottom sheet, a species search combobox over 1,000+ species, and a drag-to-reorder list; compare touch behavior on a real phone, screen-reader behavior, bundle size, and React 19 / Next 16 support. The owner confirms the base before the migration.
+- A throwaway branch (or a `trial/` route in the webapp) with the same three components built twice, with shadcn/ui on **React Aria** (the favorite) and on **Base UI**:
+  - a dialog that becomes a bottom sheet on phones;
+  - a species search combobox over the full species list (1,000+ entries), with keyboard and touch selection;
+  - a drag-to-reorder list (e.g. script steps) with a non-drag way to reorder (move up/down).
+- A written comparison in the PR: touch behavior on a real phone (iOS Safari and Android Chrome, including inside Discord's in-app browser), screen-reader behavior (VoiceOver or TalkBack spot check), bundle size added, how much code each component took, React 19 / Next 16 support, and whether Tailwind 4 is needed.
+- **The owner picks one.** The choice is recorded in [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md) and Q36. The trial code is not merged as-is.
+
+**Refs:** [28 § UI stack](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md#ui-stack-off-antd-onto-tailwind-plus-a-headless-library)
+
+### M3-07 · Move the webapp off antd onto Tailwind and the chosen library
+`Type: Task` · `Parent: E-M3-2` · `Priority: P0` · `Size: M` · `Labels: area:webapp, dependencies` · `Blocked by: M3-05` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** antd is used in seven files (`HeaderPrivate`, `HeaderPublic`, `SearchBar`, `ServerCard`, `ProfilePage`, `DiscordIcon`, `ThemeProvider`) alongside Tailwind. Replace it with Tailwind plus the library M3-05 picked, so every builder screen is built mobile-first on one styling system.
+
+**Acceptance criteria**
+- The chosen library set up through shadcn/ui, with the components the trial proved out moved into `apps/webapp` properly (not copied from the trial branch as-is).
 - Every antd usage replaced; `antd` and `@ant-design/*` removed from `package.json`; the dark/light theme handled with Tailwind (CSS variables) instead of antd's `ConfigProvider`.
 - Tailwind upgraded to v4 if the chosen library's current components expect it.
 - The existing pages look and behave the same on desktop and work at phone width (a Playwright screenshot at 390×844 and at desktop for each page, attached to the PR).
@@ -101,7 +116,7 @@ MVP authoring is webapp-first and mobile-first (Q36, [28](../architecture/concep
 **Refs:** [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)
 
 ### M3-06 · Webapp builder shell, mobile-first
-`Type: Feature` · `Parent: E-M3-2` · `Priority: P0` · `Size: M` · `Labels: area:webapp, area:authoring` · `Blocked by: M3-05, M0B-16` · `agent-ready: no` · `Owner: senior`
+`Type: Feature` · `Parent: E-M3-2` · `Priority: P0` · `Size: M` · `Labels: area:webapp, area:authoring` · `Blocked by: M3-05, M3-07, M0B-16` · `agent-ready: no` · `Owner: senior`
 
 **Summary:** The frame every builder screen lives in: who can open a region's draft, the list/detail layout, saving through authoring commands, and conflict handling.
 

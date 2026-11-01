@@ -98,6 +98,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] CI: lint + typecheck + unit tests on PR (M)
 - [ ] Create labels (incl. `agent-ready`), issue types, milestones, and project board per [`github-project-setup.md`](github-project-setup.md) (S)
 - [ ] Feature flag registry: env override (`FEATURE_FLAGS=*` in dev), per-server override, per-environment defaults; `discord.authoring` off in prod (M0A-21) (S)
+- [ ] Fix the critical Dependabot alerts now (Next.js, NextAuth, transitive runtime packages; Nx tooling upgrade in its own PR); high and below stay in M2-14 (M0A-22) (M)
 - [ ] Switch slash commands to global registration; flag-off commands only as guild commands on override servers (M0A-07) (M)
 
 **Epic: Shared Library Foundations**
@@ -198,7 +199,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Nightly `mongodump` backups to object storage with retention + a tested restore (M)
 - [ ] GitHub Actions deploy: version tag → prod; `master` → staging (staging added before the Arena goes public) (M)
 - [ ] Error monitoring (Sentry) + uptime check (S)
-- [ ] Dependency security: clear Dependabot alerts (critical/high fixed or justified), enable Dependabot updates, CI audit gate (M2-14) (M)
+- [ ] Dependency security: clear the remaining Dependabot alerts (high fixed or justified, moderate/low triaged; critical already done in M0A-22), enable Dependabot updates, CI audit gate (M2-14) (M)
 
 - [ ] Challenge/accept/decline: direct + open challenges, atomic claim, 5-min expiry (M2-09) (M)
 - [ ] Arena interaction router with stable custom IDs (M2-08) + private choice prompts (M2-11) (M)
@@ -226,8 +227,9 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Region bundle export/import (JSON) (M)
 
 **Epic: Webapp Builder (Q24, Q36)** (drafted as E-M3-2 in [`m3-region-authoring.md`](../backlog/m3-region-authoring.md#e-m3-2--webapp-builder); the shell and UI stack come first; each editor can start once its `libs/authoring` commands exist)
-- [ ] Move off antd: Tailwind + a headless component library (spike: shadcn/ui on Radix vs React Aria), remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it (M3-05) (M)
-- [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width (M3-06) (M)
+- [ ] **First, before any webapp authoring work:** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks (M3-05) (S)
+- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it (M3-07) (M)
+- [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width; blocked by M3-05 and M3-07 (M3-06) (M)
 - [ ] Shared builder components: search combobox (species/moves/items), sortable list, confirm dialog, passage editor with Discord preview (M)
 - [ ] Open in builder links from `/region` (plain URLs, Discord OAuth sign-in) (S)
 - [ ] Shared condition builder component (M)
