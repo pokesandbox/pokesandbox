@@ -22,14 +22,14 @@ New to the project? Read [`docs/start-here.md`](../start-here.md) first (what Po
 
 Move the repos to the org, get CI gating every PR, and give contributors and agents the rules they need to work safely.
 
-### M0A-01 · Transfer repos to the org and rename the Showdown fork
+### M0A-01 · Transfer repos to the org
 `Type: Task` · `Parent: E-M0A-1` · `Priority: P0` · `Size: S` · `Labels: area:infra` · `Blocked by: —` · `agent-ready: no` · `Owner: owner`
 
-**Summary:** Transfer `nbely/pokesandbox` and `nbely/pokemon-showdown` to the new org, renaming the fork to `pokesandbox-showdown`. Install the Claude GitHub App on the org.
+**Summary:** Transfer `nbely/pokesandbox` and `nbely/pokemon-showdown` to the new org. Install the Claude GitHub App on the org.
 
 **Acceptance criteria**
 - Both repos live under the org. Old URLs redirect.
-- The fork is named `pokesandbox-showdown`. Its default branch is unchanged.
+- The fork **keeps the name `pokemon-showdown`**, matching upstream so remotes, docs, and paths read the same (decided Nov 2026). Its default branch is unchanged.
 - The Claude GitHub App is installed on the org with access to both repos.
 - Branch protection on `master`: PRs required, owner review required, CI must pass (once M0A-04 lands).
 

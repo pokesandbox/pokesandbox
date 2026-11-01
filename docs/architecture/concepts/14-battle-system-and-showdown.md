@@ -73,7 +73,7 @@ Upstream base: `2557b66` (smogon/pokemon-showdown, **2023-08-04**). The custom c
 ## Decisions (Oct 2026)
 - **Strategy:** rebase onto current upstream and apply the revised patch set above. **Fallback:** if the rebase is painful, start fresh from upstream `master` and re-apply only the patches we keep, as new, clean commits. Either way, the end state is upstream + a small, named patch set.
 - **Custom moves:** the 10 hardcoded moves go to a separate preservation branch (e.g. `archive/new-logora-moves`) and are **removed from `master`**. The 3 commented-out upstream tests are restored. Designing custom moves that reuse Showdown's internal mechanics and load dynamically (like the isolated custom-data dex) is deferred to the custom-moves/abilities/items work (post-MVP). `secondaryChanceCallback` goes with the moves unless that design needs it.
-- **Repo:** renamed to `pokesandbox-showdown` after the org move.
+- **Repo:** moves to the org and keeps upstream's name, `pokemon-showdown` (revised Nov 2026), so it reads the same as upstream in remotes, docs, and paths.
 - **Upstream sync:** a scheduled monthly sync PR.
 - **Consumption:** the monorepo depends on the fork as a **versioned package** (git tag or GitHub Packages release), not a git submodule.
 - **Mid-battle level-ups (Q8):** the engine awards EXP on `faint` events (all participants, plus Exp. All/Share per rules). On level-up it injects the new level and recalculated stats (max HP grows, and current HP rises by the same amount) through the state-injection patch, which must therefore support **mid-battle level/stat/move-slot updates**, not just battle-start state. A new move is a **blocking prompt inside the battle**: BattleService holds the side's next request until the player learns, replaces, or skips the move, then injects the move-slot change. **Evolution never happens in the sim.** It's evaluated post-battle by the engine (level/stone/etc.) and runs as a blocking post-battle interaction.
@@ -139,4 +139,4 @@ On end, BattleService emits `battleEnded { result, sides[].pokemon[].{hp,status,
 - ~~Mechanics generation?~~ **Decided (Q1):** authentic Gen 1 for MVP, a per-region `RegionRules.battle.mechanicsGen` (see [18](18-rules-time-and-randomness.md#decisions-oct-2026-piecemeal-rules-gen-1-first)).
 - ~~Mid-battle vs post-battle level-ups?~~ **Decided: mid-battle (authentic).** Stats, max HP (current HP raised by the gain), and new-move prompts apply immediately during the battle. Evolution is evaluated post-battle by the engine, never in the sim.
 - Arena questions (formats, clauses, teams, timers, the FlowCord boundary) moved to [25](25-arena.md).
-- ~~Fork ownership?~~ **Decided (Q20):** same org, renamed `pokesandbox-showdown`.
+- ~~Fork ownership?~~ **Decided (Q20):** same org, keeping the name `pokemon-showdown`.

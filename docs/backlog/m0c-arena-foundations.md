@@ -109,7 +109,7 @@ Get the fork onto current upstream with only our deliberate changes left, and ma
 **Acceptance criteria**
 - Tagged releases of the fork published as `@pokesandbox/showdown` (or the agreed scope) to GitHub Packages or npm; the monorepo pins an exact version.
 - A scheduled monthly workflow opens an upstream-sync PR in the fork.
-- The repo is renamed after the org move (M0A-01), and links are updated.
+- Links point at the fork's org location after the move (M0A-01). The repo keeps the name `pokemon-showdown`.
 - **Follow-ups:** the catalog imports (M1-02, M1-03) switch from upstream `pokemon-showdown` to this package and re-run.
 
 **Refs:** [14 § Decisions](../architecture/concepts/14-battle-system-and-showdown.md#decisions-oct-2026)

@@ -94,7 +94,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 > Issue-level drafts: [`../backlog/m0a-platform-hygiene.md`](../backlog/m0a-platform-hygiene.md)
 
 **Epic: Org & Delivery Setup**
-- [ ] Move `pokesandbox` and `pokemon-showdown` (→ `pokesandbox-showdown`) to the org; update README links, CODEOWNERS, agents.md (S)
+- [ ] Move `pokesandbox` and `pokemon-showdown` (name unchanged) to the org; update README links, CODEOWNERS, agents.md (S)
 - [ ] CI: lint + typecheck + unit tests on PR (M)
 - [ ] Create labels (incl. `agent-ready`), issue types, milestones, and project board per [`github-project-setup.md`](github-project-setup.md) (S)
 - [ ] Feature flag registry: env override (`FEATURE_FLAGS=*` in dev), per-server override, per-environment defaults; `discord.authoring` off in prod (M0A-21) (S)
@@ -119,7 +119,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Preserve the 10 custom moves on an archive branch. Remove them from `master` and restore the 3 commented-out upstream tests (S)
 - [ ] Rebase onto current upstream (fallback: fresh from upstream + re-apply kept changes as new commits) (M)
 - [ ] Remove debug code (`pause`/`resume`/`sendToJSON`) (S)
-- [ ] Publish as a versioned package consumed by the monorepo (then re-point the catalog imports M1-02/M1-03 at it and re-run). Set up the monthly upstream-sync PR. Rename after the org move (M)
+- [ ] Publish as a versioned package consumed by the monorepo (then re-point the catalog imports M1-02/M1-03 at it and re-run). Set up the monthly upstream-sync PR. The repo keeps the name `pokemon-showdown` (M)
 
 **Epic: Persistence & Data Basics**
 - [ ] docker-compose Mongo as a replica set (transactions) for local dev (S)
