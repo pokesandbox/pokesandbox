@@ -254,7 +254,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § 
 
 **Acceptance criteria**
 - A `TurnDigest` per turn: `messages: string[]` rendered from Showdown's text templates (`data/text`, the ones the Showdown client uses), and per side the active Pokémon's species, nickname, level, HP (current/max, from the owning side's request, as a percentage for the opponent's), status, and stat stages.
-- Structured events alongside the text (`move`, `damage`, `faint`, `switch`, `status`) for the engine to react to later (EXP on `faint` in M5).
+- Structured events alongside the text (`move`, `miss`, `crit`, `effectiveness`, `damage`, `faint`, `switch`, `status`, `item`) for the engine to react to later (EXP on `faint` in M5). Each carries the side, species, nickname, and, where relevant, the move and its type, the status, and the item, plus the Pokémon's instance ID when it has one (adventure battles), so flavor can be added later without changing the events ([29](../architecture/concepts/29-flavor-text-and-prose.md#mvp-hooks-recommended)).
 - Never hand-written message strings and never a second copy of battle state ([26 § Battles](../architecture/concepts/26-discord-surface-and-ux-patterns.md#battles)).
 - Golden tests over recorded protocol: a super-effective hit, a miss, a critical hit, a status move, a faint and switch, and a Gen 1 battle (Gen 1 text differs).
 
@@ -271,6 +271,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § 
 - `renderChoicePrompt(request)`: moves (with PP, type, and disabled moves explained, not just greyed out) and switches, as buttons or a select.
 - `renderBattleResult(result)`.
 - No I/O. Snapshot tests for each, including a fainted active, a forced switch, and a long message list that stays within the Components v2 budget ([26 § Dialogue and passages](../architecture/concepts/26-discord-surface-and-ux-patterns.md#dialogue-and-passages)).
+- A reserved flavor section under the turn's messages, empty in the MVP, so flavor (a fast follow) is a new section rather than a re-layout ([29](../architecture/concepts/29-flavor-text-and-prose.md#4-battles-log-and-flavor-are-separate-layers)).
 - A composed side-by-side image is post-MVP, not here.
 
 **Refs:** [26 § Battles](../architecture/concepts/26-discord-surface-and-ux-patterns.md#battles)

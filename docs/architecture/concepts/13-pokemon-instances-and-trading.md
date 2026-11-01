@@ -16,6 +16,7 @@ PokemonInstance {
   exp: number; hp: number; status?: 'brn' | 'par' | 'slp' | 'frz' | 'psn' | 'tox'; friendship: number;
   ball: ItemId; met: { location: ContentKey; level: number; at: Date; method: 'wild' | 'gift' | 'egg' | 'trade' };
   ribbons?: string[]; pokerus?: …;
+  tags?: string[];   // reserved (Q37): 'starter', 'gift', 'traded', 'nicknamed', or custom tags set by a script effect; matched by flavor entries (29)
 }
 ```
 

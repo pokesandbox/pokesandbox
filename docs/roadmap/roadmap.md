@@ -102,6 +102,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 
 | Theme | Items | Builds on |
 |---|---|---|
+| Flavor (fast follow after the MVP) | The flavor resolver, `FlavorEntry` storage and builder tabs, layered packs, the per-region battle text setting; canon pack v1: Gen 1 battle flavor for moves and statuses. Each later generation ships with its flavor. | Passages, MVP event hooks ([29](../architecture/concepts/29-flavor-text-and-prose.md)) |
 | Quests v2 | Active quests (scripts + quest log), passive objectives (event listeners), loaner Pokémon, quiz stages, repeatable quests, passive-slot limits, tutorial-as-quest | Script VM, engine events |
 | Narrative | Persistent dialogue choices (choice kind is already MVP), quest-local choices as script locals; authored encounter intros (location and method scenes, species first sightings and lines, also in trainer battles) | Conditions, scripts, passages, `journey.dex.seen` ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) |
 | Effects++ | Teleport, start-script, new attach points (transport hops, quest stages) | Effect registry |

@@ -215,7 +215,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 > **Authoring is webapp-first and mobile-first (decided Oct 2026, Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).** Each builder item below is a webapp screen on `libs/authoring` commands. Discord keeps Region Health, publishing, and Open in builder links; the existing Pokédex, progression, and location builders keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (on in dev).
 
 - [ ] Region config screen: currency object, starting location, respawn, rules preset (M)
-- [ ] Location kinds, grouping (`parentKey`), description/image with conditioned `descriptionVariants`, services, tags (M)
+- [ ] Location kinds, grouping (`parentKey`), description and conditioned `descriptionVariants` as `Passage`s (Q37), services, tags (M)
 - [ ] Connections editor with two-way toggle and labels (M)
 - [ ] Condition builder UI (flat "all of" + one nesting level + templates) (L)
 - [ ] Encounter method registry + conditioned encounter tables + builder (L)
@@ -250,7 +250,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Templates: Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet, Simple Talker (L)
 
 ## M5: Adventure Core
-- [ ] Journey + PokemonInstance models, OCC, transactions (M)
+- [ ] Journey + PokemonInstance models (with reserved `tags`, Q37), OCC, transactions; engine events (evolution, level-up, catch, travel, heal) carry the Pokémon's identity for later flavor (M)
 - [ ] Character creation (with an `idNo`; the character is the original trainer of Pokémon it obtains) + journey start (1 active journey per user per region) + name slots (`Journey.names`; Kanto Classic names the rival) + restart (archive, 24h cooldown) + admin reset + onboarding trigger + release-version migration rules (M)
 - [ ] Passage renderer: Components v2, `dialogue` and `prose` styles, markdown, auto-paging by text/component budget, choices on the last page (M)
 - [ ] `/play` hub renderer (mode-aware): claims the session (newest wins), resumes any mode incl. mid-battle requests and pending prompts, and shuts down superseded sessions cleanly (L)

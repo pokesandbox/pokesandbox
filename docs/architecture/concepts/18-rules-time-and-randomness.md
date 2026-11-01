@@ -39,6 +39,9 @@ RegionRules {
                facing: 'back' | 'front'; missing: 'newer' | 'older' | 'text' };   // see Sprite settings below.   // MVP: original Gen 1 sprites. Kanto Classic default: sprites, g1 'y', palette 'color'. 'text': no images anywhere (Pokémon shown by name and type)
     shinies: boolean;                         // Gen 1 has none
   };
+  presentation?: {                            // reserved (Q37), fast follow after the MVP
+    battleText: { log: boolean; flavor: boolean };   // default both on; at least one on; flavor-only falls back to log lines (29)
+  };
   systems: {                                  // gameplay systems, mostly not generation-bound
     party: { size: 6; whenFull: 'toPc' | 'promptSwap' };   // 'promptSwap' (Q9)
     boxes: { count: number; size: number };   // Gen 1: 12 boxes × 20

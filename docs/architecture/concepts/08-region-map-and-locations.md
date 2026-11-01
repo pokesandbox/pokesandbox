@@ -25,8 +25,9 @@ Agreed in the original plan but not built: buildings and sub-areas as their own 
 ## Design
 ```ts
 Location {
-  key: ContentKey; regionId; name; description?; imageUrl?; ordinal;
-  descriptionVariants?: { condition: Condition; text: string; imageUrl?: string }[];   // first match wins, else `description`
+  key: ContentKey; regionId; name; ordinal;
+  description?: Passage;                  // prose plus optional image blocks (07); decided Nov 2026 (Q37): Passage from the start
+  descriptionVariants?: { condition: Condition; description: Passage }[];   // first match wins, else `description`
   kind: 'town' | 'route' | 'dungeon' | 'building' | 'gym' | 'landmark' | 'water' | string;  // registry, extensible
   parentKey?: ContentKey;                 // grouping only. Traversal still uses edges.
   condition?: Condition;                  // "can I be here at all"

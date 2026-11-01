@@ -1,10 +1,10 @@
 # 29: Flavor Text & Prose
 
-> **Status: proposal (Nov 2026), not decided.** Recommendations are marked; the questions at the end need the owner's decisions.
+> **Status: decided (Nov 2026, Q37).** Adopted as written, with the decisions listed at the end.
 
 > **TL;DR:** PokeSandbox has three kinds of text, and they need different rules. **Authored prose** belongs to one piece of content (a script's passage, a location's description) and is written once. **Event flavor** is keyed by something that happens (a wild Pokémon appears, a move lands, your Pokémon faints, an evolution) and is picked at random from **pools**, with the most specific match winning (species, move, your side vs the opponent's, your starter). **System text** (the battle log, engine responses, explanations) is factual, fixed, and never replaced by flavor. One text type (`Passage`) is used for all authored text and flavor. Flavor comes in **layered packs**: a PokeSandbox canon pack, optional server packs, and the region's own entries, which a region can use wholesale, add to, or switch off. In battles, flavor is a **separate layer** from the Showdown battle log, and each region chooses log, flavor, or both.
 
-**MVP impact:** Low if only the hooks are built (events carry what flavor needs; battle view keeps a separate flavor slot) · **Cost to change later:** Medium if events are built without perspective and identities, low otherwise
+**MVP impact:** Low: the MVP builds only the hooks (events carry what flavor needs; the battle view keeps a separate flavor slot; location descriptions are passages; `PokemonInstance.tags` is reserved) · **Cost to change later:** Medium if events are built without perspective and identities, low otherwise
 
 ## Inventory: where text exists today
 
@@ -13,7 +13,7 @@
 | Where | Field | Shape today | Concept |
 |---|---|---|---|
 | Script passages, `say`, choice prompts and option labels, `askName` prompt | steps | `Passage`; labels are strings | [07](07-scripts-triggers-and-events.md#passages-prose-and-dialogue-decided-oct-2026) |
-| Location description and its conditioned variants | `description`, `descriptionVariants` | string + `imageUrl` | [08](08-region-map-and-locations.md#descriptions-and-visits-decided-oct-2026) |
+| Location description and its conditioned variants | `description`, `descriptionVariants` | was string + `imageUrl`; `Passage` from the start (Q37) | [08](08-region-map-and-locations.md#descriptions-and-visits-decided-oct-2026) |
 | First-visit arrival | a `once` `enterLocation` script | `Passage` | [08](08-region-map-and-locations.md#descriptions-and-visits-decided-oct-2026) |
 | Edge labels ("Through the gate") | `edges[].label` | string | [08](08-region-map-and-locations.md) |
 | NPC talk, post-defeat talk, gym leader intro/defeat lines | `interact` / `afterDefeat.interact` scripts; templates generate them | `Passage` | [11](11-npcs-trainers-and-battle-definitions.md) |
@@ -71,7 +71,7 @@ Each event declares the **qualifiers** an entry can match on and the **placehold
 ### 1. One text type: `Passage`
 Every authored text longer than a label is a `Passage` ([07](07-scripts-triggers-and-events.md#passages-prose-and-dialogue-decided-oct-2026)): script steps, location descriptions and their variants, gate `lockedText`, first sightings, and every flavor variant. Names and labels stay plain strings. One editor, one renderer, one placeholder system, one paging rule.
 
-**Recommended now (pre-MVP, cheap):** location `description` and `descriptionVariants` become `Passage` (one prose block plus an optional image block covers today's string plus `imageUrl`).
+**Decided (Q37), pre-MVP:** location `description` and `descriptionVariants` are `Passage`s (one prose block plus an optional image block covers today's string plus `imageUrl`).
 
 ### 2. Flavor entries: pools with most-specific-match selection
 ```ts
@@ -128,7 +128,7 @@ Region.flavor: {
 ### 4. Battles: log and flavor are separate layers
 - **The battle log** is Showdown's text, unchanged: authoritative and factual ([26 § Battles](26-discord-surface-and-ux-patterns.md#battles)).
 - **Flavor** is generated from BattleService's structured events (M1-09) and rendered in its own visually distinct section (e.g. italic prose under the log), never mixed into log lines.
-- **Region setting:** `RegionRules.presentation.battleText: { log: boolean; flavor: boolean }`, default both on. At least one must be on.
+- **Region setting:** `RegionRules.presentation.battleText: { log: boolean; flavor: boolean }`, default both on. At least one must be on. Flavor-only suits heavy roleplay servers.
 - **No lost facts with flavor-only:** HP, status, and level are always shown in the battle view, and any event that has no flavor variant falls back to its log line, so nothing that happened goes unreported.
 - **Volume:** a per-turn flavor budget (e.g. at most three lines, prioritized: faint > catch > critical / effectiveness > status > move) plus per-entry `chance`, so long battles don't become walls of text.
 - **Perspective:** `side: 'own' | 'opponent'` is relative to the viewer. Adventure battles have one viewer. In Arena PvP the public message is seen by both players and spectators, so it uses **neutral** entries only (no `side`), and side-specific flavor can appear in each player's private prompt.
@@ -213,10 +213,14 @@ Nothing in this doc is MVP content, but these keep it cheap to add:
 - **Tone:** neutral and faithful to the games' voice, so it suits most regions; servers add personality on top.
 - **Drafting:** AI-assisted drafts reviewed by people are reasonable for volume, with every line human-approved before it ships, because it's what most players will read.
 
-## Open questions
-1. Adopt this architecture (three kinds of text; flavor entries with most-specific-match; the three-step selection with `chance` and relative weights; layered packs separate from the catalog version), and supersede the encounter-intro fields in 10 with flavor entries?
-2. Make location `description` / `descriptionVariants` `Passage`s now (pre-MVP)?
-3. Battle text setting per region (`log` / `flavor` / both, default both) with the flavor-only fallback rule?
-4. Arena PvP: neutral-only flavor on the public message, side-specific in private prompts?
-5. Which events the first canon pack covers, and when (post-MVP phase)?
-6. Reserve `PokemonInstance.tags` now for "meaningful Pokémon" matching?
+## Decisions (Nov 2026, Q37)
+1. **Adopted:** three kinds of text; `Passage` for all authored text and flavor; flavor entries with most-specific-match and the three-step selection (`chance`, relative weights, `extend` by default); layered packs versioned separately from the catalog. **Encounter intros are flavor entries** ([10](10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)).
+2. **Location `description` and `descriptionVariants` are `Passage`s from the start** (pre-MVP), so the architecture is right before anything is built on it ([08](08-region-map-and-locations.md)).
+3. **Battle text setting per region, default both** (log and flavor). Flavor-only is for regions that want it, mostly heavy roleplay servers; the fallback rule (events without flavor show their log line; HP and status always visible) applies there.
+4. **Arena PvP:** the public battle message uses only flavor entries without `side`; side-specific flavor appears in each player's private prompt ([25](25-arena.md)).
+5. **Canon pack v1 is a fast follow to the MVP:** Gen 1 battle flavor for moves and statuses. After that, **each new generation's content ships with its flavor** in the same release.
+6. **`PokemonInstance.tags` is reserved now** ([13](13-pokemon-instances-and-trading.md)).
+
+## MVP scope
+- None of the flavor content or the flavor system ships in the MVP. The MVP builds the hooks listed in [MVP hooks](#mvp-hooks-recommended): identities and perspective on battle and engine events, a reserved flavor slot in the battle view, location descriptions as passages, and `PokemonInstance.tags`.
+- Fast follow: the flavor resolver, `FlavorEntry` storage, `Region.flavor`, `RegionRules.presentation.battleText`, and canon pack v1 (Gen 1 move and status battle flavor).

@@ -7,7 +7,7 @@ An audit of the current models and commands, plus concept-by-concept proposals f
 2. The **big alternates** below.
 3. [`open-questions.md`](open-questions.md): every architecture question and its recorded decision.
 
-> **Status (Oct 2026):** all 36 architecture questions are decided; [29](concepts/29-flavor-text-and-prose.md) is a proposal awaiting decisions. Decisions are recorded in [`open-questions.md`](open-questions.md) and in each concept doc's "Decisions" section, and they supersede the original proposals where they differ.
+> **Status (Oct 2026):** all 37 architecture questions are decided. Decisions are recorded in [`open-questions.md`](open-questions.md) and in each concept doc's "Decisions" section, and they supersede the original proposals where they differ.
 
 ## The big alternates (vs. the current plan)
 
@@ -56,6 +56,6 @@ An audit of the current models and commands, plus concept-by-concept proposals f
 | 26 | [Discord Surface & UX Patterns](concepts/26-discord-surface-and-ux-patterns.md) | High |
 | 27 | [Server Content Library & Overrides](concepts/27-server-content-library-and-overrides.md) | Low now (post-MVP; two reservations) |
 | 28 | [Webapp Authoring & Mobile-first UX](concepts/28-webapp-authoring-and-mobile-first-ux.md) | High (every MVP builder screen) |
-| 29 | [Flavor Text & Prose](concepts/29-flavor-text-and-prose.md) (proposal) | Low now (MVP hooks only) |
+| 29 | [Flavor Text & Prose](concepts/29-flavor-text-and-prose.md) | Low now (MVP hooks only) |
 
 Each concept doc follows roughly the same outline: **TL;DR → current shape → gaps → options (pros/cons) → recommendation → decisions → MVP scope → open questions.** Struck-through open questions are answered, with a pointer to the Q-number. Concepts 23–27 were split out of earlier docs (Oct 2026) so each doc covers one topic; the source docs keep a one-line pointer where content moved. The remaining ones are smaller and can be settled while the related issue is worked.

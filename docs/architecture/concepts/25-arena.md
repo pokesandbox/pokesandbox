@@ -109,6 +109,9 @@ Single-player prompts (PvAI and adventure battles) can use the await-in-action p
 ### Migrating the shared surfaces to FlowCord later
 If FlowCord ships shared sessions, app-driven refresh, and message adoption, write a FlowCord-backed `BattleSurface` and the private-prompt menus against it. BattleService, timers, challenge records, and recovery stay as they are, because none of them live in the UI. The view builders port directly into the menus' render callbacks.
 
+## Battle flavor in the Arena (decided Nov 2026, Q37)
+When flavor exists ([29](29-flavor-text-and-prose.md)), the public battle message uses only entries without a `side` ("A Pokémon fainted"), because players and spectators all see it. Side-specific flavor ("your" vs "their") appears in each player's private prompt.
+
 ## Adventure Pokémon in the Arena (Phase 3, decided Oct 2026)
 The Arena battles a **copy** of an adventure Pokémon in Showdown set shape, never the instance itself, so no EXP, HP loss, or level changes carry back. The format adjusts the copy: level scaling to the format's level (Lv50 etc.) and **stat-investment overrides** (`rules.statInvestment`, e.g. max IVs/EVs, or max DVs/Stat Exp under Gen 1 rules) so adventure Pokémon match how the format treats built teams. Format legality (species, moves, clauses) is validated as for any team.
 
