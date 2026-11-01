@@ -115,6 +115,7 @@ Character.visibility: 'public' | 'private' | 'inherit'                  // 'inhe
 - **Private** hides the profile or character, with all its journeys (party, badges, progress, battle history), from everyone except the owner and that server's staff. Staff visibility is needed for moderation and support.
 - Applies to every surface: the webapp profile pages and, later, Discord lookup commands. Public Arena battles are inherently visible while they happen.
 - Defaults to `public`. A "server members only" level could be added later if requested.
+- **Deleting your data** and **reporting** public content are in [31](31-trust-safety-and-compliance.md).
 
 ## Playing more than one region (post-MVP)
 Two independent choices, both allowed or restricted by the **destination** region's author:

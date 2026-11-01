@@ -100,6 +100,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Owner review: deep-dive concepts 09–30 and record any changed decisions (M0A-24) (L)
 - [ ] Feature flag registry: env override (`FEATURE_FLAGS=*` in dev), per-server override, per-environment defaults; `discord.authoring` off in prod (M0A-21) (S)
 - [ ] Fix the critical Dependabot alerts now (Next.js, NextAuth, transitive runtime packages; Nx tooling upgrade in its own PR); high and below stay in M2-14 (M0A-22) (M)
+- [ ] Deprecate custom command prefixes: remove the `/server` Prefix option, its commands, the message-command pipeline, and `Server.prefixes` (M0A-25) (S)
 - [ ] Switch slash commands to global registration; flag-off commands only as guild commands on override servers (M0A-07) (M)
 
 **Epic: Shared Library Foundations**
@@ -213,6 +214,8 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Battle history list (per user) (S)
 - [ ] Alpha test on the community server; feedback triage (M)
 - [ ] Release notes + admin/player docs (S)
+- [ ] Discord verification readiness: no privileged intents (prefix commands removed in M0A-25), privacy policy and terms published, verification application at 75 servers (M2-15) (M)
+- [ ] `/account delete` for Arena data (M2-16) (M)
 
 ## M3: Region Authoring
 > **Authoring is webapp-first and mobile-first (decided Oct 2026, Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).** Each builder item below is a webapp screen on `libs/authoring` commands. Discord keeps Region Health, publishing, and Open in builder links; the existing Pokédex, progression, and location builders keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (on in dev).
@@ -294,4 +297,6 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Load test: N concurrent players + battles on target hosting (M)
 - [ ] Dependency security re-check: no open critical/high Dependabot alerts before release (S)
 - [ ] Admin guide + player guide + template walkthrough (M)
+- [ ] Report content + staff takedown tools for discovery, public pages, and narration (M6-01) (L)
+- [ ] Extend `/account delete` to adventure data (M6-02) (M)
 - [ ] Public release + discovery listing (S)

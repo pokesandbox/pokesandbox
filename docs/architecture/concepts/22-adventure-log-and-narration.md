@@ -85,7 +85,7 @@ The original forum flow (player narrates a move, moderator resolves it with a ca
 - `AdventureLogEntry` written by the engine (trainer battles with turn digests, catches, trades, releases, wild rollups, milestones, evolutions, scenes), with Pokémon stored as snapshots.
 - Compressed battle records for live recovery + a 7-day support window (Arena replays per policy).
 - A basic adventure log view on the webapp character page, per journey.
-- Later: Narration model + UI (webapp first, then thread capture), AI narration drafts, narrated battle mode.
+- Later: Narration model + UI (webapp first, then thread capture through a message context-menu command, so no Message Content intent is needed, [31](31-trust-safety-and-compliance.md)), AI narration drafts, narrated battle mode.
 
 ## Open questions (post-MVP)
 - ~~Who can narrate?~~ **Decided (Oct 2026, post-MVP):** the character's owner and co-authors they invite. A dedicated server role, **narration moderator**, can write, edit, and hide narration on *anyone's* story in that server (GM-style). Regular moderators can only hide entries.

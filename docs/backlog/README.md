@@ -12,7 +12,8 @@ Issue drafts reviewed here before they're created in GitHub. Once created, the i
 | [`m1-battle-core-and-catalog.md`](m1-battle-core-and-catalog.md) | M1: Battle Core & Catalog (moves and learnsets catalog; Arena epics: BattleService, teams and formats, AI) |
 | [`m2-launch-readiness.md`](m2-launch-readiness.md) | M2: Arena Release (FlowCord dependencies, launch readiness, and the Arena multiplayer surface, so far) |
 | [`m3-region-authoring.md`](m3-region-authoring.md) | M3: Region Authoring (TM/HM lists and the webapp builder foundation, so far) |
-| *(M1, the rest of M2, and M3–M6 drafted once M0a is underway)* | |
+| [`m6-kanto-classic-and-release.md`](m6-kanto-classic-and-release.md) | M6: Kanto Classic & MVP Release (trust and safety, so far) |
+| *(the rest of M1–M3, M4–M5, and the rest of M6 drafted once M0a is underway)* | |
 
 ## Format
 Each issue is a `###` heading with a **stable draft ID** (`M0A-07`, `M0B-12`) followed by a field line, then the body.

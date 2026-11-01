@@ -126,6 +126,34 @@ Everything needed to run the **bot** for real players: a managed host for the al
 
 **Refs:** [21](../architecture/concepts/21-hosting-and-environments.md)
 
+### M2-15 · Discord verification readiness: intents, policies, application
+`Type: Task` · `Parent: E-M2-1` · `Priority: P0` · `Size: M` · `Labels: area:bot, area:docs` · `Blocked by: M0A-25` · `agent-ready: no` · `Owner: owner`
+
+**Summary:** An unverified Discord app can't join more than 100 servers, and the Arena release could get there. Get the bot verifiable before launch ([31](../architecture/concepts/31-trust-safety-and-compliance.md)).
+
+**Acceptance criteria**
+- **No privileged intents.** `apps/bot/src/main.ts` requests only `GatewayIntentBits.Guilds` (plus any non-privileged intent a shipped feature proves it needs, with a comment saying which). `GuildPresences`, `GuildMembers`, and `MessageContent` are removed, as are the unused non-privileged ones (messages, reactions, DMs, voice states, invites, webhooks). The privileged intents are switched off in the Developer Portal.
+- **Prefix commands removed** first, in M0A-25 (slash commands and components only).
+- Everything still works with the reduced intents (manual checklist in the PR: slash commands, buttons, selects, modals, role checks from the interaction's member).
+- **Privacy policy and terms of service** written in plain language, kept in the repo (`docs/legal/`), published as static pages (GitHub Pages), and linked from the app's Developer Portal profile and an `/about` command. Content per [31 § Policies](../architecture/concepts/31-trust-safety-and-compliance.md#policies).
+- **Verification application** submitted once the app is in 75 servers (owner identity verification done beforehand, so it isn't a blocker on the day).
+
+**Refs:** [31](../architecture/concepts/31-trust-safety-and-compliance.md)
+
+### M2-16 · `/account delete`: delete a user's Arena data
+`Type: Feature` · `Parent: E-M2-1` · `Priority: P0` · `Size: M` · `Labels: area:bot, area:shared-models` · `Blocked by: M1-06, M1-11` · `agent-ready: no` · `Owner: senior`
+
+**Summary:** A self-serve way for a user to delete their data, required by the privacy policy. Arena data now; adventure data is added for the MVP (M6-02).
+
+**Acceptance criteria**
+- `/account delete` lists what will be deleted (teams, battle history, account record), asks for confirmation (a button, then a second confirm), and runs one deletion job.
+- **Deleted:** the `User` document, the user's `TeamPreset`s, and their open challenges (cancelled first). Live battles the user is in are forfeited first.
+- **Kept but anonymized:** other users' records keep their history with the deleted user shown as "Deleted user": `ArenaMatch` / `Battle` participants and anything that displays the user's name. Battle records past their retention window are deleted as usual.
+- The job is idempotent and safe to re-run; a test seeds a user with teams, a finished match against another user, and an open challenge, deletes them, and checks the result for both users.
+- A data inventory (what's stored per user and where) is added to the privacy policy and to a code-level registry that later features must update (M6-02 extends it).
+
+**Refs:** [31 § Deleting a user's data](../architecture/concepts/31-trust-safety-and-compliance.md#deleting-a-users-data)
+
 ---
 
 ## E-M2-2 · Arena Multiplayer Surface

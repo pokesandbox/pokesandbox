@@ -58,5 +58,6 @@ An audit of the current models and commands, plus concept-by-concept proposals f
 | 28 | [Webapp Authoring & Mobile-first UX](concepts/28-webapp-authoring-and-mobile-first-ux.md) | High (every MVP builder screen) |
 | 29 | [Flavor Text & Prose](concepts/29-flavor-text-and-prose.md) | Low now (MVP hooks only) |
 | 30 | [Internationalization Readiness](concepts/30-internationalization-readiness.md) | Low now (readiness rules only), high if skipped |
+| 31 | [Trust, Safety & Compliance](concepts/31-trust-safety-and-compliance.md) | Medium (Arena and MVP release blockers) |
 
 Each concept doc follows roughly the same outline: **TL;DR → current shape → gaps → options (pros/cons) → recommendation → decisions → MVP scope → open questions.** Struck-through open questions are answered, with a pointer to the Q-number. Concepts 23–27 were split out of earlier docs (Oct 2026) so each doc covers one topic; the source docs keep a one-line pointer where content moved. The remaining ones are smaller and can be settled while the related issue is worked.

@@ -123,6 +123,21 @@ Move the repos to the org, get CI gating every PR, and give contributors and age
 
 **Refs:** [architecture README](../architecture/README.md), [`open-questions.md`](../architecture/open-questions.md)
 
+### M0A-25 · Deprecate custom command prefixes
+`Type: Task` · `Parent: E-M0A-1` · `Priority: P1` · `Size: S` · `Labels: area:bot, area:shared-models` · `Blocked by: —` · `agent-ready: yes` · `Owner: agent`
+
+**Summary:** The bot is slash-command and component driven, and no prefix (message) commands exist, but servers can still set a custom prefix. Prefix commands are the only thing that would need the privileged Message Content intent, which the bot drops for Discord verification ([31](../architecture/concepts/31-trust-safety-and-compliance.md)).
+
+**Acceptance criteria**
+- Remove the **Prefix** option from the `/server` menu (`server.ts`) and the "Update Bot Prefixes" line from its embed (`server.embeds.ts`).
+- Delete `serverManagePrefixes.ts` and `serverAddPrefix.ts` and their exports.
+- Delete the prefix pipeline: the `messageCreate` event handler, the message-command manager, and the empty `messageCommands` registry and interface.
+- Remove `prefixes` from the `Server` Zod and Mongoose schemas, the DTOs, `AdminMenuBuilder`'s defaults, and `scripts/seed/data/servers.json`, with a one-off migration that `$unset`s `prefixes` on existing server documents.
+- Fix the copy-paste description on `serverManageRoles.ts` ("Manage command prefixes…") to describe role management.
+- `docs/erd.md` regenerated; lint, typecheck, and tests pass; the `/server` menu still works (manual check in the PR).
+
+**Refs:** [31 § Discord verification and intents](../architecture/concepts/31-trust-safety-and-compliance.md#discord-verification-and-intents)
+
 ### M0A-06 · Scheduled agent pickup workflow
 `Type: Task` · `Parent: E-M0A-1` · `Priority: P2` · `Size: M` · `Labels: area:infra` · `Blocked by: M0A-03, M0A-04` · `agent-ready: no` · `Owner: owner`
 
