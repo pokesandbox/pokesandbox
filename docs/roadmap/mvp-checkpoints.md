@@ -47,5 +47,5 @@ The **MVP release** adds the release work from M6 on top of the last checkpoint:
 ## What the MVP Release opens up (decided Nov 2026)
 - **Playing Kanto Classic opens to every server** at the MVP Release (install the official template; `adventure.play` on generally).
 - **Region authoring for other servers is an invite-only creator beta** (a per-server flag). Gen 1-only authoring (151 species, no abilities or held items) is a narrow toolset most server owners would outgrow, and every creator adds support load.
-- **Open authoring waits until modern mechanics are supported**, not just the next generation: the owner's rule is "not before the generation where most modern mechanics are solidified" (which line that is is still to be confirmed).
+- **Open authoring waits for the Modern preset** (Gen 6+ mechanics: the physical/special split, hidden abilities as authoring controls, abilities, natures, IVs/EVs, held items, the Fairy type chart; gimmicks as toggles), defined in [18](../architecture/concepts/18-rules-time-and-randomness.md). The owner's rule: not before the generation where most modern mechanics are solidified.
 - **Custom content (fakemon, custom moves, overrides) is post-MVP regardless**: it needs the server content library and isolated custom-data dexes ([27](../architecture/concepts/27-server-content-library-and-overrides.md)).

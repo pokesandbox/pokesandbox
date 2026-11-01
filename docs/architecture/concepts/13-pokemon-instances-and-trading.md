@@ -10,7 +10,7 @@ PokemonInstance {
   _id; ownerJourneyId; originalTrainer: { characterId; name; idNo };   // the original trainer is the character
   storage: { kind: 'party' } | { kind: 'box'; box: number; slot: number } | { kind: 'daycare' } | { kind: 'gts'; listingId } | { kind: 'loan'; returnTo }; 
   // Showdown PokemonSet-compatible
-  species: SpeciesId; forme?; nickname?; gender; shiny; level; nature; ability; item?;
+  species: SpeciesId; forme?; nickname?; gender; shiny; level; nature; ability; abilitySlot?: '0' | '1' | 'H'; item?;   // abilitySlot: reserved for hidden abilities (Modern preset, 18); kept on evolution
   ivs; evs; moves: { id: MoveId; pp: number; ppUps: number }[]; teraType?; 
   // persistent state Showdown doesn't keep between battles
   exp: number; hp: number; status?: 'brn' | 'par' | 'slp' | 'frz' | 'psn' | 'tox'; friendship: number;

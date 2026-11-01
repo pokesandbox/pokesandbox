@@ -91,6 +91,13 @@ There is no hard lock on rules after publish: real balance fixes must stay possi
 
 **Presets** become saved combinations ("Classic Gen 1", later "RSE", "Modern"). The MVP ships only **Classic Gen 1**. Admins can still change any dimension once more generations are implemented.
 
+**The Modern preset (decided Nov 2026, post-MVP).** The gate for opening region authoring to every server ([`mvp-checkpoints.md`](../../roadmap/mvp-checkpoints.md#what-the-mvp-release-opens-up-decided-nov-2026)). It's the Gen 6+ ruleset, where modern mechanics settled:
+- **The physical/special split per move** (Gen 4+): move data from Gen 4 or later carries each move's own category, and Showdown applies it for any mechanics generation that has the split. No engine work beyond the data dimension.
+- **Hidden abilities** (Gen 5+), as authoring controls: each Pokémon an author places (encounter slot, gift, trainer Pokémon, in-game trade) can set its ability slot (`'0' | '1' | 'H'`), and encounter slots can give a hidden-ability chance. The instance keeps its slot (`PokemonInstance.abilitySlot`), so it survives evolution as in the games.
+- **Abilities, natures, IVs/EVs** (Gen 3+), **held items** (Gen 2+), gender and shinies, and the Gen 6 type chart (Fairy) and 1.5× critical hits.
+- **Gimmicks off by default** (Mega Evolution, Z-Moves, Dynamax, Terastallization), each a per-region toggle.
+- Most of the engine work is the systems Gen 2–3 introduce (held items, gender, shinies, abilities, natures, IV/EVs, day/night); after that the Modern preset is mostly data and formula choices, because Showdown supplies the species, moves, learnsets, and battle mechanics.
+
 ### Candidate post-MVP options (not decided)
 Opt-in rules that suit slower or narrated play, where battles are fewer and each one matters more ([22](22-adventure-log-and-narration.md#future-narrated-battle-mode-the-forum-model-with-the-engine-as-calculator)). Canon stays the default. Each would be added as a new option on an existing dimension, without schema changes.
 
