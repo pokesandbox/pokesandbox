@@ -41,7 +41,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 
 ## Phase 1: Pre-MVP "Arena" (public release #1)
 
-**Bot only (decided Nov 2026).** The Arena release ships the Discord bot alone; the webapp goes public with the MVP release. Releasing one surface at a time gives each its own hypercare window instead of support load for both at once. The webapp may be deployed privately (staff, testers) before then.
+**Bot only (decided Nov 2026).** The Arena release ships the Discord bot alone, and webapp hosting is deferred entirely to the MVP track; the webapp goes public with the MVP release (deployed privately first, for authoring Kanto Classic). Releasing one surface at a time gives each its own hypercare window instead of support load for both at once.
 
 **Goal:** Showdown-style battles between two server members (and vs AI) with teams validated against server-scoped Arena formats (canon content at launch; the server's custom content library joins later, [27](../architecture/concepts/27-server-content-library-and-overrides.md)). Battles run publicly, button-driven, independent of adventure state. This ships the hardest subsystem first and gets real users early.
 
@@ -53,7 +53,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 | Battles | `BattleService` (start/choose/events/persist/recover); Discord renderer (public turn message + ephemeral choice prompts); timers (PvP 90s, default move on timeout, forfeit after 3); forfeits; spectating |
 | Multi-user | Challenge → accept → battle on BattleService-driven shared surfaces (plain discord.js handlers with stable IDs). FlowCord stays single-user for the `/arena` hub. Moving them onto FlowCord multi-user sessions is a later option, not a dependency. See [25 § Multiplayer boundary](../architecture/concepts/25-arena.md#multiplayer-boundary-with-flowcord-decided-oct-2026-q34) (Q34) |
 | AI | AI profiles `random`, `basic`, `smart` (`smart` can follow the launch; trainer item use is for adventure trainers); PvAI against random legal teams generated from the format, difficulty via AI profile; admin-authored AI team sets later |
-| Ops | **Launch readiness:** hosting (no-overlap deploys), Atlas + backups, deploy pipeline, monitoring, staging, dependency security (the last step before going public). Battle persistence with leases, so restarts and deploys never duplicate a battle. Battle history. |
+| Ops | **Launch readiness (bot only):** hosting (no-overlap deploys), Atlas + backups, deploy pipeline, monitoring, staging, dependency security (the last step before going public). Battle persistence with leases, so restarts and deploys never duplicate a battle. Battle history. |
 
 **Exit criteria:**
 - Two users on a public test server can build teams by paste, challenge, battle to completion with spectators, and survive a bot restart mid-battle.

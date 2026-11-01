@@ -8,7 +8,7 @@ Refs: concepts [14](../architecture/concepts/14-battle-system-and-showdown.md), 
 
 ## Start here
 New to the project? Read [`docs/start-here.md`](../start-here.md) first, then [M0c § Start here](m0c-arena-foundations.md#start-here) for how the Arena fits together. Context specific to this file:
-- **What M2 is:** the Discord side of the Arena (challenges, the public battle message, private move prompts, the `/arena` hub) and getting it live (hosting, backups, deploys, monitoring, staging, dependency security).
+- **What M2 is:** the Discord side of the Arena (challenges, the public battle message, private move prompts, the `/arena` hub) and getting the **bot** live (hosting, backups, deploys, monitoring, staging, dependency security). The webapp isn't part of this release.
 - **Read before starting:** concept [25](../architecture/concepts/25-arena.md) (Arena design, especially "Multiplayer boundary" and "Acceptance scenarios"), [26](../architecture/concepts/26-discord-surface-and-ux-patterns.md) (Discord UI rules), and [21](../architecture/concepts/21-hosting-and-environments.md) for E-M2-1.
 - **What you'll touch:** `apps/bot` (a new Arena module and its interaction router), GitHub Actions, the host's configuration, and Atlas.
 - **Order:** E-M2-2 starts once BattleService (M1) can run a PvP battle headless. E-M2-1 (hosting) is the last step before going live.
@@ -43,30 +43,29 @@ To use them at launch, alpha.3 has to ship before M2-11 starts (mid-M2). If they
 ## E-M2-1 · Launch Readiness: Hosting & Operations
 `Type: Epic` · `Priority: P0`
 
-Everything needed to run the bot and webapp for real players. **The Arena release itself is bot-only** (decided Nov 2026): the webapp is provisioned and deployed here so the pipeline is built once, but stays private (staff and testers) until the MVP release, so each surface gets its own hypercare window. The rest: a managed host for the always-on bot and the webapp, MongoDB Atlas with backups, deploy pipelines, monitoring, and a staging environment. Scheduled **at the end of the Arena track**, once the Arena works locally.
+Everything needed to run the **bot** for real players: a managed host for the always-on bot, MongoDB Atlas with backups, a deploy pipeline, monitoring, and a staging environment. **The Arena release is bot-only, and webapp hosting is deferred entirely** (decided Nov 2026) to the MVP track ([`mvp.md` § M6](../roadmap/mvp.md#m6-kanto-classic--mvp-release-)), so each surface gets its own hypercare window. Choose a host that can add a second (webapp) service later. Scheduled **at the end of the Arena track**, once the Arena works locally.
 
 ### M2-01 · Choose the host and provision prod app services
 `Type: Task` · `Parent: E-M2-1` · `Priority: P0` · `Size: M` · `Labels: area:infra` · `Blocked by: M2-02` · `agent-ready: no` · `Owner: owner`
 
-**Summary:** Decide between the offered family host and a managed host (Railway/Fly/Render class). Provision an always-on bot service and a webapp service.
+**Summary:** Decide between the offered family host and a managed host (Railway/Fly/Render class). Provision an always-on bot service. The host must be able to add a webapp service later (MVP track).
 
 **Acceptance criteria**
 - The host supports always-on Node processes (Discord gateway + in-memory battles) and Docker images.
 - The bot service is configured for **no deploy overlap** (stop old, then start new) and one replica, where the host allows it ([15 § Sharding](../architecture/concepts/15-persistence-concurrency-and-runtime.md#sharding-deploys-and-who-owns-live-state-decided-oct-2026)). If it doesn't, document that battle leases cover the overlap.
-- The prod bot and webapp run from images built in CI, with secrets in the host's secret store.
-- The webapp has a domain with TLS. The Discord OAuth redirect URIs are updated.
+- The prod bot runs from an image built in CI, with secrets in the host's secret store.
 - Cost and plan details are recorded in [21](../architecture/concepts/21-hosting-and-environments.md).
 
 **Refs:** [21](../architecture/concepts/21-hosting-and-environments.md)
 
-### M2-02 · Containerize the bot and webapp
+### M2-02 · Containerize the bot
 `Type: Task` · `Parent: E-M2-1` · `Priority: P0` · `Size: M` · `Labels: area:infra` · `Blocked by: —` · `agent-ready: yes` · `Owner: agent`
 
-**Summary:** Production Dockerfiles for `apps/bot` and `apps/webapp` (multi-stage, Nx build), plus a `docker-compose.yml` profile that runs both locally against the dev Mongo.
+**Summary:** A production Dockerfile for `apps/bot` (multi-stage, Nx build), plus a `docker-compose.yml` profile that runs it locally against the dev Mongo. The webapp's Dockerfile comes with webapp hosting on the MVP track.
 
 **Acceptance criteria**
-- `docker build` produces runnable images for both apps. Images run as non-root. Final images contain no dev dependencies.
-- The local compose profile starts Mongo (see M0A-16), the bot, and the webapp, using `.env`.
+- `docker build` produces a runnable bot image. Images run as non-root. Final images contain no dev dependencies.
+- The local compose profile starts Mongo (see M0A-16) and the bot, using `.env`.
 - The README documents the commands.
 
 ### M2-03 · Atlas setup: prod, staging, and dev databases
@@ -100,13 +99,13 @@ Everything needed to run the bot and webapp for real players. **The Arena releas
 `Type: Task` · `Parent: E-M2-1` · `Priority: P1` · `Size: S` · `Labels: area:infra` · `Blocked by: M2-01` · `agent-ready: yes` · `Owner: agent`
 
 **Acceptance criteria**
-- Sentry (free tier) wired into the bot and webapp. Errors are tagged with environment, `journeyId`/`actionId`/`battleId` where available, and release version.
-- An uptime check on the webapp plus a bot heartbeat (e.g. a health endpoint or a periodic ping), alerting the owner.
+- Sentry (free tier) wired into the bot. Errors are tagged with environment, `journeyId`/`actionId`/`battleId` where available, and release version.
+- A bot heartbeat (e.g. a health endpoint or a periodic ping), alerting the owner.
 
 ### M2-07 · Staging environment
 `Type: Task` · `Parent: E-M2-1` · `Priority: P1` · `Size: M` · `Labels: area:infra` · `Blocked by: M2-01, M2-03` · `agent-ready: no` · `Owner: owner`
 
-**Summary:** A second deployment of the bot and webapp with its own Discord application/bot token and test guild, using the `staging` database. Required before the Arena goes public.
+**Summary:** A second deployment of the bot with its own Discord application/bot token and test guild, using the `staging` database. Required before the Arena goes public.
 
 **Acceptance criteria**
 - The staging bot runs in a test guild and doesn't share tokens or DBs with prod.

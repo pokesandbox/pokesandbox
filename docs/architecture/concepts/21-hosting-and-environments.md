@@ -1,7 +1,7 @@
 # 21: Hosting & Environments
 
 > **TL;DR (decided Oct 2026, Q30):** Pay for hosting only.
-> - A **managed app host** (Railway/Fly/Render class, or a discounted/free host through a developer's family) runs the always-on bot (with the engine and BattleService) and the webapp as containers.
+> - A **managed app host** (Railway/Fly/Render class, or a discounted/free host through a developer's family) runs the always-on bot (with the engine and BattleService) and, from the MVP track, the webapp as containers. The Arena release hosts the bot only (decided Nov 2026).
 > - **MongoDB Atlas Free** stores data for the MVP. It's a replica set, so transactions work. Move to **Atlas Flex or DigitalOcean Managed MongoDB (~$15, daily backups)** before opening to other servers.
 > - **Nightly `mongodump`** goes to free-tier object storage.
 > - **GitHub Actions** deploys. **Sentry's free tier** catches errors.

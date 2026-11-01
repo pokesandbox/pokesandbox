@@ -162,6 +162,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Patch: generalized state injection (any side; HP/status/PP/fainted state; level/stats/move slots mid-battle for authentic level-ups), every injection recorded in the input log so recovery replays it, with sim tests (M)
 - [ ] Patch: external choice hook (bag/catch/run consume turn) + `caught`/`ran` end reasons (L)
 - [ ] Patch: isolated custom-data dexes (per content hash) for `Battle` + `TeamValidator`, evolved from `dynamic-dex-data` (L)
+- [ ] Patch: Gen 1 obedience as an additive custom rule (`onBeforeMove`, cap on `pokemon.m` set via state injection, pret/pokered `CheckForDisobedience` behavior and test vectors). First, a sim test proving a format rule's `onBeforeMove` fires; if not, find the narrowest hook before touching sim core ([14](../architecture/concepts/14-battle-system-and-showdown.md#fork-strategy-options)) (M)
 
 **Epic: Catalog**
 - [ ] Canon catalog import from Showdown (pinned version): SpeciesDefinition, MoveDefinition (per-gen data via the resolved Dex, behavior `hooks`, text), Learnset (per-gen sources) into Mongo; re-runnable with diff on upgrades (L). Moves and learnsets drafted as E-M1-2 ([`m1-battle-core-and-catalog.md`](../backlog/m1-battle-core-and-catalog.md))
@@ -196,11 +197,11 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 **Epic: Launch Readiness: Hosting & Operations** (Q30, see [21](../architecture/concepts/21-hosting-and-environments.md); drafts in [`../backlog/m2-launch-readiness.md`](../backlog/m2-launch-readiness.md))
 Scheduled last on the Arena track. Development runs locally until then.
-- [ ] Choose and set up a managed app host (or the offered family host): always-on bot service + webapp, env secrets, custom domain/TLS (M)
+- [ ] Choose and set up a managed app host (or the offered family host): always-on bot service, env secrets; able to add a webapp service later (M)
 - [ ] Atlas: prod database on the free cluster, separate staging/dev databases, IP allowlist, least-privilege users (S)
 - [ ] Nightly `mongodump` backups to object storage with retention + a tested restore (M)
 - [ ] GitHub Actions deploy: version tag → prod; `master` → staging (staging added before the Arena goes public) (M)
-- [ ] Error monitoring (Sentry) + uptime check (S)
+- [ ] Error monitoring (Sentry) + bot heartbeat (S)
 - [ ] Dependency security: clear the remaining Dependabot alerts (high fixed or justified, moderate/low triaged; critical already done in M0A-22), enable Dependabot updates, CI audit gate (M2-14) (M)
 
 - [ ] Challenge/accept/decline: direct + open challenges, atomic claim, 5-min expiry (M2-09) (M)
@@ -263,7 +264,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Traversal requirements: location progress counters (lifetime/visit), one-time + permanent costs, compiled exit gates with explanations (M)
 - [ ] Wild battles: catch formula, run odds, bag in battle (via hook); the default intro line, with the encounter start event carrying `firstSighting` and a resolved `intro` passage so authored intros can be added later ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) (L)
 - [ ] Trainer battles: party variant selection, AI profile, payout, defeat flags, whiteout (M)
-- [ ] EXP and level-ups mid-battle (state injection), in-battle move-learn prompts, post-battle and post-trade evolution (level/stone/trade), Gen 1 traded-Pokémon EXP bonus and obedience by original trainer (L)
+- [ ] EXP and level-ups mid-battle (state injection), in-battle move-learn prompts, post-battle and post-trade evolution (level/stone/trade), Gen 1 traded-Pokémon EXP bonus and obedience by original trainer (the engine computes each traded Pokémon's cap from badges and passes it in the `BattleSpec`; the fork rule enforces it) (L)
 - [ ] Party view/reorder/summary; full party → PC + "Swap into party?" offer for gifts and catches (M)
 - [ ] PC boxes: deposit/withdraw/release, overflow, access per `RegionRules.systems.storage.access` (M)
 - [ ] Bag: pockets, use/give/take outside battle; Escape Rope uses the `teleport: respawn` effect (M)
@@ -279,6 +280,11 @@ Scheduled last on the Arena track. Development runs locally until then.
 **Kanto Classic adaptations (decided Oct 2026).** These keep MVP scope down without special mechanics:
 - **No Safari Zone in MVP** (bait/rock/ball mechanics deferred). Its key rewards come another way, e.g. a Fuchsia NPC gift script gives HM03 Surf, and the Warden gives HM04 Strength directly or via a simpler fetch.
 - **No unidentifiable-ghost mechanic.** Pokémon Tower's upper floors are gated on `bag.count silph-scope ≥ 1` (presentation `attemptable`, with a "the ghosts block your way" script). The rival battle stays reachable *outside* that gate (lobby/first floor), so story order matches RBY. The Marowak ghost is a scripted `wildBattle` behind the gate.
+
+**Epic: Webapp Hosting** (deferred from M2, decided Nov 2026: the Arena release is bot-only). Lands **before** Kanto Classic authoring on the HQ server starts, since MVP authoring is webapp-first; until the MVP release it's private (staff and testers).
+- [ ] Webapp Dockerfile and compose profile (S)
+- [ ] Webapp service on the host, domain with TLS, Discord OAuth redirect URIs, secrets (M)
+- [ ] Webapp in the deploy pipeline and staging; Sentry and an uptime check (S)
 
 - [ ] Generator script: bulk Kanto data (locations, connections, encounters, trainers/parties, marts, TM list) → region bundle (L)
 - [ ] Author Kanto Classic story/scripts/gates in the tools on the HQ server (dogfooding; track every builder friction as an issue) (XL → split per area)
