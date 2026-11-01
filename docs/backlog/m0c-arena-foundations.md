@@ -107,7 +107,7 @@ Get the fork onto current upstream with only our deliberate changes left, and ma
 **Summary:** The monorepo depends on the fork as a versioned package, not a git submodule (Q20).
 
 **Acceptance criteria**
-- Tagged releases of the fork published as `@pokesandbox/showdown` (or the agreed scope) to GitHub Packages or npm; the monorepo pins an exact version.
+- Tagged releases of the fork published as **`@pokesandbox/pokemon-showdown`** to GitHub Packages or npm, mirroring upstream's `pokemon-showdown` package name so imports read the same as upstream's (`import { Dex } from '@pokesandbox/pokemon-showdown'`). The monorepo pins an exact version.
 - A scheduled monthly workflow opens an upstream-sync PR in the fork.
 - Links point at the fork's org location after the move (M0A-01). The repo keeps the name `pokemon-showdown`.
 - **Follow-ups:** the catalog imports (M1-02, M1-03) switch from upstream `pokemon-showdown` to this package and re-run.
