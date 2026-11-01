@@ -264,7 +264,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md), then [M0c § 
 ### M1-10 · Battle view builders (Discord)
 `Type: Feature` · `Parent: E-M1-3` · `Priority: P0` · `Size: M` · `Labels: area:bot` · `Blocked by: M1-09, M0A-20` · `agent-ready: yes` · `Owner: junior`
 
-**Summary:** Pure functions from a `BattleView` (built from a `TurnDigest` plus match info) to Components v2 JSON. M2's public message, private prompts, and PvAI screens all use them; so do adventure battles later.
+**Summary:** A `BattleView` model built from a `TurnDigest` plus match info, in `libs/presentation` (scaffold it here if it doesn't exist yet, with its module-boundary tag), and pure functions in `apps/bot` from that model to Components v2 JSON. M2's public message, private prompts, and PvAI screens all use them; so do adventure battles later.
 
 **Acceptance criteria**
 - `renderBattle(view)`: the turn's messages, then both active Pokémon with level, HP bar, and status, each with its sprite as a separate image (section thumbnails or a media gallery, from `resolveSpriteUrl`, M0A-20; the player's side faces back, the opponent's front; the Arena uses the format's generation), and the deadline when there is one.

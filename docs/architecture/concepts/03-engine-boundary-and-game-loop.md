@@ -111,12 +111,14 @@ libs/battle     Showdown adapter + BattleService + AI. Depends on core + the Sho
 libs/engine     game rules: dispatch, modes, scripts, travel/explore, economy, post-battle progression.
                 Depends on core. Talks to battles ONLY through the `BattlePort` interface (types in libs/core/ports).
 libs/authoring  admin commands. Depends on core.
+libs/presentation  pure view models: passage paging, battle and menu view models, and resolving references (flavor picks,
+                message keys, translations) into text in the viewer's language. Depends on core. No Discord, no React.
 apps/bot        game host: wires engine + the real libs/battle implementation of BattlePort, Discord renderers.
 apps/webapp     wires engine with a BattlePort that only *reads* battle state (never hosts battles), plus authoring.
 ```
 
 Rules (enforced with Nx module-boundary tags + `@nx/enforce-module-boundaries` lint, so violations fail CI):
-1. `core` imports nothing internal. `engine`/`authoring` import only `core`. `battle` imports only `core`.
+1. `core` imports nothing internal. `engine`/`authoring`/`presentation` import only `core`. `battle` imports only `core`. Only apps import `presentation`: the bot maps its view models to Components v2, the webapp to HTML (decided Nov 2026).
 2. **Only apps compose implementations.** `engine` never imports `battle`. It receives a `BattlePort` at construction. The webapp never imports `battle`, so it never bundles Showdown.
 3. Engine and battle are **constructed from injected ports** (repositories, BattlePort, Clock, Rng, event sink). No module-level singletons and no direct Mongoose/discord.js imports inside libs. Swapping an in-process port for a network client is how either one moves into its own container.
 4. Everything crossing a port is **serializable data** (actions, events, battle specs, results), so the in-process call can become an API/queue message unchanged.

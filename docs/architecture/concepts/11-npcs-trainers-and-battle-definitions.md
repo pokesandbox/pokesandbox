@@ -100,6 +100,7 @@ Npc.afterDefeat?: {
 The condition uses a new MVP fact, `location.trainersDefeated` (distinct trainers defeated here), or specific trainer flags. The **Gym Leader template** exposes this as an option ("Require N gym trainers first", off by default) and generates the gate.
 
 ## MVP scope
+- Trainer intro and defeat lines (flavor entries `battle.trainerIntro` / `battle.trainerDefeat`, matched on the trainer or its class; MVP, [29](29-flavor-text-and-prose.md#mvp-scope)); post-battle talk stays the `afterDefeat.interact` script.
 - TrainerClass registry (canon seed), Trainer with conditioned parties, Npc with placements (single/everywhere presence, per-placement interact)/interact/trainer, engagement modes (`onTalk`, `onExplore`, `onEnter`), payout formula, defeat flags, and templates (Route Trainer, Gym Leader, Rival).
 - Later: rematches (VS Seeker / Gen 2 phone), double battles with two trainers, multi-battles (tag partners).
 

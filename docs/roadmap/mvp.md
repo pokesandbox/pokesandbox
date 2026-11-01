@@ -248,6 +248,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Mode machine + persisted script cursor + resume on input (M)
 - [ ] Trigger dispatch: journeyStarted (payload: `newCharacter`, `carriedPokemon`), enterLocation (optional `from`/`via` filters; any arrival counts), interact, battleEnd, explore; once/priority/forced (M)
 - [ ] TrainerClass registry (canon seed) + Trainer with conditioned party variants (M)
+- [ ] Trainer intro and defeat lines: minimal flavor slice (`FlavorEntry` in the region layer, resolver for `battle.trainerIntro` / `battle.trainerDefeat` matching trainer → class → default, the trainer "Lines" tab) ([29](../architecture/concepts/29-flavor-text-and-prose.md#mvp-scope)) (M)
 - [ ] NPC model (placements with single/everywhere presence and per-placement interact, trainer, engagement) (M)
 - [ ] Templates: Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet, Simple Talker (L)
 

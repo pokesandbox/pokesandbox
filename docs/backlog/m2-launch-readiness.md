@@ -43,7 +43,7 @@ To use them at launch, alpha.3 has to ship before M2-11 starts (mid-M2). If they
 ## E-M2-1 · Launch Readiness: Hosting & Operations
 `Type: Epic` · `Priority: P0`
 
-Everything needed to run the bot and webapp for real players: a managed host for the always-on bot and the webapp, MongoDB Atlas with backups, deploy pipelines, monitoring, and a staging environment. Scheduled **at the end of the Arena track**, once the Arena works locally.
+Everything needed to run the bot and webapp for real players. **The Arena release itself is bot-only** (decided Nov 2026): the webapp is provisioned and deployed here so the pipeline is built once, but stays private (staff and testers) until the MVP release, so each surface gets its own hypercare window. The rest: a managed host for the always-on bot and the webapp, MongoDB Atlas with backups, deploy pipelines, monitoring, and a staging environment. Scheduled **at the end of the Arena track**, once the Arena works locally.
 
 ### M2-01 · Choose the host and provision prod app services
 `Type: Task` · `Parent: E-M2-1` · `Priority: P0` · `Size: M` · `Labels: area:infra` · `Blocked by: M2-02` · `agent-ready: no` · `Owner: owner`

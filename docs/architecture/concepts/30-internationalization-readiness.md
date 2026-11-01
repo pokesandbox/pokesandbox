@@ -59,7 +59,7 @@ Translations and flavor picks must survive reordering, so array indexes are neve
 An address is always **owner key + field + ids down to the segment**. For example, the second line of Oak's intro is `script:scr-oak-intro` · `steps` · `['s4', 'b2']`, and a canon faint line is `flavor:fl-faint-own` · `variants` · `['v3', 'b1']`. Reordering steps, blocks, or variants never breaks a translation.
 
 ### 4. Events carry references; rendering resolves the language
-- A flavor pick is `{ entry: ContentKey; variantId: string }` on the event, not baked text. The presentation layer resolves it into a `Passage` in the viewer's locale (from the release's translations) before the pure view builders run ([26](26-discord-surface-and-ux-patterns.md)). The seeded pick is the same in every language, so two viewers see the same moment in their own words.
+- A flavor pick is `{ entry: ContentKey; variantId: string }` on the event, not baked text. The presentation layer (`libs/presentation`, shared by the bot and the webapp) resolves it into a `Passage` in the viewer's locale (from the release's translations) before the pure view builders run ([26](26-discord-surface-and-ux-patterns.md)). The seeded pick is the same in every language, so two viewers see the same moment in their own words.
 - Default lines ("A wild {species} appeared!") are message keys with parameters, not strings.
 - **Placeholders are structured values**, never pre-formatted names: `{pokemon}` resolves to the nickname or the species name in the viewer's locale.
 

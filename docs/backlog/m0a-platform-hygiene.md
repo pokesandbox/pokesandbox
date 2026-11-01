@@ -218,12 +218,12 @@ Create `libs/core` and the enforced package boundaries, plus shared logging. The
 ### M0A-10 · Enforce module boundaries
 `Type: Task` · `Parent: E-M0A-2` · `Priority: P0` · `Size: S` · `Labels: area:infra` · `Blocked by: M0A-09` · `agent-ready: yes` · `Owner: agent`
 
-**Summary:** Nx project tags plus the `@nx/enforce-module-boundaries` lint rule for the decided layering. Lands as soon as `libs/core` exists; each later library scaffold (M0C-01 `libs/battle`, M0B-23 `libs/engine`, M0B-16 `libs/authoring`) adds its own tag to the rules.
+**Summary:** Nx project tags plus the `@nx/enforce-module-boundaries` lint rule for the decided layering. Lands as soon as `libs/core` exists; each later library scaffold (M0C-01 `libs/battle`, M0B-23 `libs/engine`, M0B-16 `libs/authoring`, M1-10 `libs/presentation`) adds its own tag to the rules.
 
 **Acceptance criteria**
-- Tags: `scope:core`, `scope:engine`, `scope:battle`, `scope:authoring`, `scope:app-bot`, `scope:app-webapp`, `scope:shared`.
-- `core` depends on nothing internal. `engine`, `battle`, and `authoring` depend only on `core`. `app-webapp` cannot depend on `battle`.
-- Banned external imports inside libs: `discord.js` in all libs, `mongoose` in `core`/`engine`/`battle`/`authoring`, Showdown outside `battle`.
+- Tags: `scope:core`, `scope:engine`, `scope:battle`, `scope:authoring`, `scope:presentation`, `scope:app-bot`, `scope:app-webapp`, `scope:shared`.
+- `core` depends on nothing internal. `engine`, `battle`, `authoring`, and `presentation` depend only on `core`; only apps depend on `presentation`. `app-webapp` cannot depend on `battle`.
+- Banned external imports inside libs: `discord.js` in all libs, `mongoose` in `core`/`engine`/`battle`/`authoring`/`presentation`, React in `presentation`, Showdown outside `battle`.
 - A deliberately violating import fails `nx lint` (verified in the PR description).
 
 **Refs:** [03 § Package layout](../architecture/concepts/03-engine-boundary-and-game-loop.md#package-layout--encapsulation-rules-decided-oct-2026)

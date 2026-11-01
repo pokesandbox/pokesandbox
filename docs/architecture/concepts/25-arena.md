@@ -25,7 +25,7 @@ TeamPreset {                     // owned by the USER, usable across servers
 
 - **At launch:** Showdown paste import/export (one modal, and the format competitive players already know), a random legal team for any format, and per-Pokémon validation errors.
 - **Next:** a guided builder on Components v2 and FlowCord submenu/pagination flows, reusing the region Pokédex builder's Pokémon search flow. It's essential once servers have custom Pokémon, which external teambuilders don't know.
-- **Later:** a webapp builder, and public team sharing.
+- **Later:** a webapp builder, and public team sharing. **The Arena release is Discord-only (decided Nov 2026):** the guided builder is a Discord screen, and nothing in the Arena depends on the webapp.
 - The same `PokemonSet` shape is what adventure Pokémon convert to, so the validator and battle hookup are shared with adventure battles.
 
 ## Arena formats (decided Oct 2026: server-scoped, not region-scoped)
@@ -79,7 +79,7 @@ Verified against FlowCord `develop` (v0.1.0-alpha.2), Oct 2026:
 | **Who may press** (participants vs spectators) | Arena module (`apps/bot`) | Stable custom IDs (`arena:<verb>:<matchId>`) handled before FlowCord routing. Non-participants get an ephemeral "This isn't your battle". |
 | **Private choice prompt** | Arena module (`apps/bot`), FlowCord optional | Opened by the player's own press on the public message's **Choose** button. Discord can only deliver an ephemeral in reply to that user's interaction. Lock-in calls `BattleService.choose` and updates the prompt in the same interaction. Best effort: the prompt advances to the next turn by editing through the player's last token (valid 15 min, in memory only). The **Choose** button always works as the fallback. |
 | **Menus around the battle** (`/arena` hub, team pick, format pick, "challenge @user", PvAI setup, history) | FlowCord | Normal single-user sessions. Session state holds IDs only (`teamId`, `formatId`, `challengeId`, `battleId`). |
-| **Rendering** | `apps/bot` pure view builders | `(BattleView) → Components v2 JSON`, with no I/O. Shared by the projector, the prompt handlers, and any future FlowCord menu. |
+| **Rendering** | `libs/presentation` view models + `apps/bot` pure view builders | `(BattleView) → Components v2 JSON`, with no I/O. Shared by the projector, the prompt handlers, and any future FlowCord menu. |
 | **Persistence and recovery** | BattleService (battle) + Arena module (surface) | `BattleService.recover()` rebuilds battles from seed + input log and re-arms timers with a **fresh full window**, so the restart doesn't count as a timeout. It then emits `battleRecovered`. The projector re-renders the stored `messageId` in place, so the same message comes back with live buttons. In-memory prompt tokens are lost, and players press **Choose** again. Open challenges are re-armed from `expiresAt`. |
 
 ```ts
@@ -110,7 +110,7 @@ Single-player prompts (PvAI and adventure battles) can use the await-in-action p
 If FlowCord ships shared sessions, app-driven refresh, and message adoption, write a FlowCord-backed `BattleSurface` and the private-prompt menus against it. BattleService, timers, challenge records, and recovery stay as they are, because none of them live in the UI. The view builders port directly into the menus' render callbacks.
 
 ## Battle flavor in the Arena (decided Nov 2026, Q37)
-When flavor exists ([29](29-flavor-text-and-prose.md)), the public battle message uses only entries without a `side` ("A Pokémon fainted"), because players and spectators all see it. Side-specific flavor ("your" vs "their") appears in each player's private prompt.
+When flavor exists ([29](29-flavor-text-and-prose.md)), the Arena module picks it with the shared resolver from the canon pack plus the server's packs, governed by `Server.settings.arena.battleText` (default log and flavor). The public battle message uses only entries without a `side` ("A Pokémon fainted"), because players and spectators all see it. Side-specific flavor ("your" vs "their") appears in each player's private prompt.
 
 ## Adventure Pokémon in the Arena (Phase 3, decided Oct 2026)
 The Arena battles a **copy** of an adventure Pokémon in Showdown set shape, never the instance itself, so no EXP, HP loss, or level changes carry back. The format adjusts the copy: level scaling to the format's level (Lv50 etc.) and **stat-investment overrides** (`rules.statInvestment`, e.g. max IVs/EVs, or max DVs/Stat Exp under Gen 1 rules) so adventure Pokémon match how the format treats built teams. Format legality (species, moves, clauses) is validated as for any team.

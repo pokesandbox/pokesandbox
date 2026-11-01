@@ -6,7 +6,7 @@
 
 ## Principles
 - **Rules emit, renderers draw.** The engine and BattleService return events ([03](03-engine-boundary-and-game-loop.md)); renderers turn them into Components v2 messages. No game logic lives in a menu handler.
-- **Pure view builders.** Renderers are functions from a view model to Components v2 JSON, with no I/O, so they can be snapshot-tested and reused by FlowCord menus, plain handlers, and the webapp builder's Discord previews ([28](28-webapp-authoring-and-mobile-first-ux.md#mobile-first-rules)).
+- **Pure view builders, on shared view models.** View models (passage pages, the battle view, menus) and text resolution live in `libs/presentation` ([03](03-engine-boundary-and-game-loop.md#package-layout--encapsulation-rules-decided-oct-2026)); the bot's renderers are pure functions from those models to Components v2 JSON, with no I/O, so they can be snapshot-tested and reused by FlowCord menus and plain handlers. The webapp builder's Discord previews render the same view models to HTML ([28](28-webapp-authoring-and-mobile-first-ux.md#mobile-first-rules)).
 - **Discord-complete play.** Every player action works from Discord; the webapp adds richer screens (profiles, logs) but is never needed to play. **Authoring is webapp-first** (Q36): Discord keeps Region Health, publishing, Open in builder links, and the existing builders (flag-gated: on in dev, hidden in production until released) until the webapp reaches parity ([28](28-webapp-authoring-and-mobile-first-ux.md)).
 - **Components v2** for dense layouts: containers, sections with thumbnails, media galleries. FlowCord supports them.
 

@@ -135,6 +135,12 @@ Region.flavor: {
 - **Perspective:** `side: 'own' | 'opponent'` is relative to the viewer. Adventure battles have one viewer. In Arena PvP the public message is seen by both players and spectators, so it uses **neutral** entries only (no `side`), and side-specific flavor can appear in each player's private prompt.
 - **Player preference (later):** a player can hide flavor for themselves, which also helps accessibility and fast play.
 
+### Where flavor is picked (decided Nov 2026)
+- **One pure resolver in `libs/core`:** `resolveFlavor(index, event, rng) → { entry, variantId } | null`. It has no I/O and knows nothing about regions or Discord.
+- **Adventure:** the engine calls it with the region release's compiled flavor index, for engine events and for the battle events it receives from BattleService. `libs/battle` never resolves flavor (it knows nothing about regions).
+- **Arena:** the Arena module calls it with an index compiled from the canon pack plus the server's packs, with a server-level setting `Server.settings.arena.battleText: { log; flavor }` (default both). The public message uses side-less entries only ([25](25-arena.md)).
+- The seeded `Rng` for battle flavor derives from the battle seed and turn, so recovery and replays pick the same lines.
+
 ### 5. System text stays fixed
 Engine responses, explanations, reward lines, and the battle log are never replaced by flavor. Flavor may **add** a line beside them ("You received a Potion!" plus "Mom tucked it into your bag with a note."). This keeps the game legible no matter how a region writes its flavor.
 
@@ -219,10 +225,11 @@ Nothing in this doc is MVP content, but these keep it cheap to add:
 2. **Location `description` and `descriptionVariants` are `Passage`s from the start** (pre-MVP), so the architecture is right before anything is built on it ([08](08-region-map-and-locations.md)).
 3. **Battle text setting per region, default both** (log and flavor). Flavor-only is for regions that want it, mostly heavy roleplay servers; the fallback rule (events without flavor show their log line; HP and status always visible) applies there.
 4. **Arena PvP:** the public battle message uses only flavor entries without `side`; side-specific flavor appears in each player's private prompt ([25](25-arena.md)).
-5. **Canon pack v1 is a fast follow to the MVP:** Gen 1 battle flavor for moves and statuses. After that, **each new generation's content ships with its flavor** in the same release.
+5. **Canon pack v1 is a fast follow to the MVP** (trainer lines are MVP, see MVP scope): Gen 1 battle flavor for moves and statuses. After that, **each new generation's content ships with its flavor** in the same release.
 6. **`PokemonInstance.tags` is reserved now** ([13](13-pokemon-instances-and-trading.md)).
 7. **Ready for translation** (Nov 2026, Q38): variants and passage blocks have stable IDs, events carry `{ entry, variantId }`, and translations are separate records ([30](30-internationalization-readiness.md)).
 
 ## MVP scope
-- None of the flavor content or the flavor system ships in the MVP. The MVP builds the hooks listed in [MVP hooks](#mvp-hooks-recommended): identities and perspective on battle and engine events, a reserved flavor slot in the battle view, location descriptions as passages, and `PokemonInstance.tags`.
-- Fast follow: the flavor resolver, `FlavorEntry` storage, `Region.flavor`, `RegionRules.presentation.battleText`, and canon pack v1 (Gen 1 move and status battle flavor).
+- **Trainer lines are MVP (decided Nov 2026)**, to replicate the Gen 1 games: every trainer has its own pre-battle and defeat lines, as in RBY. The MVP ships a minimal slice of the flavor system for exactly two events, `battle.trainerIntro` and `battle.trainerDefeat`: `FlavorEntry` storage in the region layer only, the resolver (match on `trainer`, then `trainerClass`, then the built-in default line), and the trainer screen's "Lines" tab. No packs, no `chance` (always shown), no battle text setting. A trainer's later talk text stays its `afterDefeat.interact` script ([11](11-npcs-trainers-and-battle-definitions.md)). Kanto Classic's lines come from the generator (pret/pokered's text, [16](16-authoring-validation-and-portability.md#official-templates-decided-oct-2026)).
+- Everything else in this doc is post-MVP. The MVP builds the hooks listed in [MVP hooks](#mvp-hooks-recommended): identities and perspective on battle and engine events, a reserved flavor slot in the battle view, location descriptions as passages, and `PokemonInstance.tags`.
+- Fast follow: the remaining flavor events, `Region.flavor` and packs, `RegionRules.presentation.battleText`, and canon pack v1 (Gen 1 move and status battle flavor).

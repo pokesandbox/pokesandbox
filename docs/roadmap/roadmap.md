@@ -41,6 +41,8 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 
 ## Phase 1: Pre-MVP "Arena" (public release #1)
 
+**Bot only (decided Nov 2026).** The Arena release ships the Discord bot alone; the webapp goes public with the MVP release. Releasing one surface at a time gives each its own hypercare window instead of support load for both at once. The webapp may be deployed privately (staff, testers) before then.
+
 **Goal:** Showdown-style battles between two server members (and vs AI) with teams validated against server-scoped Arena formats (canon content at launch; the server's custom content library joins later, [27](../architecture/concepts/27-server-content-library-and-overrides.md)). Battles run publicly, button-driven, independent of adventure state. This ships the hardest subsystem first and gets real users early.
 
 | Area | Deliverable |
@@ -102,7 +104,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 
 | Theme | Items | Builds on |
 |---|---|---|
-| Flavor (fast follow after the MVP) | The flavor resolver, `FlavorEntry` storage and builder tabs, layered packs, the per-region battle text setting; canon pack v1: Gen 1 battle flavor for moves and statuses. Each later generation ships with its flavor. | Passages, MVP event hooks ([29](../architecture/concepts/29-flavor-text-and-prose.md)) |
+| Flavor (fast follow after the MVP) | Every flavor event beyond trainer lines (which are MVP), builder tabs, layered packs, the per-region battle text setting; canon pack v1: Gen 1 battle flavor for moves and statuses. Each later generation ships with its flavor. | Passages, MVP event hooks ([29](../architecture/concepts/29-flavor-text-and-prose.md)) |
 | Quests v2 | Active quests (scripts + quest log), passive objectives (event listeners), loaner Pokémon, quiz stages, repeatable quests, passive-slot limits, tutorial-as-quest | Script VM, engine events |
 | Narrative | Persistent dialogue choices (choice kind is already MVP), quest-local choices as script locals; authored encounter intros (location and method scenes, species first sightings and lines, also in trainer battles) | Conditions, scripts, passages, `journey.dex.seen` ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) |
 | Effects++ | Teleport to any authored location (MVP has only `teleport: respawn` for Escape Rope / Dig / Teleport), start-script, new attach points (transport hops, quest stages) | Effect registry |

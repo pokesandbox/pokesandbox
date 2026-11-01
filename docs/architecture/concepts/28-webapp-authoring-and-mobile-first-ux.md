@@ -38,7 +38,7 @@ Every builder screen is designed for a phone first and enhanced for wider screen
 - **Touch targets** are at least 44×44 px. Reordering uses drag handles plus "move up/down" actions, so it works without precise dragging.
 - **No hover-only interactions.** Tooltips and menus open on tap; anything shown on hover is also reachable without it.
 - **Forms:** one column on phones, native input types (number, search), labels above inputs, and validation messages next to the field. Zod command schemas double as form schemas ([16](16-authoring-validation-and-portability.md#authoring-the-same-pattern-for-region-building)).
-- **Long text** (passages, dialogue) gets a real text area with a live preview of how the passage renders in Discord, using the same pure view builders the bot uses ([26](26-discord-surface-and-ux-patterns.md#principles)).
+- **Long text** (passages, dialogue) gets a real text area with a live preview of how the passage renders in Discord, built from the same `libs/presentation` view models the bot renders (passage paging included), drawn as HTML ([26](26-discord-surface-and-ux-patterns.md#principles)).
 - **Saving and conflicts:** each edit is a `libs/authoring` command with per-entity optimistic concurrency. A conflict shows "This was changed by X, reload" instead of overwriting ([16](16-authoring-validation-and-portability.md#authoring-the-same-pattern-for-region-building)).
 - **Tested at phone width:** Playwright tests run each builder flow at a 390×844 viewport as well as desktop.
 
