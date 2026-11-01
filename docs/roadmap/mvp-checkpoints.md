@@ -1,6 +1,6 @@
 # MVP Checkpoints: Building Kanto Badge by Badge
 
-> **Status: decided (Nov 2026).** The checkpoints are the MVP's GitHub milestones (CP0a–CP8, then the MVP Release), replacing M3–M6. The issue lists per checkpoint are in [`mvp.md`](mvp.md#the-kanto-checkpoints-cp0acp8). One question is still open: [what the MVP Release opens to other servers](#open-question-what-the-mvp-release-opens-up).
+> **Status: decided (Nov 2026).** The checkpoints are the MVP's GitHub milestones (CP0a–CP8, then the MVP Release), replacing M3–M6. The issue lists per checkpoint are in [`mvp.md`](mvp.md#the-kanto-checkpoints-cp0acp8).
 
 The MVP milestones in [`mvp.md`](mvp.md) are organized by system (M3 authoring, M4 scripts, M5 adventure core, M6 Kanto). Built in that order, nothing is playable until M6. **Checkpoints turn the MVP into a series of playable slices of Kanto Classic**, each one a published release that can be played start to finish up to that point. Each checkpoint pulls in only the systems its stretch of Kanto needs, so every system is built when it first matters, and every checkpoint proves the whole stack end to end.
 
@@ -44,8 +44,8 @@ The **MVP release** adds the release work from M6 on top of the last checkpoint:
 2. **Who plays:** the team and invited members of the Pokémon community. **CP4 and CP7 are public playtests on the PokeSandbox server only**, not a general release: adventure play is behind the `adventure.play` feature flag ([21 § Feature flags](../architecture/concepts/21-hosting-and-environments.md#feature-flags-decided-oct-2026)), on only for that server until the MVP Release. The Arena keeps running everywhere as released in M2.
 3. **Mewtwo (CP8) is part of the MVP.**
 
-## Open question: what the MVP Release opens up
-The owner's view: support more modern generations before allowing true custom content authoring. Recommendation, pending the owner's confirmation:
-- **Playing Kanto Classic opens to every server** at the MVP Release (install the official template, `adventure.play` on generally).
-- **Region authoring for other servers starts as an invite-only creator beta** (per-server flag), because Gen 1-only authoring (151 species, no abilities or held items) is a narrow toolset most server owners will outgrow, and every creator adds support load. Opening it broadly waits for Gen 2/3 rule support.
+## What the MVP Release opens up (decided Nov 2026)
+- **Playing Kanto Classic opens to every server** at the MVP Release (install the official template; `adventure.play` on generally).
+- **Region authoring for other servers is an invite-only creator beta** (a per-server flag). Gen 1-only authoring (151 species, no abilities or held items) is a narrow toolset most server owners would outgrow, and every creator adds support load.
+- **Open authoring waits until modern mechanics are supported**, not just the next generation: the owner's rule is "not before the generation where most modern mechanics are solidified" (which line that is is still to be confirmed).
 - **Custom content (fakemon, custom moves, overrides) is post-MVP regardless**: it needs the server content library and isolated custom-data dexes ([27](../architecture/concepts/27-server-content-library-and-overrides.md)).
