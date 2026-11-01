@@ -117,6 +117,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 | Environment | Weather/terrain by location, swarms, visible-spawn UI | Encounter conditions |
 | Staff ops | Grant items/Pokémon/money/TMs with audit log | Effect executor |
 | Webapp | Battle replays, richer journey and log views, bulk editing | MVP webapp builder, adventure log, region bundles |
+| Translation | `Translation` records and builder tools, other-locale message catalogs, localized canon names, translated battle text, Discord command localizations, player locale preference | Readiness built from the start: `sourceLocale`, stable item IDs, message keys, events carrying references ([30](../architecture/concepts/30-internationalization-readiness.md)) |
 | Discord authoring parity | Discord editors for new authoring features where worth it (a script step-list editor for small edits, quick encounter tweaks); turn the `discord.authoring` flag on in production once ready; remove an existing Discord builder only once the webapp has parity with it | `libs/authoring` commands shared by both clients ([28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)) |
 | Narration | Narration on adventure log entries by the owner, invited co-authors, and narration moderators; thread capture; AI drafts | Adventure log ([22](../architecture/concepts/22-adventure-log-and-narration.md)) |
 | Arena + adventure | Arena battles with copies of adventure Pokémon (format level scaling, stat-investment overrides) | PokemonInstance in Showdown set shape |

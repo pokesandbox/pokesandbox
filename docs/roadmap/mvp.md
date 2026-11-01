@@ -104,6 +104,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 **Epic: Shared Library Foundations**
 - [ ] Structured logging port; debug events out of Mongo (S)
 - [ ] Scaffold `libs/core` (shared schemas, registries home) (S)
+- [ ] Message catalog + `t()` (ICU MessageFormat, English only) for all player-facing system text; no sentence concatenation (M0A-23) (S)
 - [ ] Nx module-boundary tags + lint rule enforcing core/engine/battle/authoring layering (webapp must not import battle); each later library adds its tag (S)
 
 ## M0c: Arena Foundations

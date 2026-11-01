@@ -52,7 +52,7 @@ Trigger {
 type Step =
   | { passage: Passage }                                             // prose, dialogue, and images interleaved; waits for "Next" (see Passages below)
   | { say: { speaker?: SpeakerRef; text: string } }                   // shorthand: a one-line passage
-  | { choice: { prompt: string; options: { label: string; condition?: Condition; goto: Label }[] } }
+  | { choice: { prompt: string; options: { id: string; label: string; condition?: Condition; goto: Label }[] } }   // option ids: stable for translation (30)
   | { battle: { trainer: ContentKey; party?: 'auto' | string; canLose?: boolean;
                 healAfter?: boolean; onWin?: Label; onLose?: Label } }
   | { wildBattle: { spec: PokemonSpec; canRun?: boolean; onCatch?: Label; onDefeat?: Label; onRun?: Label;
@@ -74,11 +74,11 @@ PokeSandbox is a writing-heavy game with still images, so the core text step is 
 ```ts
 Passage = { blocks: PassageBlock[]; style?: StyleId }   // the one text type: script steps now, other authored text later (e.g. encounter intros, 10)
 
-PassageBlock =
+PassageBlock = { id: string } & (     // stable id: translations and flavor picks reference blocks by id, never by index (30)
   | { prose: string }                                                            // authored prose, markdown allowed
   | { line: { speaker: SpeakerRef; text: string; expression?: string } }         // dialogue, interleaved freely with prose
   | { image: { url: string; caption?: string } }                                 // scene art, maps, letters
-  | { divider: {} }
+  | { divider: {} } )
 ```
 - **`say` is shorthand** for a one-line passage, so templates (Gym Leader, Gift NPC) stay simple.
 - **Markdown and placeholders** (`{name:rival}`) work in every text block.

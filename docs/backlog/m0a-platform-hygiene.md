@@ -79,6 +79,7 @@ Move the repos to the org, get CI gating every PR, and give contributors and age
 - Document the cache policy (no hydrated mutable docs).
 - Document the player terms and scopes: a **character** is the persona (original trainer of its Pokémon), a **journey** is one region's playthrough and holds engine state, and `user` / `character` / `journey` are the only scopes. Never call the player a "trainer" in code (that's NPC trainers). Effects never write to characters or users.
 - Document the Discord rules: pure view builders, locked options always explain themselves, stable custom IDs for anything that must survive a restart, and the fixed engine-response wording.
+- Document translation readiness ([30](../architecture/concepts/30-internationalization-readiness.md)): player-facing system text goes through `t(key, params)`, never hard-coded strings or sentence concatenation; every text item in a list has a stable `id`; events carry references, not finished text.
 - Document live-state ownership: battles and timers carry `guildId`, run only under a battle lease, and are never assumed to live in a single process.
 - Document the existing model code conventions, which live only in code today:
   - Zod entity schema is the source of truth, named `fooSchema`. The mirroring Mongoose schema is named `fooDbSchema`.
@@ -192,6 +193,20 @@ Create `libs/core` and the enforced package boundaries, plus shared logging. The
 - A deliberately violating import fails `nx lint` (verified in the PR description).
 
 **Refs:** [03 § Package layout](../architecture/concepts/03-engine-boundary-and-game-loop.md#package-layout--encapsulation-rules-decided-oct-2026)
+
+### M0A-23 · Message catalog and `t()` for system text
+`Type: Task` · `Parent: E-M0A-2` · `Priority: P1` · `Size: S` · `Labels: area:bot, area:engine` · `Blocked by: M0A-09` · `agent-ready: yes` · `Owner: agent`
+
+**Summary:** Translation ships much later, but system text must be translatable from the start ([30](../architecture/concepts/30-internationalization-readiness.md)).
+
+**Acceptance criteria**
+- A `t(key, params, locale?)` helper in `libs/core` using ICU MessageFormat (e.g. `intl-messageformat`), with an English message catalog. Unknown keys fail a test, not silently at runtime.
+- Locale resolution helper: player preference (later) → interaction `locale` → server locale → `'en'`. Shared messages take the server locale.
+- Numbers and money formatted with `Intl`.
+- A lint rule or test that flags string literals passed directly as message content in renderers (new code only; existing menus are migrated as they're touched).
+- Documented in the contributor rules (M0A-05).
+
+**Refs:** [30](../architecture/concepts/30-internationalization-readiness.md)
 
 ---
 

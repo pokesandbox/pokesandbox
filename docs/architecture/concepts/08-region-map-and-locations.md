@@ -27,7 +27,7 @@ Agreed in the original plan but not built: buildings and sub-areas as their own 
 Location {
   key: ContentKey; regionId; name; ordinal;
   description?: Passage;                  // prose plus optional image blocks (07); decided Nov 2026 (Q37): Passage from the start
-  descriptionVariants?: { condition: Condition; description: Passage }[];   // first match wins, else `description`
+  descriptionVariants?: { id: string; condition: Condition; description: Passage }[];   // first match wins, else `description`; id stable for translation (30)
   kind: 'town' | 'route' | 'dungeon' | 'building' | 'gym' | 'landmark' | 'water' | string;  // registry, extensible
   parentKey?: ContentKey;                 // grouping only. Traversal still uses edges.
   condition?: Condition;                  // "can I be here at all"

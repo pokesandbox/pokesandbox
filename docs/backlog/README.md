@@ -43,7 +43,7 @@ Everything needed to draft the remaining milestones is in the repo. Nothing depe
 **Every milestone file starts with a "Start here" section** giving a newcomer the context for that file (what it is, what to read, where the code goes, the order), linking to [`docs/start-here.md`](../start-here.md) for everything general. Keep that pattern for new files.
 
 **Read first, in this order:**
-1. [`open-questions.md`](../architecture/open-questions.md): Q1–Q37 and the "Smaller decisions" index. This is the decision record.
+1. [`open-questions.md`](../architecture/open-questions.md): Q1–Q38 and the "Smaller decisions" index. This is the decision record.
 2. The relevant concept docs' **Decisions** sections. Where a concept's Options or Design text differs from its Decisions, the Decisions win. Struck-through open questions are answered.
 3. [`mvp.md`](../roadmap/mvp.md) for milestone scope, the gap matrix, and the Kanto Classic adaptations (M6).
 

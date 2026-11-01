@@ -83,12 +83,13 @@ FlavorEntry {
     species?: SpeciesId[]; move?: MoveId[]; moveType?: TypeId[]; status?: StatusId[]; item?: ItemId[];
     method?: EncounterMethodId[]; location?: ContentKey[]; trainer?: ContentKey[]; trainerClass?: string[];
     pokemonTags?: string[];
+    locale?: Locale[];                          // later: locale-only lines (wordplay that doesn't translate), see 30
     condition?: Condition;                      // anything else, through the condition system (05)
   };
   priority?: number;                            // only breaks ties between equally specific entries
   chance?: number;                              // 0–1, default 1: does flavor show at all this time (keeps frequent events fresh)
   combine?: 'extend' | 'replace';               // default extend: same event + same match as a lower layer's entry → add to its pool
-  variants: { passage: Passage; weight?: number }[];   // weight: relative, default 1 (an even split)
+  variants: { id: string; passage: Passage; weight?: number }[];   // weight: relative, default 1 (an even split); id: stable for picks and translations (30)
 }
 ```
 **How one event picks its text (three independent steps, so probabilities never add up across entries):**
@@ -196,9 +197,9 @@ PokemonInstance { …; tags: ['starter'] }          // or a script effect: { typ
 ```ts
 { type: 'battle.fainted', side: 'own',
   pokemon: { instanceId: 'pk-…', species: 'charmander', nickname: 'Ember', tags: ['starter'] },
-  flavor?: { entry: 'fl-…', variant: 0, passage: { blocks: [ { prose: 'Ember, who has been with you since …' } ] } } }
+  flavor?: { entry: 'fl-…', variantId: 'v3' } }
 ```
-In a battle the log line ("Ember fainted!") is rendered from the same event by Showdown's text, separately from `flavor`.
+The event carries a **reference**, not the text: the presentation layer resolves it to a `Passage` in the viewer's language (source text, or a translation from the release) before the pure view builders run, so two viewers see the same pick in their own words ([30](30-internationalization-readiness.md)). In a battle the log line ("Ember fainted!") is rendered from the same event by Showdown's text, separately from `flavor`.
 
 ## MVP hooks (recommended)
 Nothing in this doc is MVP content, but these keep it cheap to add:
@@ -220,6 +221,7 @@ Nothing in this doc is MVP content, but these keep it cheap to add:
 4. **Arena PvP:** the public battle message uses only flavor entries without `side`; side-specific flavor appears in each player's private prompt ([25](25-arena.md)).
 5. **Canon pack v1 is a fast follow to the MVP:** Gen 1 battle flavor for moves and statuses. After that, **each new generation's content ships with its flavor** in the same release.
 6. **`PokemonInstance.tags` is reserved now** ([13](13-pokemon-instances-and-trading.md)).
+7. **Ready for translation** (Nov 2026, Q38): variants and passage blocks have stable IDs, events carry `{ entry, variantId }`, and translations are separate records ([30](30-internationalization-readiness.md)).
 
 ## MVP scope
 - None of the flavor content or the flavor system ships in the MVP. The MVP builds the hooks listed in [MVP hooks](#mvp-hooks-recommended): identities and perspective on battle and engine events, a reserved flavor slot in the battle view, location descriptions as passages, and `PokemonInstance.tags`.
