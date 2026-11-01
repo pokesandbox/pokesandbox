@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Thanks for suggesting an improvement to the web app!
-        See [agents.md — Web App](https://github.com/pokesandbox/pokesandbox/tree/master/.github/agents.md#web-app-appswebapp) for webapp development conventions.
+        See [agents.md — Web App](https://github.com/pokesandbox/pokesandbox/tree/develop/.github/agents.md#web-app-appswebapp) for webapp development conventions.
 
   - type: textarea
     id: description

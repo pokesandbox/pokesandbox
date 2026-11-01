@@ -8,7 +8,7 @@ body:
         Use this template for infrastructure, DevOps, documentation, or cross-cutting features.
         For **data models/DTOs**, use the **Data Model Addition** template instead.
         For **Discord Bot** or **Web App** features, use the appropriate template.
-        See [agents.md — Cross-Cutting Guidelines](https://github.com/pokesandbox/pokesandbox/tree/master/.github/agents.md#cross-cutting-guidelines) for project conventions.
+        See [agents.md — Cross-Cutting Guidelines](https://github.com/pokesandbox/pokesandbox/tree/develop/.github/agents.md#cross-cutting-guidelines) for project conventions.
 
   - type: textarea
     id: description
