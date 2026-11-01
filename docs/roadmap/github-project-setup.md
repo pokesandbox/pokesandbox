@@ -5,7 +5,7 @@ A ready-to-apply plan for when the repos move to the organization. Adjust names 
 ## Repositories
 | Repo | Notes |
 |---|---|
-| `pokesandbox` | Monorepo (bot, webapp, shared, `libs/core`, `libs/engine`, `libs/battle`, `libs/authoring`) |
+| `pokesandbox` | Monorepo (bot, webapp, shared, `libs/core`, `libs/engine`, `libs/battle`, `libs/authoring`, `libs/presentation`) |
 | `pokemon-showdown` (keeps upstream's name after the move, Q20) | Fork: upstream + a small patch set, consumed as a versioned package. Monthly scheduled upstream-sync PR. |
 | `flowcord` (separate **FlowCord org**, not part of the PokeSandbox org) | An independent dependency (`@flowcord/core` on npm). Menus are single-person today, and the Arena doesn't depend on FlowCord multi-user support (Q34). The FlowCord issues PokeSandbox uses are listed in [M2 § FlowCord dependencies](../backlog/m2-launch-readiness.md#flowcord-dependencies). |
 
@@ -17,8 +17,8 @@ Use **sub-issues** for Epic → Feature/Task.
 ## Labels
 | Group | Labels |
 |---|---|
-| Area | `area:engine`, `area:bot`, `area:webapp`, `area:shared-models`, `area:battle`, `area:showdown-fork`, `area:authoring`, `area:infra`, `area:docs` |
-| Domain | `domain:map`, `domain:scripts`, `domain:conditions-effects`, `domain:progression`, `domain:encounters`, `domain:npcs-trainers`, `domain:catalog`, `domain:journey`, `domain:economy`, `domain:transport`, `domain:rules` |
+| Area | `area:engine`, `area:bot`, `area:webapp`, `area:shared-models`, `area:battle`, `area:showdown-fork`, `area:authoring`, `area:presentation`, `area:infra`, `area:docs` |
+| Domain | `domain:map`, `domain:scripts`, `domain:conditions-effects`, `domain:progression`, `domain:encounters`, `domain:npcs-trainers`, `domain:catalog`, `domain:players`, `domain:economy`, `domain:transport`, `domain:rules`, `domain:arena`, `domain:text` (passages, flavor, i18n), `domain:trust-safety` |
 | Phase | `phase:0-foundations`, `phase:1-arena`, `phase:2-mvp`, `phase:3-full`, `phase:4-sky` |
 | Flags | `good first issue`, `help wanted`, `needs-decision`, `blocked`, `breaking-change`, `agent-ready`, `dependencies` |
 
@@ -33,7 +33,8 @@ Create M0a, M0b, M0c, and M1–M6 exactly as in [`mvp.md`](mvp.md). Phase 3/4 it
 | Size | single select | S · M · L · XL |
 | Phase | single select | 0 · 1 · 2 · 3 · 4 |
 | Area | single select | mirrors `area:*` |
-| Track | single select | Battle · Authoring · Adventure · Platform |
+| Track | single select | Arena · Content · Platform (the two tracks in [`mvp.md`](mvp.md), plus platform work) |
+| Skill | single select | agent · any · junior · senior · owner (the drafts' `Owner` field: who should take it) |
 
 **Views:**
 - Board by Status (filtered to the current milestone).
@@ -44,7 +45,7 @@ Create M0a, M0b, M0c, and M1–M6 exactly as in [`mvp.md`](mvp.md). Phase 3/4 it
 ## Seeding order
 1. Review the issue drafts in [`../backlog/`](../backlog/README.md). No Decision issues: the decided questions live in [`open-questions.md`](../architecture/open-questions.md) and the concept docs, and the issues themselves carry the outcomes.
 2. Run the bootstrap script for labels and milestones.
-3. Create the epics, then the child issues (types, milestones, labels, sub-issue links, "blocked by" dependencies), and record the mapping in the backlog README.
+3. Create the epics, then the child issues (types, milestones, labels, sub-issue links, "blocked by" dependencies), and record the mapping in the backlog README. Draft fields map as: `agent-ready: yes` → the `agent-ready` label; `Owner` → the Skill field (not the assignee); `Blocked by` → GitHub issue dependencies; draft IDs (`M0A-07`) go in the issue body for traceability.
 4. Add everything to the project and set Priority, Size, and Status.
 
 ## Team & workflow (decided Oct 2026, Q29)

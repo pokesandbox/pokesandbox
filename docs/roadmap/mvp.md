@@ -26,6 +26,8 @@ M0a (libs/core) ──► M0c ──► M1 ──► M2 🚀 (Arena)
 
 The Arena track (M0c → M1 → M2) needs only `libs/core` from M0a; the rest of M0a is hygiene that runs alongside. The content track (M0b → M3 → M4) runs in parallel.
 
+> **Proposal:** build the MVP as playable **Kanto checkpoints** (CP0 Pallet Town slice → CP1 Boulder Badge → … → CP7 Champion → CP8 Mewtwo), each a published release with a headless playthrough test, instead of system by system. See [`mvp-checkpoints.md`](mvp-checkpoints.md).
+
 ### Re-sequencing: Arena critical path (decided Oct 2026, after Q29)
 With ~1 senior full-time-ish, possibly a second senior, 2 junior-to-mid devs, and every PR reviewed by the owner, M0 as written is too big to sit in front of the Arena. **The Arena doesn't need most of M0.** It needs no conditions/effects, scripts, content keys, releases, or authoring layer. Decision: split M0 into M0a and M0b, as in the table above. **Refined (Oct 2026):** M0a became shared hygiene only, Arena-specific foundations moved to a new **M0c** (so an Arena contributor isn't queued behind hygiene), and the adventure engine skeleton moved into M0b.
 - The Arena track (M0c → M1 → M2) and the content track (M0b → M3…) can run in parallel. Seniors own the foundation-heavy work (engine, fork rebase/patches, BattleService, conditions/effects). Juniors take well-specified issues: catalog seed data, item definitions, renderers, builder menus, webapp editors, tests.

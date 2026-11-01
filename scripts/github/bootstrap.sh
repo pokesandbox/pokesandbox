@@ -21,10 +21,10 @@ label() { # repo name color description
 case "$cmd" in
   labels)
     repo="$1"
-    for a in engine bot webapp shared-models battle showdown-fork authoring infra docs; do
+    for a in engine bot webapp shared-models battle showdown-fork authoring presentation infra docs; do
       label "$repo" "area:$a" "1d76db" "Area: $a"
     done
-    for d in map scripts conditions-effects progression encounters npcs-trainers catalog character economy transport rules; do
+    for d in map scripts conditions-effects progression encounters npcs-trainers catalog players economy transport rules arena text trust-safety; do
       label "$repo" "domain:$d" "5319e7" "Domain: $d"
     done
     label "$repo" "phase:0-foundations" "c5def5" "Phase 0: foundations"
@@ -50,15 +50,15 @@ case "$cmd" in
         gh api "repos/$repo/milestones" -f title="$title" -f description="$desc" >/dev/null && echo "created milestone: $title"
       fi
     done <<'MS'
-M0a: Platform Hygiene|Org/CI, agent rules, libs/core + boundaries, persistence basics
-M0c: Arena Foundations|libs/battle interfaces, Clock/Rng, Showdown fork clean-up and packaging
+M0a: Platform Hygiene|Org/CI, agent rules, libs/core + boundaries, persistence basics, feature flags, message catalog, critical Dependabot fixes, prefix deprecation, owner concept review
+M0c: Arena Foundations|libs/battle scaffold (port types in libs/core), Clock/Scheduler/Rng, Showdown fork clean-up, rebase, and packaging
 M0b: Engine & Content Foundations|Engine skeleton, conditions/gates, effects, content keys, authoring layer, region releases
-M1: Battle Core & Catalog|Showdown fork modernization, catalog import, team presets, BattleService, AI
-M2: Arena Release|Public PvP/PvAI in Discord, plus launch readiness (hosting, backups, deploys, monitoring, staging)
-M3: Region Authoring|Locations, encounters, transport, shops, rules, validation, webapp editors
-M4: Interaction Engine|Scripts, triggers, NPCs, trainers, templates
-M5: Adventure Core|Characters, travel, explore, battles, party/PC/bag, progression, adventure log
-M6: Kanto Classic & MVP Release|Kanto Classic template, playtest, release
+M1: Battle Core & Catalog|Moves/learnsets catalog, BattleService, teams and formats, AI; fork patches (adventure)
+M2: Arena Release|Public PvP/PvAI in Discord (bot only): Arena surface, hosting, backups, deploys, monitoring, staging, verification, data deletion
+M3: Region Authoring|Webapp builder (headless UI trial first, mobile-first), locations, encounters, transport, shops, TM/HM lists, rules, validation
+M4: Interaction Engine|Scripts, triggers, NPCs, trainers and their lines, templates
+M5: Adventure Core|Characters, travel, explore, battles, party/PC/bag, trading, progression, adventure log
+M6: Kanto Classic & MVP Release|Kanto Classic template, webapp hosting, trust and safety, playtest, release
 MS
     ;;
 
@@ -69,8 +69,9 @@ MS
     gh project field-create "$num" --owner "$org" --name "Priority" --data-type SINGLE_SELECT --single-select-options "P0,P1,P2"
     gh project field-create "$num" --owner "$org" --name "Size"     --data-type SINGLE_SELECT --single-select-options "S,M,L,XL"
     gh project field-create "$num" --owner "$org" --name "Phase"    --data-type SINGLE_SELECT --single-select-options "0,1,2,3,4"
-    gh project field-create "$num" --owner "$org" --name "Area"     --data-type SINGLE_SELECT --single-select-options "engine,bot,webapp,shared-models,battle,showdown-fork,authoring,infra,docs"
-    gh project field-create "$num" --owner "$org" --name "Track"    --data-type SINGLE_SELECT --single-select-options "Battle,Authoring,Adventure,Platform"
+    gh project field-create "$num" --owner "$org" --name "Area"     --data-type SINGLE_SELECT --single-select-options "engine,bot,webapp,shared-models,battle,showdown-fork,authoring,presentation,infra,docs"
+    gh project field-create "$num" --owner "$org" --name "Track"    --data-type SINGLE_SELECT --single-select-options "Arena,Content,Platform"
+    gh project field-create "$num" --owner "$org" --name "Skill"    --data-type SINGLE_SELECT --single-select-options "agent,any,junior,senior,owner"
     echo "Status is a built-in field: set its options to Backlog, Ready, In Progress, In Review, Done in the project settings."
     echo "Create the views (Board by Status, Roadmap by Milestone, Table grouped by parent issue) in the UI."
     ;;

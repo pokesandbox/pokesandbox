@@ -5,6 +5,7 @@
 | [`start-here.md`](start-here.md) | **Read first:** what PokeSandbox is, the plan, the architecture in ten lines, the repo, how work flows |
 | [`roadmap/roadmap.md`](roadmap/roadmap.md) | Full roadmap: Foundations → Arena → MVP → Full → Pie in the Sky |
 | [`roadmap/mvp.md`](roadmap/mvp.md) | MVP milestones (M0a, M0b, M0c, M1–M6), epics, candidate issues, gap matrix |
+| [`roadmap/mvp-checkpoints.md`](roadmap/mvp-checkpoints.md) | Proposal: build the MVP as playable Kanto checkpoints (Pallet Town slice, then badge by badge) |
 | [`roadmap/github-project-setup.md`](roadmap/github-project-setup.md) | Org, labels, issue types, project fields, seeding order |
 | [`architecture/README.md`](architecture/README.md) | Architecture overview, the big alternates, concept index |
 | [`architecture/audit-current-state.md`](architecture/audit-current-state.md) | Audit of current models, commands, and the Showdown fork |
