@@ -97,6 +97,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Move `pokesandbox` and `pokemon-showdown` (name unchanged) to the org; update README links, CODEOWNERS, agents.md (S)
 - [ ] CI: lint + typecheck + unit tests on PR (M)
 - [ ] Create labels (incl. `agent-ready`), issue types, milestones, and project board per [`github-project-setup.md`](github-project-setup.md) (S)
+- [ ] Owner review: deep-dive concepts 09–30 and record any changed decisions (M0A-24) (L)
 - [ ] Feature flag registry: env override (`FEATURE_FLAGS=*` in dev), per-server override, per-environment defaults; `discord.authoring` off in prod (M0A-21) (S)
 - [ ] Fix the critical Dependabot alerts now (Next.js, NextAuth, transitive runtime packages; Nx tooling upgrade in its own PR); high and below stay in M2-14 (M0A-22) (M)
 - [ ] Switch slash commands to global registration; flag-off commands only as guild commands on override servers (M0A-07) (M)
@@ -112,7 +113,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 > Issue-level drafts: [`../backlog/m0c-arena-foundations.md`](../backlog/m0c-arena-foundations.md)
 
 **Epic: Battle Library Scaffold**
-- [ ] Scaffold `libs/battle` + `BattlePort`/`ExternalActionResolver` interfaces (S)
+- [ ] Scaffold `libs/battle`; `BattlePort`/`ExternalActionResolver` interface types in `libs/core` ports (S)
 - [ ] `Clock`, `Scheduler`, and seeded `Rng` ports in `libs/core` (S)
 
 **Epic: Showdown Fork Clean-up & Packaging** (Q20, decided)
@@ -141,7 +142,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] MVP facts: `milestone.has`, `milestone.count`, `choice.value`, `flag`, `bag.count`, `visited` (incl. `$target`), `party.knowsMove`, `party.hasSpecies`, `dex.caughtCount`, `progression.value`, `location.cleared`, `location.visit.*`, `location.trainersDefeated` (L)
 - [ ] Gate envelope (`presentation`, `latch`, `cost`) + `checkGate` + `gateBlocked` event (M)
 - [ ] Effect union + registry + atomic executor with idempotency (L)
-- [ ] MVP effects: currency, item, progression, milestone (grant/revoke), choice, flag, setRespawn, random (L). `givePokemon` (PC + swap offer) and `heal` land in M5 with `PokemonInstance`.
+- [ ] MVP effects: currency, item, progression, milestone (grant/revoke), choice, flag, setRespawn, `teleport: respawn` (Escape Rope / Dig / Teleport), random (L). `givePokemon` (PC + swap offer) and `heal` land in M5 with `PokemonInstance`.
 
 **Epic: Model Cleanup & Identity** (Q19, Q21)
 - [ ] ContentKey type + generator. Add `key` to Location with `{ regionId, key }` unique index (S)

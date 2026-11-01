@@ -12,7 +12,7 @@ Refs: [`mvp.md`](../roadmap/mvp.md) · [`github-project-setup.md`](../roadmap/gi
 New to the project? Read [`docs/start-here.md`](../start-here.md) first (what PokeSandbox is, the plan, the repo, how work flows). Context specific to this file:
 - **What M0a is:** plumbing that every later milestone relies on. Most issues are small and well specified, and several are good first issues (`agent-ready: yes`).
 - **What you'll touch:** GitHub settings and workflows (`.github/`), Nx configuration (`nx.json`, `project.json` files), `shared/src/models` (indexes, the `speciesId` rename), and `docker-compose.yml` (local Mongo).
-- **Order:** M0A-01 → M0A-02/03 are owner-led (the org move). M0A-04 (CI), M0A-05 (agent rules), M0A-09 (`libs/core`), M0A-16 (replica set), M0A-20 (sprites), and M0A-21 (feature flags) can start any time. **M0A-22 (critical Dependabot alerts) is first in line.** M0A-17 → M0A-19 build on each other.
+- **Order:** M0A-01 → M0A-02/03 are owner-led (the org move). M0A-24 (the owner's concept review) runs alongside everything. M0A-04 (CI), M0A-05 (agent rules), M0A-09 (`libs/core`), M0A-16 (replica set), M0A-20 (sprites), and M0A-21 (feature flags) can start any time. **M0A-22 (critical Dependabot alerts) is first in line.** M0A-17 → M0A-19 build on each other.
 - **The one Arena dependency:** M0A-09 (`libs/core`). If you're here to help the Arena, do that one and then go to [M0c](m0c-arena-foundations.md).
 
 ---
@@ -88,6 +88,40 @@ Move the repos to the org, get CI gating every PR, and give contributors and age
 - Each rule links its concept doc. Remove outdated guidance that contradicts the docs (e.g. "cache-first" for mutable docs).
 
 **Refs:** [architecture README](../architecture/README.md), [03](../architecture/concepts/03-engine-boundary-and-game-loop.md), [23](../architecture/concepts/23-players-characters-journeys-and-scopes.md), [26](../architecture/concepts/26-discord-surface-and-ux-patterns.md), [02](../architecture/concepts/02-identity-and-references.md), [15](../architecture/concepts/15-persistence-concurrency-and-runtime.md)
+
+### M0A-24 · Owner review: deep-dive concepts 09–30
+`Type: Task` · `Parent: E-M0A-1` · `Priority: P1` · `Size: L` · `Labels: area:docs` · `Blocked by: —` · `agent-ready: no` · `Owner: owner`
+
+**Summary:** Concepts 01–08 have had a full owner review. Concepts 09–30 were decided through Q&A but haven't been read end to end by the owner. Scrutinize each one before the work it drives starts, so nothing gets built on a decision that only looked right in isolation.
+
+**Acceptance criteria**
+- Each concept below is read in full, with its Decisions section checked against [`open-questions.md`](../architecture/open-questions.md) and the backlog issues that reference it. Tick when done:
+  - [ ] [09 Transportation](../architecture/concepts/09-transportation.md)
+  - [ ] [10 Wild Encounters](../architecture/concepts/10-encounters.md)
+  - [ ] [11 NPCs, Trainers & Battle Definitions](../architecture/concepts/11-npcs-trainers-and-battle-definitions.md)
+  - [ ] [12 Content Catalog](../architecture/concepts/12-content-catalog-species-moves-items.md)
+  - [ ] [13 Pokémon Instances & Trading](../architecture/concepts/13-pokemon-instances-and-trading.md)
+  - [ ] [14 Battle System & the Showdown Fork](../architecture/concepts/14-battle-system-and-showdown.md)
+  - [ ] [15 Persistence, Concurrency & Runtime](../architecture/concepts/15-persistence-concurrency-and-runtime.md)
+  - [ ] [16 Authoring, Validation & Portability](../architecture/concepts/16-authoring-validation-and-portability.md)
+  - [ ] [17 Economy, Shops & Inventory](../architecture/concepts/17-economy-shops-inventory.md)
+  - [ ] [18 Region Rules, Time & Randomness](../architecture/concepts/18-rules-time-and-randomness.md)
+  - [ ] [19 Multiplayer, Social & Future-Proofing](../architecture/concepts/19-multiplayer-social-and-future-proofing.md)
+  - [ ] [20 Database & Realtime Platform](../architecture/concepts/20-database-and-realtime-platform.md)
+  - [ ] [21 Hosting & Environments](../architecture/concepts/21-hosting-and-environments.md)
+  - [ ] [22 Adventure Log & Narration](../architecture/concepts/22-adventure-log-and-narration.md)
+  - [ ] [23 Players: Characters, Journeys & Scopes](../architecture/concepts/23-players-characters-journeys-and-scopes.md)
+  - [ ] [24 Shared State](../architecture/concepts/24-shared-state-region-and-server.md)
+  - [ ] [25 Arena](../architecture/concepts/25-arena.md)
+  - [ ] [26 Discord Surface & UX Patterns](../architecture/concepts/26-discord-surface-and-ux-patterns.md)
+  - [ ] [27 Server Content Library & Overrides](../architecture/concepts/27-server-content-library-and-overrides.md)
+  - [ ] [28 Webapp Authoring & Mobile-first UX](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)
+  - [ ] [29 Flavor Text & Prose](../architecture/concepts/29-flavor-text-and-prose.md)
+  - [ ] [30 Internationalization Readiness](../architecture/concepts/30-internationalization-readiness.md)
+- Anything that changes a decision is recorded in `open-questions.md` (a new Q or the Smaller decisions index) and the concept's Decisions section, and the affected backlog issues are updated in the same PR.
+- Priority order: the concepts the Arena path depends on first (14, 25, 26, 15, 21), then the content track (10, 11, 12, 13, 16, 18, 23), then the rest.
+
+**Refs:** [architecture README](../architecture/README.md), [`open-questions.md`](../architecture/open-questions.md)
 
 ### M0A-06 · Scheduled agent pickup workflow
 `Type: Task` · `Parent: E-M0A-1` · `Priority: P2` · `Size: M` · `Labels: area:infra` · `Blocked by: M0A-03, M0A-04` · `agent-ready: no` · `Owner: owner`

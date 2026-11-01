@@ -122,11 +122,12 @@ Typed, declarative state changes, applied atomically and idempotently, which emi
 
 **Refs:** [04 § Decisions](../architecture/concepts/04-progression-and-flags.md), [06](../architecture/concepts/06-effects.md)
 
-### M0B-09 · Effects batch 2: setRespawn, random
+### M0B-09 · Effects batch 2: setRespawn, teleport to respawn, random
 `Type: Task` · `Parent: E-M0B-2` · `Priority: P1` · `Size: S` · `Labels: area:engine` · `Blocked by: M0B-07` · `agent-ready: yes` · `Owner: agent`
 
 **Acceptance criteria**
 - `setRespawn` (location key; validated to exist).
+- `teleport` with `location: 'respawn'` only (Escape Rope, Dig, Teleport): moves the journey to its respawn point and emits `enteredLocation` like any arrival. Teleporting to an arbitrary authored location is post-MVP ([06](../architecture/concepts/06-effects.md)).
 - `random` (weighted table of effect lists, using the action's seeded `Rng`, so it's deterministic in tests).
 
 ---

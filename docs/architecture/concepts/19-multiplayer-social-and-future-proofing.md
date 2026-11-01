@@ -12,7 +12,7 @@
 | Server events, giveaways, plot NPC chance encounters, event islands | Server-scoped state, scheduled publishes, triggers with chance, content shared by every region | `ServerState` (and `RegionState` for single-region events), **event regions** that journeys visit ([23](23-players-characters-journeys-and-scopes.md#event-regions-and-visiting-post-mvp)), `chance` predicate, triggers ([07](07-scripts-triggers-and-events.md)) |
 | Community boss (shared HP pool) | HP injection mid-battle, server-scoped counter | Patch set's state-injection hook ([14](14-battle-system-and-showdown.md)) + `ServerState` or `RegionState` |
 | Weather/terrain by location | Conditions on encounters, battle field state at start | Encounter conditions ([10](10-encounters.md)), battle start options in BattleService |
-| Custom fakemon/types/moves | Custom data reaching Showdown without forking base files | Isolated custom-data dexes (fork patch 4), built in M1 for Gen 1 data and Arena formats ([12](12-content-catalog-species-moves-items.md), [14](14-battle-system-and-showdown.md)) |
+| Custom fakemon/types/moves | Custom data reaching Showdown without forking base files | Isolated custom-data dexes (fork patch 4), built in M1 for Gen 1 data and Arena formats ([27](27-server-content-library-and-overrides.md), [14](14-battle-system-and-showdown.md)) |
 | Staff ops (grant items/Pokémon/money) | Audited state mutations | "Staff applies effects to journey" = Effect executor + audit log ([06](06-effects.md)) |
 | Webapp character sheet (per journey), battle/RP history, activity log | Event history | Permanent **adventure log** with turn digests ([22](22-adventure-log-and-narration.md)) |
 | Webapp as play surface | Client-agnostic rules | `libs/engine` ([03](03-engine-boundary-and-game-loop.md)) |
@@ -20,7 +20,7 @@
 | Cross-region / cross-server travel | A persona that outlives a region | **Character** (persona) separate from **Journey** (one region's playthrough); original trainer recorded as the character; Pokémon move between journeys via `ownerJourneyId` ([23](23-players-characters-journeys-and-scopes.md#design-decided-oct-2026)). Showdown IDs for species ([02](02-identity-and-references.md)). |
 | Energy/pacing system (storytelling servers) | Action costs, regenerating energy, narration refunds | Action-cost hook in `dispatch` (returns 0 in MVP) + `RegionRules.systems.pacing` (see below) |
 | Pluggable RP adjudication (mod queue / AI judge) | A blocking step that waits on an *external* decision | Script step `await: { kind: 'approval' }`. Same mode/persistence machinery, resumed by a staff/AI action instead of the player. |
-| AI enrichments (BYO key) | Hooks around dialogue and battle text | Renderers consume `GameEvent`s, so an optional "narrator" decorator can rewrite text without touching rules |
+| AI enrichments (BYO key) | Hooks around prose, flavor, and battle text | Events carry references that the presentation layer resolves ([29](29-flavor-text-and-prose.md), [30](30-internationalization-readiness.md)), so an optional AI step can supply or rewrite flavor, and draft narration ([22](22-adventure-log-and-narration.md)), without touching rules |
 
 ## Cheap insurance to add in MVP
 1. `participants: JourneyId[]` on script/battle mode records (co-op later).
@@ -34,7 +34,7 @@
 ```ts
 RegionRules.systems.pacing?: {
   mode: 'off' | 'daily' | 'regen';             // daily reset vs gradual regeneration (regen avoids "log in at reset" pressure)
-  scope: 'journey' | 'character' | 'user';    // per journey, per persona, or per user across regions (prevents alt-region farming); same scopes as claims (04)
+  scope: 'journey' | 'character' | 'user';    // per journey, per persona, or per user across regions (prevents alt-region farming); same scopes as claims ([24](24-shared-state-region-and-server.md))
   capacity: number;                             // max energy
   refill: { perDay?: number; perHours?: { amount: number; every: number } };
   costs: Partial<Record<GameActionType, number>>;   // e.g. explore 1, trainer battle 2, travel 0; menus/party/shop/heal/narration free

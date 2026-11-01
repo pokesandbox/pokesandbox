@@ -30,27 +30,27 @@ The ordering principle: **build each primitive once, at the earliest phase that 
 | Primitives | Condition tree + predicate registry (evaluate/explain/validate/references); Effect union + executor (atomic, idempotent) | [05](../architecture/concepts/05-requirements.md), [06](../architecture/concepts/06-effects.md) |
 | Identity | ContentKey type, Showdown-ID references, remove bidirectional arrays, indexes | [02](../architecture/concepts/02-identity-and-references.md) |
 | Persistence | Mongo replica set (transactions), cache policy (immutable only), OCC helpers | [15](../architecture/concepts/15-persistence-concurrency-and-runtime.md) |
-| Showdown | Rebase fork onto upstream; archive the 10 New Logora custom moves off `master` (Q28); patch set (state injection, external choice hook, caught/ran endings, isolated custom-data dexes); publish as a package the monorepo consumes | [14](../architecture/concepts/14-battle-system-and-showdown.md) |
-| Org | Move repos to the org, CI (lint, typecheck, unit tests), labels/project/milestones, global command registration | [github-project-setup](github-project-setup.md) |
+| Battle | `libs/battle` scaffold with port types in `libs/core`; Clock/Scheduler/Rng ports; fork: archive the 10 New Logora custom moves off `master` (Q28), rebase onto upstream, remove debug code, publish as `@pokesandbox/pokemon-showdown` (M0c). The sim patches (state injection, external choice hook, caught/ran endings, isolated custom-data dexes) are M1 and serve the adventure, not the Arena. | [14](../architecture/concepts/14-battle-system-and-showdown.md) |
+| Org & platform | Move repos to the org, CI (lint, typecheck, unit tests), labels/project/milestones, global command registration behind feature flags, the critical Dependabot fixes, the message catalog (`t()`) for system text | [github-project-setup](github-project-setup.md), [21](../architecture/concepts/21-hosting-and-environments.md#feature-flags-decided-oct-2026), [30](../architecture/concepts/30-internationalization-readiness.md) |
 
 Hosting and production operations are **not** Phase 0. They're the launch-readiness step at the end of Phase 1.
 
-**Exit criteria:** an engine unit test can evaluate a condition tree and apply an effect list to an in-memory journey. The fork builds from upstream plus patches, with a passing sim test for HP injection.
+**Exit criteria:** an engine unit test can evaluate a condition tree and apply an effect list to an in-memory journey. The fork is rebased onto upstream, published as a package, and consumed by the monorepo.
 
 ---
 
 ## Phase 1: Pre-MVP "Arena" (public release #1)
 
-**Goal:** Showdown-style battles between two server members (and vs AI) with teams validated against server-scoped Arena formats (canon and/or the server's custom content library). Battles run publicly, button-driven, independent of adventure state. This ships the hardest subsystem first and gets real users early.
+**Goal:** Showdown-style battles between two server members (and vs AI) with teams validated against server-scoped Arena formats (canon content at launch; the server's custom content library joins later, [27](../architecture/concepts/27-server-content-library-and-overrides.md)). Battles run publicly, button-driven, independent of adventure state. This ships the hardest subsystem first and gets real users early.
 
 | Area | Deliverable |
 |---|---|
 | Catalog | DB catalog imported from a pinned Showdown version (species, moves with per-gen data, learnsets) with Showdown as the battle executor; DexEntry `speciesId` (renamed from `showdownName`); ItemDefinition (battle-relevant subset) |
-| Formats | `ArenaFormat` (server-scoped: species pool from canon / server library / optional region dex, bans, rules); built-in canon formats (flat Lv50, Showdown standard clauses) so the Arena works on a fresh server; piecemeal `RegionRules` with the Classic Gen 1 preset for adventure |
+| Formats | `ArenaFormat` (server-scoped: species pool from canon / optional region dex at launch, server library later, bans, rules); built-in canon formats (flat Lv50, Showdown standard clauses) so the Arena works on a fresh server; piecemeal `RegionRules` with the Classic Gen 1 preset for adventure |
 | Teams | `TeamPreset` model (user-owned across servers, cap 50); Showdown paste import/export + random legal team at launch; guided builder can follow the launch; TeamValidator against the format |
 | Battles | `BattleService` (start/choose/events/persist/recover); Discord renderer (public turn message + ephemeral choice prompts); timers (PvP 90s, default move on timeout, forfeit after 3); forfeits; spectating |
 | Multi-user | Challenge → accept → battle on BattleService-driven shared surfaces (plain discord.js handlers with stable IDs). FlowCord stays single-user for the `/arena` hub. Moving them onto FlowCord multi-user sessions is a later option, not a dependency. See [25 § Multiplayer boundary](../architecture/concepts/25-arena.md#multiplayer-boundary-with-flowcord-decided-oct-2026-q34) (Q34) |
-| AI | AI profiles `random`, `basic`, `smart` (trainer item use from `basic` up); PvAI against random legal teams generated from the format, difficulty via AI profile; admin-authored AI team sets later |
+| AI | AI profiles `random`, `basic`, `smart` (`smart` can follow the launch; trainer item use is for adventure trainers); PvAI against random legal teams generated from the format, difficulty via AI profile; admin-authored AI team sets later |
 | Ops | **Launch readiness:** hosting (no-overlap deploys), Atlas + backups, deploy pipeline, monitoring, staging, dependency security (the last step before going public). Battle persistence with leases, so restarts and deploys never duplicate a battle. Battle history. |
 
 **Exit criteria:**
@@ -105,7 +105,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 | Flavor (fast follow after the MVP) | The flavor resolver, `FlavorEntry` storage and builder tabs, layered packs, the per-region battle text setting; canon pack v1: Gen 1 battle flavor for moves and statuses. Each later generation ships with its flavor. | Passages, MVP event hooks ([29](../architecture/concepts/29-flavor-text-and-prose.md)) |
 | Quests v2 | Active quests (scripts + quest log), passive objectives (event listeners), loaner Pokémon, quiz stages, repeatable quests, passive-slot limits, tutorial-as-quest | Script VM, engine events |
 | Narrative | Persistent dialogue choices (choice kind is already MVP), quest-local choices as script locals; authored encounter intros (location and method scenes, species first sightings and lines, also in trainer battles) | Conditions, scripts, passages, `journey.dex.seen` ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) |
-| Effects++ | Teleport, start-script, new attach points (transport hops, quest stages) | Effect registry |
+| Effects++ | Teleport to any authored location (MVP has only `teleport: respawn` for Escape Rope / Dig / Teleport), start-script, new attach points (transport hops, quest stages) | Effect registry |
 | Custom content | Server content library (fakemon/forms/types/moves/items reusable across a server's regions) injected into isolated Showdown dexes; per-Pokédex-entry sprite overrides (custom art, another set, or text) and the region's missing-sprite policy | Catalog layering, isolated custom-data dexes |
 | Social | In-game PvP with adventure parties; Wonder Trade; GTS-style listings; cross-region trades (player trading is MVP) | PokemonInstance collection, BattleService |
 | Breeding | Contained service + server pool; eggs; hatching | `storage.kind` |

@@ -65,7 +65,7 @@ Upstream base: `2557b66` (smogon/pokemon-showdown, **2023-08-04**). The custom c
 1. **State injection:** generalize `updatePlayerState` to any side and to HP/status/PP/fainted state/level/stats/move slots, both before the first turn and **mid-battle** (required for immediate level-ups, see Decisions; also used by the community-boss shared HP pool). **Every injection is recorded in the battle's input log**, so replaying seed + input log during recovery reproduces the injected state. An injection that skips the log makes the replayed battle silently diverge.
 2. **External choice hook:** a generic `choice: external <payload>` that ends the player's action for the turn without moving, letting the engine apply an outcome (heal, stat stage, catch result) via injection before the turn resolves. Bag, catch, and run all use this one hook.
 3. **Battle end with custom reason:** `caught` / `ran` as clean end states.
-4. **Isolated custom-data dexes:** evolve the `dynamic-dex-data` POC into per-content-set isolated `ModdedDex` instances (cached by content hash) used by both `Battle` and `TeamValidator`. This is how server library content, overrides, and Arena formats reach Showdown ([12](12-content-catalog-species-moves-items.md)).
+4. **Isolated custom-data dexes:** evolve the `dynamic-dex-data` POC into per-content-set isolated `ModdedDex` instances (cached by content hash) used by both `Battle` and `TeamValidator`. This is how server library content, overrides, and Arena formats reach Showdown ([27](27-server-content-library-and-overrides.md)).
 5. **Clean-up:**
    - Remove the debug code.
    - Move the 10 hardcoded custom moves to a preservation branch and remove them from `master`, then restore the 3 commented-out upstream tests (see Decisions).
@@ -87,7 +87,7 @@ The Showdown integration is a **separate library from the game engine**:
 
 **How the engine and battles talk** (ports, serializable data, both directions):
 ```ts
-// defined by libs/engine, implemented by libs/battle (wired in apps/bot)
+// types live in libs/core/ports (engine and battle may both import core, never each other); implemented by libs/battle, wired in apps/bot
 interface BattlePort {
   start(spec: BattleSpec): Promise<BattleId>;                  // sides (PokemonSet + persistent state), format/rules data, AI profiles, seed
   choose(id: BattleId, side: SideId, choice: string, rqid?: number): Promise<void>;  // stale/answered rqid → no-op (see Multiplayer boundary)

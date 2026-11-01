@@ -30,7 +30,7 @@ AdventureLogEntry {
     participants?: PokemonSnapshot[];          // the player's Pokémon involved (snapshots, not bare IDs)
     pokemon?: PokemonSnapshot[];               // release/trade/gift/catch/evolution: the Pokémon the entry is about
     turns?: TurnDigest[];                      // trainer battles: per-turn digest (see below)
-    highlights?: string[];                     // generated: "Pikachu landed a critical hit", "Charmander grew to Lv. 16"
+    highlights?: { kind: string; params: Record<string, unknown> }[];   // structured, e.g. { kind: 'crit', params: { pokemon } }; rendered in the viewer's language (30)
     rewards?: { money?; items?; milestones? };
   };
   refs?: { battleRecordId?; scriptKey?; tradeId? };

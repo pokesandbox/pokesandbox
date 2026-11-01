@@ -38,7 +38,7 @@ type GameAction =
 
 type GameEvent =
   | { type: 'enteredLocation'; location: ContentKey; from?: ContentKey; via: 'walk' | TransportNetworkKey }
-  | { type: 'dialogue'; speaker?: string; text: string; awaitsInput: boolean }
+  | { type: 'passage'; script: ContentKey; step: string; awaitsInput: boolean }   // a reference; the presentation layer resolves the Passage (07) in the viewer's language (30)
   | { type: 'choicePrompt'; options: …[] }
   | { type: 'battleStarted'; battleId: string; … }
   | { type: 'itemsChanged'; … } | { type: 'pokemonGranted'; … } | { type: 'progressChanged'; … }
@@ -71,7 +71,7 @@ The lock only stops two actions writing at once. Four more rules decide *whether
 | **Preconditions** | Is this action allowed right now? | Every action |
 | **Request ID** (battles) | Is this choice for the current battle request? | `battleChoice` (see [25 § Ownership](25-arena.md#ownership)) |
 
-**1. Revisions.** The Journey carries `rev`, and **every engine action that writes any of the journey's game data** (Journey, its PokemonInstances, bag, flags) increments it in the same transaction: one action, one bump, even when the Journey document itself didn't change. Each rendered view records the `rev` it was drawn from: in custom IDs for plain handlers (`play:explore:<charId>:<rev>`), in session state for FlowCord menus, and in the request for the webapp. A **view-dependent** action (explore, travel, script input, shop, anything the player chose from a rendered menu) with a stale `rev` is not applied. The player gets a fresh render with "Updated: that menu was out of date". This is what turns a double-click into one explore, not two.
+**1. Revisions.** The Journey carries `rev`, and **every engine action that writes any of the journey's game data** (Journey, its PokemonInstances, bag, flags) increments it in the same transaction: one action, one bump, even when the Journey document itself didn't change. Each rendered view records the `rev` it was drawn from: in custom IDs for plain handlers (`play:explore:<journeyId>:<rev>`), in session state for FlowCord menus, and in the request for the webapp. A **view-dependent** action (explore, travel, script input, shop, anything the player chose from a rendered menu) with a stale `rev` is not applied. The player gets a fresh render with "Updated: that menu was out of date". This is what turns a double-click into one explore, not two.
 
 **2. Preconditions.** Every action declares three layers of "may this run now?":
 - **Mode** (engine, fixed in code): the modes the action is valid in. Party reorder, box management, and bag use are `overworld` only. In battle, switching is a battle choice, not a party edit.
@@ -82,7 +82,7 @@ The engine exposes `availableActions(journey)` with explanations (the condition 
 
 **3. One active `/play` session per journey, newest wins.** Opening `/play` atomically sets `Journey.activeSession = { id, client, openedAt }` (under the lock, so it can't interleave with an in-flight action). The session ID travels with the session (FlowCord session state, or custom IDs). `dispatch` rejects actions from any other session ID, and the old session shows "This game was continued in another session" and strips its buttons. Newest wins rather than blocking the new session, because ephemeral messages can be dismissed and never reopened, and the old session may be on another device. A player can always get back in with `/play`.
 - **Resuming:** the new session renders whatever mode the journey is in, the same path as after a restart. A battle resumes at the current request (with the last turn's summary), a submitted choice stands while the turn resolves, and pending prompts (learn a move, evolution, swap into party) and script dialogue resume where they were. Adventure battles have no turn timer, so switching sessions never costs a turn.
-- **Old sessions shut down cleanly:** an old session still awaiting BattleService (the await-in-action pattern in [14](14-battle-system-and-showdown.md)) must check the claim before rendering, and ends silently if it's no longer active. Old battle buttons fail both the session check and the request-ID check.
+- **Old sessions shut down cleanly:** an old session still awaiting BattleService (the await-in-action pattern in [26](26-discord-surface-and-ux-patterns.md#flowcord-patterns)) must check the claim before rendering, and ends silently if it's no longer active. Old battle buttons fail both the session check and the request-ID check.
 - **Not session-bound:** webapp management actions (they aren't a play session; if the webapp becomes a play surface in Phase 3 it claims the same slot), game-driven events (battle turns resolving, timers), and Arena battles (participant checks in [25](25-arena.md#ownership); the **Choose** button reopens a prompt on any device).
 
 **4. Contention and retries.** If the lease is held, `dispatch` waits up to ~1s (after an early acknowledgement to Discord, which allows 3s), then returns `actionRejected: busy`. An optimistic-concurrency conflict is retried once **only for actions without a `rev`**. A view-dependent action is never silently re-applied on fresh state, because that is exactly how duplicates happen. Retries of the same request (network replays) are deduplicated by `actionId`.
@@ -104,12 +104,12 @@ Where the engine and battles run (embedded in the bot and webapp, with one game 
 Option C is only safe if the boundaries are enforced, so the engine (and the battle host) can be pulled into their own containers later without untangling code.
 
 ```
-libs/core       pure: content/catalog schemas, ContentKey, PokemonSet conversions, condition/effect/fact registries,
+libs/core       pure: content/catalog schemas, port interfaces (BattlePort, Clock, Rng, Scheduler), ContentKey, PokemonSet conversions, condition/effect/fact registries,
                 rule formulas (EXP, catch, escape, payout per gen), validator. No I/O, no Showdown, no Discord.
 libs/battle     Showdown adapter + BattleService + AI. Depends on core + the Showdown fork + @smogon/calc.
                 Knows nothing about journeys, regions, scripts, or Discord.
 libs/engine     game rules: dispatch, modes, scripts, travel/explore, economy, post-battle progression.
-                Depends on core. Talks to battles ONLY through a `BattlePort` interface it defines.
+                Depends on core. Talks to battles ONLY through the `BattlePort` interface (types in libs/core/ports).
 libs/authoring  admin commands. Depends on core.
 apps/bot        game host: wires engine + the real libs/battle implementation of BattlePort, Discord renderers.
 apps/webapp     wires engine with a BattlePort that only *reads* battle state (never hosts battles), plus authoring.

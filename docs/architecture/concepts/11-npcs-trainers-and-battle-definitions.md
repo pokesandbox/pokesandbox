@@ -1,6 +1,6 @@
 # 11: NPCs, Trainers & Battle Definitions
 
-> **TL;DR:** Split **who is standing here** (NPC: name, sprite, location, talk script) from **how they battle** (Trainer: class, ordered conditioned party variants, AI profile, reward formula, format). An NPC may reference a trainer. Defeat state is an engine flag. Gym leaders, rivals, and Elite 4 members are trainers with richer scripts, not special types.
+> **TL;DR:** Split **who is standing here** (NPC: name, sprite, placements, talk script) from **how they battle** (Trainer: class, ordered conditioned party variants, AI profile, reward formula, format). An NPC may reference a trainer. Defeat state is an engine flag. Gym leaders, rivals, and Elite 4 members are trainers with richer scripts, not special types.
 
 **MVP impact:** High · **Cost to change later:** Medium
 
@@ -22,7 +22,7 @@ Trainer {
     pokemon: TrainerPokemon[];  // species, level, moves? (default: last 4 level-up moves), ability?, item?, nature?, ivs/evs?
     items?: { item: ItemId; count: number }[];   // trainer bag (Full Restores)
   }[];
-  ai: AiProfileId;              // 'random' | 'basic' | 'smart' | 'gym' | 'champion' (see 14)
+  ai: AiProfileId;              // 'random' | 'basic' | 'smart' | 'champion' (see 14)
   rewards?: { money?: number | 'formula'; effects?: Effect[] };
   rematch?: { condition: Condition; parties: … }; // later
   defeatFlag: auto;             // engine writes trainer:<key>:defeated

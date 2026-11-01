@@ -112,7 +112,7 @@ Server event content that isn't specific to one region (e.g. an event island eve
                 "presentation": "locked" } } ] }
 
 // npcs
-{ "_id": "N_A1", "regionId": "R_A", "key": "Nb2Rk6yT1w", "name": "Brock", "location": "Pw3Gm8cX5v", "interact": "Sc9Ld4fJ7u" }
+{ "_id": "N_A1", "regionId": "R_A", "key": "Nb2Rk6yT1w", "name": "Brock", "placements": [ { "location": "Pw3Gm8cX5v" } ], "interact": "Sc9Ld4fJ7u" }
 ```
 
 ### 2. Import into another server = copy the documents, keep the keys
@@ -132,7 +132,7 @@ The copy changed only `_id` and `regionId`. Every reference (edges, the gate's p
 locations.get('R_B', 'Vv7Qm2pL0d')  // → L_B3, Pallet Paradise's Viridian
 locations.get('R_A', 'Vv7Qm2pL0d')  // → L_A3, the template's Viridian
 ```
-Global references are untouched by design: `pidgey` (canon) and `p7k2m9x4:sparkitten` (library species) mean the same thing everywhere. Library entries the template uses are brought along as *linked* imports (see [12](12-content-catalog-species-moves-items.md)).
+Global references are untouched by design: `pidgey` (canon) and `p7k2m9x4:sparkitten` (library species) mean the same thing everywhere. Library entries the template uses are brought along as *linked* imports (see [27](27-server-content-library-and-overrides.md)). Flavor entries ([29](29-flavor-text-and-prose.md)) and translations ([30](30-internationalization-readiness.md)) are keyed the same way, so they copy verbatim too.
 
 ### 3. The importer modifies their copy
 ```jsonc

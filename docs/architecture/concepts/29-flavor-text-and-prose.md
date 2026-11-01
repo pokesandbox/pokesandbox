@@ -22,7 +22,7 @@
 | Progression and milestone descriptions | `description` | string | [04](04-progression-and-flags.md) |
 | Region discovery description, pause message, release notes | `discovery.description`, `deployment.pauseMessage`, release notes | strings | [01](01-content-vs-state-and-publishing.md) |
 | Explore asides (post-MVP) | one-time scripts | `Passage` | [10](10-encounters.md) |
-| Species first sighting (post-MVP) | regional Pokédex entry | `Passage` | [10](10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line) |
+| Species first sighting (post-MVP) | flavor entry `encounter.firstSighting`, edited from the regional Pokédex screen | `Passage` | [10](10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line) |
 | Move and item descriptions | catalog `text` | strings from Showdown | [12](12-content-catalog-species-moves-items.md) |
 
 Player narration on the adventure log ([22](22-adventure-log-and-narration.md#narration)) is written by players, not authors, and is out of scope here.
@@ -69,7 +69,7 @@ Each event declares the **qualifiers** an entry can match on and the **placehold
 ## Recommended architecture
 
 ### 1. One text type: `Passage`
-Every authored text longer than a label is a `Passage` ([07](07-scripts-triggers-and-events.md#passages-prose-and-dialogue-decided-oct-2026)): script steps, location descriptions and their variants, gate `lockedText`, first sightings, and every flavor variant. Names and labels stay plain strings. One editor, one renderer, one placeholder system, one paging rule.
+Every authored text longer than a label is a `Passage` ([07](07-scripts-triggers-and-events.md#passages-prose-and-dialogue-decided-oct-2026)): script steps, location descriptions and their variants, first sightings, and every flavor variant. Names, labels, and short one-line strings (gate `lockedText`, which also appears in select-menu descriptions) stay plain strings, translatable the same way ([30](30-internationalization-readiness.md)). One editor, one renderer, one placeholder system, one paging rule.
 
 **Decided (Q37), pre-MVP:** location `description` and `descriptionVariants` are `Passage`s (one prose block plus an optional image block covers today's string plus `imageUrl`).
 

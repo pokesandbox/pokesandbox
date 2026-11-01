@@ -40,6 +40,7 @@ These are **warnings**, never blockers, so creative non-standard games still pub
 ## Portability: region bundles
 - The compiled release (see [01](01-content-vs-state-and-publishing.md)) serializes to a versioned JSON (or YAML) bundle with content keys (see [02](02-identity-and-references.md)).
 - **Import** creates a new draft region from a bundle (rekeying is optional, since keys are region-scoped).
+- The bundle includes the region's flavor entries and pack settings ([29](29-flavor-text-and-prose.md)) and its translations ([30](30-internationalization-readiness.md)), so export/import stays lossless as those features arrive.
 - This gives you:
   - **Template regions** ("Start from Kanto Classic") via the clone-wholesale approach you described in the original plan.
   - **Seed data** and **test fixtures** (the engine test harness loads a bundle).

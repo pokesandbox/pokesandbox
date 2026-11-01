@@ -26,8 +26,8 @@ New to the project? Read [`docs/start-here.md`](../start-here.md) first. Context
 
 **Order**
 1. Fork: M0C-03 (archive the custom moves) → M0C-04 (rebase) → M0C-05 (remove debug code) → M0C-06 (publish as a package).
-2. Monorepo, in parallel once M0A-09 exists: M0C-01 (`libs/battle` interfaces) and M0C-02 (`Clock`/`Rng`).
-3. Then M1's BattleService and the patches it needs (drafted with the rest of M1).
+2. Monorepo, in parallel once M0A-09 exists: M0C-01 (`libs/battle` scaffold, with the port types in `libs/core`) and M0C-02 (`Clock`/`Rng`).
+3. Then M1's Arena epics ([E-M1-3..5](m1-battle-core-and-catalog.md#arena-epics-e-m1-3-e-m1-4-e-m1-5)). The Arena needs none of the sim patches; those (E-M1-1) serve the adventure.
 
 ---
 
@@ -42,7 +42,7 @@ The `libs/battle` package with its interfaces, and the time and randomness ports
 **Summary:** The package and types only. The Showdown implementation is M1.
 
 **Acceptance criteria**
-- `BattlePort` (start/choose/inject/subscribe), `BattleSpec` (including the reserved `turnGate`), `StatePatch`, `BattleEvent`, `ExternalActionResolver`, `ExternalActionContext`/`Outcome`, and `TurnDigest` types.
+- The port **types** live in `libs/core` (`ports/battle`), because `libs/engine` and `libs/battle` may import `core` but never each other (M0A-10); `libs/battle` holds the implementation scaffold. Types: `BattlePort` (start/choose/inject/subscribe), `BattleSpec` (including the reserved `turnGate`), `StatePatch`, `BattleEvent`, `ExternalActionResolver`, `ExternalActionContext`/`Outcome`, and `TurnDigest` types.
 - Everything crossing these interfaces is serializable (a test round-trips through `JSON`).
 - No Showdown dependency yet.
 - Adds `scope:battle` to the module-boundary rules (M0A-10) if those already exist.

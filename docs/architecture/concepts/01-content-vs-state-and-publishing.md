@@ -79,6 +79,13 @@ Every authoring edit is an event, and a release is a projection.
    - Unknown progression keys → keep but ignore.
 3. **Later:** release notes/diff, rollback UI, scheduled publishes for server events, and "preview as player" for unpublished drafts. Preview is a killer authoring feature: an admin can play the draft with a throwaway journey.
 
+### What a release contains
+Everything play needs, resolved and pinned at publish, so nothing a live region reads can change underneath it:
+- the region's content (locations, NPCs, trainers, scripts, shops, encounter tables, transport, TM/HM list `moveMachines`, rules);
+- the catalog data it uses, resolved for its generations and stamped with the `catalogVersion` ([12](12-content-catalog-species-moves-items.md)), plus any server library content and overrides it uses ([27](27-server-content-library-and-overrides.md));
+- the compiled flavor index with pinned pack versions (post-MVP, [29](29-flavor-text-and-prose.md));
+- translations that exist at publish time (later, [30](30-internationalization-readiness.md)).
+
 ### Interaction with in-flight sessions
 Active battles and scripts pin the release they started on and finish there. The next action loads the newest release. Keep N-1 and N in memory.
 

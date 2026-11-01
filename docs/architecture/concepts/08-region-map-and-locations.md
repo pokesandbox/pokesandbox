@@ -17,7 +17,7 @@ Agreed in the original plan but not built: buildings and sub-areas as their own 
 | No node **kind** | The UI should render a town differently from a route, cave floor, building interior, or gym. Fly eligibility, map icons, and "can't use bikes indoors"-style rules key off it. |
 | No **grouping** | Viridian City has a Center, Mart, Gym, School, and houses. Without `parentKey`, the travel menu becomes a flat list of 15 places. Mt. Moon's floors should show as one place on the map. |
 | No **services** | Healing, PC access, and shops need to be discoverable from the location menu. Heal points also set respawn. |
-| No **description / imagery** | Text games live on flavor text and images. Add `description`, `imageUrl`, and an optional map marker. |
+| No **description / imagery** | Text games live on flavor text and images. Add a `description` (a `Passage`, with image blocks) and an optional map marker. |
 | `trainerIds` on Location | Dual-direction risk again. And trainers are better modeled as NPCs placed at a location (see [11](11-npcs-trainers-and-battle-definitions.md)). |
 | Delete leaves dangling edges | Deleting a location must remove inbound edges (or the validator must block publish). |
 | No **edge metadata** | Labels ("North", "Through the gate", "Cycling Road"), hidden edges (secret passages), `hiddenWhenLocked` |
@@ -62,10 +62,10 @@ In a menu-driven text game, the risk is that travel feels like teleporting throu
 | C. Hierarchical locations with implicit traversal (child ↔ parent always connected) | Fewer edges to author | Implicit rules surprise admins and break one-way designs. The builder can *offer* "auto-connect to parent" instead. |
 
 ## MVP scope
-- `kind`, `parentKey`, `description`, `imageUrl`, `services`, `tags`, edge labels, the two-way builder toggle, inbound-edge cleanup on delete, `Region.startingLocationKey`, and `defaultRespawnKey`.
+- `kind`, `parentKey`, `description` and `descriptionVariants` as `Passage`s (images are image blocks), `services`, `tags`, edge labels, the two-way builder toggle, inbound-edge cleanup on delete, `Region.startingLocationKey`, and `defaultRespawnKey`.
 - Builder: connections editor, entry rules (conditions), services.
 - Later: coordinate-based map markers, auto-generated map images, a "you are here" overlay on the static region map (the current location highlighted, from a per-location marker image or coordinates), weather per location.
 
 ## Open questions
-- ~~Visual map?~~ **Decided (Q7):** text navigation plus an optional static region map image (`graphicSettings.mapImageLink`). Interactive map later, on the webapp.
+- ~~Visual map?~~ **Decided (Q7):** text navigation plus an optional static region map image (today `graphicSettings.mapImageLink`; it moves to a region content field, `Region.mapImageUrl`, when `RegionRules.graphics` replaces `graphicSettings`). Interactive map later, on the webapp.
 - ~~Instant travel?~~ **Decided (Q5):** moving between locations is instant. Route friction comes from author-defined **traversal requirements** paid via Explore (a mix of options a and c), not from travel time. See [10 § Traversal requirements](10-encounters.md#traversal-requirements-mvp-decided-oct-2026).

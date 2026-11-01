@@ -101,7 +101,7 @@ Opt-in rules that suit slower or narrated play, where battles are fewer and each
 | Payout level basis | Trainer payout uses the opposing party's highest level instead of its last Pokémon's level | `formulas.payout` variant |
 | Non-participant EXP | Party members that didn't battle get half EXP, with no item needed | `formulas.expShare` (new value) |
 | Shiny rate | A configurable rate (e.g. 1/500) instead of the generation's | `graphics.shinies` → rate |
-| Catch modifiers from battle effects | Moves or effects multiply the catch rate while active (e.g. ×2 while the target is bound). Needs the catch resolver to see the target's active effects. | `formulas.catch` + custom moves ([12](12-content-catalog-species-moves-items.md)) |
+| Catch modifiers from battle effects | Moves or effects multiply the catch rate while active (e.g. ×2 while the target is bound). Needs the catch resolver to see the target's active effects. | `formulas.catch` + custom moves ([27](27-server-content-library-and-overrides.md)) |
 | Percentage EXP | EXP measured as a percentage of a level per win instead of points, for narrated play | `formulas.exp` variant |
 
 ### Reference test vectors
@@ -119,7 +119,7 @@ Unit-test vectors for formula implementations. Gen 1 vectors are worked from pok
 | Whiteout, Gen 4+ | 8 badges, highest level 50, money 3000 | lose 3000 (capped) |
 
 ## Sprite settings (decided Nov 2026)
-- **Region default, entry override.** `graphics.sprites` sets the region's set (e.g. Gen 3, Emerald). A regional Pokédex entry can override it: `RegionDexEntry.sprite?: { set: { gen: GenId; game?: string } } | { custom: SpriteUrls } | 'none'` (another set, custom art, or text for that species).
+- **Region default, entry override.** `graphics.sprites` sets the region's set (e.g. Gen 3, Emerald). A regional Pokédex slot can override it: `PokedexSlot.sprite?: { set: { gen: GenId; game?: string } } | { custom: SpriteUrls } | 'none'` (another set, custom art, or text for that species; `Region.pokedex` slots already exist). **Precedence:** the slot override, then the species' own sprites (a library species or a library override's sprite patch, [27](27-server-content-library-and-overrides.md)), then the region's set with the `missing` rule, then text.
 - **Player's side:** `facing: 'back' | 'front'`, default `back` (the classic look). A Pokémon with no back sprite shows its front sprite.
 - **Missing from the chosen set:** `missing: 'newer' | 'older' | 'text'`, default `newer`: try the next generation up, then down. The usual gap is a species newer than the set (a Gen 4 species in a Gen 3-sprite region), where nothing older exists. `text` keeps one consistent style. A per-entry override always wins.
 - **Last resort is always text** (name and type), never a broken image, and `mode: 'text'` turns images off for the whole region.

@@ -79,7 +79,7 @@ registerPredicate('milestone', {
 
 ## Authoring UX (so option C stays friendly)
 - The builder **defaults to a flat "all of these" list**, which covers about 90% of cases and looks just like today's buckets.
-- "Advanced" adds any/not groups (one nesting level in Discord). Deep trees are a webapp-builder or JSON-import feature.
+- "Advanced" adds any/not groups. The condition builder is a webapp component (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)) built for phones first; very deep trees are easier on wide screens or by JSON import.
 - **Templates:** "Requires badge…", "Requires HM move…", "Only once", "Only before flag…", "Requires item…".
 
 ## Contextual targets (resolves the Fly debate)
