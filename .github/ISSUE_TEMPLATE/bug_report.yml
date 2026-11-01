@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report! Well-structured reports help both human devs and AI agents resolve issues faster.
-        See [agents.md](https://github.com/nbely/pokesandbox/tree/master/.github/agents.md) for project conventions.
+        See [agents.md](https://github.com/pokesandbox/pokesandbox/tree/master/.github/agents.md) for project conventions.
 
   - type: textarea
     id: description

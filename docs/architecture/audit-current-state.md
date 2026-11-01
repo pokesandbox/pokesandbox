@@ -37,7 +37,7 @@ DTOs exist for User, Server, Region. There are no DTOs for Location or DexEntry.
 
 No player-facing commands exist yet. Automated tests are e2e scaffolds only, with no unit tests on models or logic.
 
-### Showdown fork (`nbely/pokemon-showdown`)
+### Showdown fork (`pokesandbox/pokemon-showdown`)
 
 - Forked from upstream at **Aug 2023** (~3 years behind upstream as of this audit).
 - Custom changes:

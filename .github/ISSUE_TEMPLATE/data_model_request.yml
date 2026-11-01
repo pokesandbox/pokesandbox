@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Use this template for adding or modifying models, DTOs, and zod schemas in `/shared`.
-        See [agents.md — Adding a New Model](https://github.com/nbely/pokesandbox/tree/master/.github/agents.md#adding-a-new-model) for the exact implementation pattern.
+        See [agents.md — Adding a New Model](https://github.com/pokesandbox/pokesandbox/tree/master/.github/agents.md#adding-a-new-model) for the exact implementation pattern.
 
   - type: textarea
     id: description
