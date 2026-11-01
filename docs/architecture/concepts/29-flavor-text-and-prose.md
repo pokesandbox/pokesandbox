@@ -85,13 +85,25 @@ FlavorEntry {
     pokemonTags?: string[];
     condition?: Condition;                      // anything else, through the condition system (05)
   };
-  chance?: number;                              // 0–1: how often this event shows flavor at all (keeps frequent events fresh)
-  combine?: 'replace' | 'extend';               // extend: add these variants to the matching entry from a lower layer
-  variants: { passage: Passage; weight?: number }[];
+  priority?: number;                            // only breaks ties between equally specific entries
+  chance?: number;                              // 0–1, default 1: does flavor show at all this time (keeps frequent events fresh)
+  combine?: 'extend' | 'replace';               // default extend: same event + same match as a lower layer's entry → add to its pool
+  variants: { passage: Passage; weight?: number }[];   // weight: relative, default 1 (an even split)
 }
 ```
-- **Selection** reuses the **most specific match** usage policy already adopted for dialogue ([05](05-requirements.md)): among entries whose `match` passes, the one with the most satisfied qualifiers wins ("your starter fainted" beats "your Pokémon fainted" beats "a Pokémon fainted"). Ties go to the higher layer.
-- **The pick** within an entry is weighted random with the seeded `Rng` port ([18](18-rules-time-and-randomness.md#randomness)), so re-rendering a screen never swaps the text. Avoiding an immediate repeat is a later refinement.
+**How one event picks its text (three independent steps, so probabilities never add up across entries):**
+1. **Which entry: no randomness.** Among entries whose `match` passes, the one with the most satisfied qualifiers wins, reusing the **most specific match** policy adopted for dialogue ([05](05-requirements.md)): "your starter fainted" beats "your Pokémon fainted" beats "a Pokémon fainted". Exactly one entry is chosen. Ties: higher `priority`, then the higher layer; any tie still left is flagged by the validator at publish (and resolved by key, so it's deterministic).
+2. **Whether flavor shows: that entry's `chance`.** One roll against a single probability (default 1). If it fails, this event shows no flavor this time. It does **not** fall back to a less specific entry, so `chance` means exactly what it says.
+3. **Which variant: relative weights.** Each variant's share is its weight divided by the pool's total weight; the default weight 1 makes an even split. Weights can't exceed 100% because they're shares, not probabilities. The pick uses the seeded `Rng` port ([18](18-rules-time-and-randomness.md#randomness)), so re-rendering a screen never swaps the text. Avoiding an immediate repeat is a later refinement.
+
+**Layers combine per pool, not per probability.** When a higher layer has an entry with the same event and the same `match` as a lower layer's:
+- `extend` (default): its variants join the lower entry's pool, and its `chance`, if set, **replaces** the lower one (it never adds to it). Example: canon's "your Pokémon fainted" has `chance: 0.6` and 5 variants; a region extends it with 1 variant at weight 1, so that line shows on 0.6 × 1/6 = 10% of your faints. At weight 5 it's 0.6 × 5/10 = 30%. Setting `chance: 1` on the region's entry makes every faint show flavor.
+- `replace`: only the higher layer's variants (and chance) are used.
+- An entry with a **different** `match` is a different entry; specificity decides between them, as in step 1.
+
+**Variants aren't entries.** An entry says *when and where* (event, match, chance); variants say *what* (alternative wordings of the same moment). Making each variant its own entry would repeat the same `match` on every line and turn step 1 into a probability contest between equally specific entries, which is exactly what produces sums over 100%. The validator flags two entries in the same layer with identical event and `match` and offers to merge them.
+
+**The builder shows the real odds.** Editing a pool shows each line's effective share across layers ("this line: 10% of your Pokémon's faints"), so authors never do the arithmetic.
 - **Placeholders** are typed per event (`{pokemon}`, `{species}`, `{move}`, `{item}`, `{trainer}`, `{player}`, `{name:rival}`). The validator rejects a placeholder the event doesn't provide.
 - **Encounter intros** ([10](10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) become flavor entries for `encounter.scene`, `encounter.subject`, and `encounter.firstSighting`. The builder still edits them from the location and Pokédex screens; storage is uniform.
 - **Trainer lines** become flavor entries for `battle.trainerIntro` / `battle.trainerDefeat`, matched on `trainer` (one specific trainer) or `trainerClass` (every Youngster). This closes the route-trainer gap without a new per-trainer field.
@@ -99,7 +111,7 @@ FlavorEntry {
 ### 3. Layered packs
 | Layer | Owner | Notes |
 |---|---|---|
-| **PokeSandbox canon pack** | the project, versioned in the repo like the Kanto Classic template ([16](16-authoring-validation-and-portability.md#official-templates-decided-oct-2026)) | Default pools for every event; CI checks placeholders. |
+| **PokeSandbox canon pack** | the project, versioned in the repo like the Kanto Classic template ([16](16-authoring-validation-and-portability.md#official-templates-decided-oct-2026)) | Default pools for every event; CI checks placeholders. **Separate from the catalog version** (see below). |
 | **Server packs** | a server, in its content library ([27](27-server-content-library-and-overrides.md)) | Reusable across the server's regions; could be shared like other library content later. |
 | **Region entries** | the region | Most specific to the game; stored in the region's draft like any content. |
 
@@ -109,7 +121,8 @@ Region.flavor: {
   // the region's own FlavorEntry records live with its other content
 }
 ```
-- A region can take canon **wholesale**, **add** to it (`combine: 'extend'`), **override** specific events (`replace`), or **switch canon off** and use only its own.
+- A region can take canon **wholesale**, **add** to it (`combine: 'extend'`, the default), **override** specific events (`replace`), or **switch canon off** and use only its own.
+- **The canon pack is not part of the catalog version.** The catalog ([12](12-content-catalog-species-moves-items.md)) is game data imported from Showdown, and its version tracks the import. The canon pack is writing the project authors, released on its own schedule with its own semantic version. A pack names the oldest catalog version it needs when it references specific moves or species, and the validator checks that against the region's catalog version.
 - **Releases embed the resolved flavor** (pack versions pinned), like catalog data ([01](01-content-vs-state-and-publishing.md)), so a canon pack update never changes a live region until it republishes, and the publish review shows the diff.
 
 ### 4. Battles: log and flavor are separate layers
@@ -201,7 +214,7 @@ Nothing in this doc is MVP content, but these keep it cheap to add:
 - **Drafting:** AI-assisted drafts reviewed by people are reasonable for volume, with every line human-approved before it ships, because it's what most players will read.
 
 ## Open questions
-1. Adopt this architecture (three kinds of text; flavor entries with most-specific-match; layered packs), and supersede the encounter-intro fields in 10 with flavor entries?
+1. Adopt this architecture (three kinds of text; flavor entries with most-specific-match; the three-step selection with `chance` and relative weights; layered packs separate from the catalog version), and supersede the encounter-intro fields in 10 with flavor entries?
 2. Make location `description` / `descriptionVariants` `Passage`s now (pre-MVP)?
 3. Battle text setting per region (`log` / `flavor` / both, default both) with the flavor-only fallback rule?
 4. Arena PvP: neutral-only flavor on the public message, side-specific in private prompts?
