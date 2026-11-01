@@ -50,12 +50,13 @@ Trigger {
 }
 
 type Step =
-  | { passage: { blocks: PassageBlock[]; style?: StyleId } }          // prose, dialogue, and images interleaved; waits for "Next" (see Passages below)
+  | { passage: Passage }                                             // prose, dialogue, and images interleaved; waits for "Next" (see Passages below)
   | { say: { speaker?: SpeakerRef; text: string } }                   // shorthand: a one-line passage
   | { choice: { prompt: string; options: { label: string; condition?: Condition; goto: Label }[] } }
   | { battle: { trainer: ContentKey; party?: 'auto' | string; canLose?: boolean;
                 healAfter?: boolean; onWin?: Label; onLose?: Label } }
-  | { wildBattle: { spec: PokemonSpec; canRun?: boolean; onCatch?: Label; onDefeat?: Label; onRun?: Label } }
+  | { wildBattle: { spec: PokemonSpec; canRun?: boolean; onCatch?: Label; onDefeat?: Label; onRun?: Label;
+                    intro?: 'auto' | 'none' } }                       // reserved, post-MVP: encounter intros (10). MVP: the default line
   | { effects: Effect[] }
   | { if: { condition: Condition; then: Label; else?: Label } }
   | { askName: { slot: string; prompt: string; default?: string } }   // fills Journey.names[slot] (confirm step; default offered), e.g. naming the rival
@@ -71,6 +72,8 @@ type Step =
 PokeSandbox is a writing-heavy game with still images, so the core text step is a **passage**: an ordered list of blocks rendered together, not one line per "Next".
 
 ```ts
+Passage = { blocks: PassageBlock[]; style?: StyleId }   // the one text type: script steps now, other authored text later (e.g. encounter intros, 10)
+
 PassageBlock =
   | { prose: string }                                                            // authored prose, markdown allowed
   | { line: { speaker: SpeakerRef; text: string; expression?: string } }         // dialogue, interleaved freely with prose

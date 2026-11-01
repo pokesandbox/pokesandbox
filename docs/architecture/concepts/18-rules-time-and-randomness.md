@@ -35,7 +35,7 @@ RegionRules {
     payout: GenId;                            // trainer prize money
   };
   graphics: {
-    sprites: { gen: GenId; game?: string; palette?: 'normal' | 'gray' | 'color' };   // MVP: original Gen 1 sprites. Kanto Classic default: g1 'y', palette 'color'
+    sprites: { mode: 'sprites' | 'text'; gen: GenId; game?: string; palette?: 'normal' | 'gray' | 'color' };   // MVP: original Gen 1 sprites. Kanto Classic default: sprites, g1 'y', palette 'color'. 'text': no images anywhere (Pokémon shown by name and type)
     shinies: boolean;                         // Gen 1 has none
   };
   systems: {                                  // gameplay systems, mostly not generation-bound
@@ -81,6 +81,7 @@ There is no hard lock on rules after publish: real balance fixes must stay possi
 - Original Gen 1 learnsets and move data (e.g. Bite is Normal-type).
 - Gen 1 EXP, catch, escape, and payout formulas.
 - **Original Gen 1 sprites.** DexEntry already stores `g1` sprite sets (`rb`, `rg`, `y`; normal/gray/color).
+- **Text mode and the text fallback (decided Nov 2026):** a region can turn sprites off entirely (`graphics.sprites.mode: 'text'`), and any Pokémon whose sprite can't be resolved (e.g. a fakemon with no art) is shown as text, by name and type, never as a broken image. Both work the same way in the battle view and the party screens ([26](26-discord-surface-and-ux-patterns.md#battles)).
 - **Formula reference:** every Gen 1 formula follows the [pret/pokered](https://github.com/pret/pokered) disassembly (e.g. `ItemUseBall` for catching, `TryRunningFromBattle` for escape), with unit tests against values worked from it.
 - **Growth rates:** Gen 1 has four curves, computed from their formulas and floored to integers: Fast `4n³/5`, Medium Fast `n³`, Medium Slow `6n³/5 − 15n² + 100n − 140`, Slow `5n³/4`. Medium Slow is negative at level 1. The cartridge underflows there (the source of the level-1 → level-100 glitch); we clamp level 1 to 0 EXP instead.
 
@@ -139,3 +140,7 @@ Unit-test vectors for formula implementations. Gen 1 vectors are worked from pok
 ## Open questions
 - ~~Authentic Gen 1 or RBY content on modern mechanics?~~ **Decided (Q1):** authentic Gen 1, see Decisions above.
 - ~~Lock rules after publish?~~ **Decided (Oct 2026):** no lock. Every rule change goes through a publish, and the publish review warns about mid-game changes and blocks save-breaking ones unless they include a fix-up rule. See [Changing rules on a live region](#decisions-oct-2026-piecemeal-rules-gen-1-first).
+- **Sprite settings (open, Nov 2026):** three questions, with recommendations awaiting the owner's decision:
+  1. *Region-wide or per Pokédex entry?* Recommended: both, with the region set as the default (`graphics.sprites`) and an optional per-regional-Pokédex-entry override (another set, custom art, or none). Same pattern as other region defaults with entry overrides.
+  2. *Back sprites?* Recommended: a region setting for the player's side, `facing: 'back' | 'front'`, default `back`, falling back per Pokémon to its front sprite when it has no back sprite.
+  3. *The chosen set lacks a sprite (e.g. Gen 3 set, Gen 4 species)?* Recommended: a region setting `missing: 'newer' | 'older' | 'text'`, default `newer` (the next generation up, then down), because the common gap is a species newer than the set, where nothing older exists. `text` suits regions that want one consistent style. A per-entry override always wins, and text is the last resort either way.

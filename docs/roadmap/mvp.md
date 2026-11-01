@@ -258,7 +258,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Transport action (Fly menu): destinations grouped by area, fares shown, unaffordable options locked with the reason (S)
 - [ ] Explore action: weighted outcome table (wild/trainer/hidden item), Repel safe steps, trainer engagement (M)
 - [ ] Traversal requirements: location progress counters (lifetime/visit), one-time + permanent costs, compiled exit gates with explanations (M)
-- [ ] Wild battles: catch formula, run odds, bag in battle (via hook) (L)
+- [ ] Wild battles: catch formula, run odds, bag in battle (via hook); the default intro line, with the encounter start event carrying `firstSighting` and a resolved `intro` passage so authored intros can be added later ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) (L)
 - [ ] Trainer battles: party variant selection, AI profile, payout, defeat flags, whiteout (M)
 - [ ] EXP and level-ups mid-battle (state injection), in-battle move-learn prompts, post-battle and post-trade evolution (level/stone/trade), Gen 1 traded-Pokémon EXP bonus and obedience by original trainer (L)
 - [ ] Party view/reorder/summary; full party → PC + "Swap into party?" offer for gifts and catches (M)

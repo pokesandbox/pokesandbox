@@ -97,11 +97,39 @@ How it maps onto existing primitives (no special engine path):
 ### "Encounters while travelling" (option B): decided no
 Option B means **the trip itself can be interrupted**. You pick "Go to Viridian City" from Route 1, and the engine rolls encounters *along the way* (e.g. a chance per step of the route's length). You might be ambushed by a Rattata or a trainer before arriving, and you can't decline the encounter except via Repel or running. With option A (MVP), choosing a destination moves you instantly, and encounters only happen when you press Explore. **Decision: B won't be built.** Authors who want routes to cost something every time use `traversal.everyPass` instead.
 
+### Encounter intros (decided Nov 2026: post-MVP; the MVP shows the default line)
+The text shown when a wild encounter starts. It matters most in text-first regions, where a fakemon may have no art at all, and for legendary and event Pokémon.
+
+**MVP:** the default line per method ("A wild {species} appeared!"; fishing "Oh! A bite! A wild {species} appeared!"). Nothing else is authored.
+
+**Post-MVP:** an intro is assembled from two optional parts, each falling back to the default:
+1. **Scene** (where and how), picked at random from the most specific pool that exists: location + method, then region default for the method, then the built-in default.
+2. **Subject** (the Pokémon): a one-time **first sighting** passage the first time the journey sees the species (from `journey.dex.seen`, [23](23-players-characters-journeys-and-scopes.md)), otherwise a random line from the species' own pool (per method or any). Without either, the default subject.
+
+```ts
+// all post-MVP, all optional; every piece of text is a Passage (07), so the same editor, renderer, paging, and placeholders apply
+Region.encounterIntros?:   Partial<Record<EncounterMethodId, IntroPool>>
+Location.encounterIntros?: Partial<Record<EncounterMethodId, IntroPool>>
+RegionDexEntry.encounterText?: {
+  firstSighting?: Passage;
+  lines?: { method?: EncounterMethodId; pool: IntroPool }[];
+}
+IntroPool = { variants: { passage: Passage; weight?: number; condition?: Condition }[] }   // condition: later still (night-only, post-story)
+```
+
+**What the MVP builds so this slots in without reshaping data:**
+- **The engine resolves the intro, not the renderer.** The wild-encounter start event carries `{ species, level, method, location, firstSighting, intro: Passage }`. In the MVP the resolver always returns the default line; later it consults the pools. Picking from a pool uses the seeded `Rng` port's `weighted` helper ([18](18-rules-time-and-randomness.md#randomness)), so a re-render never swaps the text, and per-variant conditions reuse the condition system ([05](05-requirements.md)).
+- **`firstSighting` is computed in the MVP** (the species isn't in `journey.dex.seen` yet), because the Pokédex needs it anyway.
+- **Species text lives on the regional Pokédex entry**, not the species, so the same Pokémon can read differently in different regions. A server-library species may later carry a default that regions fall back to ([27](27-server-content-library-and-overrides.md)).
+- **Legendaries and event Pokémon stay scripts** with a `wildBattle` step and their own passages. The step's reserved `intro: 'auto' | 'none'` decides whether the species' first-sighting text is also shown.
+- **First sightings in trainer battles** (the rival's starter, a gym leader's ace) are post-MVP too. They come from the battle's send-out events and appear in the turn view ([26](26-discord-surface-and-ux-patterns.md#battles)).
+
 ## MVP scope
 - Method registry with canon defaults (grass, cave, surf, old/good/super rod).
 - Conditioned tables, the explore outcome table (wild/trainer/item), the Repel effect (with safe steps), and the encounter-rate setting.
 - Traversal requirements (one-time and permanent costs) compiled into exit gates.
 - A wild battle that hands off to the battle system with catch/run/bag (see [14](14-battle-system-and-showdown.md)).
+- The default intro line per method, carried on the encounter start event with `firstSighting` (authored intros are post-MVP).
 
 ## Open questions
 - ~~Day/night time model?~~ **Decided (Q6):** none for the Kanto MVP (tables use `any`). The injected Clock defaults to real time in the server's timezone when Gen 2+ content needs it. See [18](18-rules-time-and-randomness.md).

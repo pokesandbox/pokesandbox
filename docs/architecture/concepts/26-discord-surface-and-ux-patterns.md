@@ -58,6 +58,7 @@ Script text is authored as **passages**: prose, dialogue lines, and images inter
 
 ## Battles
 - **Battle view (decided Oct 2026):** each turn shows the turn's messages, then both active Pokémon with level, HP, and status. **MVP:** the two sprites as separate images in a Components v2 layout (thumbnails or a media gallery), with no image service. **Post-MVP:** one composed image per matchup with both sprites side by side (player's left, opponent's right), cached because sprite URLs are stable.
+- **No sprite:** when a region is in text mode or a Pokémon's sprite can't be resolved, the view shows that Pokémon by name and type instead of an image ([18](18-rules-time-and-randomness.md)).
 - **Battle text:** render messages from Showdown's own text data (`data/text`, the templates the Showdown client uses), and read HP, status, and stat stages from the sim's requests and protocol. Hand-written message strings and a second copy of battle state drift from the sim as moves and mechanics are added.
 - **Spectating (Arena PvP):** the battle renders to a public channel message, edited once per resolved turn; choices go to each player's private prompt. Who renders what, and who owns rounds and timers, is in [25 § Ownership](25-arena.md#ownership).
 - **Adventure battles** render inside the player's `/play` session (ephemeral in MVP) using the same view builders.
