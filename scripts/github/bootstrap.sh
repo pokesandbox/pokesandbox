@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# Bootstraps GitHub labels, milestones, and the Projects v2 board described in
-# docs/roadmap/github-project-setup.md. Safe to re-run (existing items are skipped).
+# Sets up a new repo in the pokesandbox org to work with the PokeSandbox project board
+# (https://github.com/orgs/pokesandbox/projects/1): the shared labels, the milestones, and
+# the link to the board. The org, its issue types, and the board itself already exist; see
+# docs/roadmap/github-project-setup.md. Safe to re-run (existing labels and milestones are skipped).
 #
-# Requires: gh (authenticated with repo + project scopes: `gh auth refresh -s project`), jq.
+# Requires: gh, authenticated with the repo and project scopes (`gh auth refresh -s project`).
+# Turn on issues for the repo first (Settings → Features → Issues).
 #
 # Usage:
-#   scripts/github/bootstrap.sh labels     <org>/<repo>
-#   scripts/github/bootstrap.sh milestones <org>/<repo>
-#   scripts/github/bootstrap.sh project    <org> "<project title>"
-#   scripts/github/bootstrap.sh add-issues <org> <project-number> <org>/<repo> <issue-number>...
+#   scripts/github/bootstrap.sh repo       pokesandbox/<repo>   # all of the below
+#   scripts/github/bootstrap.sh labels     pokesandbox/<repo>
+#   scripts/github/bootstrap.sh milestones pokesandbox/<repo>
+#   scripts/github/bootstrap.sh link       pokesandbox/<repo>
 set -euo pipefail
+
+PROJECT_OWNER=pokesandbox
+PROJECT_NUMBER=1
 
 cmd="${1:-}"; shift || true
 
@@ -18,38 +24,38 @@ label() { # repo name color description
     && echo "created label: $2" || echo "exists: $2"
 }
 
-case "$cmd" in
-  labels)
-    repo="$1"
-    for a in engine bot webapp shared-models battle showdown-fork authoring presentation infra docs; do
-      label "$repo" "area:$a" "1d76db" "Area: $a"
-    done
-    for d in map scripts conditions-effects progression encounters npcs-trainers catalog players economy transport rules arena text trust-safety; do
-      label "$repo" "domain:$d" "5319e7" "Domain: $d"
-    done
-    label "$repo" "phase:0-foundations" "c5def5" "Phase 0: foundations"
-    label "$repo" "phase:1-arena"       "c5def5" "Phase 1: Arena (pre-MVP)"
-    label "$repo" "phase:2-mvp"         "c5def5" "Phase 2: MVP"
-    label "$repo" "phase:3-full"        "c5def5" "Phase 3: full feature build"
-    label "$repo" "phase:4-sky"         "c5def5" "Phase 4: pie in the sky"
-    label "$repo" "good first issue"    "7057ff" "Good for newcomers"
-    label "$repo" "help wanted"         "008672" "Extra attention is needed"
-    label "$repo" "needs-decision"      "d93f0b" "Blocked on an owner decision"
-    label "$repo" "blocked"             "b60205" "Blocked by another issue or external factor"
-    label "$repo" "breaking-change"     "e99695" "Changes stored data or public contracts"
-    label "$repo" "agent-ready"         "0e8a16" "Clear acceptance criteria; eligible for the scheduled agent"
-    label "$repo" "dependencies"        "0366d6" "Dependency upgrades and security updates"
-    ;;
+labels() { # repo
+  local repo="$1"
+  for a in engine bot webapp shared-models battle showdown-fork authoring presentation infra docs; do
+    label "$repo" "area:$a" "1d76db" "Area: $a"
+  done
+  for d in map scripts conditions-effects progression encounters npcs-trainers catalog players economy transport rules arena text trust-safety; do
+    label "$repo" "domain:$d" "5319e7" "Domain: $d"
+  done
+  label "$repo" "phase:0-foundations" "c5def5" "Phase 0: foundations"
+  label "$repo" "phase:1-arena"       "c5def5" "Phase 1: Arena (pre-MVP)"
+  label "$repo" "phase:2-mvp"         "c5def5" "Phase 2: MVP"
+  label "$repo" "phase:3-full"        "c5def5" "Phase 3: full feature build"
+  label "$repo" "phase:4-sky"         "c5def5" "Phase 4: pie in the sky"
+  label "$repo" "good first issue"    "7057ff" "Good for newcomers"
+  label "$repo" "help wanted"         "008672" "Extra attention is needed"
+  label "$repo" "needs-decision"      "d93f0b" "Blocked on an owner decision"
+  label "$repo" "blocked"             "b60205" "Blocked by another issue or external factor"
+  label "$repo" "breaking-change"     "e99695" "Changes stored data or public contracts"
+  label "$repo" "agent-ready"         "0e8a16" "Clear acceptance criteria; eligible for the scheduled agent"
+  label "$repo" "dependencies"        "0366d6" "Dependency upgrades and security updates"
+}
 
-  milestones)
-    repo="$1"
-    while IFS='|' read -r title desc; do
-      if gh api "repos/$repo/milestones?state=all&per_page=100" --jq '.[].title' | grep -Fxq "$title"; then
-        echo "exists: $title"
-      else
-        gh api "repos/$repo/milestones" -f title="$title" -f description="$desc" >/dev/null && echo "created milestone: $title"
-      fi
-    done <<'MS'
+# The same milestones as the monorepo, so issues from every repo group together on the board.
+milestones() { # repo
+  local repo="$1"
+  while IFS='|' read -r title desc; do
+    if gh api "repos/$repo/milestones?state=all&per_page=100" --jq '.[].title' | grep -Fxq "$title"; then
+      echo "exists: $title"
+    else
+      gh api "repos/$repo/milestones" -f title="$title" -f description="$desc" >/dev/null && echo "created milestone: $title"
+    fi
+  done <<'MS'
 M0a: Platform Hygiene|Org/CI, agent rules, libs/core + boundaries, persistence basics, feature flags, message catalog, critical Dependabot fixes, prefix deprecation, owner concept review
 M0c: Arena Foundations|libs/battle scaffold (port types in libs/core), Clock/Scheduler/Rng, Showdown fork clean-up, rebase, and packaging
 M0b: Engine & Content Foundations|Engine skeleton, conditions/gates, effects, content keys, authoring layer, region releases
@@ -68,37 +74,16 @@ CP7: Champion|Victory Road, Elite Four, Champion; public playtest #2 on the Poke
 CP8: Mewtwo|Cerulean Cave and Mewtwo: Kanto Classic complete
 MVP Release|Webapp public, trust and safety, load test, guides, discovery
 MS
-    ;;
+}
 
-  project)
-    org="$1"; title="$2"
-    num=$(gh project create --owner "$org" --title "$title" --format json --jq '.number')
-    echo "created project #$num"
-    gh project field-create "$num" --owner "$org" --name "Priority" --data-type SINGLE_SELECT --single-select-options "P0,P1,P2"
-    gh project field-create "$num" --owner "$org" --name "Size"     --data-type SINGLE_SELECT --single-select-options "S,M,L,XL"
-    gh project field-create "$num" --owner "$org" --name "Phase"    --data-type SINGLE_SELECT --single-select-options "0,1,2,3,4"
-    gh project field-create "$num" --owner "$org" --name "Area"     --data-type SINGLE_SELECT --single-select-options "engine,bot,webapp,shared-models,battle,showdown-fork,authoring,presentation,infra,docs"
-    gh project field-create "$num" --owner "$org" --name "Track"    --data-type SINGLE_SELECT --single-select-options "Arena,Content,Platform"
-    gh project field-create "$num" --owner "$org" --name "Skill"    --data-type SINGLE_SELECT --single-select-options "agent,any,junior,senior,owner"
-    status=$(gh project field-list "$num" --owner "$org" --format json --jq '.fields[] | select(.name == "Status") | .id')
-    gh api graphql -f query="mutation { updateProjectV2Field(input: {fieldId: \"$status\", singleSelectOptions: [
-      {name: \"Backlog\", color: GRAY, description: \"Not yet ready to start\"},
-      {name: \"Ready\", color: BLUE, description: \"Specified and unblocked\"},
-      {name: \"In Progress\", color: YELLOW, description: \"Being worked on\"},
-      {name: \"In Review\", color: ORANGE, description: \"PR open, awaiting owner review\"},
-      {name: \"Done\", color: GREEN, description: \"Merged or complete\"}]}) { clientMutationId } }" >/dev/null
-    echo "set Status options"
-    echo "Link repos with: gh project link $num --owner $org --repo $org/<repo>"
-    echo "Create the views in the UI (the API can't): Board by Status, Roadmap by Milestone, Table by Epic (grouped by parent issue), Decisions (type:Decision)."
-    ;;
+link() { # repo
+  gh project link "$PROJECT_NUMBER" --owner "$PROJECT_OWNER" --repo "$1" && echo "linked $1 to the project board"
+}
 
-  add-issues)
-    org="$1"; num="$2"; repo="$3"; shift 3
-    for n in "$@"; do
-      gh project item-add "$num" --owner "$org" --url "https://github.com/$repo/issues/$n" >/dev/null && echo "added #$n"
-    done
-    ;;
-
-  *)
-    sed -n '2,12p' "$0"; exit 1 ;;
+case "$cmd" in
+  repo)       labels "$1"; milestones "$1"; link "$1" ;;
+  labels)     labels "$1" ;;
+  milestones) milestones "$1" ;;
+  link)       link "$1" ;;
+  *)          sed -n '2,14p' "$0"; exit 1 ;;
 esac

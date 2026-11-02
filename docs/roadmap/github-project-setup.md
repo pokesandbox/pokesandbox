@@ -1,6 +1,8 @@
 # GitHub Org & Project Setup
 
-How the `pokesandbox` org, its repos, and the [PokeSandbox project](https://github.com/orgs/pokesandbox/projects/1) are set up (applied Nov 2026), and how to write issues for it.
+How the `pokesandbox` org, its repos, and the [PokeSandbox project](https://github.com/orgs/pokesandbox/projects/1) are set up, and how to write issues for it.
+
+**Adding a repo to the org?** Turn on its issues, then run [`scripts/github/bootstrap.sh`](../../scripts/github/bootstrap.sh) `repo pokesandbox/<repo>`. It creates the labels and milestones below and links the repo to the project board. Everything else (issue types, the board, its fields and views) is org-wide and already exists.
 
 ## Repositories
 | Repo | Notes |
@@ -22,10 +24,10 @@ Use **sub-issues** for Epic → Feature/Task.
 | Phase | `phase:0-foundations`, `phase:1-arena`, `phase:2-mvp`, `phase:3-full`, `phase:4-sky` |
 | Flags | `good first issue`, `help wanted`, `needs-decision`, `blocked`, `breaking-change`, `agent-ready`, `dependencies` |
 
-Labels and milestones are created by [`scripts/github/bootstrap.sh`](../../scripts/github/bootstrap.sh) (`labels`, `milestones`; safe to re-run).
+Labels are per repo; `bootstrap.sh` holds the list. Add a new label there too, so new repos get it.
 
 ## Milestones
-M0a, M0c, M0b, M1, M2, the Kanto checkpoints CP0a–CP8, and MVP Release, exactly as in [`mvp.md`](mvp.md) (see [`mvp-checkpoints.md`](mvp-checkpoints.md)). Phase 3/4 items go into the project without milestones until MVP ships.
+M0a, M0c, M0b, M1, M2, the Kanto checkpoints CP0a–CP8, and MVP Release, as in [`mvp.md`](mvp.md) (see [`mvp-checkpoints.md`](mvp-checkpoints.md)). Milestones are per repo, with the same titles in each so the board groups them together. Phase 3/4 items go into the project without milestones until MVP ships.
 
 ## Project (Projects v2) fields
 | Field | Type | Values |
@@ -77,7 +79,7 @@ Every template adds the issue to the project. Milestone, labels, parent epic, an
 
 **Still to write:** the rest of M1 (catalog read service details, if needed), the rest of M2 (`/arena` hub, PvAI setup, battle history, alpha test, release notes), and the checkpoint issues from CP0a onward (TM/HM lists, the webapp builder foundation, and trust and safety exist). The candidate issues are the checklists in [`mvp.md`](mvp.md).
 
-**History:** the first backlog was drafted as Markdown files under `docs/backlog/` and created as issues in Nov 2026. Each of those issues keeps its draft ID (e.g. `M0A-07`) at the bottom of its body, so old references can be found with a search.
+**Draft IDs:** the first backlog was drafted as Markdown files and created as issues in Nov 2026. Those issues keep their draft ID (e.g. `M0A-07`) at the bottom of the body, so old references can be found with a search.
 
 ## Team & workflow (decided Oct 2026, Q29)
 - **Team:** owner (senior), possibly a second senior (commitment TBD), 2 junior-to-mid devs, plus AI agents.
