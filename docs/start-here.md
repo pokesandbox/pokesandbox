@@ -35,7 +35,7 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 | DTOs (read shapes for bot and webapp) | `shared/src/dtos/` | `region.dto.ts` |
 | Seed data | `scripts/seed/data/*.json`, registered in `scripts/seed/collections.ts` | the `dexentries` entry |
 | Bot commands and menus | `apps/bot/src/interactions/` (admin builders under `…/regionManagement/`) | the Pokédex builder (`pokedex/`) |
-| Webapp | `apps/webapp/` (moving off antd to Tailwind + a headless library: trial [M3-05](https://github.com/pokesandbox/pokesandbox/issues/202), migration [M3-07](https://github.com/pokesandbox/pokesandbox/issues/203)) | existing tRPC routers |
+| Webapp | `apps/webapp/` (moving off antd to Tailwind + a headless library: trial [#202](https://github.com/pokesandbox/pokesandbox/issues/202), migration [#203](https://github.com/pokesandbox/pokesandbox/issues/203)) | existing tRPC routers |
 | New libraries | `libs/core`, `libs/battle`, `libs/engine`, `libs/authoring` (being created in M0a, M0c, M0b) | their scaffold issues |
 | Showdown fork | separate repo, `pokesandbox/pokemon-showdown` | [M0c § Background](https://github.com/pokesandbox/pokesandbox/issues/122) |
 | Design docs | `docs/architecture/concepts/` (one per topic) | the concept index in [`architecture/README.md`](architecture/README.md) |
@@ -48,7 +48,7 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 - Tests run with Jest through Nx, e.g. `npx nx test shared`.
 
 ## How work is organized
-- **Work is tracked as GitHub issues** on the [project board](https://github.com/orgs/pokesandbox/projects/1), grouped into epics within milestones. Each issue has a parent epic, priority, size, "blocked by" links, and checkable acceptance criteria; each epic has a **Background** section with the context its issues need. Issues that started as backlog drafts keep their draft ID (`M0C-03`) in the body. New issues use the issue templates; see [Writing issues](roadmap/github-project-setup.md#writing-issues).
+- **Work is tracked as GitHub issues** on the [project board](https://github.com/orgs/pokesandbox/projects/1), grouped into epics within milestones. Each issue has a parent epic, priority, size, "blocked by" links, and checkable acceptance criteria; each epic has a **Background** section with the context its issues need. New issues use the issue templates; see [Writing issues](roadmap/github-project-setup.md#writing-issues).
 - **The `agent-ready` label** means no design judgement is left; anyone (or an AI agent) can pick it up.
 - **One PR per issue.** Every PR is reviewed by the owner. CI runs lint, typecheck, and tests.
 - **If an issue leaves a real question open, ask the owner** rather than deciding it in code; answers get recorded in `open-questions.md`.

@@ -151,4 +151,4 @@ isEnabled(flag, { env, guildId? }) → boolean
 - **If this outgrows env vars** (percentage rollouts, a UI for toggling), OpenFeature with flagd, Unleash, or GrowthBook are free self-hosted or free-tier options. Keep `isEnabled` as the only call site so the backend can be swapped.
 
 ## Open questions
-- ~~Self-managed VPS vs managed host?~~ **Decided (Q30):** managed host to start. Which one (the family host or Railway/Fly/Render) is decided in [M2-01](https://github.com/pokesandbox/pokesandbox/issues/180).
+- ~~Self-managed VPS vs managed host?~~ **Decided (Q30):** managed host to start. Which one (the family host or Railway/Fly/Render) is decided when the host is chosen ([#180](https://github.com/pokesandbox/pokesandbox/issues/180)).

@@ -130,7 +130,7 @@ Unit-test vectors for formula implementations. Gen 1 vectors are worked from pok
 - **Player's side:** `facing: 'back' | 'front'`, default `back` (the classic look). A Pokémon with no back sprite shows its front sprite.
 - **Missing from the chosen set:** `missing: 'newer' | 'older' | 'text'`, default `newer`: try the next generation up, then down. The usual gap is a species newer than the set (a Gen 4 species in a Gen 3-sprite region), where nothing older exists. `text` keeps one consistent style. A per-entry override always wins.
 - **Last resort is always text** (name and type), never a broken image, and `mode: 'text'` turns images off for the whole region.
-- **One resolver:** all of this lives in `resolveSpriteUrl` ([M0A-20](https://github.com/pokesandbox/pokesandbox/issues/121)), which takes the region's settings and the entry override and returns a URL or `null`.
+- **One resolver:** all of this lives in `resolveSpriteUrl` ([#121](https://github.com/pokesandbox/pokesandbox/issues/121)), which takes the region's settings and the entry override and returns a URL or `null`.
 - **The Arena** has no region, so it uses the format's mechanics generation with `facing: 'back'` and `missing: 'newer'`.
 - **MVP:** the region-wide set, `facing` with the front fallback, and the text fallback (Kanto Classic's 151 species all have Gen 1 sprites). **Post-MVP, with custom content:** the per-entry override and the `missing` setting (until then the resolver behaves as `newer`).
 

@@ -60,7 +60,7 @@ MoveDefinition / Learnset / SpeciesDefinition { …; catalogVersion: string }
 
 ## Species (canon)
 - **Today:** canon species live in `DexEntry`, which mirrors Showdown's species fields and adds what Showdown lacks (catch rate, EXP yield, EV yields, growth rate, base happiness, hatch cycles, sprites). Later it becomes `SpeciesDefinition`, imported per catalog version like moves.
-- **Identity:** `speciesId` (renamed from `showdownName`, [M0A-19](https://github.com/pokesandbox/pokesandbox/issues/120)) is the Showdown ID and the only way anything refers to a species. It's unique among canon entries; library overrides and imports share species IDs by design ([27 § Identity and uniqueness](27-server-content-library-and-overrides.md#identity-and-uniqueness)).
+- **Identity:** `speciesId` (renamed from `showdownName`, [#120](https://github.com/pokesandbox/pokesandbox/issues/120)) is the Showdown ID and the only way anything refers to a species. It's unique among canon entries; library overrides and imports share species IDs by design ([27 § Identity and uniqueness](27-server-content-library-and-overrides.md#identity-and-uniqueness)).
 - **Per generation:** `DexEntry.baseStats` holds current-generation stats only. Gen 1's single Special stat and other per-gen stat changes come from the species import, with the same base + per-gen differences pattern as moves (`rules.data.speciesStats`, [18](18-rules-time-and-randomness.md)).
 - **Forms and variants** that a server adds (a "Surfer" Pikachu, a fakemon) are library entries, not canon ([27](27-server-content-library-and-overrides.md)).
 
@@ -185,6 +185,6 @@ The **DB catalog is the record** (see Layering above): canon data is imported fr
 
 ## Open questions
 - ~~What does `baseGeneration` control?~~ **Decided (Q26):** replaced by `RegionRules`; the default `10` is removed.
-- **Localized names (later, Q38):** species, move, ability, and item names and descriptions in other languages are imported from Showdown's own `data/text/<lang>` (de, es, fr, it, ja, ko, zh-cn, zh-tw in current upstream; our fork gets them with the rebase, [M0C-04](https://github.com/pokesandbox/pokemon-showdown/issues/9)). Custom library content is translated through `Translation` records ([30](30-internationalization-readiness.md)).
+- **Localized names (later, Q38):** species, move, ability, and item names and descriptions in other languages are imported from Showdown's own `data/text/<lang>` (de, es, fr, it, ja, ko, zh-cn, zh-tw in current upstream; our fork gets them with the rebase, [pokemon-showdown#9](https://github.com/pokesandbox/pokemon-showdown/issues/9)). Custom library content is translated through `Translation` records ([30](30-internationalization-readiness.md)).
 - ~~Sprite hosting?~~ **Decided (Q32):** the existing Imgur-hosted set behind a sprite-URL resolver, with Showdown's CDN as fallback.
 - ~~Regional forms in MVP?~~ **Decided (Oct 2026):** the model supports them (pokedex slots already hold forms), but the builder doesn't offer them while a region's data rules are Gen 1. Kanto Classic doesn't need them, and many would fail Gen 1 type rules (no Dark, Steel, or Fairy).

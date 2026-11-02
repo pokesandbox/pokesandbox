@@ -9,7 +9,7 @@ How the `pokesandbox` org, its repos, and the [PokeSandbox project](https://gith
 |---|---|
 | `pokesandbox` | Monorepo (bot, webapp, shared, `libs/core`, `libs/engine`, `libs/battle`, `libs/authoring`, `libs/presentation`) |
 | `pokemon-showdown` (keeps upstream's name after the move, Q20) | Fork: upstream + a small patch set, consumed as a versioned package. Monthly scheduled upstream-sync PR. Fork work is tracked in this repo's own issues (same labels, M0c milestone), as sub-issues of the monorepo's epics. |
-| `flowcord` (separate **FlowCord org**, not part of the PokeSandbox org) | An independent dependency (`@flowcord/core` on npm). Menus are single-person today, and the Arena doesn't depend on FlowCord multi-user support (Q34). The FlowCord issues PokeSandbox uses are listed in [E-M2-2 § Background](https://github.com/pokesandbox/pokesandbox/issues/190). |
+| `flowcord` (separate **FlowCord org**, not part of the PokeSandbox org) | An independent dependency (`@flowcord/core` on npm). Menus are single-person today, and the Arena doesn't depend on FlowCord multi-user support (Q34). The FlowCord issues PokeSandbox uses are listed in [#190 § Background](https://github.com/pokesandbox/pokesandbox/issues/190). |
 
 ## Issue types (org-level)
 `Epic` · `Feature` · `Task` · `Bug` · `Spike` (time-boxed research with a written outcome) · `Decision` (for *new* architecture decisions only; links to the concept doc)
@@ -79,7 +79,6 @@ Every template adds the issue to the project. Milestone, labels, parent epic, an
 
 **Still to write:** the rest of M1 (catalog read service details, if needed), the rest of M2 (`/arena` hub, PvAI setup, battle history, alpha test, release notes), and the checkpoint issues from CP0a onward (TM/HM lists, the webapp builder foundation, and trust and safety exist). The candidate issues are the checklists in [`mvp.md`](mvp.md).
 
-**Draft IDs:** the first backlog was drafted as Markdown files and created as issues in Nov 2026. Those issues keep their draft ID (e.g. `M0A-07`) at the bottom of the body, so old references can be found with a search.
 
 ## Team & workflow (decided Oct 2026, Q29)
 - **Team:** owner (senior), possibly a second senior (commitment TBD), 2 junior-to-mid devs, plus AI agents.
