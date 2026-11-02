@@ -1,5 +1,6 @@
-import { connectDb } from "@shared/connectDb";
-import { auth } from "@webapp/auth";
+import { connectDb } from '@shared/connectDb';
+
+import { auth } from '@webapp/auth';
 
 // Define the shape of the options tRPC passes in
 interface CreateContextOptions {

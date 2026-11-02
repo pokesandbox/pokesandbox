@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto';
+
+import type { ButtonInputConfig, ModalConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -12,6 +14,8 @@ import {
 } from 'discord.js';
 import { z } from 'zod';
 
+import type { ProgressionDefinition } from '@shared/models';
+
 import { saveRegion } from '@bot/cache';
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
@@ -21,9 +25,6 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import type { ButtonInputConfig, ModalConfig } from '@flowcord/core';
-import type { ProgressionDefinition } from '@shared/models';
-
 import { progressionsMenuEmbeds } from './progression.embeds';
 import { PROGRESSION_EDIT_COMMAND_NAME } from './progressionEdit';
 import type { ProgressionsMenuState } from './types';
@@ -49,7 +50,7 @@ export const ProgressionsCommand: ISlashCommand = {
   command: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(
-      'Manage progression definitions for one of your PokéSandbox Regions'
+      'Manage progression definitions for one of your PokéSandbox Regions',
     )
     .setContexts(InteractionContextType.Guild)
     .addStringOption((option) => {
@@ -63,13 +64,13 @@ export const ProgressionsCommand: ISlashCommand = {
   createMenu: (session, options) => {
     const { region_id } = parseCommandOptions(
       progressionsCommandOptionsSchema,
-      options
+      options,
     );
 
     return new AdminMenuBuilder<ProgressionsMenuState>(
       session,
       COMMAND_NAME,
-      options
+      options,
     )
       .setButtons((ctx) => getManageProgressionButtons(ctx, region_id))
       .setEmbeds((ctx) => progressionsMenuEmbeds(ctx, region_id))
@@ -82,7 +83,7 @@ export const ProgressionsCommand: ISlashCommand = {
 };
 
 const getProgressionCreateModal = (
-  regionId: string
+  regionId: string,
 ): ModalConfig<AdminMenuContext<ProgressionsMenuState>> => ({
   id: PROGRESSION_CREATE_MODAL_ID,
   builder: new ModalBuilder()
@@ -97,7 +98,7 @@ const getProgressionCreateModal = (
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('e.g. Badges, Z-Crystals, Battle Points')
             .setRequired(true)
-            .setMaxLength(80)
+            .setMaxLength(80),
         ),
       new LabelBuilder()
         .setLabel('Progression Type')
@@ -121,31 +122,31 @@ const getProgressionCreateModal = (
                 label: 'Flag',
                 value: 'boolean',
                 description: 'Track a simple on/off state',
-              }
+              },
             )
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     ),
   onSubmit: async (
     ctx: AdminMenuContext<ProgressionsMenuState>,
-    fields: ModalSubmitFields
+    fields: ModalSubmitFields,
   ) => {
     const name = fields.getTextInputValue(PROGRESSION_NAME_FIELD_ID).trim();
     const kind = getModalSelectValue(
       fields.fields,
       PROGRESSION_KIND_FIELD_ID,
-      true
+      true,
     ) as ProgressionDefinition['kind'];
 
     const region = await ctx.admin.getRegion(regionId);
 
     const hasDuplicate = Array.from(
-      region.progressionDefinitions.values()
+      region.progressionDefinitions.values(),
     ).some((def) => def.name === name);
     if (hasDuplicate) {
       ctx.state.set(
         'prompt',
-        `A progression named "${name}" already exists. Please choose a different name.`
+        `A progression named "${name}" already exists. Please choose a different name.`,
       );
       return;
     }
@@ -173,11 +174,11 @@ const getProgressionCreateModal = (
 
 const getManageProgressionButtons = async (
   ctx: AdminMenuContext<ProgressionsMenuState>,
-  regionId: string
+  regionId: string,
 ): Promise<ButtonInputConfig<AdminMenuContext<ProgressionsMenuState>>[]> => {
   const region = await ctx.admin.getRegion(regionId);
   const orderedProgressions = getOrderedProgressionEntries(
-    region.progressionDefinitions
+    region.progressionDefinitions,
   );
 
   return [

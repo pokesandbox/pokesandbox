@@ -46,7 +46,7 @@ const encounterSlotDbSchema = new Schema(
     maxLevel: { type: Number, required: true },
     weight: { type: Number, required: true },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const timeEncounterBlockDbSchema = new Schema(
@@ -58,7 +58,7 @@ const timeEncounterBlockDbSchema = new Schema(
     },
     slots: { type: [encounterSlotDbSchema], required: true },
   },
-  { _id: false }
+  { _id: false },
 );
 
 export const wildTableDbSchema = new Schema(
@@ -78,5 +78,5 @@ export const wildTableDbSchema = new Schema(
     },
     timeBlocks: { type: [timeEncounterBlockDbSchema], required: true },
   },
-  { _id: false }
+  { _id: false },
 );

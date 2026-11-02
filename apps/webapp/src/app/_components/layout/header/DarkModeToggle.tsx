@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export const DarkModeToggle = () => {
   const [isDark, setIsDark] = useState(false);
@@ -8,13 +8,13 @@ export const DarkModeToggle = () => {
 
   useEffect(() => {
     setMounted(true);
-    const isDarkMode = document.documentElement.classList.contains("dark");
+    const isDarkMode = document.documentElement.classList.contains('dark');
     setIsDark(isDarkMode);
   }, []);
 
   const toggleDarkMode = () => {
-    const isDarkMode = document.documentElement.classList.toggle("dark");
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    const isDarkMode = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     setIsDark(isDarkMode);
   };
 
@@ -22,7 +22,7 @@ export const DarkModeToggle = () => {
 
   return (
     <button
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       id="theme-toggle"
       type="button"
       className="rounded-lg text-sm p-2.5

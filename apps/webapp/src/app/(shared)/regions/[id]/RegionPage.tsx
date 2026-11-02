@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
+import { usePathname } from 'next/navigation';
 
-import { trpc } from "@webapp/trpc";
+import { trpc } from '@webapp/trpc';
 
 const RegionPage = () => {
-  const pathParts: string[] = usePathname()?.split("/") ?? [""];
+  const pathParts: string[] = usePathname()?.split('/') ?? [''];
   const regionId: string = pathParts[pathParts.length - 1];
 
   const { data: region } = trpc.regions.getById.useQuery(regionId);

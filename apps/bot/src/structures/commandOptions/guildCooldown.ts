@@ -6,7 +6,6 @@ import type {
 } from 'discord.js';
 
 import type { BotClient } from '@bot/classes';
-
 import type { AnyCommand } from '../interfaces';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -15,7 +14,7 @@ const getGuildCooldown = async (
   message: Message | Exclude<Interaction, AutocompleteInteraction<CacheType>>,
   command: AnyCommand,
   isInteraction: boolean,
-  interactionType: string
+  interactionType: string,
 ): Promise<boolean> => {
   return true;
   // if (!command.guildCooldown || isNaN(command.guildCooldown) || !message.guild?.id) return true;

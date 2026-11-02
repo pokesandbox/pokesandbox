@@ -2,7 +2,6 @@ import assert from 'node:assert';
 
 import { saveRegion } from '@bot/cache';
 import type { AdminMenuContext } from '@bot/classes';
-
 import type {
   EditProgressionFieldConfig,
   ProgressionEditMenuState,
@@ -13,7 +12,7 @@ export const handleEditProgressionField = async (
   config: EditProgressionFieldConfig,
   regionId: string,
   progressionKey: string,
-  response: string
+  response: string,
 ) => {
   const region = await ctx.admin.getRegion(regionId);
   const progression = region.progressionDefinitions.get(progressionKey);

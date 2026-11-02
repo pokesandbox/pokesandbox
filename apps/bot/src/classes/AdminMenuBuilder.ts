@@ -1,5 +1,15 @@
-import { EmbedBuilder, Role } from 'discord.js';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import {
+  MenuBuilder,
+  type MenuContext,
+  type MenuSessionLike,
+} from '@flowcord/core';
+import {
+  EmbedBuilder,
+  Role,
+  type ChatInputCommandInteraction,
+} from 'discord.js';
+
+import { Server, type Location, type Region } from '@shared/models';
 
 import {
   getCachedLocation,
@@ -9,10 +19,6 @@ import {
   getCachedServer,
   saveServer,
 } from '@bot/cache';
-import { Server } from '@shared/models';
-import type { Location, Region } from '@shared/models';
-import { MenuBuilder } from '@flowcord/core';
-import type { MenuContext, MenuSessionLike } from '@flowcord/core';
 
 /**
  * Typed admin helpers injected onto `ctx.admin` by AdminMenuBuilder.
@@ -29,7 +35,7 @@ export interface AdminHelpers {
 
 export type AdminMenuContext<
   TState extends Record<string, unknown> = Record<string, unknown>,
-  TSessionState extends Record<string, unknown> = Record<string, unknown>
+  TSessionState extends Record<string, unknown> = Record<string, unknown>,
 > = MenuContext<TState, TSessionState> & { admin: AdminHelpers };
 
 /**
@@ -42,19 +48,23 @@ export type AdminMenuContext<
  */
 export class AdminMenuBuilder<
   TState extends Record<string, unknown> = Record<string, unknown>,
-  TSessionState extends Record<string, unknown> = Record<string, unknown>
-> extends MenuBuilder<TState, TSessionState, AdminMenuContext<TState, TSessionState>> {
+  TSessionState extends Record<string, unknown> = Record<string, unknown>,
+> extends MenuBuilder<
+  TState,
+  TSessionState,
+  AdminMenuContext<TState, TSessionState>
+> {
   constructor(
     sessionLike: MenuSessionLike,
     name: string,
-    options?: Record<string, unknown>
+    options?: Record<string, unknown>,
   ) {
     super(sessionLike, name, options);
 
     // Inject admin helpers onto ctx.admin
     this.extendContext((baseCtx: MenuContext) => ({
       admin: buildAdminHelpers(
-        baseCtx.interaction as ChatInputCommandInteraction
+        baseCtx.interaction as ChatInputCommandInteraction,
       ),
     }));
 
@@ -70,14 +80,14 @@ export class AdminMenuBuilder<
 // ---------------------------------------------------------------------------
 
 function buildAdminHelpers(
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ): AdminHelpers {
   return {
     async getServer(): Promise<Server> {
       const server = await getCachedServer(interaction.guild?.id);
       if (!server) {
         throw new Error(
-          'There was a problem fetching your server. Please try again later.'
+          'There was a problem fetching your server. Please try again later.',
         );
       }
       return server;
@@ -87,7 +97,7 @@ function buildAdminHelpers(
       const region = await getCachedRegion(regionId);
       if (!region) {
         throw new Error(
-          'There was a problem fetching the region. Please try again later.'
+          'There was a problem fetching the region. Please try again later.',
         );
       }
       return region;
@@ -102,7 +112,7 @@ function buildAdminHelpers(
       const location = await getCachedLocation(locationId);
       if (!location) {
         throw new Error(
-          'There was a problem fetching the location. Please try again later.'
+          'There was a problem fetching the location. Please try again later.',
         );
       }
       return location;
@@ -116,7 +126,9 @@ function buildAdminHelpers(
     async getRoles(type: 'admin' | 'mod'): Promise<(string | Role)[]> {
       const server = await this.getServer();
       const ids =
-        type === 'admin' ? server.adminRoleIds ?? [] : server.modRoleIds ?? [];
+        type === 'admin'
+          ? (server.adminRoleIds ?? [])
+          : (server.modRoleIds ?? []);
 
       return Promise.all(ids.map((id) => this.getGuildRole(id)));
     },
@@ -172,7 +184,7 @@ async function ensureServerInitialized(ctx: AdminMenuContext): Promise<void> {
             `Congratulations, your server has been initialized with PokeSandbox!\n` +
               `\nBelow are some basic commands that will be helpful for getting your server setup and starting with creating your first region:` +
               `\n\`/server\`: Use this command at any time to open up the below options menu and update your PokeSandbox server settings.` +
-              `\n\`/regions\`: Use this command to create a new region for your server, or to update existing regions.`
+              `\n\`/regions\`: Use this command to create a new region for your server, or to update existing regions.`,
           )
           .setTimestamp(),
       ],

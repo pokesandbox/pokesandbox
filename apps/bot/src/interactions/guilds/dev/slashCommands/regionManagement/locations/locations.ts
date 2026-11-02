@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -13,12 +14,10 @@ import {
   parseCommandOptions,
   sortByOrdinal,
 } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import { LOCATION_COMMAND_NAME } from './location';
 import {
-  LOCATION_CREATE_MODAL_ID,
   getLocationCreateModal,
+  LOCATION_CREATE_MODAL_ID,
 } from './location.modal';
 import { getLocationsMenuEmbeds } from './locations.embeds';
 import type { LocationsMenuState } from './types';
@@ -51,13 +50,13 @@ export const LocationsCommand: ISlashCommand = {
   createMenu: (session, options) => {
     const { region_id } = parseCommandOptions(
       locationsCommandOptionsSchema,
-      options
+      options,
     );
 
     return new AdminMenuBuilder<LocationsMenuState>(
       session,
       COMMAND_NAME,
-      options
+      options,
     )
       .setButtons((ctx) => getLocationsButtons(ctx, region_id))
       .setEmbeds((ctx) => getLocationsMenuEmbeds(ctx, region_id))
@@ -71,7 +70,7 @@ export const LocationsCommand: ISlashCommand = {
 
 const getLocationsButtons = async (
   ctx: AdminMenuContext<LocationsMenuState>,
-  regionId: string
+  regionId: string,
 ): Promise<ButtonInputConfig<AdminMenuContext<LocationsMenuState>>[]> => {
   const locations = await ctx.admin.getLocations(regionId);
   const sortedLocations = sortByOrdinal(locations);

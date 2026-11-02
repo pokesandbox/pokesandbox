@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -13,11 +14,9 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
+import { LOCATIONS_COMMAND_NAME } from '../locations/locations';
 import { MANAGE_POKEDEX_COMMAND_NAME } from '../pokedex/managePokedex';
 import { PROGRESSIONS_COMMAND_NAME } from '../progression/progressions';
-import { LOCATIONS_COMMAND_NAME } from '../locations/locations';
 import { getRegionMenuEmbeds } from './region.embeds';
 import type { RegionMenuState } from './types';
 
@@ -49,14 +48,10 @@ export const RegionCommand: ISlashCommand = {
   createMenu: (session, options) => {
     const { region_id } = parseCommandOptions(
       regionCommandOptionsSchema,
-      options
+      options,
     );
 
-    return new AdminMenuBuilder<RegionMenuState>(
-      session,
-      COMMAND_NAME,
-      options
-    )
+    return new AdminMenuBuilder<RegionMenuState>(session, COMMAND_NAME, options)
       .setButtons((ctx) => getRegionButtons(ctx, region_id))
       .setEmbeds((ctx) => getRegionMenuEmbeds(ctx, region_id))
       .setCancellable()
@@ -68,7 +63,7 @@ export const RegionCommand: ISlashCommand = {
 
 const getRegionButtons = async (
   ctx: AdminMenuContext<RegionMenuState>,
-  regionId: string
+  regionId: string,
 ): Promise<ButtonInputConfig<AdminMenuContext<RegionMenuState>>[]> => {
   const region = await ctx.admin.getRegion(regionId);
 
@@ -98,7 +93,7 @@ const getRegionButtons = async (
           'prompt',
           `Successfully ${region.deployed ? 'deployed' : 'undeployed'} the ${
             region.name
-          } Region`
+          } Region`,
         );
       },
     },

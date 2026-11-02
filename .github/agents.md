@@ -132,7 +132,7 @@ export const itemSchema = new Schema<
         return this.find().byRegion(regionId);
       },
     },
-  }
+  },
 );
 ```
 
@@ -198,7 +198,7 @@ export type ItemWithRegionDTO = z.infer<typeof ItemWithRegionDTOSchema>;
 
 export const ItemWithRegionDTO = {
   convertFromEntity(
-    entity: Omit<Item, 'region'> & { region: Region }
+    entity: Omit<Item, 'region'> & { region: Region },
   ): ItemWithRegionDTO {
     return ItemWithRegionDTOSchema.parse(convertToDTO(entity));
   },
@@ -287,15 +287,17 @@ export enum CacheTTL {
 
 ```ts
 // apps/bot/src/cache/cachedItem.ts
+import { Types } from 'mongoose';
+
 import { getCacheService } from '@shared/cache';
 import { Item } from '@shared/models';
+
 import { CachePrefix, CacheTTL } from './constants';
-import { Types } from 'mongoose';
 import { toIdStrings } from './utils';
 
 /** Fetch a single item by ID, cache-first. */
 export async function getCachedItem(
-  itemId: string | undefined
+  itemId: string | undefined,
 ): Promise<Item | null> {
   if (!itemId) return null;
   const cache = getCacheService();
@@ -312,14 +314,14 @@ export async function getAssertedCachedItem(itemId: string): Promise<Item> {
   const item = await getCachedItem(itemId);
   if (!item)
     throw new Error(
-      'There was a problem fetching the item. Please try again later.'
+      'There was a problem fetching the item. Please try again later.',
     );
   return item;
 }
 
 /** Fetch multiple items by ID, cache-first with batch miss detection. */
 export async function getCachedItems(
-  ids: (Types.ObjectId | string)[]
+  ids: (Types.ObjectId | string)[],
 ): Promise<Item[]> {
   if (!ids.length) return [];
   const cache = getCacheService();
@@ -356,7 +358,7 @@ export async function saveItem(item: Item): Promise<void> {
     await item.save();
   } catch (error) {
     throw new Error(
-      'There was a problem saving the item. Please try again later.'
+      'There was a problem saving the item. Please try again later.',
     );
   }
   invalidateItemCache(item.id);
@@ -418,7 +420,7 @@ Add an `autocomplete` handler on the command and create a reusable helper in `ap
 // In autocompleteHelpers.ts — reusable choice generator
 export async function getItemChoices(
   guildId: string,
-  focusedValue: string
+  focusedValue: string,
 ): Promise<{ name: string; value: string }[]> {
   const server = await getCachedServer(guildId);
   if (!server) return [];
@@ -430,7 +432,7 @@ export async function getItemChoices(
 // Reusable autocomplete handler
 export async function handleItemAutocomplete(
   client: BotClient,
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ): Promise<void> {
   const guildId = interaction.guild?.id;
   if (!guildId) return;
@@ -621,6 +623,7 @@ The standard pattern is a **thin SSR wrapper** + **client component**:
 ```tsx
 // apps/webapp/src/app/(shared)/items/page.tsx (Server Component)
 import ItemsPage from './ItemsPage';
+
 export default function Page() {
   return <ItemsPage />;
 }
@@ -629,6 +632,7 @@ export default function Page() {
 ```tsx
 // apps/webapp/src/app/(shared)/items/ItemsPage.tsx
 'use client';
+
 import { trpc } from '@webapp/trpc';
 
 const ItemsPage = () => {
@@ -680,11 +684,13 @@ Reference: `apps/webapp/src/trpc/routers/servers.ts`, `apps/webapp/src/trpc/rout
 
 ```ts
 // apps/webapp/src/trpc/routers/items.ts
-import { z } from 'zod';
-import { router, publicProcedure, protectedProcedure } from '../init';
-import { Item } from '@shared/models';
-import { ItemDTO, ItemWithRegionDTO } from '@shared/dtos';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import { ItemDTO, ItemWithRegionDTO } from '@shared/dtos';
+import { Item } from '@shared/models';
+
+import { protectedProcedure, publicProcedure, router } from '../init';
 
 export const itemsRouter = router({
   getAll: publicProcedure.query(async () => {

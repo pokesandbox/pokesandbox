@@ -1,7 +1,7 @@
 import {
+  EmbedBuilder,
   type AutocompleteInteraction,
   type CacheType,
-  EmbedBuilder,
   type GuildMember,
   type Interaction,
   type Message,
@@ -14,7 +14,7 @@ const getOnlyChannels = async (
   client: BotClient,
   message: Message | Exclude<Interaction, AutocompleteInteraction<CacheType>>,
   command: AnyCommand,
-  isInteraction?: boolean
+  isInteraction?: boolean,
 ): Promise<boolean> => {
   if (
     !command.onlyChannels ||
@@ -43,7 +43,7 @@ const getOnlyChannels = async (
       .setDescription(
         `The command you tried to execute cannot be ran in the current channel. Please execute the command in of these authorized channels:\n${command.onlyChannels
           .map((channelId) => `↳ <#${channelId}>`)
-          .join('\n')}`
+          .join('\n')}`,
       );
 
     if (isInteraction) {

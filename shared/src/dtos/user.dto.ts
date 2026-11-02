@@ -37,7 +37,7 @@ export type UserWithServersDTO = z.infer<typeof UserWithServersDTOSchema>;
 
 export const UserWithServersDTO = {
   convertFromEntity(
-    entity: Omit<User, 'servers'> & { servers: Server[] }
+    entity: Omit<User, 'servers'> & { servers: Server[] },
   ): UserWithServersDTO {
     return UserWithServersDTOSchema.parse(convertToDTO(entity));
   },

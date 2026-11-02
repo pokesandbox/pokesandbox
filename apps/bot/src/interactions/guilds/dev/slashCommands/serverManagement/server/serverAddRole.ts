@@ -1,3 +1,4 @@
+import type { SelectInputConfig } from '@flowcord/core';
 import {
   InteractionContextType,
   RoleSelectMenuBuilder,
@@ -8,8 +9,6 @@ import { saveServer } from '@bot/cache';
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
-import type { SelectInputConfig } from '@flowcord/core';
-
 import { getServerMenuEmbeds } from './server.embeds';
 import { SERVER_MANAGE_ROLES_COMMAND_NAME } from './serverManageRoles';
 
@@ -37,8 +36,8 @@ export const ServerAddRoleCommand: ISlashCommand = {
         .setRequired(true)
         .addChoices(
           { name: 'Admin', value: 'admin' },
-          { name: 'Mod', value: 'mod' }
-        )
+          { name: 'Mod', value: 'mod' },
+        ),
     ),
   createMenu: (session, options) => {
     const { role_type } = options as unknown as ServerAddRoleCommandOptions;
@@ -50,8 +49,8 @@ export const ServerAddRoleCommand: ISlashCommand = {
       .setEmbeds((ctx) =>
         getServerMenuEmbeds(
           ctx,
-          `Please select a role to grant Bot ${role_type} privileges to.`
-        )
+          `Please select a role to grant Bot ${role_type} privileges to.`,
+        ),
       )
       .setSelectMenu((ctx) => getServerAddRoleSelectMenu(ctx, role_type))
       .setFallbackMenu(SERVER_MANAGE_ROLES_COMMAND_NAME, {
@@ -63,7 +62,7 @@ export const ServerAddRoleCommand: ISlashCommand = {
 
 export const getServerAddRoleSelectMenu = async (
   _ctx: AdminMenuContext,
-  roleType: string
+  roleType: string,
 ): Promise<SelectInputConfig<AdminMenuContext>> => {
   return {
     builder: new RoleSelectMenuBuilder()
@@ -74,12 +73,12 @@ export const getServerAddRoleSelectMenu = async (
       const roleIds =
         roleType === 'admin' ? server.adminRoleIds : server.modRoleIds;
       const newRoleIds = selectedRoleIds.filter(
-        (roleId) => !roleIds.includes(roleId)
+        (roleId) => !roleIds.includes(roleId),
       );
 
       if (newRoleIds.length > 0) {
         const newRoles = await Promise.all(
-          newRoleIds.map((roleId) => ctx.admin.getGuildRole(roleId))
+          newRoleIds.map((roleId) => ctx.admin.getGuildRole(roleId)),
         );
 
         if (roleType === 'admin') {
@@ -91,7 +90,7 @@ export const getServerAddRoleSelectMenu = async (
         await saveServer(server);
         ctx.state.set(
           'prompt',
-          `Successfully added the ${roleType} roles: ${newRoles.join(', ')}`
+          `Successfully added the ${roleType} roles: ${newRoles.join(', ')}`,
         );
       } else {
         ctx.state.set('prompt', `No new ${roleType} roles were selected.`);

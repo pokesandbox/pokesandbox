@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 // import ProgressBar from 'react-bootstrap/ProgressBar';
-import { LoadingOutlined } from "@ant-design/icons";
-import { Divider, Typography } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { LoadingOutlined } from '@ant-design/icons';
+import { Divider, Typography } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState({} as any);
@@ -16,7 +16,7 @@ const ProfilePage = () => {
 
   const fetchProfileData = useCallback(async () => {
     const response = await fetch(
-      "http://localhost:3000/profile/160794840815239168"
+      'http://localhost:3000/profile/160794840815239168',
     );
     const { data } = await response.json();
     setProfile(data);
@@ -44,8 +44,8 @@ const ProfilePage = () => {
                 <Divider />
                 <div className="componentBody">
                   <Title level={5}>
-                    Name: {profile.firstName}{" "}
-                    {profile.nickname ? "'" + profile.nickname + "' " : ""}
+                    Name: {profile.firstName}{' '}
+                    {profile.nickname ? "'" + profile.nickname + "' " : ''}
                     {profile.lastName}
                   </Title>
                   <Title level={5}>Age: {profile.age}</Title>
@@ -76,10 +76,10 @@ const ProfilePage = () => {
                 <div className="componentBody">
                   <Title level={5}>Money: {profile.money}P</Title>
                   <Title level={5}>
-                    Badges: {profile.badges.join(", ") || "None"}
+                    Badges: {profile.badges.join(', ') || 'None'}
                   </Title>
                   <Title level={5}>
-                    Key Items: {profile.keyItems.join(", ") || "None"}
+                    Key Items: {profile.keyItems.join(', ') || 'None'}
                   </Title>
                   <Title level={5}>General Items</Title>
                   <ul>
@@ -109,13 +109,13 @@ const ProfilePage = () => {
                         <Title level={4}>Slot {index + 1}:</Title>
                         {pkmn.pokemon && (
                           <ul>
-                            Lv.{pkmn.level}{" "}
+                            Lv.{pkmn.level}{' '}
                             <span className={`gender gender-${pkmn.gender}`}>
-                              {pkmn.gender === "M"
-                                ? "♂"
-                                : pkmn.gender === "F"
-                                ? "♀"
-                                : "X"}
+                              {pkmn.gender === 'M'
+                                ? '♂'
+                                : pkmn.gender === 'F'
+                                  ? '♀'
+                                  : 'X'}
                             </span>
                             <a href={dexUrl(pkmn.pokemon)}>
                               <img
@@ -129,15 +129,15 @@ const ProfilePage = () => {
                               />
                             </a>
                             <li>
-                              Name:{" "}
+                              Name:{' '}
                               {pkmn.nickname ? pkmn.nickname : pkmn.pokemon}
                             </li>
                             <li>Ability: {pkmn.ability}</li>
                             <li>Nature: {pkmn.nature}</li>
                             <li>
-                              Status:{" "}
+                              Status:{' '}
                               <span className={`status ${pkmn.status}`}>
-                                {pkmn.status || "None"}
+                                {pkmn.status || 'None'}
                               </span>
                             </li>
                             <li>
@@ -149,15 +149,15 @@ const ProfilePage = () => {
                               {/*<ProgressBar animated now={pkmn.exp.percentage} className="Profile-progressBar" />*/}
                             </li>
                             <li>
-                              OT:{" "}
+                              OT:{' '}
                               {pkmn.originalTrainer.firstName +
-                                " " +
+                                ' ' +
                                 pkmn.originalTrainer.lastName +
-                                " (" +
+                                ' (' +
                                 pkmn.originalTrainer.username +
-                                ")"}
+                                ')'}
                             </li>
-                            <li>All Moves: {pkmn.moves.join(", ")}</li>
+                            <li>All Moves: {pkmn.moves.join(', ')}</li>
                             <li>
                               Set Moves:
                               <table className="movesTable">
@@ -175,7 +175,7 @@ const ProfilePage = () => {
                                           {move.pp}/{move.maxPP} PP
                                         </td>
                                       </tr>
-                                    )
+                                    ),
                                   )}
                                 </tbody>
                               </table>

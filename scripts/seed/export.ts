@@ -12,14 +12,15 @@
  * Supported collections: users, servers, regions
  */
 
-import * as dotenv from 'dotenv';
-import mongoose from 'mongoose';
 import * as fs from 'fs';
 import * as path from 'path';
 
-dotenv.config();
+import * as dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 import { SUPPORTED_COLLECTIONS, type SupportedCollection } from './collections';
+
+dotenv.config();
 
 const DATABASE_URI =
   process.env.DATABASE_URI || 'mongodb://localhost:27017/pokesandbox';
@@ -71,7 +72,7 @@ function toPlainObject(value: unknown): unknown {
 }
 
 async function exportCollection(
-  collectionName: SupportedCollection
+  collectionName: SupportedCollection,
 ): Promise<void> {
   const db = mongoose.connection.db;
   if (!db) throw new Error('No active database connection.');
@@ -85,8 +86,8 @@ async function exportCollection(
   console.info(
     `  Exported ${docs.length} document(s) → ${path.relative(
       process.cwd(),
-      outputPath
-    )}`
+      outputPath,
+    )}`,
   );
 }
 
@@ -99,8 +100,8 @@ async function main(): Promise<void> {
   if (collectionArg && !SUPPORTED_COLLECTIONS.includes(collectionArg)) {
     console.error(
       `Unknown collection "${collectionArg}". Supported: ${SUPPORTED_COLLECTIONS.join(
-        ', '
-      )}`
+        ', ',
+      )}`,
     );
     process.exit(1);
   }

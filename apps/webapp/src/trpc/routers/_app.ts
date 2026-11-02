@@ -1,7 +1,7 @@
-import { router } from "../init";
-import { regionsRouter } from "./regions";
-import { serversRouter } from "./servers";
-import { usersRouter } from "./users";
+import { router } from '../init';
+import { regionsRouter } from './regions';
+import { serversRouter } from './servers';
+import { usersRouter } from './users';
 
 export const appRouter = router({
   regions: regionsRouter,

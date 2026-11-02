@@ -1,13 +1,15 @@
-import type { AdminMenuContext } from '@bot/classes';
-import { searchPokemon } from '@bot/utils';
-import { SELECT_MATCHED_POKEMON_COMMAND_NAME } from './selectMatchedPokemon';
+import { Types } from 'mongoose';
+
 import type { DexEntry, Region } from '@shared/models';
+
 import {
   getAssertedCachedDexEntry,
   getAssertedCachedRegion,
   saveRegion,
 } from '@bot/cache';
-import { Types } from 'mongoose';
+import type { AdminMenuContext } from '@bot/classes';
+import { searchPokemon } from '@bot/utils';
+import { SELECT_MATCHED_POKEMON_COMMAND_NAME } from './selectMatchedPokemon';
 import { NavigateMenuOptions } from './types';
 
 export const handleAddPokemonToSlot = async (
@@ -15,14 +17,14 @@ export const handleAddPokemonToSlot = async (
   regionId: string,
   pokedexNo: string,
   pokemonName: string,
-  navigateToMenuOptions?: NavigateMenuOptions
+  navigateToMenuOptions?: NavigateMenuOptions,
 ) => {
   const server = await ctx.admin.getServer();
   const region = await ctx.admin.getRegion(regionId);
 
   const { exactMatch, potentialMatches } = await searchPokemon(
     server._id.toString(),
-    pokemonName
+    pokemonName,
   );
 
   if (exactMatch) {
@@ -31,7 +33,7 @@ export const handleAddPokemonToSlot = async (
       exactMatch,
       region,
       pokedexNo,
-      navigateToMenuOptions
+      navigateToMenuOptions,
     );
     return;
   }
@@ -42,13 +44,13 @@ export const handleAddPokemonToSlot = async (
         const adminCtx = innerCtx as AdminMenuContext;
         const selectedPokemonId = result as string;
         const selectedPokemon = potentialMatches.find(
-          (match) => match._id.toString() === selectedPokemonId
+          (match) => match._id.toString() === selectedPokemonId,
         );
 
         if (!selectedPokemon) {
           adminCtx.state.set(
             'prompt',
-            'Selected Pokémon not found. Please try again.'
+            'Selected Pokémon not found. Please try again.',
           );
           return;
         }
@@ -58,7 +60,7 @@ export const handleAddPokemonToSlot = async (
           selectedPokemon,
           region,
           pokedexNo,
-          navigateToMenuOptions
+          navigateToMenuOptions,
         );
       },
       regionId: region._id.toString(),
@@ -68,7 +70,7 @@ export const handleAddPokemonToSlot = async (
 
   ctx.state.set(
     'prompt',
-    `No Pokémon found with the name "${pokemonName}". Please try again.`
+    `No Pokémon found with the name "${pokemonName}". Please try again.`,
   );
 };
 
@@ -77,12 +79,12 @@ export const handlePokemonSelected = async (
   selectedPokemon: DexEntry,
   region: Region,
   pokedexNo: string,
-  navigateToMenuOptions?: NavigateMenuOptions
+  navigateToMenuOptions?: NavigateMenuOptions,
 ) => {
   if (region.pokedex.some((pkmn) => pkmn?.id.equals(selectedPokemon._id))) {
     ctx.state.set(
       'prompt',
-      `The Pokémon "${selectedPokemon.name}" is already in the Pokédex. Please choose a different Pokémon.`
+      `The Pokémon "${selectedPokemon.name}" is already in the Pokédex. Please choose a different Pokémon.`,
     );
   } else {
     region.pokedex[+pokedexNo - 1] = {
@@ -93,7 +95,7 @@ export const handlePokemonSelected = async (
     if (navigateToMenuOptions) {
       await ctx.goTo(
         navigateToMenuOptions.commandName,
-        navigateToMenuOptions.navigatePayload
+        navigateToMenuOptions.navigatePayload,
       );
     }
     await ctx.hardRefresh();
@@ -102,7 +104,7 @@ export const handlePokemonSelected = async (
 
 export const removePokedexSlot = (
   region: Region,
-  pokedexIndex: number
+  pokedexIndex: number,
 ): { name: string; id: Types.ObjectId } | null => {
   const pokedexEntry = region.pokedex[pokedexIndex];
   region.pokedex[pokedexIndex] = null;
@@ -118,7 +120,7 @@ const removeNullsFromEndOfPokedex = (region: Region): void => {
 
 export const checkHasOtherFormes = async (
   regionId: string,
-  pokedexNo: string
+  pokedexNo: string,
 ): Promise<boolean> => {
   const region = await getAssertedCachedRegion(regionId);
   const dexEntryId = region.pokedex[+pokedexNo - 1]?.id;

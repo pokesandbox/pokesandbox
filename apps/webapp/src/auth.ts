@@ -1,7 +1,7 @@
-import NextAuth from "next-auth";
-import Discord from "next-auth/providers/discord";
+import NextAuth from 'next-auth';
+import Discord from 'next-auth/providers/discord';
 
-import { trpcServer } from "./trpc/server";
+import { trpcServer } from './trpc/server';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [Discord],
@@ -19,7 +19,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           });
         } catch (error) {
           // Log error but allow sign in to proceed
-          console.error("Error creating/updating user:", error);
+          console.error('Error creating/updating user:', error);
         }
       }
       return true;

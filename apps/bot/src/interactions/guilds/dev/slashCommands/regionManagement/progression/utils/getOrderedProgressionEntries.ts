@@ -9,7 +9,7 @@ const progressionKindOrder: Record<ProgressionDefinition['kind'], number> = {
 };
 
 export const getOrderedProgressionEntries = (
-  progressionDefinitions: Map<string, ProgressionDefinition>
+  progressionDefinitions: Map<string, ProgressionDefinition>,
 ): ProgressionEntry[] => {
   return Array.from(progressionDefinitions.entries()).sort((a, b) => {
     const kindOrderDifference =

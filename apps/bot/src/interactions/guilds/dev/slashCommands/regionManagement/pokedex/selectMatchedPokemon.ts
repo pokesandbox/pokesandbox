@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -8,8 +9,6 @@ import { z } from 'zod';
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles, parseCommandOptions } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import { getSelectMatchedPokemonEmbeds } from './pokedex.embeds';
 import type { PokedexMenuState } from './types';
 
@@ -35,20 +34,20 @@ export const SelectMatchedPokemonCommand: ISlashCommand = {
   createMenu: (session, options) => {
     const { matchedDexEntryIds } = parseCommandOptions(
       selectMatchedPokemonCommandOptionsSchema,
-      options
+      options,
     );
 
     return new AdminMenuBuilder<PokedexMenuState>(
       session,
       COMMAND_NAME,
-      options
+      options,
     )
       .setButtons((ctx) =>
-        getSelectMatchedPokemonButtons(ctx, matchedDexEntryIds)
+        getSelectMatchedPokemonButtons(ctx, matchedDexEntryIds),
       )
       .setCancellable()
       .setEmbeds((ctx) =>
-        getSelectMatchedPokemonEmbeds(ctx, matchedDexEntryIds)
+        getSelectMatchedPokemonEmbeds(ctx, matchedDexEntryIds),
       )
       .build();
   },
@@ -56,7 +55,7 @@ export const SelectMatchedPokemonCommand: ISlashCommand = {
 
 const getSelectMatchedPokemonButtons = async (
   _ctx: AdminMenuContext<PokedexMenuState>,
-  matchedDexEntryIds: string[]
+  matchedDexEntryIds: string[],
 ): Promise<ButtonInputConfig<AdminMenuContext<PokedexMenuState>>[]> =>
   matchedDexEntryIds.map((dexEntryId, idx) => ({
     id: dexEntryId,

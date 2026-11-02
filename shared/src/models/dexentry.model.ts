@@ -1,13 +1,13 @@
 import {
-  type HydratedDocument,
-  type Model,
   model,
   models,
-  type Query,
-  type QueryFilter,
   QueryWithHelpers,
   Schema,
   Types,
+  type HydratedDocument,
+  type Model,
+  type Query,
+  type QueryFilter,
 } from 'mongoose';
 
 export type EvoRegion = 'Alola' | 'Galar';
@@ -28,10 +28,7 @@ export type SpeciesAbility = {
   S?: string;
 };
 export type SpeciesTag =
-  | 'Mythical'
-  | 'Restricted Legendary'
-  | 'Sub-Legendary'
-  | 'Paradox';
+  'Mythical' | 'Restricted Legendary' | 'Sub-Legendary' | 'Paradox';
 export type StatsTable = {
   hp: number;
   atk: number;
@@ -86,49 +83,49 @@ export type Sprite = {
   shiny?: Sprites;
 };
 export enum Gen1 {
-  'rb' = 'rb',
-  'rg' = 'rg',
-  'y' = 'y',
+  rb = 'rb',
+  rg = 'rg',
+  y = 'y',
 }
 export enum Gen2 {
-  'c' = 'c',
-  'g' = 'g',
-  's' = 's',
+  c = 'c',
+  g = 'g',
+  s = 's',
 }
 export enum Gen3 {
-  'e' = 'e',
-  'frlg' = 'frlg',
-  'rs' = 'rs',
+  e = 'e',
+  frlg = 'frlg',
+  rs = 'rs',
 }
 export enum Gen4 {
-  'dp' = 'dp',
-  'hgss' = 'hgss',
-  'p' = 'p',
+  dp = 'dp',
+  hgss = 'hgss',
+  p = 'p',
 }
 export enum Gen5 {
-  'bw' = 'bw',
+  bw = 'bw',
 }
 export enum Gen6 {
-  'bank' = 'bank',
-  'go' = 'go',
-  'oras' = 'oras',
-  'xy' = 'xy',
+  bank = 'bank',
+  go = 'go',
+  oras = 'oras',
+  xy = 'xy',
 }
 export enum Gen7 {
-  'lgpe' = 'lgpe',
+  lgpe = 'lgpe',
 }
 export enum Gen8 {
-  'bdsp' = 'bdsp',
-  'home' = 'home',
-  'la' = 'la',
-  'swsh' = 'swsh',
+  bdsp = 'bdsp',
+  home = 'home',
+  la = 'la',
+  swsh = 'swsh',
 }
 export enum Gen9 {
-  'sv' = 'sv',
+  sv = 'sv',
 }
 export enum OtherSpriteGroup {
-  'sugimori' = 'sugimori',
-  'custom' = 'custom',
+  sugimori = 'sugimori',
+  custom = 'custom',
 }
 export interface ISprites {
   footprint?: string;
@@ -193,18 +190,17 @@ export interface IShowdownDexEntry {
   natDexTier?: SinglesTier | OtherTier;
 }
 
-export interface IDexEntry
-  extends Omit<
-    IShowdownDexEntry,
-    | 'baseSpecies'
-    | 'changesFrom'
-    | 'cosmeticFormes'
-    | 'evoRegion'
-    | 'evos'
-    | 'formeOrder'
-    | 'otherFormes'
-    | 'prevo'
-  > {
+export interface IDexEntry extends Omit<
+  IShowdownDexEntry,
+  | 'baseSpecies'
+  | 'changesFrom'
+  | 'cosmeticFormes'
+  | 'evoRegion'
+  | 'evos'
+  | 'formeOrder'
+  | 'otherFormes'
+  | 'prevo'
+> {
   baseSpecies?: {
     id: Types.ObjectId;
     name: string;
@@ -270,7 +266,7 @@ interface IDexEntryModel extends Model<IDexEntry, IDexEntryQueryHelpers> {
   createDexEntry(dexEntry: IDexEntry): Promise<DexEntry>;
   upsertDexEntry(
     filter: QueryFilter<IDexEntry>,
-    update: Partial<IDexEntry>
+    update: Partial<IDexEntry>,
   ): Query<DexEntry | null, IDexEntry>;
 }
 
@@ -718,7 +714,7 @@ export const DexEntrySchema = new Schema<
     query: {
       byIds(
         this: QueryWithHelpers<any, DexEntry, IDexEntryQueryHelpers>,
-        ids: string[]
+        ids: string[],
       ) {
         return this.where({ _id: { $in: ids } });
       },
@@ -730,17 +726,17 @@ export const DexEntrySchema = new Schema<
       },
       upsertDexEntry(
         filter: QueryFilter<IDexEntry>,
-        update: Partial<IDexEntry>
+        update: Partial<IDexEntry>,
       ) {
         return this.findOneAndUpdate(filter, update, { upsert: true });
       },
     },
-  }
+  },
 );
 
 export const DexEntry = (models.DexEntry ||
   model<IDexEntry, IDexEntryModel>(
     'DexEntry',
     DexEntrySchema,
-    'dexentries'
+    'dexentries',
   )) as IDexEntryModel;

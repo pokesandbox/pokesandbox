@@ -1,6 +1,6 @@
-import { HomePagePublic } from "../(public)/home/HomePagePublic";
-import { HomePagePrivate } from "../(private)/home/HomePagePrivate";
-import { SharedPage } from "./SharedPage";
+import { HomePagePrivate } from '../(private)/home/HomePagePrivate';
+import { HomePagePublic } from '../(public)/home/HomePagePublic';
+import { SharedPage } from './SharedPage';
 
 export default function Page() {
   return (

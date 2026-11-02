@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -13,10 +14,8 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
-import { LOCATION_EDIT_MODAL_ID, getLocationEditModal } from './location.modal';
 import { getLocationMenuEmbeds } from './location.embeds';
+import { getLocationEditModal, LOCATION_EDIT_MODAL_ID } from './location.modal';
 import type { LocationMenuState } from './types';
 
 const COMMAND_NAME = 'location';
@@ -36,7 +35,7 @@ export const LocationCommand: ISlashCommand = {
   command: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(
-      'Manage a single location in one of your PokéSandbox Regions'
+      'Manage a single location in one of your PokéSandbox Regions',
     )
     .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
@@ -44,26 +43,26 @@ export const LocationCommand: ISlashCommand = {
         .setName('region_id')
         .setDescription('The ID of the region containing the location')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     )
     .addStringOption((option) =>
       option
         .setName('location_id')
         .setDescription('The ID of the location to manage')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     ),
   autocomplete: handleRegionAndLocationAutocomplete,
   createMenu: (session, options) => {
     const { region_id, location_id } = parseCommandOptions(
       locationCommandOptionsSchema,
-      options
+      options,
     );
 
     return new AdminMenuBuilder<LocationMenuState>(
       session,
       COMMAND_NAME,
-      options
+      options,
     )
       .setEmbeds((ctx) => getLocationMenuEmbeds(ctx, region_id, location_id))
       .setButtons((ctx) => getLocationButtons(ctx, region_id, location_id))
@@ -78,7 +77,7 @@ export const LocationCommand: ISlashCommand = {
 const getLocationButtons = async (
   ctx: AdminMenuContext<LocationMenuState>,
   regionId: string,
-  locationId: string
+  locationId: string,
 ): Promise<ButtonInputConfig<AdminMenuContext<LocationMenuState>>[]> => {
   return [
     {
@@ -95,7 +94,7 @@ const getLocationButtons = async (
 
         // Remove location from region
         region.locations = region.locations.filter(
-          (id) => id.toString() !== locationId
+          (id) => id.toString() !== locationId,
         );
         await saveRegion(region);
 

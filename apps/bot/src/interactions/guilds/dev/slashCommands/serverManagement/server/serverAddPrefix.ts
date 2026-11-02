@@ -4,7 +4,6 @@ import { saveServer } from '@bot/cache';
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
-
 import { getServerMenuEmbeds } from './server.embeds';
 import { SERVER_MANAGE_PREFIXES_COMMAND_NAME } from './serverManagePrefixes';
 
@@ -26,8 +25,8 @@ export const ServerAddPrefixCommand: ISlashCommand = {
       .setEmbeds((ctx) =>
         getServerMenuEmbeds(
           ctx,
-          'Please enter a new prefix to use with this bot on your server.'
-        )
+          'Please enter a new prefix to use with this bot on your server.',
+        ),
       )
       .setMessageHandler(async (ctx: AdminMenuContext, response: string) => {
         const server = await ctx.admin.getServer();
@@ -37,12 +36,12 @@ export const ServerAddPrefixCommand: ISlashCommand = {
           await saveServer(server);
           ctx.state.set(
             'prompt',
-            `Successfully added the prefix: \`${response}\``
+            `Successfully added the prefix: \`${response}\``,
           );
         } else {
           ctx.state.set(
             'prompt',
-            'Oops! The entered prefix already exists for this server.'
+            'Oops! The entered prefix already exists for this server.',
           );
         }
         await ctx.goBack();

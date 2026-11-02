@@ -1,6 +1,6 @@
 export const assertNumericInput = (
   value?: string | number,
-  inputName?: string
+  inputName?: string,
 ): number | undefined => {
   if (!value && value !== 0) {
     return undefined;
@@ -12,7 +12,7 @@ export const assertNumericInput = (
       throw new Error(
         `Entered value ${
           inputName ? `for '${inputName}' ` : ''
-        }must be a valid integer.`
+        }must be a valid integer.`,
       );
     }
     return parsed;

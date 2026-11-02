@@ -4,13 +4,12 @@ import type { AdminMenuContext } from '@bot/classes';
 import { createNumericListFields } from '@bot/embeds/utils/createNumericListFields';
 import { paginateListForButtonPagination } from '@bot/embeds/utils/paginateListForButtonPagination';
 import { sortByOrdinal } from '@bot/utils';
-
 import type { LocationsMenuState } from './types';
 
 export const getLocationsMenuEmbeds = async (
   ctx: AdminMenuContext<LocationsMenuState>,
   regionId: string,
-  defaultPrompt = 'Manage locations for this region. Use the buttons below to add or view a location.'
+  defaultPrompt = 'Manage locations for this region. Use the buttons below to add or view a location.',
 ): Promise<EmbedBuilder[]> => {
   const region = await ctx.admin.getRegion(regionId);
   const locations = await ctx.admin.getLocations(regionId);
@@ -34,7 +33,7 @@ export const getLocationsMenuEmbeds = async (
     locationItems,
     [{ threshold: 1, columns: 3 }],
     true,
-    'No locations found.'
+    'No locations found.',
   );
 
   const embed = new EmbedBuilder()

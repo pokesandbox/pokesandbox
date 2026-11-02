@@ -1,6 +1,6 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren } from 'react';
 
-import { SidebarButton } from "./SidebarButton";
+import { SidebarButton } from './SidebarButton';
 
 export const SidebarWrapper = ({ children }: PropsWithChildren) => (
   <aside

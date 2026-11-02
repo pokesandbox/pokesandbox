@@ -15,7 +15,7 @@ export const messageCommandsManager = async (client: BotClient) => {
       messageCommand.aliases.forEach((messageCommandAlias: string) => {
         client.messageCommandsAliases.set(
           messageCommandAlias,
-          messageCommand.name
+          messageCommand.name,
         );
       });
     }

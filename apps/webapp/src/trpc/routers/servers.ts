@@ -1,10 +1,10 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 
-import { ServerDTO, ServerWithRegionsDTO } from "@shared/dtos";
-import { Server } from "@shared/models";
+import { ServerDTO, ServerWithRegionsDTO } from '@shared/dtos';
+import { Server } from '@shared/models';
 
-import { router, publicProcedure } from "../init";
+import { publicProcedure, router } from '../init';
 
 export const serversRouter = router({
   getAll: publicProcedure.query(async () => {
@@ -19,7 +19,7 @@ export const serversRouter = router({
       }).exec();
       if (!server) {
         throw new TRPCError({
-          code: "NOT_FOUND",
+          code: 'NOT_FOUND',
           message: `Server with ID ${input} not found`,
         });
       }

@@ -12,7 +12,7 @@ const formatZodPath = (path: (string | number)[]): string => {
 
 const getMissingRequiredOptions = (
   options: Record<string, unknown>,
-  schema: z.AnyZodObject
+  schema: z.AnyZodObject,
 ): string[] => {
   const missingRequiredOptions: string[] = [];
   const schemaShape = schema.shape as z.ZodRawShape;
@@ -31,7 +31,7 @@ const getMissingRequiredOptions = (
 
 export const parseCommandOptions = <TSchema extends z.AnyZodObject>(
   schema: TSchema,
-  options?: unknown
+  options?: unknown,
 ): z.infer<TSchema> => {
   if (!options || typeof options !== 'object' || Array.isArray(options)) {
     throw new Error(optionsMissingMessage);
@@ -40,14 +40,14 @@ export const parseCommandOptions = <TSchema extends z.AnyZodObject>(
   const objectOptions = options as Record<string, unknown>;
   const missingRequiredOptions = getMissingRequiredOptions(
     objectOptions,
-    schema
+    schema,
   );
 
   if (missingRequiredOptions.length > 0) {
     throw new Error(
       `Missing required command option(s): \n - ${missingRequiredOptions.join(
-        '\n - '
-      )}`
+        '\n - ',
+      )}`,
     );
   }
 

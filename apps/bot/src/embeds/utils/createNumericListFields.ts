@@ -17,7 +17,7 @@ export function createNumericListFields(
   items: { name: string; index?: number }[],
   columnCountRules: ColumnCountRule[],
   useNumericEmojis = false,
-  noItemsMessage = 'No items found.'
+  noItemsMessage = 'No items found.',
 ): { name: string; value: string; inline: boolean }[] {
   let columnsCount = 1;
   for (const rule of columnCountRules) {
@@ -49,7 +49,7 @@ export function createNumericListFields(
                   useNumericEmojis
                     ? getNumericEmojiLabel(index, padSingle, padDouble)
                     : `${index}.`
-                } ${name}`
+                } ${name}`,
             )
             .join('\n'),
           inline: true,

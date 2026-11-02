@@ -1,3 +1,4 @@
+import type { CreateMenuDefinitionFn } from '@flowcord/core';
 import type {
   AutocompleteInteraction,
   ButtonBuilder,
@@ -20,7 +21,6 @@ import type {
 } from 'discord.js';
 
 import type { BotClient } from '@bot/classes';
-import type { CreateMenuDefinitionFn } from '@flowcord/core';
 
 export interface IBaseCommand {
   allClientPermissions?: string[];
@@ -70,7 +70,7 @@ export interface IMessageContextCommand extends IBaseCommand {
   command: ContextMenuCommandBuilder;
   execute: (
     client: BotClient,
-    interaction: MessageContextMenuCommandInteraction
+    interaction: MessageContextMenuCommandInteraction,
   ) => void;
 }
 
@@ -89,7 +89,7 @@ export interface IRoleSelectMenu extends IBaseCommand {
 export interface ISlashCommand extends IBaseCommand {
   autocomplete?: (
     client: BotClient,
-    interaction: AutocompleteInteraction
+    interaction: AutocompleteInteraction,
   ) => void | Promise<void>;
   command:
     | SlashCommandBuilder
@@ -104,7 +104,7 @@ export interface IStringSelectMenu extends IBaseCommand {
   create: (options?: any) => StringSelectMenuBuilder;
   execute: (
     client: BotClient,
-    interaction: StringSelectMenuInteraction
+    interaction: StringSelectMenuInteraction,
   ) => void;
 }
 
@@ -113,7 +113,7 @@ export interface IUserContextCommand extends IBaseCommand {
   command: ContextMenuCommandBuilder | any;
   execute: (
     client: BotClient,
-    interaction: UserContextMenuCommandInteraction
+    interaction: UserContextMenuCommandInteraction,
   ) => void;
 }
 
@@ -135,9 +135,7 @@ export type AnyCommand =
   | IUserSelectMenu;
 
 export type ChatInputCommand =
-  | IMessageContextCommand
-  | ISlashCommand
-  | IUserContextCommand;
+  IMessageContextCommand | ISlashCommand | IUserContextCommand;
 
 export type GuildChatInputCommands = {
   id: string;

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 type PostProps = {
   content: string;
@@ -6,7 +6,7 @@ type PostProps = {
 };
 
 export const Post = ({ title, content }: PostProps) => {
-  const url = "https://i1.sndcdn.com/avatars-000651700224-nysi7a-t500x500.jpg";
+  const url = 'https://i1.sndcdn.com/avatars-000651700224-nysi7a-t500x500.jpg';
 
   return (
     <div className="Post">
@@ -20,8 +20,8 @@ export const Post = ({ title, content }: PostProps) => {
           height={80}
         />
         <div className="Post-username">
-          <div>{"Lord Dalmonde"}</div>
-          <div>{"Taav#4683"}</div>
+          <div>{'Lord Dalmonde'}</div>
+          <div>{'Taav#4683'}</div>
         </div>
       </div>
       <div className="Post-content">{content}</div>

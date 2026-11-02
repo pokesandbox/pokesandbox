@@ -1,9 +1,9 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from 'react';
 
 export const PokeballSvg = ({
-  color = "currentColor",
-  height = "2.5rem",
-  width = "2.5rem",
+  color = 'currentColor',
+  height = '2.5rem',
+  width = '2.5rem',
   ...props
 }: SVGProps<SVGSVGElement>) => (
   <svg

@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { ReactNode } from "react";
+import Link from 'next/link';
+import { ReactNode } from 'react';
 
-import { PokeballSvg } from "../../assets/PokeballSvg";
-import { DarkModeToggle } from "./DarkModeToggle";
-import { SearchBar } from "./SearchBar";
+import { PokeballSvg } from '../../assets/PokeballSvg';
+import { DarkModeToggle } from './DarkModeToggle';
+import { SearchBar } from './SearchBar';
 
 type HeaderWrapperProps = {
   authButton: ReactNode;

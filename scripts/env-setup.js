@@ -13,7 +13,7 @@ const envPath = path.join(root, '.env');
 if (!fs.existsSync(envPath)) {
   fs.copyFileSync(examplePath, envPath);
   console.log(
-    'Created .env from .env.example — fill in the required values before starting the app.'
+    'Created .env from .env.example — fill in the required values before starting the app.',
   );
 } else {
   console.log('.env already exists — skipping.');

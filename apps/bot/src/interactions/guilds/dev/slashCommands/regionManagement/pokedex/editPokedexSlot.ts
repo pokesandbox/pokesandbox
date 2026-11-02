@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -12,19 +13,17 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import {
   getAddPokedexSlotEmbeds,
   getEditPokedexSlotEmbeds,
 } from './pokedex.embeds';
 import {
+  checkHasOtherFormes,
   handleAddPokemonToSlot,
   removePokedexSlot,
-  checkHasOtherFormes,
 } from './pokedexHelperFunctions';
-import type { PokedexMenuState } from './types';
 import { pokedexNoCommandOptionsSchema } from './schemas';
+import type { PokedexMenuState } from './types';
 
 const COMMAND_NAME = 'edit-pokedex-slot';
 export const EDIT_POKEDEX_SLOT_COMMAND_NAME = COMMAND_NAME;
@@ -45,7 +44,7 @@ export const EditPokedexSlotCommand: ISlashCommand = {
         .setName('region_id')
         .setDescription('The region to manage')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     )
     .addIntegerOption((option) =>
       option
@@ -53,19 +52,19 @@ export const EditPokedexSlotCommand: ISlashCommand = {
         .setDescription('The Pokédex slot number')
         .setRequired(true)
         .setMinValue(1)
-        .setMaxValue(1500)
+        .setMaxValue(1500),
     ),
   createMenu: async (session, options) => {
     const { region_id, pokedex_no } = parseCommandOptions(
       pokedexNoCommandOptionsSchema,
-      options
+      options,
     );
     const region = await getAssertedCachedRegion(region_id);
 
     const builder = new AdminMenuBuilder<PokedexMenuState>(
       session,
       COMMAND_NAME,
-      options
+      options,
     )
       .setCancellable()
       .setReturnable()
@@ -76,15 +75,15 @@ export const EditPokedexSlotCommand: ISlashCommand = {
       builder
         .setEmbeds((ctx) => getAddPokedexSlotEmbeds(ctx, region_id, pokedex_no))
         .setMessageHandler((ctx, response) =>
-          handleAddPokemonToSlot(ctx, region_id, pokedex_no, response)
+          handleAddPokemonToSlot(ctx, region_id, pokedex_no, response),
         );
     } else {
       builder
         .setEmbeds((ctx) =>
-          getEditPokedexSlotEmbeds(ctx, region_id, pokedex_no)
+          getEditPokedexSlotEmbeds(ctx, region_id, pokedex_no),
         )
         .setButtons((ctx) =>
-          getEditPokedexSlotButtons(ctx, region_id, pokedex_no)
+          getEditPokedexSlotButtons(ctx, region_id, pokedex_no),
         );
     }
 
@@ -95,7 +94,7 @@ export const EditPokedexSlotCommand: ISlashCommand = {
 const getEditPokedexSlotButtons = async (
   _ctx: AdminMenuContext<PokedexMenuState>,
   regionId: string,
-  pokedexNo: string
+  pokedexNo: string,
 ): Promise<ButtonInputConfig<AdminMenuContext<PokedexMenuState>>[]> => {
   const hasOtherFormes = await checkHasOtherFormes(regionId, pokedexNo);
 
@@ -133,7 +132,7 @@ const getEditPokedexSlotButtons = async (
         await saveRegion(region);
         await ctx.hardRefresh();
       },
-    }
+    },
   );
   return buttons;
 };

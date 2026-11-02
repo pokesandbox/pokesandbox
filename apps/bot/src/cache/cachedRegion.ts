@@ -10,7 +10,7 @@ import { toIdStrings } from './utils';
  * Fetch a region by its ObjectId string, hitting the cache first.
  */
 export async function getCachedRegion(
-  regionId: string | undefined
+  regionId: string | undefined,
 ): Promise<Region | null> {
   if (!regionId) return null;
 
@@ -28,13 +28,13 @@ export async function getCachedRegion(
 }
 
 export async function getAssertedCachedRegion(
-  regionId: string
+  regionId: string,
 ): Promise<Region> {
   const region = await getCachedRegion(regionId);
 
   if (!region) {
     throw new Error(
-      'There was a problem fetching the region. Please try again later.'
+      'There was a problem fetching the region. Please try again later.',
     );
   }
 
@@ -47,7 +47,7 @@ export async function getAssertedCachedRegion(
  * the cache so subsequent reads are instant.
  */
 export async function getCachedRegions(
-  ids: (Types.ObjectId | string)[]
+  ids: (Types.ObjectId | string)[],
 ): Promise<Region[]> {
   if (!ids.length) return [];
 

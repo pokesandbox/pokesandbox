@@ -1,21 +1,20 @@
 import { EmbedBuilder, type EmbedField } from 'discord.js';
 import pluralize from 'pluralize';
 
-import type { AdminMenuContext } from '@bot/classes';
+import { DexEntry, Gen5 } from '@shared/models';
+
 import {
   getAssertedCachedDexEntry,
   getAssertedCachedRegion,
   getCachedDexEntries,
 } from '@bot/cache';
-import { DexEntry, Gen5 } from '@shared/models';
-
-import type { PokedexMenuState } from './types';
-import { PokedexSlotCustomizeMenuState } from './types';
+import type { AdminMenuContext } from '@bot/classes';
+import { PokedexSlotCustomizeMenuState, type PokedexMenuState } from './types';
 
 export const getManagePokedexMenuEmbeds = async (
   ctx: AdminMenuContext<PokedexMenuState>,
   regionId: string,
-  defaultPrompt = 'Enter a space-separated Pokédex number (up to 1500) and Pokémon name to add a Pokémon to a blank Pokédex slot, or enter just a number to modify a Pokédex slot'
+  defaultPrompt = 'Enter a space-separated Pokédex number (up to 1500) and Pokémon name to add a Pokémon to a blank Pokédex slot, or enter just a number to modify a Pokédex slot',
 ) => {
   const region = await ctx.admin.getRegion(regionId);
   const pokedexLines: string[] = [];
@@ -88,7 +87,7 @@ export const getAddPokedexSlotEmbeds = async (
   ctx: AdminMenuContext<PokedexMenuState>,
   regionId: string,
   pokedexNo: string,
-  defaultPrompt = 'This slot is currently empty. Please enter the name of a Pokémon to add to the Pokédex slot.'
+  defaultPrompt = 'This slot is currently empty. Please enter the name of a Pokémon to add to the Pokédex slot.',
 ) => {
   const region = await ctx.admin.getRegion(regionId);
 
@@ -107,7 +106,7 @@ export const getAddPokedexSlotEmbeds = async (
 export const getEditPokedexSlotEmbeds = async (
   ctx: AdminMenuContext<PokedexMenuState>,
   regionId: string,
-  pokedexNo: string
+  pokedexNo: string,
 ) => {
   const region = await ctx.admin.getRegion(regionId);
   const dexEntryId = region.pokedex[+pokedexNo - 1]?.id;
@@ -123,7 +122,7 @@ export const getEditPokedexSlotEmbeds = async (
       `Types: ${dexEntry.types.join(', ')}
       Abilities: ${dexEntry.abilities[0]}${
         dexEntry.abilities[1] ? `/${dexEntry.abilities[1]}` : ''
-      }${dexEntry.abilities.H ? ` (H: ${dexEntry.abilities.H})` : ''}`
+      }${dexEntry.abilities.H ? ` (H: ${dexEntry.abilities.H})` : ''}`,
     )
     .setTimestamp();
 
@@ -135,7 +134,7 @@ export const getEditPokedexSlotEmbeds = async (
 export const getSelectMatchedPokemonEmbeds = async (
   ctx: AdminMenuContext<PokedexMenuState>,
   matchedDexEntryIds: string[],
-  defaultPrompt = 'Select a Pokémon from the search results by clicking the corresponding button.'
+  defaultPrompt = 'Select a Pokémon from the search results by clicking the corresponding button.',
 ): Promise<EmbedBuilder[]> => {
   const matchedOptions: string[] = [];
   const matchedPokemon = await getCachedDexEntries(matchedDexEntryIds);
@@ -192,7 +191,7 @@ export const getSelectMatchedPokemonEmbeds = async (
 export const getSwapPokedexSlotMenuEmbeds = async (
   ctx: AdminMenuContext<PokedexMenuState>,
   regionId: string,
-  pokedexNo: string
+  pokedexNo: string,
 ) => {
   const region = await getAssertedCachedRegion(regionId);
   const dexEntryId = region.pokedex[+pokedexNo - 1]?.id;
@@ -206,7 +205,7 @@ export const getSwapPokedexSlotMenuEmbeds = async (
     })
     .setDescription(
       ctx.state.get('prompt') ||
-        'Please enter the name of the Pokémon you would like to swap into this Pokédex slot.'
+        'Please enter the name of the Pokémon you would like to swap into this Pokédex slot.',
     )
     .setTimestamp();
 
@@ -227,7 +226,7 @@ export const getPokedexSlotCustomizeEmbeds = async (
   regionId: string,
   pokedexSlotNo: string,
   forms: Map<string, { name: string; ordinal?: number }>,
-  defaultPrompt = 'Toggle available forms for this Pokédex slot by clicking the corresponding button.'
+  defaultPrompt = 'Toggle available forms for this Pokédex slot by clicking the corresponding button.',
 ): Promise<EmbedBuilder[]> => {
   const region = await ctx.admin.getRegion(regionId);
   const slot = region.pokedex[+pokedexSlotNo - 1];
@@ -238,13 +237,13 @@ export const getPokedexSlotCustomizeEmbeds = async (
       (forme, idx) =>
         `\n${idx + 1}. ${
           forms.get(forme.id.toString())?.name || 'Unknown Form'
-        }`
+        }`,
     ) || [];
   !slot?.isBaseFormNotIncluded &&
     formeOptions.unshift(
       `0. ${
         forms.get(dexEntry.id.toString())?.name || 'Unknown Form'
-      } (Base Form)`
+      } (Base Form)`,
     );
   const fields: EmbedField[] = [];
 
@@ -260,7 +259,7 @@ export const getPokedexSlotCustomizeEmbeds = async (
       .setDescription(
         `Current: ${
           region.pokedex[+pokedexSlotNo - 1]?.name
-        }\n\n${defaultPrompt}`
+        }\n\n${defaultPrompt}`,
       )
       .addFields(fields)
       .setTimestamp(),

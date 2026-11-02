@@ -30,7 +30,7 @@ export type ServerWithRegionsDTO = z.infer<typeof ServerWithRegionsDTOSchema>;
 
 export const ServerWithRegionsDTO = {
   convertFromEntity(
-    entity: Omit<Server, 'regions'> & { regions: Region[] }
+    entity: Omit<Server, 'regions'> & { regions: Region[] },
   ): ServerWithRegionsDTO {
     return ServerWithRegionsDTOSchema.parse(convertToDTO(entity));
   },

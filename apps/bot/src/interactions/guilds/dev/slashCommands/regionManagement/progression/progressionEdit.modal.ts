@@ -1,4 +1,3 @@
-import type { AdminMenuContext } from '@bot/classes';
 import type { ModalConfig } from '@flowcord/core';
 import {
   CacheType,
@@ -9,14 +8,16 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from 'discord.js';
+import { progressionDefinitionSchema } from 'shared/src/models/region/progressionDefinition';
+import z from 'zod';
+
+import { saveRegion } from '@bot/cache';
+import type { AdminMenuContext } from '@bot/classes';
 import {
   getModalSelectValue,
   getModalTextValue,
   setValueOnInputBuilderIfExists,
 } from '@bot/utils';
-import { saveRegion } from '@bot/cache';
-import { progressionDefinitionSchema } from 'shared/src/models/region/progressionDefinition';
-import z from 'zod';
 import { assertProgressionKind } from './utils';
 
 export const PROGRESSION_EDIT_MODAL_ID = 'progression-edit-modal';
@@ -26,7 +27,7 @@ type Progression = z.infer<typeof progressionDefinitionSchema>;
 export const getProgressionEditModal = async (
   ctx: AdminMenuContext,
   regionId: string,
-  progressionKey: string
+  progressionKey: string,
 ): Promise<ModalConfig<AdminMenuContext>> => {
   const region = await ctx.admin.getRegion(regionId);
   const progression = region.progressionDefinitions.get(progressionKey);
@@ -48,7 +49,7 @@ export const getProgressionEditModal = async (
       const region = await ctx.admin.getRegion(regionId);
       region.progressionDefinitions.set(
         progressionKey,
-        getUpdatedProgression(progression, fields)
+        getUpdatedProgression(progression, fields),
       );
       await saveRegion(region);
     },
@@ -58,7 +59,7 @@ export const getProgressionEditModal = async (
 // Adds the name, description, and visibility fields to the progression edit modal
 const addCommonProgressionModalFields = (
   builder: ModalBuilder,
-  progression: Progression | undefined
+  progression: Progression | undefined,
 ): void => {
   builder.addLabelComponents(
     new LabelBuilder()
@@ -70,8 +71,8 @@ const addCommonProgressionModalFields = (
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('e.g. Badges')
             .setRequired(true),
-          progression?.name
-        )
+          progression?.name,
+        ),
       ),
     new LabelBuilder()
       .setLabel('description')
@@ -81,11 +82,11 @@ const addCommonProgressionModalFields = (
             .setCustomId('progression-description')
             .setStyle(TextInputStyle.Paragraph)
             .setPlaceholder(
-              'e.g. The badges the player must collect in order to complete the region progression.'
+              'e.g. The badges the player must collect in order to complete the region progression.',
             )
             .setRequired(false),
-          progression?.description
-        )
+          progression?.description,
+        ),
       ),
     new LabelBuilder().setLabel('visibility').setStringSelectMenuComponent(
       new StringSelectMenuBuilder()
@@ -108,14 +109,14 @@ const addCommonProgressionModalFields = (
             default: progression?.visibility === 'hidden',
           },
         ])
-        .setRequired(false)
-    )
+        .setRequired(false),
+    ),
   );
 };
 
 const addMilestoneKindModalFields = (
   builder: ModalBuilder,
-  progression: Progression | undefined
+  progression: Progression | undefined,
 ): void => {
   assertProgressionKind('milestone', progression);
   builder.addLabelComponents(
@@ -135,14 +136,14 @@ const addMilestoneKindModalFields = (
             default: progression.sequential === false,
           },
         ])
-        .setRequired(false)
-    )
+        .setRequired(false),
+    ),
   );
 };
 
 const addNumericKindModalFields = (
   builder: ModalBuilder,
-  progression: Progression | undefined
+  progression: Progression | undefined,
 ): void => {
   assertProgressionKind('numeric', progression);
   builder.addLabelComponents(
@@ -155,8 +156,8 @@ const addNumericKindModalFields = (
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('Minimum value for the numeric progression')
             .setRequired(false),
-          progression.min?.toString()
-        )
+          progression.min?.toString(),
+        ),
       ),
     new LabelBuilder()
       .setLabel('max')
@@ -167,15 +168,15 @@ const addNumericKindModalFields = (
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('Maximum value for the numeric progression')
             .setRequired(false),
-          progression.max?.toString()
-        )
-      )
+          progression.max?.toString(),
+        ),
+      ),
   );
 };
 
 const getUpdatedProgression = (
   progression: Progression | undefined,
-  fields: ModalSubmitFields<CacheType>
+  fields: ModalSubmitFields<CacheType>,
 ): Progression => {
   let updatedProgression = {
     name: getModalTextValue(fields.fields, 'progression-name', true),

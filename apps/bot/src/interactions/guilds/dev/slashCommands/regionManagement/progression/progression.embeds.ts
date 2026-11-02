@@ -1,28 +1,29 @@
+import assert from 'node:assert';
+
 import { EmbedBuilder, type EmbedField } from 'discord.js';
 import capitalize from 'lodash/capitalize';
-import assert from 'node:assert';
+
+import { ProgressionDefinition } from '@shared/models';
 
 import type { AdminMenuContext } from '@bot/classes';
 import { createNumericListFields } from '@bot/embeds/utils/createNumericListFields';
 import { paginateListForButtonPagination } from '@bot/embeds/utils/paginateListForButtonPagination';
 import { sortByOrdinal } from '@bot/utils';
-import { ProgressionDefinition } from '@shared/models';
-
 import type { ProgressionEditMenuState, ProgressionsMenuState } from './types';
 import { assertProgressionKind, getOrderedProgressionEntries } from './utils';
 
 export const progressionsMenuEmbeds = async (
   ctx: AdminMenuContext<ProgressionsMenuState>,
   regionId: string,
-  defaultPrompt = 'Manage progression definitions for this region. Use the buttons below to add or edit a progression.'
+  defaultPrompt = 'Manage progression definitions for this region. Use the buttons below to add or edit a progression.',
 ) => {
   const region = await ctx.admin.getRegion(regionId);
   const orderedProgressions = getOrderedProgressionEntries(
-    region.progressionDefinitions
+    region.progressionDefinitions,
   );
 
   const progressionGlobalIndexByKey = new Map<string, number>(
-    orderedProgressions.map(([key], index) => [key, index + 1])
+    orderedProgressions.map(([key], index) => [key, index + 1]),
   );
 
   const pagination = ctx.pagination;
@@ -36,13 +37,13 @@ export const progressionsMenuEmbeds = async (
 
   const visibleByKind = {
     milestone: visibleProgressions.filter(
-      ([, progression]) => progression.kind === 'milestone'
+      ([, progression]) => progression.kind === 'milestone',
     ),
     numeric: visibleProgressions.filter(
-      ([, progression]) => progression.kind === 'numeric'
+      ([, progression]) => progression.kind === 'numeric',
     ),
     boolean: visibleProgressions.filter(
-      ([, progression]) => progression.kind === 'boolean'
+      ([, progression]) => progression.kind === 'boolean',
     ),
   };
 
@@ -57,7 +58,7 @@ export const progressionsMenuEmbeds = async (
   } else {
     const addKindRow = (
       label: string,
-      kindProgressions: Array<[string, ProgressionDefinition]>
+      kindProgressions: Array<[string, ProgressionDefinition]>,
     ) => {
       if (kindProgressions.length === 0) return;
 
@@ -68,7 +69,7 @@ export const progressionsMenuEmbeds = async (
         })),
         [{ threshold: 1, columns: 3 }],
         true,
-        `No ${label} progressions found.`
+        `No ${label} progressions found.`,
       );
 
       for (const [index, field] of kindFields.entries()) {
@@ -107,7 +108,7 @@ export const progressionsMenuEmbeds = async (
     .setFooter({
       text:
         orderedProgressions.length > 0
-          ? footerText ?? `Showing progression 1 of ${quantity}`
+          ? (footerText ?? `Showing progression 1 of ${quantity}`)
           : 'Use the Add button to create your first progression definition',
     });
 
@@ -117,7 +118,7 @@ export const progressionsMenuEmbeds = async (
 export const progressionEditMenuEmbeds = async (
   ctx: AdminMenuContext<ProgressionEditMenuState>,
   regionId: string,
-  progressionKey: string
+  progressionKey: string,
 ) => {
   const region = await ctx.admin.getRegion(regionId);
   const progression = region.progressionDefinitions.get(progressionKey);
@@ -177,7 +178,7 @@ export const progressionEditMenuEmbeds = async (
         value: progression.sequential ? 'Yes' : 'No',
         inline: false,
       },
-      ...buildMilestoneListFields(progression)
+      ...buildMilestoneListFields(progression),
     );
   }
 
@@ -190,7 +191,7 @@ export const progressionEditMenuEmbeds = async (
       })
       .setDescription(
         prompt ||
-          'Edit the progression definition. Use the buttons below to modify properties.'
+          'Edit the progression definition. Use the buttons below to modify properties.',
       )
       .addFields(fields),
   ];
@@ -198,7 +199,7 @@ export const progressionEditMenuEmbeds = async (
 
 export const buildMilestoneListFields = (
   progression: ProgressionDefinition,
-  useNumericEmojis = false
+  useNumericEmojis = false,
 ): EmbedField[] => {
   assertProgressionKind('milestone', progression);
   const fields = createNumericListFields(
@@ -208,7 +209,7 @@ export const buildMilestoneListFields = (
     })),
     [{ threshold: 1, columns: 3 }],
     useNumericEmojis,
-    'No milestones found.'
+    'No milestones found.',
   );
 
   return fields.map((field, index) => ({

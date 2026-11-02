@@ -1,6 +1,12 @@
 import { Model } from 'mongoose';
-import { DexEntry, Location, Region, Server, User } from '../../shared/src/models/index';
 
+import {
+  DexEntry,
+  Location,
+  Region,
+  Server,
+  User,
+} from '../../shared/src/models/index';
 // Load seed data from JSON files
 import dexEntriesData from './data/dexentries.json';
 import locationsData from './data/locations.json';
@@ -9,11 +15,7 @@ import serversData from './data/servers.json';
 import usersData from './data/users.json';
 
 export type SupportedCollection =
-  | 'dexentries'
-  | 'locations'
-  | 'regions'
-  | 'servers'
-  | 'users';
+  'dexentries' | 'locations' | 'regions' | 'servers' | 'users';
 export const collectionSeedMap: Record<
   SupportedCollection,
   { model: Model<any>; seedData: any }
@@ -26,5 +28,5 @@ export const collectionSeedMap: Record<
 };
 
 export const SUPPORTED_COLLECTIONS = Array.from(
-  Object.keys(collectionSeedMap)
+  Object.keys(collectionSeedMap),
 ) as SupportedCollection[];

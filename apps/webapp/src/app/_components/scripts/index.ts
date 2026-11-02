@@ -1,1 +1,1 @@
-export { DarkModeScript } from "./DarkModeScript";
+export { DarkModeScript } from './DarkModeScript';

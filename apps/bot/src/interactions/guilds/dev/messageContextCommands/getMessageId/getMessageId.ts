@@ -14,7 +14,7 @@ export const GetMessageId: IMessageContextCommand = {
     .setType(ApplicationCommandType.Message),
   execute: async (
     _client: BotClient,
-    interaction: MessageContextMenuCommandInteraction
+    interaction: MessageContextMenuCommandInteraction,
   ) => {
     await interaction.deferReply({ ephemeral: true });
     const id: string = interaction.targetId;

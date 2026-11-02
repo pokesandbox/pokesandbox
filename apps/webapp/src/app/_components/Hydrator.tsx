@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-import { trpc } from "@webapp/trpc";
-import { RegionDTO, ServerDTO, UserDTO } from "@shared/dtos";
+import { RegionDTO, ServerDTO, UserDTO } from '@shared/dtos';
+
+import { trpc } from '@webapp/trpc';
 
 type AppData = {
   regions: RegionDTO[];

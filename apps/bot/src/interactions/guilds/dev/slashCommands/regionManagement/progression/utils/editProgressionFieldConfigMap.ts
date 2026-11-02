@@ -17,7 +17,7 @@ export const editProgressionFieldConfigMap = new Map<
       hasMessageHandler: true,
       handleInput: async (
         progression: ProgressionDefinition,
-        input: string
+        input: string,
       ) => {
         progression.name = input;
       },
@@ -30,7 +30,7 @@ export const editProgressionFieldConfigMap = new Map<
       hasMessageHandler: true,
       handleInput: async (
         progression: ProgressionDefinition,
-        input: string
+        input: string,
       ) => {
         progression.description = input ? input : undefined;
       },
@@ -42,7 +42,7 @@ export const editProgressionFieldConfigMap = new Map<
       hasMessageHandler: true,
       handleInput: async (
         progression: ProgressionDefinition,
-        input: string
+        input: string,
       ) => {
         if (!['public', 'discoverable', 'hidden'].includes(input)) {
           throw new Error('Invalid visibility option');
@@ -53,7 +53,7 @@ export const editProgressionFieldConfigMap = new Map<
         config: EditProgressionFieldConfig,
         region: Region,
         progressionKey: string,
-        progression: ProgressionDefinition
+        progression: ProgressionDefinition,
       ) => {
         const visibilityKeys = ['public', 'discoverable', 'hidden'] as const;
         return visibilityKeys
@@ -67,7 +67,7 @@ export const editProgressionFieldConfigMap = new Map<
                 config,
                 region.id,
                 progressionKey,
-                option
+                option,
               );
             },
           }));
@@ -81,7 +81,7 @@ export const editProgressionFieldConfigMap = new Map<
       hasMessageHandler: true,
       handleInput: async (
         progression: ProgressionDefinition,
-        input: string
+        input: string,
       ) => {
         assertProgressionKind('numeric', progression);
         if (input === '') {
@@ -103,7 +103,7 @@ export const editProgressionFieldConfigMap = new Map<
       hasMessageHandler: true,
       handleInput: async (
         progression: ProgressionDefinition,
-        input: string
+        input: string,
       ) => {
         assertProgressionKind('numeric', progression);
         if (input === '') {

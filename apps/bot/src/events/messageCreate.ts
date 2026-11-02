@@ -23,7 +23,7 @@ export const MessageCreate: IBotEvent = {
         const command =
           client.messageCommands.get(commandName) ??
           client.messageCommands.get(
-            client.messageCommandsAliases.get(commandName) || ''
+            client.messageCommandsAliases.get(commandName) || '',
           );
         if (!command) return;
         const args: string[] = message.content
@@ -37,7 +37,7 @@ export const MessageCreate: IBotEvent = {
           message,
           command,
           false,
-          'MessageCommand'
+          'MessageCommand',
         );
 
         if (command.allowInDms) {

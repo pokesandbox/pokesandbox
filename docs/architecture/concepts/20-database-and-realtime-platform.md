@@ -8,13 +8,13 @@
 
 ## First: what kind of "concurrent multiplayer" is PokeSandbox?
 
-| Property | PokeSandbox | Typical realtime game (SpacetimeDB's target) |
-|---|---|---|
-| Clients | **1–N bot processes + a Next.js app** (Discord users never talk to the DB) | Thousands of game clients holding open connections |
-| Tick rate | None. Event-driven, human-paced (button press every few seconds; battle turns every 10–90 s) | 10–60 Hz simulation |
-| Latency floor | **Discord API rate limits** and interaction round-trips (hundreds of ms) | Network RTT (tens of ms) |
-| Shared mutable state | Small: trades, GTS listings, breeding pool, PvP battles, server events / boss HP | Large: positions, physics, continuous simulation state |
-| Hard concurrency problem | **Correctness**: no dupes, no lost progress, atomic multi-entity changes (trade = 2 journeys + 2 Pokémon) | **Throughput and fan-out** of state updates |
+| Property                 | PokeSandbox                                                                                               | Typical realtime game (SpacetimeDB's target)           |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Clients                  | **1–N bot processes + a Next.js app** (Discord users never talk to the DB)                                | Thousands of game clients holding open connections     |
+| Tick rate                | None. Event-driven, human-paced (button press every few seconds; battle turns every 10–90 s)              | 10–60 Hz simulation                                    |
+| Latency floor            | **Discord API rate limits** and interaction round-trips (hundreds of ms)                                  | Network RTT (tens of ms)                               |
+| Shared mutable state     | Small: trades, GTS listings, breeding pool, PvP battles, server events / boss HP                          | Large: positions, physics, continuous simulation state |
+| Hard concurrency problem | **Correctness**: no dupes, no lost progress, atomic multi-entity changes (trade = 2 journeys + 2 Pokémon) | **Throughput and fan-out** of state updates            |
 
 Rough peak load: 200 servers × 50 concurrently active players × 1 action per 5 s ≈ **2,000 actions/s** in an optimistic future. A single modest MongoDB or Postgres node handles that with room to spare. The bottleneck will be Discord, not the database.
 
@@ -23,6 +23,7 @@ So the database requirements are: **transactions across a few documents, per-jou
 ## Options
 
 ### A. MongoDB (status quo, done properly): chosen (Q33)
+
 - ✅ Content is **document-shaped**: condition trees, script step lists, encounter tables, and compiled release bundles. These are natural documents. In SQL they'd become JSONB anyway.
 - ✅ No migration. Existing models, DTO conventions, seed tooling, and `agents.md` all keep working. Zod remains the source of truth.
 - ✅ Multi-document **ACID transactions** (needs a replica set, even single-node) cover trades, battle results, and publish.
@@ -33,6 +34,7 @@ So the database requirements are: **transactions across a few documents, per-jou
 - ❌ Ad-hoc analytics ("most-used starter across servers") is clunkier than SQL. Use aggregation pipelines or export.
 
 ### B. PostgreSQL (+ Drizzle/Kysely, JSONB for content): strongest alternative
+
 - ✅ Relational integrity for the social/economy layer: trades, GTS listings, breeding pools, ownership history. Foreign keys and unique constraints catch bugs that Mongo lets through.
 - ✅ `SELECT … FOR UPDATE SKIP LOCKED` is ideal for GTS/Wonder Trade matching queues. `LISTEN/NOTIFY` gives lightweight push.
 - ✅ JSONB stores content bundles and condition trees nearly as comfortably as Mongo.
@@ -41,39 +43,43 @@ So the database requirements are: **transactions across a few documents, per-jou
 - ❌ Schema migrations add friction while the model is still changing fast (which it will be through M0 and the early checkpoints).
 
 ### C. SpacetimeDB: not recommended as the primary store
+
 SpacetimeDB (Clockwork Labs) is a database and server in one. You write a **module** (Rust, C#, TypeScript, C++). Its **reducers** are transactional functions that run inside the database, against in-memory tables, and clients subscribe to queries and get live updates. TypeScript modules are mature (v2.x in 2026, with submodules added in v2.8). There's hosted Maincloud (Free / $25 Pro / $250 Team) or self-hosted.
 
 Where it shines: MMO-style games with thousands of connected clients needing low-latency state sync. BitCraft runs on it.
 
 Why it's a poor fit here:
+
 - ❌ **Your clients aren't game clients.** The subscribers would be your own bot process and Next.js server, a handful of connections. You'd pay the architectural cost of a client-sync engine and use none of its fan-out strength.
 - ❌ **Your whole engine moves into the module.** Reducers are where game logic lives, so `libs/engine`, the condition/effect registries, the script VM, and battle orchestration would all have to run inside SpacetimeDB's module sandbox. That's deep vendor lock-in, in a runtime with constraints (determinism, sandboxed APIs, outbound HTTP only from "procedures") that I couldn't fully confirm. In particular, it's unclear whether the Showdown simulator, `@smogon/calc`, and AI search can run there unmodified. **Spike before ever committing.**
-- ❌ **CPU-heavy work blocks transactions.** Turn simulation is cheap, but AI lookahead and batch EXP/evolution processing belong *outside* the transactional core. You'd end up running a second service for them anyway.
+- ❌ **CPU-heavy work blocks transactions.** Turn simulation is cheap, but AI lookahead and batch EXP/evolution processing belong _outside_ the transactional core. You'd end up running a second service for them anyway.
 - ❌ **License:** Business Source License 1.1, converting to AGPL v3 with a linking exception after a few years. That's fine for a non-profit project using it, but it's not OSI-open today. Clustering/replication is primarily a Maincloud feature.
 - ❌ It doesn't fit the stack: Next.js + tRPC + Zod-first models would be replaced by SpacetimeDB's table/reducer/codegen model. FlowCord and Discord.js would become thin clients of a remote module.
-- ✅ What would make it interesting later: a **webapp real-time play surface** (Pie in the Sky) with live maps, co-op, or raids watched by many browsers at once. Even then it's better as a *sidecar* for that feature than as the system of record.
+- ✅ What would make it interesting later: a **webapp real-time play surface** (Pie in the Sky) with live maps, co-op, or raids watched by many browsers at once. Even then it's better as a _sidecar_ for that feature than as the system of record.
 
 ### D. Game-server frameworks (Colyseus, Nakama)
+
 - **Colyseus:** room-based realtime state sync over WebSockets for browser/game clients. Irrelevant to a Discord bot. Possibly useful later for a webapp live-battle viewer, but Showdown's protocol plus your own push already covers that.
 - **Nakama** (Heroic Labs, Apache 2.0): accounts, matchmaking, leaderboards, chat, and storage, with TypeScript server logic. It largely duplicates what Discord gives you (identity, chat, community) and what you're building (engine). Its storage engine is CockroachDB/Postgres underneath. Not worth the operational weight.
 
 ### E. Reactive TS backends (Convex, Supabase Realtime)
+
 - **Convex:** transactional TypeScript functions with reactive queries. Great DX for Next.js, but the same lock-in concern as SpacetimeDB (logic lives in their runtime), and Discord bots aren't its sweet spot.
-- **Supabase:** essentially option B plus hosted realtime. Consider it *as the host* if you ever move to Postgres.
+- **Supabase:** essentially option B plus hosted realtime. Consider it _as the host_ if you ever move to Postgres.
 
 ## Comparison
 
-| Criterion (weight) | MongoDB | PostgreSQL | SpacetimeDB | Nakama |
-|---|---|---|---|---|
-| Fits event-driven, human-paced Discord workload (high) | ✅ | ✅ | ⚠️ overbuilt | ⚠️ overbuilt |
-| Multi-entity atomicity: trades, battle results (high) | ✅ (replica set) | ✅✅ | ✅✅ (reducers) | ✅ |
-| Nested/flexible content: scripts, conditions, bundles (high) | ✅✅ | ✅ (JSONB) | ⚠️ (tables, product types) | ⚠️ |
-| Keeps the engine portable, no lock-in (high) | ✅ | ✅ | ❌ | ⚠️ |
-| Runs Showdown/AI alongside (high) | ✅ | ✅ | ❓ needs spike | ✅ (separate) |
-| Realtime push to bot/webapp (medium) | ✅ change streams | ✅ LISTEN/NOTIFY | ✅✅ | ✅✅ |
-| Migration cost from today (medium) | none | ~1–2 weeks | rewrite | rewrite |
-| Hosting cost / ops (medium) | low | low | low–medium | medium |
-| Relational integrity for social/economy (Phase 3) | ⚠️ | ✅✅ | ✅ | ✅ |
+| Criterion (weight)                                           | MongoDB           | PostgreSQL       | SpacetimeDB                | Nakama        |
+| ------------------------------------------------------------ | ----------------- | ---------------- | -------------------------- | ------------- |
+| Fits event-driven, human-paced Discord workload (high)       | ✅                | ✅               | ⚠️ overbuilt               | ⚠️ overbuilt  |
+| Multi-entity atomicity: trades, battle results (high)        | ✅ (replica set)  | ✅✅             | ✅✅ (reducers)            | ✅            |
+| Nested/flexible content: scripts, conditions, bundles (high) | ✅✅              | ✅ (JSONB)       | ⚠️ (tables, product types) | ⚠️            |
+| Keeps the engine portable, no lock-in (high)                 | ✅                | ✅               | ❌                         | ⚠️            |
+| Runs Showdown/AI alongside (high)                            | ✅                | ✅               | ❓ needs spike             | ✅ (separate) |
+| Realtime push to bot/webapp (medium)                         | ✅ change streams | ✅ LISTEN/NOTIFY | ✅✅                       | ✅✅          |
+| Migration cost from today (medium)                           | none              | ~1–2 weeks       | rewrite                    | rewrite       |
+| Hosting cost / ops (medium)                                  | low               | low              | low–medium                 | medium        |
+| Relational integrity for social/economy (Phase 3)            | ⚠️                | ✅✅             | ✅                         | ✅            |
 
 ## Recommendation
 
@@ -89,11 +95,13 @@ Why it's a poor fit here:
 5. **SpacetimeDB is shelved** (see the decision above). It's only relevant to a future real-time webapp play surface. If you want to test it, timebox a 2-day spike: run one PvP battle (Showdown sim) inside a TypeScript module, with the bot as a subscriber. That would turn the open questions above into facts.
 
 ## Open questions
+
 - ~~Do you foresee many simultaneous real-time viewers in a webapp?~~ Answered: no. Live PvP and spectating stay in Discord, and a webapp-first move is ~1–2% likely.
 - ~~Hosting preference?~~ **Decided (Q30):** managed Atlas (Free → Flex) on a managed app host. See [21](21-hosting-and-environments.md).
 - ~~SQL vs document modeling?~~ **Decided (Q33):** stay on MongoDB. Managed Postgres costs about the same at this size, so cost doesn't reopen it.
 
 ## Sources
+
 - [SpacetimeDB GitHub (license, module languages)](https://github.com/clockworklabs/SpacetimeDB)
 - [SpacetimeDB releases](https://github.com/clockworklabs/SpacetimeDB/releases)
 - [SpacetimeDB pricing](https://spacetimedb.com/pricing) and [pricing announcement](https://spacetimedb.com/blog/all-new-spacetimedb-pricing)

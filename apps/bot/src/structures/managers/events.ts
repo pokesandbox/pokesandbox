@@ -1,5 +1,4 @@
 import type { BotClient } from '@bot/classes';
-
 import { events } from '../../events';
 
 export const eventsManager = async (client: BotClient) => {

@@ -1,7 +1,7 @@
 export const getLabelAcronym = (label: string): string => {
   const trimmedLabel = label.trim();
-  const words = label.split(" ");
-  let acronym = "";
+  const words = label.split(' ');
+  let acronym = '';
 
   if (words.length > 1) {
     words.forEach((word) => {

@@ -1,18 +1,19 @@
 import { InteractionContextType, SlashCommandBuilder } from 'discord.js';
+
 import { getAssertedCachedRegion } from '@bot/cache';
 import { AdminMenuBuilder } from '@bot/classes';
+import { ISlashCommand } from '@bot/structures/interfaces';
 import {
   handleRegionAndPokedexNoOrNameAutocomplete,
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import { ISlashCommand } from '@bot/structures/interfaces';
+import { EDIT_POKEDEX_SLOT_COMMAND_NAME } from './editPokedexSlot';
 import { getSwapPokedexSlotMenuEmbeds } from './pokedex.embeds';
 import {
   handleAddPokemonToSlot,
   removePokedexSlot,
 } from './pokedexHelperFunctions';
-import { EDIT_POKEDEX_SLOT_COMMAND_NAME } from './editPokedexSlot';
 import { pokedexNoCommandOptionsSchema } from './schemas';
 
 const COMMAND_NAME = 'swap-pokedex-slot';
@@ -34,19 +35,19 @@ export const SwapPokedexSlotCommand: ISlashCommand = {
         .setName('region_id')
         .setDescription('The region to manage')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     )
     .addStringOption((option) =>
       option
         .setName('pokedex_no')
         .setDescription('The Pokémon name or Pokédex number to swap out')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     ),
   createMenu: async (session, options) => {
     const { region_id: regionId, pokedex_no: pokedexNo } = parseCommandOptions(
       pokedexNoCommandOptionsSchema,
-      options
+      options,
     );
     const region = await getAssertedCachedRegion(regionId);
 
@@ -63,7 +64,7 @@ export const SwapPokedexSlotCommand: ISlashCommand = {
         }
       })
       .setEmbeds((ctx) =>
-        getSwapPokedexSlotMenuEmbeds(ctx, regionId, pokedexNo)
+        getSwapPokedexSlotMenuEmbeds(ctx, regionId, pokedexNo),
       )
       .setCancellable()
       .setReturnable()

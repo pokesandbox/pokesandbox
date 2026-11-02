@@ -9,7 +9,6 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-
 import { EDIT_POKEDEX_SLOT_COMMAND_NAME } from './editPokedexSlot';
 import { getManagePokedexMenuEmbeds } from './pokedex.embeds';
 import { handleAddPokemonToSlot } from './pokedexHelperFunctions';
@@ -38,18 +37,18 @@ export const ManagePokedexCommand: ISlashCommand = {
         .setName('region_id')
         .setDescription('The region to manage')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     ),
   createMenu: async (session, options) => {
     const { region_id } = parseCommandOptions(
       managePokedexCommandOptionsSchema,
-      options
+      options,
     );
 
     return new AdminMenuBuilder<PokedexMenuState>(
       session,
       COMMAND_NAME,
-      options
+      options,
     )
       .setEmbeds((ctx) => getManagePokedexMenuEmbeds(ctx, region_id))
       .setCancellable()
@@ -78,7 +77,7 @@ export const ManagePokedexCommand: ISlashCommand = {
             ctx,
             region_id,
             pokedex_no.toString(),
-            pokemonName
+            pokemonName,
           );
         }
       })

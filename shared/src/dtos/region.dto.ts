@@ -19,11 +19,11 @@ export const regionDTOSchema = z.object({
             z.object({
               id: z.string(),
               ordinal: z.number(),
-            })
+            }),
           )
           .optional(),
       })
-      .nullable()
+      .nullable(),
   ),
   quests: z.object({
     active: z.array(z.string()),
@@ -54,7 +54,7 @@ export const RegionDTO = {
                 ordinal: f.ordinal,
               })),
             }
-          : null
+          : null,
       ),
       quests: {
         active: entity.quests.active.map((q) => q.toHexString()),

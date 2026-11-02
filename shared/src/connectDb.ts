@@ -9,7 +9,7 @@ export async function connectDb() {
     cached.promise = connect(process.env.DATABASE_URI || '').then(
       (mongoose) => {
         return mongoose;
-      }
+      },
     );
   }
 

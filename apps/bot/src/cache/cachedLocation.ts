@@ -10,7 +10,7 @@ import { toIdStrings } from './utils';
  * Fetch a single location by its ID, hitting the cache first.
  */
 export async function getCachedLocation(
-  locationId: string | Types.ObjectId | undefined
+  locationId: string | Types.ObjectId | undefined,
 ): Promise<Location | null> {
   if (!locationId) return null;
 
@@ -34,7 +34,7 @@ export async function getCachedLocation(
  * the cache so subsequent reads are instant.
  */
 export async function getCachedLocations(
-  ids: (Types.ObjectId | string)[]
+  ids: (Types.ObjectId | string)[],
 ): Promise<Location[]> {
   if (!ids.length) return [];
 
@@ -61,7 +61,7 @@ export async function getCachedLocations(
       cache.set(
         `${CachePrefix.LOCATION}${location.id}`,
         location,
-        CacheTTL.LOCATION
+        CacheTTL.LOCATION,
       );
       locationMap.set(location.id, location);
     }
