@@ -1,5 +1,5 @@
 # Typechecks the projects changed since develop (cached by Nx). Build and tests
-# run in CI. Skip with --no-verify, or disable hooks with HUSKY=0.
+# run in CI.
 if git rev-parse --verify --quiet origin/develop >/dev/null; then
   NX_DAEMON=false npx nx affected -t typecheck --base=origin/develop --outputStyle=static
 else

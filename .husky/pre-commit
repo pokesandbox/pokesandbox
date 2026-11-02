@@ -1,4 +1,4 @@
 # Formats staged files and applies auto-fixable lint (including import order),
 # then re-stages the fixes into this commit. Unfixable ESLint errors block the
-# commit; warnings don't. Skip with --no-verify, or disable hooks with HUSKY=0.
+# commit; warnings don't.
 npx lint-staged

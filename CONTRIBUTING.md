@@ -48,6 +48,6 @@ You don't need to format code or order imports by hand. Prettier formats everyth
 - **pre-commit** runs `eslint --fix` and `prettier --write` on your staged files and adds the fixes to the commit. Only ESLint errors that can't be fixed automatically stop the commit.
 - **pre-push** typechecks the projects you changed.
 
-Build and tests run in CI. To skip the hooks once, use `--no-verify`; to turn them off, set `HUSKY=0`. Enable format-on-save with Prettier in your editor for the same result while you work.
+Build and tests run in CI, not in the hooks. Enable format-on-save with Prettier in your editor for the same result while you work.
 
 The repo-wide format commit is listed in `.git-blame-ignore-revs`. GitHub skips it in blame automatically; to do the same locally, run `git config blame.ignoreRevsFile .git-blame-ignore-revs` once.
