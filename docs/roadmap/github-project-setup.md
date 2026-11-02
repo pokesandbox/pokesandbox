@@ -132,4 +132,4 @@ An issue already in **Done** is left alone unless the PR is reopened. Turn off t
   - Label **`agent-ready`**, applied only when the issue has clear acceptance criteria, links to its concept doc, and no open `needs-decision`.
   - **Priority** (P0–P2) and **Milestone** set. The job picks the highest-priority `agent-ready`, unassigned, **unblocked** issue in the **current milestone**. Use GitHub issue dependencies ("blocked by") to mark blockers.
   - The job **assigns itself before starting** (to avoid double pickup), opens **one PR per issue** linking it, and never picks `Decision`/`Spike` issues or anything labeled `needs-decision`.
-  - Agent PRs follow `agents.md` + `copilot-instructions.md`, updated with the architecture rules from these docs. They go through the same owner review.
+  - Agent PRs follow [`AGENTS.md`](../../AGENTS.md) (with an `AGENTS.md` per package), which encodes the architecture rules from these docs. They go through the same owner review.

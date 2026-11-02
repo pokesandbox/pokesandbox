@@ -25,7 +25,7 @@ So the database requirements are: **transactions across a few documents, per-jou
 ### A. MongoDB (status quo, done properly): chosen (Q33)
 
 - ✅ Content is **document-shaped**: condition trees, script step lists, encounter tables, and compiled release bundles. These are natural documents. In SQL they'd become JSONB anyway.
-- ✅ No migration. Existing models, DTO conventions, seed tooling, and `agents.md` all keep working. Zod remains the source of truth.
+- ✅ No migration. Existing models, DTO conventions, seed tooling, and the agent rules (`AGENTS.md`) all keep working. Zod remains the source of truth.
 - ✅ Multi-document **ACID transactions** (needs a replica set, even single-node) cover trades, battle results, and publish.
 - ✅ **Change streams** give push notifications (e.g. "your trade offer was accepted", "boss HP changed") without polling. That's the realtime feature you actually need.
 - ✅ Atlas has a free tier, point-in-time backups, and easy hosting.

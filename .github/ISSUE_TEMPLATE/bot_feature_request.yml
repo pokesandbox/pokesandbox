@@ -8,7 +8,7 @@ body:
     attributes:
       value: |
         Thanks for suggesting an improvement to PokéSandbox!
-        See [agents.md — Discord Bot](https://github.com/pokesandbox/pokesandbox/tree/develop/.github/agents.md#discord-bot-appsbot) for bot development conventions.
+        See [apps/bot/AGENTS.md](https://github.com/pokesandbox/pokesandbox/blob/develop/apps/bot/AGENTS.md) for bot development conventions.
 
   - type: textarea
     id: description
