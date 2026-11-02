@@ -5,6 +5,12 @@ name: PR Gate
 # sidebar does not count. The check only fails — it never closes or comments on the
 # PR. Editing the description re-runs it. Dependabot PRs are exempt (a skipped job
 # satisfies a required check).
+#
+# It also checks the conventions in CONTRIBUTING.md: the branch is named
+# "<issue>-<description>" and every commit subject is "[#<issue>] <type>: <summary>"
+# (rules in .github/scripts/conventions.js, shared with the commit-msg hook). It
+# warns when a PR closes more than one issue, or a branch or commit names an issue
+# the PR neither closes nor references ("Part of #N").
 
 on:
   pull_request:
@@ -60,3 +66,40 @@ jobs:
               if (!issue.milestone) core.warning(`Linked issue #${issue.number} has no milestone.`);
             }
             core.info(`Linked issue(s): ${open.map((issue) => `#${issue.number}`).join(', ')}`);
+
+      - name: Check branch name and commit subjects
+        # Runs even when the step above fails, so every problem shows at once.
+        if: success() || failure()
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        with:
+          script: |
+            const { getLinkedIssues } = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/linked-issues.js`);
+            const { checkBranchName, checkCommitSubject, getReferencedIssueNumbers } = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/conventions.js`);
+            const pull = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+            const problems = [];
+
+            const closing = (await getLinkedIssues({ github, core, owner, repo, pullNumber: pull.number, body: pull.body })).map((issue) => issue.number);
+            const related = new Set([...closing, ...getReferencedIssueNumbers(pull.body)]);
+            if (closing.length > 1) {
+              core.warning(`This PR closes ${closing.length} issues (${closing.map((n) => `#${n}`).join(', ')}). One issue per PR is the convention; if this is a split, close the new issue and use "Part of #N" for the original (CONTRIBUTING.md).`);
+            }
+
+            const branch = checkBranchName(pull.head.ref);
+            if (!branch.ok) problems.push(branch.reason);
+            else if (!related.has(branch.issue)) core.warning(`Branch "${pull.head.ref}" starts with #${branch.issue}, which this PR doesn't close or reference.`);
+
+            const commits = await github.paginate(github.rest.pulls.listCommits, { owner, repo, pull_number: pull.number, per_page: 100 });
+            for (const commit of commits) {
+              const subject = commit.commit.message.split('\n')[0];
+              const sha = commit.sha.slice(0, 7);
+              const result = checkCommitSubject(subject);
+              if (!result.ok) problems.push(`${sha} "${subject}": ${result.reason}`);
+              else if (!result.exempt && !related.has(result.issue)) core.warning(`${sha} "${subject}" refers to #${result.issue}, which this PR doesn't close or reference ("Part of #N").`);
+            }
+
+            if (problems.length) {
+              core.setFailed(`Conventions (CONTRIBUTING.md#branches-and-pull-requests):\n- ${problems.join('\n- ')}\nTo fix: reword the commits (e.g. git rebase -i) and push with --force-with-lease. A branch can only be renamed by opening a new PR from a correctly named branch.`);
+              return;
+            }
+            core.info(`Branch and ${commits.length} commit subject(s) follow the conventions.`);

@@ -50,4 +50,4 @@ Open the PR against `develop` **as a draft**, following `.github/pull_request_te
 
 ## 5. Mark it ready
 
-When **CI**, **Linked issue**, and **SonarCloud Code Analysis** pass, mark the PR ready for review (this moves the issue to In Review). If a check fails, fix it with a new commit; don't rewrite pushed history.
+When **CI**, **Linked issue**, and **SonarCloud Code Analysis** pass, mark the PR ready for review (this moves the issue to In Review). If a check fails, fix it with a new commit; don't rewrite pushed history. The one exception: commit subjects the Linked issue check flags, which you reword and push with `--force-with-lease`.
