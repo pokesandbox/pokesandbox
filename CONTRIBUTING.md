@@ -57,7 +57,8 @@ Never put `Closes #104` on both PRs. The first merge closes #104 and moves it to
 ## Code standards
 
 - TypeScript in strict mode. No `any`, `@ts-ignore`, or non-null `!` without a one-line reason.
-- New behavior needs tests: `*.spec.ts` next to the code, run with `npx nx test <project>`.
+- New behavior needs tests: `*.test.ts` (or `.test.tsx`) next to the code, run with `npx nx test <project>`. Use only the `.test` suffix; CI fails on `*.spec.*` files.
+- SonarCloud requires 80% coverage of the lines a PR adds or changes. Check before pushing with `npx nx test <project> --coverage`, which also writes a line-by-line report to `coverage/<project>/index.html`.
 - Don't reformat code you didn't change (the hooks only format what you stage).
 - No new dependency without a reason in the PR description.
 - Model changes: run `npm run erd:generate` and update the seed data in `scripts/seed/data/`.

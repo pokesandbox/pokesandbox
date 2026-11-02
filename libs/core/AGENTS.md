@@ -13,4 +13,4 @@ The pure base layer: content and catalog schemas, `ContentKey`, port interfaces,
 
 ## Tests
 
-Everything here is pure, so test it directly: `*.spec.ts` next to the code, no mocks of I/O needed. `npx nx test core`.
+Everything here is pure, so test it directly: `*.test.ts` next to the code, no mocks of I/O needed. `npx nx test core`.

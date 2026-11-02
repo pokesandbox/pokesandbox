@@ -26,6 +26,8 @@ npm run affected      # lint, typecheck, test for the changed projects and their
 
 Fix every failure. Never use `--no-verify`, `.skip` / `.only`, or disable a lint rule. If a failure is unrelated to your change, stop and report it; mention it in the PR.
 
+If you changed source in `apps/bot`, `apps/webapp`, `shared`, or `libs/core`: run `npx nx test <project> --coverage` and check your new and changed lines are covered (SonarCloud fails the PR below 80%).
+
 If you changed a model: `npm run erd:generate` and update `scripts/seed/data/`.
 
 ## 3. Commit

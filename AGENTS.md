@@ -56,10 +56,15 @@ Every change, human or agent. ⚙ = enforced by a hook or CI.
 
 - ⚙ Stage files by name (no `git add -A` / `git add .`). Don't hand-format or reorder imports; the pre-commit hook does it. Don't reformat code you didn't change.
 - Never commit `.env`, tokens, or real server IDs.
-- New behavior gets tests (`*.spec.ts` next to the code). Libraries are tested headless with in-memory ports.
 - No `any`, `@ts-ignore`, or non-null `!` without a one-line reason. No new dependency without a reason in the PR.
 - Model changes: run `npm run erd:generate` and update `scripts/seed/data`.
 - If your change makes this file, a package `AGENTS.md`, `CONTRIBUTING.md`, or a skill wrong, update it in the same PR.
+
+**Tests**
+
+- New behavior gets tests, named `*.test.ts(x)` and placed next to the code (⚙ CI rejects `*.spec.*` files). Test the behavior the acceptance criteria describe; a test that only executes lines without asserting anything meaningful doesn't count.
+- ⚙ SonarCloud requires 80% coverage of new and changed lines in `apps/bot`, `apps/webapp`, `shared`, and `libs/core`. It runs only in CI, after you push, so check first: `npx nx test <project> --coverage` prints a summary and writes line detail to `coverage/<project>/index.html`.
+- Libraries are tested headless with in-memory ports. Discord view builders are pure functions: test their output directly.
 
 **When it's unclear**
 

@@ -47,4 +47,4 @@ Following `dtos/server.dto.ts`:
 
 1. Seed data: `scripts/seed/data/<collection>.json`, registered in `scripts/seed/collections.ts`.
 2. Add a new top-level model to `scripts/generate-erd.ts`, then run `npm run erd:generate`.
-3. Tests next to the code (`*.spec.ts`), then `npm run affected`.
+3. Tests next to the code (`*.test.ts`), then `npm run affected`.
