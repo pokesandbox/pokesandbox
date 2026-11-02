@@ -12,6 +12,13 @@
         "passWithNoTests": true
       },
       "dependsOn": ["bot:build"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["tsc -p {projectRoot}/tsconfig.spec.json --noEmit"],
+        "parallel": false
+      }
     }
   }
 }

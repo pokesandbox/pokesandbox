@@ -1,0 +1,73 @@
+name: CI
+
+# Lint, typecheck, and unit tests on every PR into develop (affected projects
+# only) and a full run on every push to develop. The full run also gives
+# SonarCloud complete main-branch coverage.
+
+on:
+  pull_request:
+    branches: [develop]
+  push:
+    branches: [develop]
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read # nx-set-shas looks up the last successful run on develop
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NX_DAEMON: 'false'
+      NX_NO_CLOUD: 'true'
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # nx affected and Sonar blame need history
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Derive affected base/head SHAs
+        uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
+
+      - name: Lint, typecheck & test (affected)
+        if: github.event_name == 'pull_request'
+        run: |
+          npx nx affected -t lint typecheck --outputStyle=static
+          npx nx affected -t test --coverage --outputStyle=static
+
+      - name: Lint, typecheck & test (all projects)
+        if: github.event_name == 'push'
+        run: |
+          npx nx run-many -t lint typecheck --outputStyle=static
+          npx nx run-many -t test --coverage --outputStyle=static
+
+      - name: Normalize coverage paths for SonarCloud
+        run: scripts/ci/normalize-lcov.sh
+
+      - name: Note skipped SonarCloud scan
+        if: env.SONAR_TOKEN == ''
+        run: echo "::warning title=SonarCloud skipped::SONAR_TOKEN is not available (not configured yet, or a fork PR). Analysis was skipped."
+
+      - name: SonarCloud Scan
+        if: env.SONAR_TOKEN != '' && github.actor != 'dependabot[bot]'
+        uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

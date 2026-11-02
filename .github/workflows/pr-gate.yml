@@ -1,0 +1,62 @@
+name: PR Gate
+
+# Required check: every PR must close at least one open issue in this repo with a
+# closing keyword in the PR description (e.g. "Closes #123"). Linking from the PR
+# sidebar does not count. The check only fails — it never closes or comments on the
+# PR. Editing the description re-runs it. Dependabot PRs are exempt (a skipped job
+# satisfies a required check).
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize, ready_for_review]
+    branches: [develop]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+concurrency:
+  group: pr-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  linked-issue:
+    name: Linked issue
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+          persist-credentials: false
+
+      - name: Require a linked open issue
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        with:
+          script: |
+            const { getLinkedIssues } = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/linked-issues.js`);
+            const pull = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+
+            const issues = await getLinkedIssues({ github, core, owner, repo, pullNumber: pull.number, body: pull.body });
+            const open = issues.filter((issue) => issue.state === 'OPEN');
+
+            if (open.length === 0) {
+              const found = issues.length
+                ? ` Found only closed issue(s): ${issues.map((issue) => `#${issue.number}`).join(', ')}.`
+                : '';
+              core.setFailed(
+                'This PR must close an open issue in this repo. Add a closing keyword to the PR description, e.g. "Closes #123".' +
+                found +
+                ' Linking from the PR sidebar does not count. Editing the description re-runs this check.'
+              );
+              return;
+            }
+
+            for (const issue of open) {
+              if (!issue.milestone) core.warning(`Linked issue #${issue.number} has no milestone.`);
+            }
+            core.info(`Linked issue(s): ${open.map((issue) => `#${issue.number}`).join(', ')}`);

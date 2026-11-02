@@ -1,5 +1,9 @@
 # PokeSandbox - The Discord Pokémon Fan-Game Engine
 
+[![CI](https://github.com/pokesandbox/pokesandbox/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/pokesandbox/pokesandbox/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pokesandbox_pokesandbox&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=pokesandbox_pokesandbox&metric=coverage)](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox)
+
 Navigation: [Discord Server][1] | [Pokémon Showdown Fork][2]
 
 ## Introduction
@@ -24,6 +28,8 @@ Before setting up the project locally, ensure you have the following installed:
 | [npm][5]            | 10+          | Bundled with Node 22                                        |
 | [Docker Desktop][6] | Latest       | Required to run the local MongoDB instance                  |
 | [Git][7]            | Latest       |                                                             |
+
+The repo pins the Node version in `.nvmrc`: run `nvm use` in the repo root to switch to it.
 
 ### Discord Bot
 
@@ -115,6 +121,20 @@ After running `npm run env-setup` (or `npm run setup`), open `.env` and fill in:
 | `npm run db:reset`                         | Alias for `db:seed` — wipe and re-seed                        |
 | `npm run db:export`                        | Export all live local collections back to the JSON seed files |
 | `npm run db:export -- --collection=<name>` | Export a single collection (e.g. `regions`)                   |
+
+## Checks & CI
+
+Every PR into `develop` runs [CI](.github/workflows/ci.yml): lint, typecheck, and unit tests for the projects the PR affects (`nx affected`), plus a [SonarCloud](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox) analysis. Pushes to `develop` run everything. Run the same checks locally before pushing:
+
+| Script                  | Description                                                |
+| ----------------------- | ---------------------------------------------------------- |
+| `npm run affected`      | Lint, typecheck, and test the projects you changed         |
+| `npm run lint`          | Lint every project                                         |
+| `npm run typecheck`     | Typecheck every project                                    |
+| `npm run test`          | Run every project's unit tests                             |
+| `npm run test:coverage` | Run every project's unit tests with coverage (`coverage/`) |
+
+Every PR must also close an issue in its description (`Closes #123`); the **Linked issue** check enforces it. See [GitHub Org & Project Setup § Automation](docs/roadmap/github-project-setup.md#automation).
 
 ## Interested in helping?
 
