@@ -7,7 +7,7 @@
 
 ## What is PokeSandbox?
 
-PokeSandbox is a Discord bot plus a web app that lets Discord servers build their own Pokémon games ("regions") and play them right in Discord: a faithful Kanto remake, a fan region with custom Pokémon, or a story-driven roleplay server. Server admins author regions (maps, encounters, trainers, story scripts, rules) in the web app, built for phones first. Players play through a `/play` menu, battle in a system powered by a fork of [Pokémon Showdown][2], and trade. The first public piece is the **Arena**: Showdown-style PvP and PvAI battles between server members.
+PokeSandbox is a Discord bot plus a web app that lets Discord servers build their own Pokémon games ("regions") and play them right in Discord: a faithful Kanto remake, a fan region with custom Pokémon, or a story-driven roleplay server. Server admins author regions (maps, encounters, trainers, story scripts, rules) in the web app, built for phones first. Players play through a `/play` menu, battle in a system powered by a fork of [Pokémon Showdown][2], and trade. The first planned public piece is the **Arena**, which will offer Showdown-style PvP and PvAI battles between server members.
 
 New here? Start with [`docs/start-here.md`](docs/start-here.md).
 
