@@ -115,6 +115,5 @@ The repo ships context for coding agents. It describes the same rules as this pa
 | [`CLAUDE.md`](CLAUDE.md)                         | Imports `AGENTS.md` for Claude Code                                                                                                                                                                                 |
 | [`.claude/skills/`](.claude/skills/)             | Step-by-step procedures: picking up an issue, shipping a PR, adding a model                                                                                                                                         |
 | [`.claude/settings.json`](.claude/settings.json) | Claude Code hooks: install dependencies in cloud sessions, run `npm run affected` before a push                                                                                                                     |
-| `.github/copilot-instructions.md`                | Points GitHub Copilot at `AGENTS.md`, plus a code-review checklist                                                                                                                                                  |
 
 If your PR changes a convention, command, or structure these files describe, update them in the same PR.
