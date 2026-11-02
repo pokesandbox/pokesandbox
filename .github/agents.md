@@ -786,7 +786,7 @@ If the data is global and used on many pages, pre-fetch in the root layout and h
 - Branch from `develop`. Branch names: `<issue#>-<short-overview>`, e.g. `103-ci-sonar-pr-automation`.
 - One logical change per commit. If a feature spans shared + bot + webapp, structure commits by layer.
 - Run `npm run affected` (lint, typecheck, and test for affected projects) before pushing; CI runs the same.
-- Don't hand-format or hand-order imports: Prettier and the pre-commit hook do both (see README § Formatting, import order & git hooks).
+- Don't hand-format or hand-order imports: Prettier and the pre-commit hook do both (see [CONTRIBUTING.md](../CONTRIBUTING.md#formatting-import-order--git-hooks)).
 - The PR description must close its issue (`Closes #N`) and follow `.github/pull_request_template.md`.
 
 ### Validation Strategy
