@@ -1,0 +1,99 @@
+name: Task
+description: A scoped piece of internal work with checkable acceptance criteria
+type: Task
+projects: ['pokesandbox/1']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for planned work: one issue, one focused PR. For user-visible features use **Planned Feature**; for a body of work split into sub-issues use **Epic**.
+        Before writing one, read [Writing issues](https://github.com/pokesandbox/pokesandbox/blob/develop/docs/roadmap/github-project-setup.md#writing-issues). After creating it, set the milestone, the `area:*` labels, the parent epic (sub-issue), and any "blocked by" relationships.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What this is and why, in a few sentences. Use the player terms from concept 23 (character, journey).
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: Conditions a reviewer can check from the PR alone.
+      placeholder: |
+        - `functionName(args)` exists in `libs/core` and …
+        - Tests cover …
+    validations:
+      required: true
+
+  - type: textarea
+    id: refs
+    attributes:
+      label: Refs
+      description: The concept doc(s) and Q-numbers this implements.
+      placeholder: '[05 § MVP scope](https://github.com/pokesandbox/pokesandbox/blob/develop/docs/architecture/concepts/05-requirements.md#mvp-scope), Q36'
+    validations:
+      required: false
+
+  - type: textarea
+    id: blocked_by
+    attributes:
+      label: Blocked by
+      description: Blockers that aren't issues yet (e.g. "webapp hosting"). Link issue blockers with GitHub's "blocked by" relationship instead.
+    validations:
+      required: false
+
+  - type: textarea
+    id: changes_later
+    attributes:
+      label: Changes later
+      description: Follow-ups once a foundation lands (also list them on the foundation's issue).
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Out of scope, open risks, or anything else a reviewer should know.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 (blocks the milestone)
+        - P1 (needed for the milestone)
+        - P2 (nice to have)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      description: L or bigger? Consider splitting.
+      options:
+        - S (≤ 1 day)
+        - M (2–4 days)
+        - L (1–2 weeks)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Skill
+      description: Who should take it (not the assignee). `agent` means fully specified, eligible for the scheduled agent.
+      options:
+        - agent
+        - any
+        - junior
+        - senior
+        - owner
+    validations:
+      required: true

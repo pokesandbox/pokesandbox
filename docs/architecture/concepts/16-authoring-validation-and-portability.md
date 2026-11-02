@@ -103,7 +103,7 @@ Zod command schemas double as form schemas in the webapp and modal validation in
 
 Both call the same commands, so a Discord editor can be added for any feature later without duplicating rules.
 
-**Migration:** new builder features (connections, encounters, NPCs, scripts, shops) go through `libs/authoring` from day one, with webapp UIs. The existing Pokédex, progression, and locations menus move onto authoring commands during M0b (M0B-17..19), which is also when they adopt content keys and conditions. They keep working until the webapp has parity, hidden in production behind the `discord.authoring` feature flag (on in dev) until they're ready for a full release ([28 § Transition](28-webapp-authoring-and-mobile-first-ux.md#transition-the-existing-discord-builders)).
+**Migration:** new builder features (connections, encounters, NPCs, scripts, shops) go through `libs/authoring` from day one, with webapp UIs. The existing Pokédex, progression, and locations menus move onto authoring commands during M0b ([#146](https://github.com/pokesandbox/pokesandbox/issues/146), [#147](https://github.com/pokesandbox/pokesandbox/issues/147), [#148](https://github.com/pokesandbox/pokesandbox/issues/148)), which is also when they adopt content keys and conditions. They keep working until the webapp has parity, hidden in production behind the `discord.authoring` feature flag (on in dev) until they're ready for a full release ([28 § Transition](28-webapp-authoring-and-mobile-first-ux.md#transition-the-existing-discord-builders)).
 
 ## Builder UX notes
 - The builder should surface **"used by"** before deletes ("Badges is used by 4 conditions. Delete anyway?").

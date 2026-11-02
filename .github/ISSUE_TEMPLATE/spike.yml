@@ -1,0 +1,48 @@
+name: Spike
+description: Time-boxed research that ends in a written answer and follow-up issues
+type: Spike
+projects: ['pokesandbox/1']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A spike answers one question within a time box. The deliverable is the write-up below (and any follow-up issues), not production code. The scheduled agent never picks up spikes.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: The one question this spike answers, and why it matters.
+    validations:
+      required: true
+
+  - type: input
+    id: time_box
+    attributes:
+      label: Time box
+      placeholder: e.g. 2 days
+    validations:
+      required: true
+
+  - type: textarea
+    id: findings
+    attributes:
+      label: Findings
+      description: Filled in when the spike is done.
+    validations:
+      required: false
+
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommendation
+    validations:
+      required: false
+
+  - type: textarea
+    id: follow_ups
+    attributes:
+      label: Follow-up issues
+      description: Issues created from the outcome, or a Decision issue if the owner needs to choose.
+    validations:
+      required: false

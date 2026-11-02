@@ -1,0 +1,56 @@
+name: Decision
+description: Record a new architecture decision (not for questions already answered in the docs)
+type: Decision
+projects: ['pokesandbox/1']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For **new** decisions only. Decided questions live in [`open-questions.md`](https://github.com/pokesandbox/pokesandbox/blob/develop/docs/architecture/open-questions.md) and the concept docs' Decisions sections.
+        Once the owner decides, record it there (the next Q-number or the Smaller decisions index), update the concept doc and any affected issues in the same PR, and close this issue. Label issues waiting on it `needs-decision`.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What needs deciding, why now, and which concept doc it belongs to.
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Options
+      description: Each option with its pros and cons.
+      placeholder: |
+        **A. …**
+        - Pro: …
+        - Con: …
+
+        **B. …**
+    validations:
+      required: true
+
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommendation
+      description: Which option, and why.
+    validations:
+      required: false
+
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision
+      description: Filled in by the owner.
+    validations:
+      required: false
+
+  - type: textarea
+    id: consequences
+    attributes:
+      label: Consequences
+      description: What changes because of it (docs, issues, code), and what it rules out.
+    validations:
+      required: false

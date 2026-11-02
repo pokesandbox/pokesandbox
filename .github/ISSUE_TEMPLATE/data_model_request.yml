@@ -1,6 +1,8 @@
 name: Data Model Addition
 description: Add or modify a Mongoose model, zod schema, or DTO in the shared library
-labels: ['enhancement', 'data model']
+labels: ['area:shared-models']
+type: Feature
+projects: ['pokesandbox/1']
 body:
   - type: markdown
     attributes:
@@ -126,10 +128,9 @@ body:
       label: Priority
       description: How important is this?
       options:
-        - 'Low'
-        - 'Medium'
-        - 'High'
-        - 'Critical'
+        - P2 (nice to have)
+        - P1 (needed for the milestone)
+        - P0 (blocks the milestone)
     validations:
       required: false
 
