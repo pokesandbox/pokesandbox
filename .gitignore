@@ -48,3 +48,7 @@ out
 
 # TypeScript incremental build info (webapp typecheck)
 *.tsbuildinfo
+
+# Claude Code: personal settings and instructions stay local
+.claude/settings.local.json
+CLAUDE.local.md
