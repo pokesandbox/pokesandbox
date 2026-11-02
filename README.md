@@ -124,7 +124,7 @@ After running `npm run env-setup` (or `npm run setup`), open `.env` and fill in:
 
 ## Checks & CI
 
-Every PR into `develop` runs [CI](.github/workflows/ci.yml): lint, typecheck, and unit tests for the projects the PR affects (`nx affected`), plus a [SonarCloud](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox) analysis. Pushes to `develop` run everything. Run the same checks locally before pushing:
+Every PR into `develop` runs [CI](.github/workflows/ci.yml): a Prettier format check on the whole repo, then lint, typecheck, build, and unit tests for the projects the PR affects (`nx affected`), plus a [SonarCloud](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox) analysis. Pushes to `develop` run everything. Run the same checks locally before pushing:
 
 | Script                  | Description                                                |
 | ----------------------- | ---------------------------------------------------------- |
@@ -133,6 +133,26 @@ Every PR into `develop` runs [CI](.github/workflows/ci.yml): lint, typecheck, an
 | `npm run typecheck`     | Typecheck every project                                    |
 | `npm run test`          | Run every project's unit tests                             |
 | `npm run test:coverage` | Run every project's unit tests with coverage (`coverage/`) |
+| `npm run format`        | Format the whole repo with Prettier (also sorts imports)   |
+| `npm run format:check`  | Check formatting without writing (what CI runs)            |
+
+### Formatting, import order & git hooks
+
+You don't need to format code or order imports by hand. Prettier formats everything and sorts imports into groups, alphabetised, with a blank line between groups:
+
+1. Node built-ins (`node:fs`, `path`)
+2. npm packages (`discord.js`, `zod`, `@flowcord/core`)
+3. Other workspace packages (`@shared/*`, `@core/*`)
+4. The current package (`@bot/*` or `@webapp/*`, then relative imports)
+
+`npm install` sets up two git hooks ([husky](https://typicode.github.io/husky/)):
+
+- **pre-commit** runs `eslint --fix` and `prettier --write` on your staged files and adds the fixes to the commit. Only ESLint errors that can't be fixed automatically stop the commit.
+- **pre-push** typechecks the projects you changed.
+
+Build and tests run in CI. To skip the hooks once, use `--no-verify`; to turn them off, set `HUSKY=0`. Enable format-on-save with Prettier in your editor for the same result while you work.
+
+The repo-wide format commit is listed in `.git-blame-ignore-revs`. GitHub skips it in blame automatically; to do the same locally, run `git config blame.ignoreRevsFile .git-blame-ignore-revs` once.
 
 Every PR must also close an issue in its description (`Closes #123`); the **Linked issue** check enforces it. See [GitHub Org & Project Setup § Automation](docs/roadmap/github-project-setup.md#automation).
 

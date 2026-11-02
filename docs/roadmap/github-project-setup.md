@@ -94,11 +94,11 @@ Every template adds the issue to the project. Milestone, labels, parent epic, an
 
 GitHub Actions in [`.github/workflows`](../../.github/workflows) keep checks and the board up to date.
 
-| Workflow                               | Runs on                                   | What it does                                                                                                                                  |
-| -------------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ci.yml` (check **CI**)                | PRs into `develop`, pushes to `develop`   | Lint, typecheck, and unit tests (`nx affected` on PRs, every project on `develop`), then a SonarCloud scan                                    |
-| `pr-gate.yml` (check **Linked issue**) | PRs into `develop`                        | Fails unless the PR description closes an open issue in this repo (`Closes #N`). It never closes or comments on the PR. Dependabot is exempt. |
-| `issue-status.yml`                     | PR opened, edited, drafted, ready, closed | Sets **Status** on the issues the PR closes (table below)                                                                                     |
+| Workflow                               | Runs on                                   | What it does                                                                                                                                      |
+| -------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ci.yml` (check **CI**)                | PRs into `develop`, pushes to `develop`   | Format check (whole repo), then lint, typecheck, build, and unit tests (`nx affected` on PRs, every project on `develop`), then a SonarCloud scan |
+| `pr-gate.yml` (check **Linked issue**) | PRs into `develop`                        | Fails unless the PR description closes an open issue in this repo (`Closes #N`). It never closes or comments on the PR. Dependabot is exempt.     |
+| `issue-status.yml`                     | PR opened, edited, drafted, ready, closed | Sets **Status** on the issues the PR closes (table below)                                                                                         |
 
 **Status rules** (the PR's current state decides, so re-runs are safe):
 
