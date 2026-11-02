@@ -48,6 +48,17 @@ jobs:
         # Whole repo (fast), so files outside Nx projects (docs, workflows, scripts) are covered too.
         run: npm run format:check
 
+      - name: Test file naming
+        # Test files are *.test.ts(x) only (CONTRIBUTING.md#code-standards). Jest and
+        # Playwright would still run a *.spec file, so catch it here explicitly.
+        run: |
+          spec_files="$(git ls-files | grep -E '\.spec\.[cm]?[jt]sx?$' || true)"
+          if [ -n "$spec_files" ]; then
+            echo "::error title=Test file naming::Rename these to *.test.ts(x):"
+            echo "$spec_files"
+            exit 1
+          fi
+
       - name: Derive affected base/head SHAs
         uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
 
