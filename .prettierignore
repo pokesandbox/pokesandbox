@@ -4,3 +4,8 @@ CODEOWNERS
 /coverage
 /.nx/cache
 /.nx/workspace-data
+**/.next
+package-lock.json
+apps/webapp/next-env.d.ts
+# Written by `npm run db:export` (JSON.stringify); formatting it would fail CI after every export.
+scripts/seed/data/

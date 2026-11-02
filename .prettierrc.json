@@ -1,4 +1,16 @@
 {
-  "maxLineLength": 70,
-  "singleQuote": true
+  "singleQuote": true,
+  "trailingComma": "all",
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "<BUILTIN_MODULES>",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@(shared|core)(/.*)?$",
+    "",
+    "^@(bot|webapp)(/.*)?$",
+    "^[.]"
+  ],
+  "importOrderTypeScriptVersion": "5.9.3"
 }
