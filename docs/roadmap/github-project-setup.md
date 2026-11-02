@@ -47,6 +47,7 @@ M0a, M0c, M0b, M1, M2, the Kanto checkpoints CP0a–CP8, and MVP Release, as in 
 - **Roadmap by Milestone** (timeline grouped by milestone; it needs milestone due dates or a date field to draw bars).
 - **Table by Epic** (grouped by parent issue).
 - **Decisions** (`type:Decision`).
+- **Epics by Milestone** (`type:Epic`, grouped by milestone).
 
 ## Issue templates
 | Template | Type | For |
