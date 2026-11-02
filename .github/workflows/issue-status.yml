@@ -1,0 +1,69 @@
+name: Issue Status
+
+# Moves the issues a PR closes ("Closes #N" in the PR body) across the Status field
+# of the org project board (https://github.com/orgs/pokesandbox/projects/1):
+#   draft PR -> In Progress · ready for review -> In Review · merged -> Done
+#   closed without merging -> Ready
+# Logic and rules: .github/scripts/issue-status.js.
+#
+# Requires:
+#   - PROJECTS_TOKEN secret: fine-grained PAT owned by the pokesandbox org
+#     (org Projects: read/write; repo Issues + Pull requests: read). GITHUB_TOKEN
+#     cannot write org-level Projects v2. If missing, the job warns and does nothing.
+#   - PROJECT_NUMBER repository variable (optional, defaults to 1).
+#
+# Uses pull_request_target so the secret is available on fork PRs too. It never
+# checks out or runs PR code: only .github/scripts from the base branch is loaded.
+
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review, converted_to_draft, edited, closed]
+    branches: [develop]
+
+permissions: {}
+
+concurrency:
+  group: issue-status-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  sync-status:
+    name: Sync linked issue Status
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check PROJECTS_TOKEN is configured
+        id: token
+        env:
+          TOKEN_PRESENT: ${{ secrets.PROJECTS_TOKEN != '' }}
+        run: |
+          echo "present=$TOKEN_PRESENT" >> "$GITHUB_OUTPUT"
+          if [ "$TOKEN_PRESENT" != "true" ]; then
+            echo "::warning title=Issue Status skipped::The PROJECTS_TOKEN secret is not configured. See docs/roadmap/github-project-setup.md#automation."
+          fi
+
+      - name: Checkout base-branch scripts
+        if: steps.token.outputs.present == 'true'
+        uses: actions/checkout@v4
+        with:
+          # pull_request_target checks out the base branch by default; never the PR head.
+          sparse-checkout: .github/scripts
+          persist-credentials: false
+
+      - name: Update Status on linked issues
+        if: steps.token.outputs.present == 'true'
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER || '1' }}
+        with:
+          github-token: ${{ secrets.PROJECTS_TOKEN }}
+          script: |
+            const projectNumber = Number(process.env.PROJECT_NUMBER);
+            if (!Number.isInteger(projectNumber) || projectNumber <= 0) {
+              core.setFailed('The PROJECT_NUMBER repository variable must be a positive integer.');
+              return;
+            }
+            const run = require(`${process.env.GITHUB_WORKSPACE}/.github/scripts/issue-status.js`);
+            await run({ github, context, core, projectNumber });
