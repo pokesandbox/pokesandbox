@@ -1,0 +1,6 @@
+# Commits that `git blame` should skip: bulk formatting with no behaviour change.
+# GitHub applies this file automatically. Locally, run once:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: format the repo with Prettier 3 and sort imports (#212)
+57a8577cee7c4efef0e02ecd8dfe0d52cb2c75db
