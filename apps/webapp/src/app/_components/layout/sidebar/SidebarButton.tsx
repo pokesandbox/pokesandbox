@@ -1,7 +1,7 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { getLabelAcronym } from "./utils";
+import { getLabelAcronym } from './utils';
 
 interface ISidebarButtonProps {
   iconUrl?: string;
@@ -27,8 +27,8 @@ export const SidebarButton = ({
         cursor-pointer
         ${
           !iconUrl
-            ? "hover:bg-gold-800 hover:text-gray-100 dark:hover:bg-dgold-700 dark:hover:text-gray-1300"
-            : ""
+            ? 'hover:bg-gold-800 hover:text-gray-100 dark:hover:bg-dgold-700 dark:hover:text-gray-1300'
+            : ''
         }`}
       href={`/${route}`}
     >

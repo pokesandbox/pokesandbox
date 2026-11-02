@@ -24,7 +24,7 @@ type PaginateListForButtonPaginationOptions = {
 export const paginateListForButtonPagination = <T>(
   items: T[],
   pagination?: PaginationLike | null,
-  options?: PaginateListForButtonPaginationOptions
+  options?: PaginateListForButtonPaginationOptions,
 ): PaginatedListResult<T> => {
   const totalItems = items.length;
   const rawStart = pagination?.startIndex ?? 0;
@@ -33,7 +33,7 @@ export const paginateListForButtonPagination = <T>(
   const startIndex = Math.max(0, Math.min(rawStart, totalItems));
   const endIndexExclusive = Math.max(
     startIndex,
-    Math.min(rawEndExclusive, totalItems)
+    Math.min(rawEndExclusive, totalItems),
   );
 
   const startDisplay = totalItems > 0 ? startIndex + 1 : 0;
@@ -45,7 +45,7 @@ export const paginateListForButtonPagination = <T>(
       ? startDisplay === endDisplay
         ? `Showing ${itemLabel} ${startDisplay} of ${totalItems}`
         : `Showing ${pluralize(
-            itemLabel
+            itemLabel,
           )} ${startDisplay}-${endDisplay} of ${totalItems}`
       : undefined;
 

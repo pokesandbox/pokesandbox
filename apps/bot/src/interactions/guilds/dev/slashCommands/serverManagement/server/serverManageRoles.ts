@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -8,8 +9,6 @@ import { saveServer } from '@bot/cache';
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import { getServerMenuEmbeds } from './server.embeds';
 import { SERVER_ADD_ROLE_COMMAND_NAME } from './serverAddRole';
 import type { ServerManageRolesCommandOptions } from './types';
@@ -34,8 +33,8 @@ export const ServerManageRolesCommand: ISlashCommand = {
         .setRequired(true)
         .addChoices(
           { name: 'Admin', value: 'admin' },
-          { name: 'Mod', value: 'mod' }
-        )
+          { name: 'Mod', value: 'mod' },
+        ),
     ),
   createMenu: (session, options) => {
     const { role_type } = options as unknown as ServerManageRolesCommandOptions;
@@ -48,8 +47,8 @@ export const ServerManageRolesCommand: ISlashCommand = {
       .setEmbeds((ctx) =>
         getServerMenuEmbeds(
           ctx,
-          `Add or Remove a Role with Bot ${role_type} privileges.`
-        )
+          `Add or Remove a Role with Bot ${role_type} privileges.`,
+        ),
       )
       .setCancellable()
       .setTrackedInHistory()
@@ -60,7 +59,7 @@ export const ServerManageRolesCommand: ISlashCommand = {
 
 export const getServerManageRolesButtons = async (
   ctx: AdminMenuContext,
-  roleType: string
+  roleType: string,
 ): Promise<ButtonInputConfig<AdminMenuContext>[]> => {
   const roles = await ctx.admin.getRoles(roleType as 'admin' | 'mod');
 

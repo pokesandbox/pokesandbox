@@ -109,115 +109,115 @@ erDiagram
 
 ### User
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `avatarUrl` | string |  |  |
-| `globalName` | string | ✓ |  |
-| `servers` | Server[] | ✓ | References: Server |
-| `userId` | string | ✓ |  |
-| `username` | string | ✓ |  |
+| Field        | Type     | Required | Notes              |
+| ------------ | -------- | -------- | ------------------ |
+| `avatarUrl`  | string   |          |                    |
+| `globalName` | string   | ✓        |                    |
+| `servers`    | Server[] | ✓        | References: Server |
+| `userId`     | string   | ✓        |                    |
+| `username`   | string   | ✓        |                    |
 
 ### Server
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `serverId` | string | ✓ |  |
-| `adminRoleIds` | string[] | ✓ |  |
-| `discovery` | object | ✓ |  |
-| `↳ description` | string |  |  |
-| `↳ enabled` | boolean | ✓ |  |
-| `↳ icon` | string |  |  |
-| `↳ inviteLink` | string |  |  |
-| `modRoleIds` | string[] | ✓ |  |
-| `name` | string | ✓ |  |
-| `playerList` | User[] | ✓ | References: User |
-| `prefixes` | string[] | ✓ |  |
-| `regions` | Region[] | ✓ | References: Region |
+| Field           | Type     | Required | Notes              |
+| --------------- | -------- | -------- | ------------------ |
+| `serverId`      | string   | ✓        |                    |
+| `adminRoleIds`  | string[] | ✓        |                    |
+| `discovery`     | object   | ✓        |                    |
+| `↳ description` | string   |          |                    |
+| `↳ enabled`     | boolean  | ✓        |                    |
+| `↳ icon`        | string   |          |                    |
+| `↳ inviteLink`  | string   |          |                    |
+| `modRoleIds`    | string[] | ✓        |                    |
+| `name`          | string   | ✓        |                    |
+| `playerList`    | User[]   | ✓        | References: User   |
+| `prefixes`      | string[] | ✓        |                    |
+| `regions`       | Region[] | ✓        | References: Region |
 
 ### Region
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `baseGeneration` | number | ✓ |  |
-| `charactersPerPlayer` | number | ✓ |  |
-| `characterList` | Character[] |  | References: Character |
-| `currencyType` | string | ✓ |  |
-| `deployable` | boolean | ✓ |  |
-| `deployed` | boolean | ✓ |  |
-| `graphicSettings` | object | ✓ |  |
-| `↳ backSpritesEnabled` | boolean |  |  |
-| `↳ frontSpritesEnabled` | boolean |  |  |
-| `↳ iconSpritesEnabled` | boolean |  |  |
-| `↳ mapImageLink` | string |  |  |
-| `locations` | Location[] | ✓ | References: Location |
-| `name` | string | ✓ |  |
-| `pokedex` | object[] | ✓ |  |
-| `↳ id` | ObjectId |  | References: DexEntry |
-| `↳ name` | string |  |  |
-| `progressionDefinitions` | Map | ✓ |  |
-| `quests` | object | ✓ |  |
-| `↳ active` | Quest[] | ✓ | References: Quest |
-| `↳ passive` | Quest[] | ✓ | References: Quest |
-| `↳ maxPassiveQuests` | number |  |  |
-| `shops` | Shop[] | ✓ | References: Shop |
-| `transportationTypes` | string[] | ✓ |  |
+| Field                    | Type        | Required | Notes                 |
+| ------------------------ | ----------- | -------- | --------------------- |
+| `baseGeneration`         | number      | ✓        |                       |
+| `charactersPerPlayer`    | number      | ✓        |                       |
+| `characterList`          | Character[] |          | References: Character |
+| `currencyType`           | string      | ✓        |                       |
+| `deployable`             | boolean     | ✓        |                       |
+| `deployed`               | boolean     | ✓        |                       |
+| `graphicSettings`        | object      | ✓        |                       |
+| `↳ backSpritesEnabled`   | boolean     |          |                       |
+| `↳ frontSpritesEnabled`  | boolean     |          |                       |
+| `↳ iconSpritesEnabled`   | boolean     |          |                       |
+| `↳ mapImageLink`         | string      |          |                       |
+| `locations`              | Location[]  | ✓        | References: Location  |
+| `name`                   | string      | ✓        |                       |
+| `pokedex`                | object[]    | ✓        |                       |
+| `↳ id`                   | ObjectId    |          | References: DexEntry  |
+| `↳ name`                 | string      |          |                       |
+| `progressionDefinitions` | Map         | ✓        |                       |
+| `quests`                 | object      | ✓        |                       |
+| `↳ active`               | Quest[]     | ✓        | References: Quest     |
+| `↳ passive`              | Quest[]     | ✓        | References: Quest     |
+| `↳ maxPassiveQuests`     | number      |          |                       |
+| `shops`                  | Shop[]      | ✓        | References: Shop      |
+| `transportationTypes`    | string[]    | ✓        |                       |
 
 #### Map: `progressionDefinitions`
 
 **Value Type:** `Schema`
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `kind` | string | ✓ |  |
-| `name` | string | ✓ |  |
-| `description` | string |  |  |
-| `visibility` | string |  |  |
-| `min` | number |  |  |
-| `max` | number |  |  |
-| `sequential` | boolean |  |  |
-| `milestones` | object[] |  |  |
-| `↳ milestones.key` | string | ✓ |  |
-| `↳ milestones.label` | string | ✓ |  |
-| `↳ milestones.description` | string |  |  |
-| `↳ milestones.imageUrl` | string |  |  |
-| `↳ milestones.ordinal` | number |  |  |
+| Field                      | Type     | Required | Notes |
+| -------------------------- | -------- | -------- | ----- |
+| `kind`                     | string   | ✓        |       |
+| `name`                     | string   | ✓        |       |
+| `description`              | string   |          |       |
+| `visibility`               | string   |          |       |
+| `min`                      | number   |          |       |
+| `max`                      | number   |          |       |
+| `sequential`               | boolean  |          |       |
+| `milestones`               | object[] |          |       |
+| `↳ milestones.key`         | string   | ✓        |       |
+| `↳ milestones.label`       | string   | ✓        |       |
+| `↳ milestones.description` | string   |          |       |
+| `↳ milestones.imageUrl`    | string   |          |       |
+| `↳ milestones.ordinal`     | number   |          |       |
 
 ### Location
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `name` | string | ✓ |  |
-| `regionId` | ObjectId | ✓ | References: Region |
-| `requirements` | object |  |  |
-| `↳ progressions` | Map |  |  |
-| `↳ items` | object[] |  |  |
-| `↳ ↳ itemId` | ObjectId | ✓ | References: Item |
-| `↳ ↳ minQuantity` | number |  |  |
-| `↳ capabilities` | object[] |  |  |
-| `↳ ↳ type` | string | ✓ |  |
-| `↳ ↳ move` | string |  |  |
-| `↳ ↳ min` | number |  |  |
-| `connections` | object[] | ✓ |  |
-| `↳ toLocationId` | ObjectId | ✓ | References: Location |
-| `↳ requirements` | object |  |  |
-| `↳ ↳ progressions` | Map |  |  |
-| `↳ ↳ items` | object[] |  |  |
-| `↳ ↳ ↳ itemId` | ObjectId | ✓ | References: Item |
-| `↳ ↳ ↳ minQuantity` | number |  |  |
-| `↳ ↳ capabilities` | object[] |  |  |
-| `↳ ↳ ↳ type` | string | ✓ |  |
-| `↳ ↳ ↳ move` | string |  |  |
-| `↳ ↳ ↳ min` | number |  |  |
-| `trainerIds` | Trainer[] |  | References: Trainer |
-| `wildTables` | object[] |  |  |
-| `↳ encounterType` | string | ✓ |  |
-| `↳ timeBlocks` | object[] | ✓ |  |
-| `↳ ↳ timeOfDay` | string | ✓ |  |
-| `↳ ↳ slots` | object[] | ✓ |  |
-| `↳ ↳ ↳ speciesId` | ObjectId | ✓ | References: DexEntry |
-| `↳ ↳ ↳ minLevel` | number | ✓ |  |
-| `↳ ↳ ↳ maxLevel` | number | ✓ |  |
-| `↳ ↳ ↳ weight` | number | ✓ |  |
+| Field               | Type      | Required | Notes                |
+| ------------------- | --------- | -------- | -------------------- |
+| `name`              | string    | ✓        |                      |
+| `regionId`          | ObjectId  | ✓        | References: Region   |
+| `requirements`      | object    |          |                      |
+| `↳ progressions`    | Map       |          |                      |
+| `↳ items`           | object[]  |          |                      |
+| `↳ ↳ itemId`        | ObjectId  | ✓        | References: Item     |
+| `↳ ↳ minQuantity`   | number    |          |                      |
+| `↳ capabilities`    | object[]  |          |                      |
+| `↳ ↳ type`          | string    | ✓        |                      |
+| `↳ ↳ move`          | string    |          |                      |
+| `↳ ↳ min`           | number    |          |                      |
+| `connections`       | object[]  | ✓        |                      |
+| `↳ toLocationId`    | ObjectId  | ✓        | References: Location |
+| `↳ requirements`    | object    |          |                      |
+| `↳ ↳ progressions`  | Map       |          |                      |
+| `↳ ↳ items`         | object[]  |          |                      |
+| `↳ ↳ ↳ itemId`      | ObjectId  | ✓        | References: Item     |
+| `↳ ↳ ↳ minQuantity` | number    |          |                      |
+| `↳ ↳ capabilities`  | object[]  |          |                      |
+| `↳ ↳ ↳ type`        | string    | ✓        |                      |
+| `↳ ↳ ↳ move`        | string    |          |                      |
+| `↳ ↳ ↳ min`         | number    |          |                      |
+| `trainerIds`        | Trainer[] |          | References: Trainer  |
+| `wildTables`        | object[]  |          |                      |
+| `↳ encounterType`   | string    | ✓        |                      |
+| `↳ timeBlocks`      | object[]  | ✓        |                      |
+| `↳ ↳ timeOfDay`     | string    | ✓        |                      |
+| `↳ ↳ slots`         | object[]  | ✓        |                      |
+| `↳ ↳ ↳ speciesId`   | ObjectId  | ✓        | References: DexEntry |
+| `↳ ↳ ↳ minLevel`    | number    | ✓        |                      |
+| `↳ ↳ ↳ maxLevel`    | number    | ✓        |                      |
+| `↳ ↳ ↳ weight`      | number    | ✓        |                      |
 
 #### Map: `requirements_progressions`
 
@@ -233,20 +233,20 @@ _No structured fields (primitive values or complex schema)._
 
 ## Relationships
 
-| From | Field | To |
-|------|-------|----|
-| User | `servers` | Server |
-| Server | `playerList` | User |
-| Server | `regions` | Region |
-| Region | `characterList` | Character |
-| Region | `locations` | Location |
-| Region | `pokedex_id` | DexEntry |
-| Region | `quests_active` | Quest |
-| Region | `quests_passive` | Quest |
-| Region | `shops` | Shop |
-| Location | `regionId` | Region |
-| Location | `requirements_items_itemId` | Item |
-| Location | `connections_toLocationId` | Location |
-| Location | `connections_requirements_items_itemId` | Item |
-| Location | `trainerIds` | Trainer |
-| Location | `wildTables_timeBlocks_slots_speciesId` | DexEntry |
+| From     | Field                                   | To        |
+| -------- | --------------------------------------- | --------- |
+| User     | `servers`                               | Server    |
+| Server   | `playerList`                            | User      |
+| Server   | `regions`                               | Region    |
+| Region   | `characterList`                         | Character |
+| Region   | `locations`                             | Location  |
+| Region   | `pokedex_id`                            | DexEntry  |
+| Region   | `quests_active`                         | Quest     |
+| Region   | `quests_passive`                        | Quest     |
+| Region   | `shops`                                 | Shop      |
+| Location | `regionId`                              | Region    |
+| Location | `requirements_items_itemId`             | Item      |
+| Location | `connections_toLocationId`              | Location  |
+| Location | `connections_requirements_items_itemId` | Item      |
+| Location | `trainerIds`                            | Trainer   |
+| Location | `wildTables_timeBlocks_slots_speciesId` | DexEntry  |

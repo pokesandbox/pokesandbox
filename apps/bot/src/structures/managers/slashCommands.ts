@@ -9,7 +9,6 @@ import { guildChatInputCommands as guilds } from '@bot/interactions/guilds';
 import { globalMessageContextCommands } from '@bot/interactions/messageContextCommands';
 import { globalSlashCommands } from '@bot/interactions/slashCommands';
 import { globalUserContextCommands } from '@bot/interactions/userContextCommands';
-
 import type { GuildChatInputCommands } from '../interfaces';
 
 const CLIENT_ID = process.env.AUTH_DISCORD_ID as string;
@@ -79,11 +78,7 @@ export const slashCommandsManager = async (client: BotClient) => {
       }
 
       for (const slashCmd of guild.slashCommands) {
-        if (
-          !slashCmd.command ||
-          !slashCmd.createMenu
-        )
-          continue;
+        if (!slashCmd.command || !slashCmd.createMenu) continue;
         client.slashCommands.set(slashCmd.command.name, slashCmd);
 
         if (slashCmd.ignore) continue;

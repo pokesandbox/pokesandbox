@@ -44,9 +44,8 @@ To add more models:
 Edit `scripts/generate-erd.ts` and add to the `generateERD()` function:
 
 ```typescript
-const { YourModel, yourSchema } = await import(
-  '../shared/src/models/your.model'
-);
+const { YourModel, yourSchema } =
+  await import('../shared/src/models/your.model');
 // ...
 entities.push(extractEntityDefinition('YourModel', yourSchema));
 ```

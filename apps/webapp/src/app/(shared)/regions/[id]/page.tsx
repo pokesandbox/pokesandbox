@@ -1,4 +1,4 @@
-import RegionPage from "./RegionPage";
+import RegionPage from './RegionPage';
 
 export default function Page() {
   return <RegionPage />;

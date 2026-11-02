@@ -16,7 +16,7 @@ let instance: ICacheService | null = null;
  * instantiate a `RedisCacheAdapter` instead — no consumer code changes.
  */
 export function getCacheService(
-  options?: NodeCacheAdapterOptions
+  options?: NodeCacheAdapterOptions,
 ): ICacheService {
   if (!instance) {
     instance = new NodeCacheAdapter(options);

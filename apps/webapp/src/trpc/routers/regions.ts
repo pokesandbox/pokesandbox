@@ -1,10 +1,10 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 
-import { RegionDTO } from "@shared/dtos";
-import { Region } from "@shared/models";
+import { RegionDTO } from '@shared/dtos';
+import { Region } from '@shared/models';
 
-import { router, publicProcedure } from "../init";
+import { publicProcedure, router } from '../init';
 
 export const regionsRouter = router({
   getAll: publicProcedure.query(async () => {
@@ -15,7 +15,7 @@ export const regionsRouter = router({
     const region = await Region.findById(input).exec();
     if (!region) {
       throw new TRPCError({
-        code: "NOT_FOUND",
+        code: 'NOT_FOUND',
         message: `Region with ID ${input} not found`,
       });
     }

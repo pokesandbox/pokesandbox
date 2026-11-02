@@ -4,7 +4,11 @@ export {
   getCachedDexEntries,
   getCachedDexEntry,
 } from './cachedDexEntry';
-export { getCachedLocation, getCachedLocations, saveLocation } from './cachedLocation';
+export {
+  getCachedLocation,
+  getCachedLocations,
+  saveLocation,
+} from './cachedLocation';
 export {
   getAssertedCachedRegion,
   getCachedRegion,

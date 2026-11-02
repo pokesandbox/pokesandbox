@@ -1,7 +1,7 @@
-import { DefaultSession } from "next-auth";
+import { DefaultSession } from 'next-auth';
 
 // nextauth.d.ts
-declare module "next-auth" {
+declare module 'next-auth' {
   interface User {
     email?: string | null | undefined;
     id?: string | null | undefined;

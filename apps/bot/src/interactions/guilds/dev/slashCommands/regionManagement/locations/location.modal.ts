@@ -1,11 +1,14 @@
+import type { ModalConfig } from '@flowcord/core';
 import {
   LabelBuilder,
   ModalBuilder,
-  type ModalSubmitFields,
   TextInputBuilder,
   TextInputStyle,
+  type ModalSubmitFields,
 } from 'discord.js';
 import { Types } from 'mongoose';
+
+import { Location } from '@shared/models';
 
 import { saveLocation, saveRegion } from '@bot/cache';
 import type { AdminMenuContext } from '@bot/classes';
@@ -14,9 +17,6 @@ import {
   getModalTextValue,
   setValueOnInputBuilderIfExists,
 } from '@bot/utils';
-import { Location } from '@shared/models';
-import type { ModalConfig } from '@flowcord/core';
-
 import type { LocationMenuState, LocationsMenuState } from './types';
 
 const LOCATION_CREATE_MODAL_ID = 'location-create-modal';
@@ -39,19 +39,19 @@ type DuplicateLocationCandidate = {
 };
 
 const setWarningMessage = <
-  TState extends LocationsMenuState | LocationMenuState
+  TState extends LocationsMenuState | LocationMenuState,
 >(
   ctx: AdminMenuContext<TState>,
-  warningMessage: string
+  warningMessage: string,
 ): void => {
   ctx.state.set(
     'warningMessage' as keyof TState & string,
-    warningMessage as TState[keyof TState & string]
+    warningMessage as TState[keyof TState & string],
   );
 };
 
 const parseLocationModalInput = (
-  fields: ModalSubmitFields['fields']
+  fields: ModalSubmitFields['fields'],
 ): LocationModalInput | undefined => {
   const name = getModalTextValue(fields, LOCATION_NAME_FIELD_ID, true);
   const ordinalText = getModalTextValue(fields, LOCATION_ORDINAL_FIELD_ID);
@@ -73,7 +73,7 @@ const getDuplicateLocationError = (
   name: string,
   ordinal: number | undefined,
   mode: 'create' | 'edit',
-  existingLocationId?: string
+  existingLocationId?: string,
 ): string | undefined => {
   return findDuplicate(
     existingLocations,
@@ -95,7 +95,7 @@ const getDuplicateLocationError = (
         skip: ordinal === undefined,
       },
     ],
-    existingLocationId
+    existingLocationId,
   );
 };
 
@@ -106,7 +106,7 @@ const buildLocationModal = (
   initialValues?: {
     name?: string;
     ordinal?: string;
-  }
+  },
 ): ModalBuilder => {
   return new ModalBuilder()
     .setCustomId(modalId)
@@ -121,8 +121,8 @@ const buildLocationModal = (
               .setStyle(TextInputStyle.Short)
               .setPlaceholder('Pallet Town')
               .setRequired(true),
-            initialValues?.name
-          )
+            initialValues?.name,
+          ),
         ),
       new LabelBuilder()
         .setLabel('Display Order (Optional)')
@@ -133,9 +133,9 @@ const buildLocationModal = (
               .setStyle(TextInputStyle.Short)
               .setPlaceholder(ordinalPlaceholder)
               .setRequired(false),
-            initialValues?.ordinal
-          )
-        )
+            initialValues?.ordinal,
+          ),
+        ),
     );
 };
 
@@ -143,17 +143,17 @@ const buildLocationModal = (
  * Returns a modal config for creating a new location (used by the locations list menu).
  */
 export const getLocationCreateModal = async <
-  TState extends LocationsMenuState | LocationMenuState
+  TState extends LocationsMenuState | LocationMenuState,
 >(
   _ctx: AdminMenuContext<TState>,
-  regionId: string
+  regionId: string,
 ): Promise<ModalConfig<AdminMenuContext<TState>>> => {
   return {
     id: LOCATION_CREATE_MODAL_ID,
     builder: buildLocationModal(
       LOCATION_CREATE_MODAL_ID,
       'Create New Location',
-      'Auto-assigned if left empty'
+      'Auto-assigned if left empty',
     ),
     onSubmit: async (ctx, fields) => {
       const existingLocations = await ctx.admin.getLocations(regionId);
@@ -168,7 +168,7 @@ export const getLocationCreateModal = async <
         existingLocations,
         input.name,
         input.ordinal,
-        'create'
+        'create',
       );
 
       if (duplicateError) {
@@ -196,7 +196,7 @@ export const getLocationCreateModal = async <
 export const getLocationEditModal = async (
   ctx: AdminMenuContext<LocationMenuState>,
   regionId: string,
-  locationId: string
+  locationId: string,
 ): Promise<ModalConfig<AdminMenuContext<LocationMenuState>>> => {
   const location = await ctx.admin.getLocation(locationId);
 
@@ -209,7 +209,7 @@ export const getLocationEditModal = async (
       {
         name: location.name,
         ordinal: location.ordinal?.toString(),
-      }
+      },
     ),
     onSubmit: async (ctx, fields) => {
       const existingLocations = await ctx.admin.getLocations(regionId);
@@ -225,7 +225,7 @@ export const getLocationEditModal = async (
         input.name,
         input.ordinal,
         'edit',
-        locationId
+        locationId,
       );
 
       if (duplicateError) {

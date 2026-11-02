@@ -1,23 +1,23 @@
 import {
-  type HydratedDocument,
-  type Model,
   model,
   models,
+  Schema,
+  Types,
+  type HydratedDocument,
+  type Model,
   type Query,
   type QueryFilter,
   type QueryWithHelpers,
-  Schema,
-  Types,
 } from 'mongoose';
 import { z } from 'zod';
 
-import { zMapHydrator } from '../utils';
 import { baseEntitySchema, IModelInput } from '../base';
+import { zMapHydrator } from '../utils';
+import { PokedexSlotSchema, pokedexSlotSchema } from './pokedexSlot';
 import {
   progressionDefinitionDbSchema,
   progressionDefinitionSchema,
 } from './progressionDefinition';
-import { PokedexSlotSchema, pokedexSlotSchema } from './pokedexSlot';
 
 export const regionEntitySchema = baseEntitySchema.extend({
   baseGeneration: z.number(),
@@ -59,7 +59,7 @@ interface IRegionModel extends Model<IRegion, IRegionQueryHelpers> {
   createRegion(region: IRegionInput): Promise<Region>;
   upsertRegion(
     filter: QueryFilter<IRegion>,
-    update: IRegionUpdate
+    update: IRegionUpdate,
   ): Query<Region | null, IRegion>;
 }
 
@@ -120,7 +120,7 @@ export const regionSchema = new Schema<
     query: {
       byIds(
         this: QueryWithHelpers<any, Region, IRegionQueryHelpers>,
-        ids: string[]
+        ids: string[],
       ) {
         return this.where({ _id: { $in: ids } });
       },
@@ -134,7 +134,7 @@ export const regionSchema = new Schema<
         return this.findOneAndUpdate(filter, update, { upsert: true });
       },
     },
-  }
+  },
 );
 
 export const Region =
@@ -142,5 +142,5 @@ export const Region =
   (model<IRegion, IRegionModel>(
     'Region',
     regionSchema,
-    'regions'
+    'regions',
   ) as IRegionModel);

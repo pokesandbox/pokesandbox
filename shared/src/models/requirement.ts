@@ -6,12 +6,14 @@ import { z } from 'zod';
 /**
  * Numeric requirement — e.g. badges >= 2, badges <= 5
  */
-export const numericRequirementSchema = z.object({
-  min: z.number().optional(),
-  max: z.number().optional(),
-}).refine((data) => data.min !== undefined || data.max !== undefined, {
-  message: 'At least one of min or max must be provided',
-});
+export const numericRequirementSchema = z
+  .object({
+    min: z.number().optional(),
+    max: z.number().optional(),
+  })
+  .refine((data) => data.min !== undefined || data.max !== undefined, {
+    message: 'At least one of min or max must be provided',
+  });
 
 /**
  * Exact match requirement — e.g. rocket_defeated === true, or specific milestone keys
@@ -26,7 +28,7 @@ export const equalityRequirementSchema = z.object({
  */
 export const progressionRequirementSchema = z.record(
   z.string(),
-  z.union([numericRequirementSchema, equalityRequirementSchema])
+  z.union([numericRequirementSchema, equalityRequirementSchema]),
 );
 
 /**
@@ -69,7 +71,7 @@ const itemRequirementDbSchema = new Schema(
     itemId: { type: Schema.Types.ObjectId, ref: 'Item', required: true },
     minQuantity: { type: Number, default: 1 },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const capabilityRequirementDbSchema = new Schema(
@@ -84,7 +86,7 @@ const capabilityRequirementDbSchema = new Schema(
     // party_size
     min: { type: Number },
   },
-  { _id: false }
+  { _id: false },
 );
 
 export const requirementDbSchema = new Schema(
@@ -103,5 +105,5 @@ export const requirementDbSchema = new Schema(
       required: false,
     },
   },
-  { _id: false }
+  { _id: false },
 );

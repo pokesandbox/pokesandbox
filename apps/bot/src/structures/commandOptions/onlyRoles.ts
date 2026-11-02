@@ -1,21 +1,20 @@
 import {
+  EmbedBuilder,
   type AutocompleteInteraction,
   type CacheType,
-  EmbedBuilder,
   type GuildMember,
   type Interaction,
   type Message,
 } from 'discord.js';
 
 import type { BotClient } from '@bot/classes';
-
 import type { AnyCommand } from '../interfaces';
 
 const getOnlyRoles = async (
   client: BotClient,
   message: Message | Exclude<Interaction, AutocompleteInteraction<CacheType>>,
   command: AnyCommand,
-  isInteraction?: boolean
+  isInteraction?: boolean,
 ): Promise<boolean> => {
   /* eslint-disable prefer-const */
   let onlyRoles: string[];
@@ -39,7 +38,7 @@ const getOnlyRoles = async (
       .setDescription(
         `The command you tried to execute couldn't be executed as you are missing one of these required roles:\n${onlyRoles
           .map((roleId) => `↳ <@&${roleId}>`)
-          .join('\n')}`
+          .join('\n')}`,
       );
 
     if (isInteraction) {

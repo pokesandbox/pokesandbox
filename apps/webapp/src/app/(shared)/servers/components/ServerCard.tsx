@@ -1,11 +1,12 @@
-"use client";
+'use client';
 
-import { ReadOutlined } from "@ant-design/icons";
-import { Avatar, Card } from "antd";
-import Link from "next/link";
+import { ReadOutlined } from '@ant-design/icons';
+import { Avatar, Card } from 'antd';
+import Link from 'next/link';
 
-import type { ServerDTO } from "@shared/dtos";
-import { DiscordIcon } from "@webapp/components/assets/DiscordIcon";
+import type { ServerDTO } from '@shared/dtos';
+
+import { DiscordIcon } from '@webapp/components/assets/DiscordIcon';
 
 interface ServerCardProps {
   server: ServerDTO;
@@ -14,7 +15,7 @@ interface ServerCardProps {
 const ServerCard = ({ server }: ServerCardProps) => {
   const iconUrl: string = server.discovery.icon
     ? `https://cdn.discordapp.com/icons/${server.serverId}/${server.discovery.icon}.png`
-    : "";
+    : '';
 
   return (
     <div className="m-2 w-full md:w-1/2 lg:w-1/3 md:max-w-[320px] lg:max-w-[293px] xl:max-w-[378px]">
@@ -29,7 +30,7 @@ const ServerCard = ({ server }: ServerCardProps) => {
             key="read_more"
           >
             <ReadOutlined
-              style={{ fontSize: "20px" }}
+              style={{ fontSize: '20px' }}
               className="text-white dark:text-gray-1000"
             />
             <span className="text-white dark:text-gray-1000 font-bold">
@@ -38,7 +39,7 @@ const ServerCard = ({ server }: ServerCardProps) => {
           </Link>,
           <a
             className="h-10 !w-4/5 min-w-[115px] max-w-[150px] space-x-2 !inline-flex flex-row justify-center items-center bg-[#5865F2] rounded-full"
-            href={server.discovery.inviteLink ?? ""}
+            href={server.discovery.inviteLink ?? ''}
             key="discord"
             rel="external noopener noreferrer"
             target="_blank"

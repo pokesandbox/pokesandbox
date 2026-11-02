@@ -1,21 +1,20 @@
 import {
+  EmbedBuilder,
   type AutocompleteInteraction,
   type CacheType,
-  EmbedBuilder,
   type GuildMember,
   type Interaction,
   type Message,
 } from 'discord.js';
 
 import type { BotClient } from '@bot/classes';
-
 import type { AnyCommand } from '../interfaces';
 
 const getOnlyGuilds = async (
   client: BotClient,
   message: Message | Exclude<Interaction, AutocompleteInteraction<CacheType>>,
   command: AnyCommand,
-  isInteraction?: boolean
+  isInteraction?: boolean,
 ): Promise<boolean> => {
   if (
     !command.onlyGuilds ||
@@ -39,7 +38,7 @@ const getOnlyGuilds = async (
       .setDescription(
         `The command you tried to execute cannot be ran in the current guild. Please execute the command in of these authorized guilds:\n${command.onlyGuilds
           .map((guildId) => `↳ \`${client.guilds.cache.get(guildId)?.name}\``)
-          .join('\n')}`
+          .join('\n')}`,
       );
 
     if (isInteraction) {

@@ -1,13 +1,12 @@
 import {
+  EmbedBuilder,
   type AutocompleteInteraction,
   type CacheType,
-  EmbedBuilder,
   type Interaction,
   type Message,
 } from 'discord.js';
 
 import type { BotClient } from '@bot/classes';
-
 import type { AnyCommand } from '../interfaces';
 
 const ownerIds: string[] = [process.env.OWNER_ID as string];
@@ -16,7 +15,7 @@ const getOwnerOnly = async (
   client: BotClient,
   message: Message | Exclude<Interaction, AutocompleteInteraction<CacheType>>,
   command: AnyCommand,
-  isInteraction?: boolean
+  isInteraction?: boolean,
 ): Promise<boolean> => {
   if (!command.ownerOnly || typeof command?.ownerOnly != 'boolean') return true;
   const user = isInteraction
@@ -35,7 +34,7 @@ const getOwnerOnly = async (
       })
       .setThumbnail(client.user?.displayAvatarURL() || null)
       .setDescription(
-        'The command you tried to run is __restricted__ for the developers of this bot and thus the command failed to execute.'
+        'The command you tried to run is __restricted__ for the developers of this bot and thus the command failed to execute.',
       );
 
     if (isInteraction) {

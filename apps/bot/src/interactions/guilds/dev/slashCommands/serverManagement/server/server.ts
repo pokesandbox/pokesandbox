@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -7,8 +8,6 @@ import {
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import { DISCOVERY_COMMAND_NAME } from '../discovery/discovery';
 import { getServerMenuEmbeds } from './server.embeds';
 import { SERVER_MANAGE_PREFIXES_COMMAND_NAME } from './serverManagePrefixes';

@@ -2,143 +2,34 @@
 
 [![CI](https://github.com/pokesandbox/pokesandbox/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/pokesandbox/pokesandbox/actions/workflows/ci.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pokesandbox_pokesandbox&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=pokesandbox_pokesandbox&metric=coverage)](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox)
 
-Navigation: [Discord Server][1] | [Pokémon Showdown Fork][2]
+[Discord server][1] · [Docs](docs/README.md) · [Roadmap][3] · [Report a bug or request a feature][4] · [Pokémon Showdown fork][2]
 
-## Introduction
+## What is PokeSandbox?
 
-**What exactly is PokeSandbox?**
+PokeSandbox is a Discord bot plus a web app that lets Discord servers build their own Pokémon games ("regions") and play them right in Discord: a faithful Kanto remake, a fan region with custom Pokémon, or a story-driven roleplay server. Server admins author regions (maps, encounters, trainers, story scripts, rules) in the web app, built for phones first. Players play through a `/play` menu, battle in a system powered by a fork of [Pokémon Showdown][2], and trade. The first planned public piece is the **Arena**, which will offer Showdown-style PvP and PvAI battles between server members.
 
-- PokeSandbox is a full-stack TypeScript platform that lets Discord server owners build and deploy custom Pokémon fan-game experiences directly within Discord. Admins create and configure their games through an interactive menu-driven bot interface — defining regions, Pokédexes, progression systems, quests, shops, and more — then deploy them for their server's players to enjoy. No coding or external tools required.
+New here? Start with [`docs/start-here.md`](docs/start-here.md).
 
-**What else does it do?**
+## Getting started
 
-- PokeSandbox includes a Next.js web application with Discord OAuth sign-in. Players can browse the **Server Discovery** page to find publicly listed games, view server and region details, and access player profiles. The web app serves as a companion to the in-Discord gameplay experience.
-
-- PokeSandbox integrates with a customized [Pokémon Showdown][2] fork for its battle system. The fork supports custom Pokémon, Types, Moves, and Abilities. Currently, custom additions require direct merges into the controlled Showdown fork; future plans aim to allow server owners to define these without code changes.
-
-## Prerequisites
-
-Before setting up the project locally, ensure you have the following installed:
-
-| Prerequisite        | Version      | Notes                                                       |
-| ------------------- | ------------ | ----------------------------------------------------------- |
-| [Node.js][3]        | **22.x LTS** | The project targets Node 22. Using [nvm][4] is recommended. |
-| [npm][5]            | 10+          | Bundled with Node 22                                        |
-| [Docker Desktop][6] | Latest       | Required to run the local MongoDB instance                  |
-| [Git][7]            | Latest       |                                                             |
-
-The repo pins the Node version in `.nvmrc`: run `nvm use` in the repo root to switch to it.
-
-### Discord Bot
-
-You must register your own Discord application and bot in order to run the bot locally.
-
-1. Go to the [Discord Developer Portal][8] and create a **New Application**.
-2. Navigate to the **Bot** tab and click **Add Bot**.
-3. Under the Bot tab, enable the following **Privileged Gateway Intents**:
-   - Server Members Intent
-   - Message Content Intent
-   - Presence Intent
-4. On the **OAuth2 → URL Generator** page, generate an invite URL with the `bot` scope and the necessary permissions, then add the bot to your test server.
-5. Copy the **Bot Token** — you will need it for `DISCORD_BOT_TOKEN` in your `.env`.
-6. Copy the **Client Secret** (under OAuth2 → General) — you will need it for `AUTH_DISCORD_SECRET`.
-
-See the official [Discord Getting Started guide][9] and [Discord.js guide][10] for more detail.
-
-## Local Setup
-
-### 1. Clone & Install Dependencies
+You'll need [Node.js 22](https://nodejs.org/en/download) (run `nvm use` to pick up `.nvmrc`), [Docker Desktop](https://www.docker.com/products/docker-desktop/), and your own [Discord application and bot](docs/local-development.md#discord-bot).
 
 ```bash
 git clone https://github.com/pokesandbox/pokesandbox.git
 cd pokesandbox
 npm install
+npm run setup        # creates .env, starts MongoDB in Docker, seeds sample data
+# fill in .env (bot token, Discord OAuth credentials, auth secret)
+npm run start:bot    # Discord bot
+npm run start:app    # web app
 ```
 
-### 2. One-Command Setup
+The full guide, including the Discord bot setup, environment variables, and database scripts, is in [Local development](docs/local-development.md).
 
-The fastest way to get a fully working local environment is to run the setup script:
+## Contributing
 
-```bash
-npm run setup
-```
-
-This single command will:
-
-1. Copy `.env.example` → `.env` (skips if `.env` already exists)
-2. Start the MongoDB 7 Docker container and wait until it is healthy
-3. Seed the database with fictional sample data
-
-> **After running `db:setup`** open `.env` and fill in the required values (bot token, Discord OAuth credentials, NextAuth secret, etc.) before starting the bot or web app. See [Environment Variables](#environment-variables) below.
-
-### 3. Manual Setup (step-by-step)
-
-If you prefer to run each step individually:
-
-```bash
-# 1. Create your .env file
-npm run env-setup
-
-# 2. Start MongoDB (Docker)
-npm run db:up
-
-# 3. Seed the database
-npm run db:seed
-```
-
-### 4. Start the Applications
-
-```bash
-# Discord bot (hot-reload)
-npm run start:bot
-
-# Next.js web app (hot-reload)
-npm run start:app
-```
-
-## Environment Variables
-
-After running `npm run env-setup` (or `npm run setup`), open `.env` and fill in:
-
-| Variable              | Description                                                                                                 |
-| --------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URI`        | MongoDB connection string. Pre-filled with the local Docker URI.                                            |
-| `DISCORD_BOT_TOKEN`   | Bot token from the Discord Developer Portal                                                                 |
-| `DEV_GUILD_ID`        | Your test server's ID. In Discord, enable Developer Mode, then right-click the server icon → Copy Server ID |
-| `AUTH_DISCORD_ID`     | Application ID of your Discord Bot                                                                          |
-| `AUTH_DISCORD_SECRET` | OAuth2 Client Secret                                                                                        |
-| `AUTH_SECRET`         | Random secret for NextAuth session encryption (run `openssl rand -base64 32`)                               |
-
-## Database Scripts
-
-| Script                                     | Description                                                   |
-| ------------------------------------------ | ------------------------------------------------------------- |
-| `npm run db:up`                            | Start the local MongoDB Docker container                      |
-| `npm run db:down`                          | Stop the local MongoDB Docker container                       |
-| `npm run db:seed`                          | Drop all collections and re-seed with sample data             |
-| `npm run db:reset`                         | Alias for `db:seed` — wipe and re-seed                        |
-| `npm run db:export`                        | Export all live local collections back to the JSON seed files |
-| `npm run db:export -- --collection=<name>` | Export a single collection (e.g. `regions`)                   |
-
-## Checks & CI
-
-Every PR into `develop` runs [CI](.github/workflows/ci.yml): lint, typecheck, and unit tests for the projects the PR affects (`nx affected`), plus a [SonarCloud](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox) analysis. Pushes to `develop` run everything. Run the same checks locally before pushing:
-
-| Script                  | Description                                                |
-| ----------------------- | ---------------------------------------------------------- |
-| `npm run affected`      | Lint, typecheck, and test the projects you changed         |
-| `npm run lint`          | Lint every project                                         |
-| `npm run typecheck`     | Typecheck every project                                    |
-| `npm run test`          | Run every project's unit tests                             |
-| `npm run test:coverage` | Run every project's unit tests with coverage (`coverage/`) |
-
-Every PR must also close an issue in its description (`Closes #123`); the **Linked issue** check enforces it. See [GitHub Org & Project Setup § Automation](docs/roadmap/github-project-setup.md#automation).
-
-## Interested in helping?
-
-- For those interested in contributing, please see the link to the Discord server at the top of this README.
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for how work is picked up and what a PR needs, browse issues labelled [`good first issue`][5], or ask on the [Discord server][1].
 
 ## Credits
 
@@ -146,23 +37,20 @@ Every PR must also close an issue in its description (`Closes #123`); the **Link
 
 - [Nick Bely](https://github.com/nbely) (Chronicler) - Architect, Team Lead, and Full-stack Developer
 - [Kevin Nguyen](https://github.com/Kevnien) - Full-stack Developer
+- [Rodney Dennings (Eve)](https://github.com/rdennings) - Full-stack Developer
 
 **Other Credits**
 
 - Pokémon Showdown Team - for the Pokémon Battle Simulator Base
-- Phoenixsong - for providing base battle calculator algorithms for various game functions.
 
-  - Visit [Altered Origin][11] or the [PhoenixDex][12] for more of her work!
+## License & legal
+
+The source code is released under the [MIT License](LICENSE).
+
+PokeSandbox is a free, non-commercial fan project. It is not affiliated with, endorsed, sponsored, or approved by Nintendo, Game Freak, Creatures Inc., or The Pokémon Company. Pokémon and all related names, characters, and data are trademarks and © of their respective owners. The MIT License covers only this project's original source code and grants no rights to Pokémon intellectual property. The project charges nothing; any optional donations go only toward hosting costs.
 
 [1]: https://discord.gg/5BSMak3m9V
 [2]: https://github.com/pokesandbox/pokemon-showdown#pok%C3%A9mon-showdown
-[3]: https://nodejs.org/en/download
-[4]: https://github.com/nvm-sh/nvm
-[5]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-[6]: https://www.docker.com/products/docker-desktop/
-[7]: https://git-scm.com/downloads
-[8]: https://discord.com/developers/applications
-[9]: https://discord.com/developers/docs/getting-started
-[10]: https://discordjs.guide/preparations/setting-up-a-bot-application.html
-[11]: https://alteredorigin.net/
-[12]: https://phoenixdex.alteredorigin.net/
+[3]: https://github.com/orgs/pokesandbox/projects/1
+[4]: https://github.com/pokesandbox/pokesandbox/issues/new/choose
+[5]: https://github.com/pokesandbox/pokesandbox/labels/good%20first%20issue

@@ -1,11 +1,11 @@
-import React from "react";
-import { render } from "@testing-library/react";
+import { render } from '@testing-library/react';
+import React from 'react';
 
-import NotFoundPage from "../src/app/(shared)/not-found/page";
+import NotFoundPage from '../src/app/(shared)/not-found/page';
 
-describe("NotFoundPage", () => {
-  it("should render successfully", () => {
+describe('NotFoundPage', () => {
+  it('should render successfully', () => {
     const { getByText } = render(<NotFoundPage />);
-    expect(getByText("Page Not Found")).toBeTruthy();
+    expect(getByText('Page Not Found')).toBeTruthy();
   });
 });

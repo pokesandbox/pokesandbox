@@ -1,9 +1,8 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren } from 'react';
 
-import { auth } from "@webapp/auth";
-
-import LayoutPrivate from "../(private)/layout";
-import LayoutPublic from "../(public)/layout";
+import { auth } from '@webapp/auth';
+import LayoutPrivate from '../(private)/layout';
+import LayoutPublic from '../(public)/layout';
 
 export default async function SharedLayout({ children }: PropsWithChildren) {
   const session = await auth();

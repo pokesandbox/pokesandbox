@@ -1,15 +1,15 @@
-import { TRPCError } from "@trpc/server";
-import { Types } from "mongoose";
-import { z } from "zod";
+import { TRPCError } from '@trpc/server';
+import { Types } from 'mongoose';
+import { z } from 'zod';
 
 import {
   UserDTO,
   userRequestDTOSchema,
   UserWithServersDTO,
-} from "@shared/dtos";
-import { User } from "@shared/models";
+} from '@shared/dtos';
+import { User } from '@shared/models';
 
-import { router, publicProcedure, protectedProcedure } from "../init";
+import { protectedProcedure, publicProcedure, router } from '../init';
 
 export const usersRouter = router({
   create: publicProcedure
@@ -24,7 +24,7 @@ export const usersRouter = router({
       // Use upsertUser to create or update the user based on userId
       const user = await User.upsertUser({ userId: input.userId }, userData);
       if (!user) {
-        throw new Error("Failed to create or update user");
+        throw new Error('Failed to create or update user');
       }
       return UserDTO.convertFromEntity(user);
     }),
@@ -36,7 +36,7 @@ export const usersRouter = router({
     const user: User | null = await User.findOne().byUserId(input).exec();
     if (!user)
       throw new TRPCError({
-        code: "NOT_FOUND",
+        code: 'NOT_FOUND',
         message: `User with ID ${input} not found`,
       });
     return UserDTO.convertFromEntity(user);
@@ -46,8 +46,8 @@ export const usersRouter = router({
     const user = await User.findUserWithServers({ userId }).exec();
     if (!user)
       throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Authorized user not found",
+        code: 'NOT_FOUND',
+        message: 'Authorized user not found',
       });
     return UserWithServersDTO.convertFromEntity(user);
   }),

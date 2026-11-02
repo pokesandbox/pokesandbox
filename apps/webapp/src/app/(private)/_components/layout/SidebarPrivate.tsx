@@ -1,8 +1,7 @@
-"use client";
+'use client';
 
-import { trpc } from "@webapp/trpc";
-
-import { SidebarButton, SidebarWrapper } from "@webapp/components/layout";
+import { SidebarButton, SidebarWrapper } from '@webapp/components/layout';
+import { trpc } from '@webapp/trpc';
 
 export const SidebarPrivate = () => {
   const { data: currentUser } = trpc.users.getCurrentUser.useQuery();

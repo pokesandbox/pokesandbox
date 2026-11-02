@@ -33,9 +33,18 @@ module.exports = async ({ github, context, core, projectNumber }) => {
   const target = desiredStatus(pull);
 
   try {
-    const issues = await getLinkedIssues({ github, core, owner, repo, pullNumber: pull.number, body: pull.body });
+    const issues = await getLinkedIssues({
+      github,
+      core,
+      owner,
+      repo,
+      pullNumber: pull.number,
+      body: pull.body,
+    });
     if (issues.length === 0) {
-      core.info('No linked issues (closing keywords) in the PR body — nothing to update.');
+      core.info(
+        'No linked issues (closing keywords) in the PR body — nothing to update.',
+      );
       return;
     }
 
@@ -54,7 +63,9 @@ module.exports = async ({ github, context, core, projectNumber }) => {
     );
     const project = projectResult.organization.projectV2;
     if (!project) {
-      core.setFailed(`Org project #${projectNumber} was not found. Check the PROJECT_NUMBER variable and the PROJECTS_TOKEN permissions.`);
+      core.setFailed(
+        `Org project #${projectNumber} was not found. Check the PROJECT_NUMBER variable and the PROJECTS_TOKEN permissions.`,
+      );
       return;
     }
     const statusField = project.field;
@@ -62,9 +73,13 @@ module.exports = async ({ github, context, core, projectNumber }) => {
       core.setFailed('The project has no single-select "Status" field.');
       return;
     }
-    const option = statusField.options.find((candidate) => candidate.name.toLowerCase() === target.toLowerCase());
+    const option = statusField.options.find(
+      (candidate) => candidate.name.toLowerCase() === target.toLowerCase(),
+    );
     if (!option) {
-      core.warning(`The Status field has no "${target}" option — add it in the project settings.`);
+      core.warning(
+        `The Status field has no "${target}" option — add it in the project settings.`,
+      );
       return;
     }
 
@@ -96,8 +111,13 @@ module.exports = async ({ github, context, core, projectNumber }) => {
         { nodeId: issue.nodeId },
       );
       const node = itemResult.node;
-      const existing = node.projectItems.nodes.find((item) => item.project.id === project.id);
-      const current = existing && existing.fieldValueByName ? existing.fieldValueByName.name : null;
+      const existing = node.projectItems.nodes.find(
+        (item) => item.project.id === project.id,
+      );
+      const current =
+        existing && existing.fieldValueByName
+          ? existing.fieldValueByName.name
+          : null;
 
       if (current === target) {
         core.info(`${label} is already "${target}".`);
@@ -116,7 +136,9 @@ module.exports = async ({ github, context, core, projectNumber }) => {
           (other) => other.number !== pull.number && other.state === 'OPEN',
         );
         if (otherOpenPrs.length > 0) {
-          core.info(`${label} is still closed by open PR(s) ${otherOpenPrs.map((other) => `#${other.number}`).join(', ')} — not reverting.`);
+          core.info(
+            `${label} is still closed by open PR(s) ${otherOpenPrs.map((other) => `#${other.number}`).join(', ')} — not reverting.`,
+          );
           continue;
         }
       }
@@ -140,14 +162,21 @@ module.exports = async ({ github, context, core, projectNumber }) => {
             value: { singleSelectOptionId: $optionId }
           }) { projectV2Item { id } }
         }`,
-        { projectId: project.id, itemId, fieldId: statusField.id, optionId: option.id },
+        {
+          projectId: project.id,
+          itemId,
+          fieldId: statusField.id,
+          optionId: option.id,
+        },
       );
       core.info(`${label}: ${current || '(none)'} -> ${target}`);
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (err.status === 401 || /bad credentials/i.test(message)) {
-      core.setFailed('PROJECTS_TOKEN was rejected (expired or revoked?). Rotate the fine-grained PAT and update the repository secret.');
+      core.setFailed(
+        'PROJECTS_TOKEN was rejected (expired or revoked?). Rotate the fine-grained PAT and update the repository secret.',
+      );
       return;
     }
     throw err;

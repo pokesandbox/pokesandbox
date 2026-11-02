@@ -6,7 +6,6 @@ import type {
 } from 'discord.js';
 
 import type { BotClient } from '@bot/classes';
-
 import type { AnyCommand } from '../interfaces';
 import getAllClientPermissions from './allClientPermissions';
 import getAllUserPermissions from './allUserPermissions';
@@ -26,48 +25,48 @@ export const commandOptionsProcessor = async (
   message: Message | Exclude<Interaction, AutocompleteInteraction<CacheType>>,
   command: AnyCommand,
   isInteraction: boolean,
-  interactionType: string
+  interactionType: string,
 ) => {
   const allClientPermissions: boolean = await getAllClientPermissions(
     client,
     message,
-    command
+    command,
   );
   const allUserPermissions = await getAllUserPermissions(
     client,
     message,
-    command
+    command,
   );
   const anyClientPermissions = await getAnyClientPermissions(
     client,
     message,
-    command
+    command,
   );
   let anyUserPermissions = await getAnyUserPermissions(
     client,
     message,
-    command
+    command,
   );
   const channelCooldown = await getChannelCooldown(
     client,
     message,
     command,
     isInteraction,
-    interactionType
+    interactionType,
   );
   const globalCooldown = await getGlobalCooldown(
     client,
     message,
     command,
     isInteraction,
-    interactionType
+    interactionType,
   );
   const guildCooldown = await getGuildCooldown(
     client,
     message,
     command,
     isInteraction,
-    interactionType
+    interactionType,
   );
   const onlyChannels = await getOnlyChannels(client, message, command);
   const onlyGuilds = await getOnlyGuilds(client, message, command);

@@ -1,16 +1,17 @@
 import {
-  type HydratedDocument,
-  type Model,
   model,
   models,
-  type Query,
-  type QueryFilter,
   QueryWithHelpers,
   Schema,
   Types,
   UpdateQuery,
+  type HydratedDocument,
+  type Model,
+  type Query,
+  type QueryFilter,
 } from 'mongoose';
 import { z } from 'zod';
+
 import { baseEntitySchema, IModelInput } from './base';
 import { Server } from './server.model';
 import type { PopulatedQuery } from './types';
@@ -36,11 +37,11 @@ interface IUserQueryHelpers {
 interface IUserModel extends Model<IUser, IUserQueryHelpers> {
   createUser(user: IUserInput): Promise<User>;
   findUserWithServers(
-    filter: QueryFilter<IUser>
+    filter: QueryFilter<IUser>,
   ): PopulatedQuery<User | null, IUser, { servers: Server[] }>;
   upsertUser(
     filter: QueryFilter<IUser>,
-    update: IUserUpdate
+    update: IUserUpdate,
   ): Query<User | null, IUser>;
 }
 
@@ -67,7 +68,7 @@ export const userSchema = new Schema<
     query: {
       byUserId(
         this: QueryWithHelpers<any, User, IUserQueryHelpers>,
-        userId: string
+        userId: string,
       ) {
         return this.where({ userId });
       },
@@ -95,7 +96,7 @@ export const userSchema = new Schema<
         });
       },
     },
-  }
+  },
 );
 
 export const User =

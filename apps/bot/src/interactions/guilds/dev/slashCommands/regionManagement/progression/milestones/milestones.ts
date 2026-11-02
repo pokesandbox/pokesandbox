@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -12,13 +13,11 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import { assertProgressionKind } from '../utils';
 import { milestonesMenuEmbeds } from './milestone.embeds';
 import {
-  getMilestoneModals,
   getMilestoneEditModalId,
+  getMilestoneModals,
   MILESTONE_ADD_MODAL_ID,
 } from './milestone.modal';
 import type { MilestonesMenuState } from './types';
@@ -41,7 +40,7 @@ export const MilestonesCommand: ISlashCommand = {
   command: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(
-      'Create a new milestone for a region progression definition'
+      'Create a new milestone for a region progression definition',
     )
     .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
@@ -49,29 +48,29 @@ export const MilestonesCommand: ISlashCommand = {
         .setName('region_id')
         .setDescription('The region to manage')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     )
     .addStringOption((option) =>
       option
         .setName('progression_key')
         .setDescription('The progression definition to manage milestones for')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     ),
   createMenu: (session, options) => {
     const { region_id, progression_key } = parseCommandOptions(
       milestonesCommandOptionsSchema,
-      options
+      options,
     );
 
     return new AdminMenuBuilder<MilestonesMenuState>(
       session,
       COMMAND_NAME,
-      options
+      options,
     )
       .setEmbeds((ctx) => milestonesMenuEmbeds(ctx, region_id, progression_key))
       .setButtons((ctx) =>
-        getMilestonesButtons(ctx, region_id, progression_key)
+        getMilestonesButtons(ctx, region_id, progression_key),
       )
       .setModal((ctx) => getMilestoneModals(ctx, region_id, progression_key))
       .setTrackedInHistory()
@@ -84,7 +83,7 @@ export const MilestonesCommand: ISlashCommand = {
 const getMilestonesButtons = async (
   ctx: AdminMenuContext<MilestonesMenuState>,
   regionId: string,
-  progressionKey: string
+  progressionKey: string,
 ): Promise<ButtonInputConfig<AdminMenuContext<MilestonesMenuState>>[]> => {
   const region = await ctx.admin.getRegion(regionId);
   const progression = region.progressionDefinitions.get(progressionKey);

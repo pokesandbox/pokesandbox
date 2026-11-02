@@ -10,7 +10,7 @@ import { toIdString, toIdStrings } from './utils';
  * Fetch a dex entry by its ObjectId or string ID, hitting the cache first.
  */
 export async function getCachedDexEntry(
-  dexEntryId?: Types.ObjectId | string
+  dexEntryId?: Types.ObjectId | string,
 ): Promise<DexEntry | null> {
   if (!dexEntryId) return null;
   const normalisedDexEntryId = toIdString(dexEntryId); // Ensure it's a string for consistent cache keys
@@ -29,13 +29,13 @@ export async function getCachedDexEntry(
 }
 
 export async function getAssertedCachedDexEntry(
-  dexEntryId?: Types.ObjectId | string
+  dexEntryId?: Types.ObjectId | string,
 ): Promise<DexEntry> {
   const dexEntry = await getCachedDexEntry(dexEntryId);
 
   if (!dexEntry) {
     throw new Error(
-      `There was a problem fetching the dex entry. Please try again later.`
+      `There was a problem fetching the dex entry. Please try again later.`,
     );
   }
 
@@ -48,7 +48,7 @@ export async function getAssertedCachedDexEntry(
  * the cache so subsequent reads are instant.
  */
 export async function getCachedDexEntries(
-  ids: (Types.ObjectId | string)[]
+  ids: (Types.ObjectId | string)[],
 ): Promise<DexEntry[]> {
   if (!ids.length) return [];
 
@@ -75,7 +75,7 @@ export async function getCachedDexEntries(
       cache.set(
         `${CachePrefix.DEX_ENTRY}${dexEntry.id}`,
         dexEntry,
-        CacheTTL.DEX_ENTRY
+        CacheTTL.DEX_ENTRY,
       );
       dexEntryMap.set(dexEntry.id, dexEntry);
     }

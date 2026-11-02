@@ -1,4 +1,4 @@
-import { type HydratedDocument, Types } from 'mongoose';
+import { Types, type HydratedDocument } from 'mongoose';
 
 /**
  * Recursively converts all ObjectId types to strings in a type definition.
@@ -16,12 +16,12 @@ import { type HydratedDocument, Types } from 'mongoose';
 export type ConvertToDTO<T> = T extends Types.ObjectId
   ? string
   : T extends Date
-  ? Date
-  : T extends Array<infer U>
-  ? Array<ConvertToDTO<U>>
-  : T extends object
-  ? { [K in keyof T]: ConvertToDTO<T[K]> }
-  : T;
+    ? Date
+    : T extends Array<infer U>
+      ? Array<ConvertToDTO<U>>
+      : T extends object
+        ? { [K in keyof T]: ConvertToDTO<T[K]> }
+        : T;
 
 /**
  * Converts a Mongoose HydratedDocument to a plain JavaScript object.
@@ -47,7 +47,7 @@ export function toPlainObject(obj: unknown): unknown {
     return obj.map((item) =>
       typeof item === 'object' && item !== null && 'toJSON' in item
         ? item.toJSON()
-        : item
+        : item,
     );
   }
 
@@ -125,7 +125,7 @@ export function convertObjectIdsToStrings(obj: unknown): unknown {
  */
 export function convertToDTO<T>(obj: HydratedDocument<T>): ConvertToDTO<T>;
 export function convertToDTO<T>(
-  obj: HydratedDocument<T> | null
+  obj: HydratedDocument<T> | null,
 ): ConvertToDTO<T> | null;
 export function convertToDTO<T>(obj: HydratedDocument<T>[]): ConvertToDTO<T>[];
 export function convertToDTO(obj: unknown): unknown;

@@ -1,20 +1,19 @@
 import {
+  EmbedBuilder,
   type AutocompleteInteraction,
   type CacheType,
-  EmbedBuilder,
   type Interaction,
   type Message,
 } from 'discord.js';
 
 import type { BotClient } from '@bot/classes';
-
 import type { AnyCommand } from '../interfaces';
 
 const getOnlyUsers = async (
   client: BotClient,
   message: Message | Exclude<Interaction, AutocompleteInteraction<CacheType>>,
   command: AnyCommand,
-  isInteraction?: boolean
+  isInteraction?: boolean,
 ): Promise<boolean> => {
   if (!command.onlyUsers || !Array.isArray(command.onlyUsers)) return true;
   const user = isInteraction
@@ -33,7 +32,7 @@ const getOnlyUsers = async (
       })
       .setThumbnail(client.user?.displayAvatarURL() || null)
       .setDescription(
-        `The command you tried to execute couldn't be ran as you are not one of the authorized users.`
+        `The command you tried to execute couldn't be ran as you are not one of the authorized users.`,
       );
 
     if (isInteraction) {

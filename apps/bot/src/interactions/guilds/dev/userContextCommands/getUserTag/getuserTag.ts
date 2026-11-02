@@ -15,7 +15,7 @@ export const GetUserTag: IUserContextCommand = {
     .setType(ApplicationCommandType.User),
   execute: async (
     _client: BotClient,
-    interaction: UserContextMenuCommandInteraction
+    interaction: UserContextMenuCommandInteraction,
   ) => {
     await interaction.deferReply({ ephemeral: true });
     const member: GuildMember | undefined =

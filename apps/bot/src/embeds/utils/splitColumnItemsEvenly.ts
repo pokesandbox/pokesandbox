@@ -1,6 +1,6 @@
 export const splitColumnItemsEvenly = <T>(
   items: T[],
-  columns: number
+  columns: number,
 ): T[][] => {
   const safeColumns = Math.max(1, Math.min(columns, items.length || 1));
   const baseSize = Math.floor(items.length / safeColumns);

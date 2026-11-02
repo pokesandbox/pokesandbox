@@ -1,4 +1,6 @@
 import assert from 'node:assert';
+
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -14,15 +16,13 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import { MILESTONES_COMMAND_NAME } from './milestones';
 import { progressionEditMenuEmbeds } from './progression.embeds';
-import type { ProgressionEditMenuState } from './types';
 import {
   getProgressionEditModal,
   PROGRESSION_EDIT_MODAL_ID,
 } from './progressionEdit.modal';
+import type { ProgressionEditMenuState } from './types';
 
 const COMMAND_NAME = 'progression-edit';
 export const PROGRESSION_EDIT_COMMAND_NAME = COMMAND_NAME;
@@ -48,19 +48,19 @@ export const ProgressionEditCommand: ISlashCommand = {
         .setName('region_id')
         .setDescription('The region containing the progression')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     )
     .addStringOption((option) =>
       option
         .setName('progression_key')
         .setDescription('The progression definition to edit')
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     ),
   createMenu: async (session, options) => {
     const { region_id, progression_key } = parseCommandOptions(
       progressionEditCommandOptionsSchema,
-      options
+      options,
     );
     const region = await getAssertedCachedRegion(region_id);
     const progression = region.progressionDefinitions.get(progression_key);
@@ -69,20 +69,20 @@ export const ProgressionEditCommand: ISlashCommand = {
     const builder = new AdminMenuBuilder<ProgressionEditMenuState>(
       session,
       COMMAND_NAME,
-      options
+      options,
     )
       .setEmbeds((ctx) =>
-        progressionEditMenuEmbeds(ctx, region_id, progression_key)
+        progressionEditMenuEmbeds(ctx, region_id, progression_key),
       )
       .setCancellable()
       .setReturnable()
       .setTrackedInHistory();
 
     builder.setButtons((ctx) =>
-      getEditProgressionDefinitionButtons(ctx, region_id, progression_key)
+      getEditProgressionDefinitionButtons(ctx, region_id, progression_key),
     );
     builder.setModal((ctx) =>
-      getProgressionEditModal(ctx, region_id, progression_key)
+      getProgressionEditModal(ctx, region_id, progression_key),
     );
 
     return builder.build();
@@ -92,7 +92,7 @@ export const ProgressionEditCommand: ISlashCommand = {
 const getEditProgressionDefinitionButtons = async (
   ctx: AdminMenuContext<ProgressionEditMenuState>,
   regionId: string,
-  progressionKey: string
+  progressionKey: string,
 ): Promise<ButtonInputConfig<AdminMenuContext<ProgressionEditMenuState>>[]> => {
   const region = await ctx.admin.getRegion(regionId);
   const progression = region.progressionDefinitions.get(progressionKey);

@@ -1,4 +1,4 @@
-import type { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode } from 'react';
 
 interface LayoutWrapperProps extends PropsWithChildren {
   header: ReactNode;

@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { Schema, Types } from 'mongoose';
+import { z } from 'zod';
 
 export const pokedexSlotSchema = z
   .object({
@@ -12,7 +12,7 @@ export const pokedexSlotSchema = z
         z.object({
           id: z.instanceof(Types.ObjectId),
           ordinal: z.number(),
-        })
+        }),
       )
       .optional(),
   })

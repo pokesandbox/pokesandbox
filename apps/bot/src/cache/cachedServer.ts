@@ -7,7 +7,7 @@ import { CachePrefix, CacheTTL } from './constants';
  * Fetch a server by Discord guild ID, hitting the cache first.
  */
 export async function getCachedServer(
-  guildId: string | undefined
+  guildId: string | undefined,
 ): Promise<Server | null> {
   if (!guildId) return null;
 

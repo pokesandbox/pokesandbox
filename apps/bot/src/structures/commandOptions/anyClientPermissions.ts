@@ -1,21 +1,20 @@
 import {
+  EmbedBuilder,
   type AutocompleteInteraction,
   type CacheType,
-  EmbedBuilder,
   type GuildMember,
   type Interaction,
   type Message,
 } from 'discord.js';
 
 import type { BotClient } from '@bot/classes';
-
 import type { AnyCommand, UserPermissions } from '../interfaces';
 
 const getAnyClientPermissions = async (
   client: BotClient,
   message: Message | Exclude<Interaction, AutocompleteInteraction<CacheType>>,
   command: AnyCommand,
-  isInteraction?: boolean
+  isInteraction?: boolean,
 ): Promise<boolean> => {
   if (
     !command.anyClientPermissions ||
@@ -29,7 +28,7 @@ const getAnyClientPermissions = async (
     command.anyClientPermissions.some((permission: string) =>
       message.guild?.members.me?.permissions
         .toArray()
-        .includes(<UserPermissions>permission)
+        .includes(<UserPermissions>permission),
     )
   )
     return true;
@@ -50,7 +49,7 @@ const getAnyClientPermissions = async (
       .setDescription(
         `The client is missing any one of these permissions which are necessary to run this command. Please provide the client any one of these permissions to execute this command:\n${command.anyClientPermissions
           .map((permission) => `↳ \`${permission}\``)
-          .join('\n')}`
+          .join('\n')}`,
       );
 
     if (isInteraction) {

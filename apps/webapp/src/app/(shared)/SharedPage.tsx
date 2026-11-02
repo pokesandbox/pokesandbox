@@ -1,6 +1,6 @@
-import { ComponentType } from "react";
+import { ComponentType } from 'react';
 
-import { auth } from "@webapp/auth";
+import { auth } from '@webapp/auth';
 
 export interface PrivatePageProps {
   userId: string;

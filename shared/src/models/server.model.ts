@@ -1,15 +1,16 @@
 import {
-  type HydratedDocument,
-  type Model,
   model,
   models,
+  Schema,
+  Types,
+  type HydratedDocument,
+  type Model,
   type Query,
   type QueryFilter,
   type QueryWithHelpers,
-  Schema,
-  Types,
 } from 'mongoose';
 import { z } from 'zod';
+
 import { baseEntitySchema, IModelInput } from './base';
 import { Region } from './region/region.model';
 import type { PopulatedQuery } from './types';
@@ -38,18 +39,18 @@ export type Server = HydratedDocument<IServer>;
 // Define interface for query helpers
 interface IServerQueryHelpers {
   byServerId(
-    serverId?: string
+    serverId?: string,
   ): QueryWithHelpers<any, Server, IServerQueryHelpers>;
 }
 
 interface IServerModel extends Model<IServer, IServerQueryHelpers> {
   createServer(server: IServerInput): Promise<Server>;
   findServerWithRegions(
-    filter: QueryFilter<IServer>
+    filter: QueryFilter<IServer>,
   ): PopulatedQuery<Server | null, IServer, { regions: Region[] }>;
   upsertServer(
     filter: QueryFilter<IServer>,
-    update: IServerUpdate
+    update: IServerUpdate,
   ): Query<Server | null, IServer>;
 }
 
@@ -82,7 +83,7 @@ export const serverSchema = new Schema<
     query: {
       byServerId(
         this: QueryWithHelpers<any, Server, IServerQueryHelpers>,
-        serverId?: string
+        serverId?: string,
       ) {
         return this.where({ serverId });
       },
@@ -99,7 +100,7 @@ export const serverSchema = new Schema<
         return this.findOneAndUpdate(filter, update, { upsert: true });
       },
     },
-  }
+  },
 );
 
 export const Server =
@@ -107,5 +108,5 @@ export const Server =
   (model<IServer, IServerModel>(
     'Server',
     serverSchema,
-    'servers'
+    'servers',
   ) as IServerModel);

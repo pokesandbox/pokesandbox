@@ -5,9 +5,9 @@
  * Usage: npx ts-node scripts/generate-erd.ts
  * Output: docs/erd.md
  */
-
 import * as fs from 'fs';
 import * as path from 'path';
+
 import { Schema } from 'mongoose';
 
 interface EntityField {
@@ -113,7 +113,7 @@ function walkSchemaPath(
   schemaPath: any,
   fields: EntityField[],
   relationships: Map<string, string>,
-  mapSchemas: MapValueSchema[]
+  mapSchemas: MapValueSchema[],
 ): void {
   const instance: string | undefined = schemaPath.instance;
   if (!instance) return;
@@ -125,7 +125,7 @@ function walkSchemaPath(
   if (schemaPath.instance === 'Map' && schemaPath.options?.of) {
     const valueSchema = schemaPath.options.of;
     mapSchemas.push(
-      extractMapValueSchema(normalizedName, valueSchema, relationships)
+      extractMapValueSchema(normalizedName, valueSchema, relationships),
     );
 
     // Still add the Map field itself
@@ -167,7 +167,7 @@ function walkSchemaPath(
         childPath,
         fields,
         relationships,
-        mapSchemas
+        mapSchemas,
       );
     });
     return;
@@ -197,9 +197,9 @@ function walkSchemaPath(
           childPath,
           fields,
           relationships,
-          mapSchemas
+          mapSchemas,
         );
-      }
+      },
     );
     return;
   }
@@ -250,7 +250,7 @@ function getMapValueTypeName(valueSchema: any): string {
 function extractMapValueSchema(
   mapFieldPath: string,
   valueSchema: any,
-  relationships: Map<string, string>
+  relationships: Map<string, string>,
 ): MapValueSchema {
   const fields: Array<{
     name: string;
@@ -299,7 +299,7 @@ function extractMapValueSchema(
               const normalizedName = `${mapFieldPath}_${childName}_${nestedName}`;
               relationships.set(normalizedName, nestedRef);
             }
-          }
+          },
         );
       } else {
         // Regular field (not a document array)
@@ -333,7 +333,7 @@ function extractMapValueSchema(
  */
 function extractEntityDefinition(
   name: string,
-  schema: Schema<any>
+  schema: Schema<any>,
 ): EntityDefinition {
   const fields: EntityField[] = [];
   const relationships: Map<string, string> = new Map();
@@ -352,7 +352,7 @@ function extractEntityDefinition(
     if (schemaPath.instance === 'Map' && schemaPath.options?.of) {
       const valueSchema = schemaPath.options.of;
       mapSchemas.push(
-        extractMapValueSchema(pathName, valueSchema, relationships)
+        extractMapValueSchema(pathName, valueSchema, relationships),
       );
 
       // Still add the Map field itself
@@ -375,7 +375,7 @@ function extractEntityDefinition(
       schemaPath,
       fields,
       relationships,
-      mapSchemas
+      mapSchemas,
     );
   });
 
@@ -440,7 +440,7 @@ function generateMermaidERD(entities: EntityDefinition[]): string {
  */
 function generateMarkdown(
   mermaid: string,
-  entities: EntityDefinition[]
+  entities: EntityDefinition[],
 ): string {
   let markdown = `# Entity Relationship Diagram
 
@@ -530,12 +530,10 @@ async function generateERD() {
     // Manually import models (since we can't use dynamic requires in ts-node safely)
     const { userSchema } = await import('../shared/src/models/user.model');
     const { serverSchema } = await import('../shared/src/models/server.model');
-    const { regionSchema } = await import(
-      '../shared/src/models/region/region.model'
-    );
-    const { locationSchema } = await import(
-      '../shared/src/models/location/location.model'
-    );
+    const { regionSchema } =
+      await import('../shared/src/models/region/region.model');
+    const { locationSchema } =
+      await import('../shared/src/models/location/location.model');
 
     const entities: EntityDefinition[] = [
       extractEntityDefinition('User', userSchema),

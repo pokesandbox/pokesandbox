@@ -4,7 +4,7 @@ import type { AdminMenuContext } from '@bot/classes';
 
 const getDiscoveryMenuEmbeds = async (
   ctx: AdminMenuContext,
-  defaultPrompt = 'Please enter a new server description to be displayed on the server discovery page.'
+  defaultPrompt = 'Please enter a new server description to be displayed on the server discovery page.',
 ) => {
   const prompt = (ctx.state.get('prompt') as string) || defaultPrompt;
   const server = await ctx.admin.getServer();
@@ -26,7 +26,7 @@ const getDiscoveryMenuEmbeds = async (
         {
           name: 'Server Description:',
           value: server.discovery.description || 'None',
-        }
+        },
       )
       .setTimestamp(),
   ];

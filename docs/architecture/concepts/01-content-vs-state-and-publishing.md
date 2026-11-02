@@ -1,6 +1,6 @@
 # 01: Content vs State, and Publishing
 
-> **TL;DR:** Separate *what the admin authored* (content) from *what the player has done* (state), and put an immutable **published release** between authoring and play. Journeys play against a release version, so admins can keep building without breaking live saves.
+> **TL;DR:** Separate _what the admin authored_ (content) from _what the player has done_ (state), and put an immutable **published release** between authoring and play. Journeys play against a release version, so admins can keep building without breaking live saves.
 
 **MVP impact:** High · **Cost to change later:** Very high (every runtime read path depends on it)
 
@@ -8,16 +8,16 @@
 
 A game engine has three kinds of data with very different lifecycles:
 
-| Kind | Examples | Mutated by | Read by | Change rate |
-|---|---|---|---|---|
-| **Catalog** (global) | species, moves, items, abilities, learnsets | devs / seed / Showdown upgrades | everyone | rarely |
-| **Content** (per region) | locations, edges, encounter tables, NPCs, trainers, scripts, shops, progression defs | admins | runtime (hot path) | bursts while authoring |
-| **State** (per journey) | location, party, bag, money, progress, flags, active script/battle | engine | engine, profile views | constantly |
+| Kind                     | Examples                                                                             | Mutated by                      | Read by               | Change rate            |
+| ------------------------ | ------------------------------------------------------------------------------------ | ------------------------------- | --------------------- | ---------------------- |
+| **Catalog** (global)     | species, moves, items, abilities, learnsets                                          | devs / seed / Showdown upgrades | everyone              | rarely                 |
+| **Content** (per region) | locations, edges, encounter tables, NPCs, trainers, scripts, shops, progression defs | admins                          | runtime (hot path)    | bursts while authoring |
+| **State** (per journey)  | location, party, bag, money, progress, flags, active script/battle                   | engine                          | engine, profile views | constantly             |
 
 Today catalog and content live in Mongo docs that are edited in place, and `Region.deployed` decides whether players can see them. That means:
 
 - An admin renaming a milestone, deleting a location, or rewriting a trainer team **changes the region under live players**, sometimes mid-battle or mid-script.
-- `deployable` is stored, but it should be the *output of a validator* run at publish time.
+- `deployable` is stored, but it should be the _output of a validator_ run at publish time.
 - The runtime hot path (every button press) reads many small docs through a mutable cache (see [15](15-persistence-concurrency-and-runtime.md)).
 
 ## Current shape
@@ -29,20 +29,25 @@ Today catalog and content live in Mongo docs that are edited in place, and `Regi
 ## Options
 
 ### A. Live editing + "maintenance mode" (status quo, extended)
+
 Admins must undeploy to edit. Deploy runs validation.
+
 - ✅ Simplest. No extra storage.
 - ❌ Every content tweak means downtime for all players in the region. Fixing one typo kicks everyone out.
 - ❌ Deleting content still corrupts saves (e.g. a journey standing in a deleted location).
 - ❌ The runtime still reads mutable docs.
 
 ### B. Live editing with guarded deletes + per-entity soft-delete
+
 Edits apply live. Deletes become soft (`archivedAt`), and the engine tolerates missing references.
+
 - ✅ No downtime.
 - ❌ Half-finished edits are visible to players (e.g. a new route that points nowhere).
 - ❌ "Tolerate missing references" spreads defensive code through every engine path.
 
 ### C. Draft → Published Release (chosen)
-Authoring collections act as the **draft**. **Publish** runs the validator, then *compiles* the region's content into an immutable, versioned **`RegionRelease`**. The engine only reads releases.
+
+Authoring collections act as the **draft**. **Publish** runs the validator, then _compiles_ the region's content into an immutable, versioned **`RegionRelease`**. The engine only reads releases.
 
 ```
 Admin edits ──► draft docs (Region, Location, Npc, Script, …)
@@ -64,7 +69,9 @@ Admin edits ──► draft docs (Region, Location, Npc, Script, …)
 - ❌ Storage: a Kanto-sized region compiles to a few MB. Mongo's 16 MB document limit means chunking by content type (`RegionReleaseChunk { releaseId, type, data }`) or GridFS. Both are easy.
 
 ### D. Event-sourced content
+
 Every authoring edit is an event, and a release is a projection.
+
 - ✅ Full audit trail and undo.
 - ❌ Overkill. Option C plus an audit log gets 90% of the value.
 
@@ -80,16 +87,20 @@ Every authoring edit is an event, and a release is a projection.
 3. **Later:** release notes/diff, rollback UI, scheduled publishes for server events, and "preview as player" for unpublished drafts. Preview is a killer authoring feature: an admin can play the draft with a throwaway journey.
 
 ### What a release contains
+
 Everything play needs, resolved and pinned at publish, so nothing a live region reads can change underneath it:
+
 - the region's content (locations, NPCs, trainers, scripts, shops, encounter tables, transport, TM/HM list `moveMachines`, rules);
 - the catalog data it uses, resolved for its generations and stamped with the `catalogVersion` ([12](12-content-catalog-species-moves-items.md)), plus any server library content and overrides it uses ([27](27-server-content-library-and-overrides.md));
 - the compiled flavor index with pinned pack versions (post-MVP, [29](29-flavor-text-and-prose.md));
 - translations that exist at publish time (later, [30](30-internationalization-readiness.md)).
 
 ### Interaction with in-flight sessions
+
 Active battles and scripts pin the release they started on and finish there. The next action loads the newest release. Keep N-1 and N in memory.
 
 ## MVP scope
+
 - `RegionRelease` model, the publish command, the validator hook, the `ContentProvider` interface, and `Journey.releaseVersion` plus 2–3 migration rules.
 - Not in MVP: diff UI, rollback UI, preview mode.
 
@@ -98,6 +109,7 @@ Active battles and scripts pin the release they started on and finish there. The
 Option C was adopted. The owner's refinements:
 
 **1. Release notes: opt-in, configurable destination.** Models are needed for MVP. The UI is low priority.
+
 ```ts
 Server.settings.releaseNotes: {
   enabled: boolean;               // default false (opt-in)
@@ -109,9 +121,11 @@ RegionRelease.notes: {
   authored?: string;              // optional admin-written notes entered at publish time
 }
 ```
+
 On publish, if enabled, the bot posts `authored ?? rendered(generated)` to `channelId`. With no channel set, nothing is posted, but the notes are still stored on the release (the webapp and future release history can show them).
 
-**2. Deployment and discovery are separate axes.** Deploy state controls *play*. Discovery controls *visibility*. An undeployed, in-progress region can be discoverable (sneak peeks, recruiting testers), and a deployed region can be unlisted.
+**2. Deployment and discovery are separate axes.** Deploy state controls _play_. Discovery controls _visibility_. An undeployed, in-progress region can be discoverable (sneak peeks, recruiting testers), and a deployed region can be unlisted.
+
 ```ts
 Region.deployment: {
   status: 'draft' | 'live' | 'paused';   // draft = never published; live = playable; paused = undeployed (journeys frozen)
@@ -124,20 +138,24 @@ Region.discovery: {
   showStatus: boolean;                   // show "In development" / "Live" / "Paused" badge on the discovery page
 }
 ```
+
 - **Paused (undeployed)** means the engine rejects all player actions for the region with the pause message. Journeys are frozen exactly where they are (mode, battle, script cursor), and resuming continues from there. Arena PvP is server-scoped and **unaffected** by pausing a region (see [25](25-arena.md#arena-formats-decided-oct-2026-server-scoped-not-region-scoped)). Only Phase 3 in-game PvP with adventure parties is region-bound, and those battles are frozen like any other battle.
-- `Server.discovery` stays as the *server-level* listing. `Region.discovery` is the per-region listing within it. The discovery page shows a region only if both are enabled.
+- `Server.discovery` stays as the _server-level_ listing. `Region.discovery` is the per-region listing within it. The discovery page shows a region only if both are enabled.
 - This replaces the old `deployed` / `deployable` booleans. "Deployable" is the computed validator result.
 
 **3. Draft preview is later, designed for now.** To keep it cheap later:
-- Releases can be compiled *from the current draft without being published*: `compileRelease(regionId, { mode: 'preview' })` produces an ephemeral release that is never set as `publishedVersion`.
+
+- Releases can be compiled _from the current draft without being published_: `compileRelease(regionId, { mode: 'preview' })` produces an ephemeral release that is never set as `publishedVersion`.
 - `Journey.isTest: boolean` plus `Journey.releaseRef: { kind: 'published', version } | { kind: 'preview', id }`.
 - Test journeys are excluded from discovery stats, leaderboards, trading, and PvP.
 
 **4. Publish checks state, not just content.** The publish review ([16](16-authoring-validation-and-portability.md)) checks what the new release would do to existing state, and migration rules handle what it changes:
+
 - **Journey saves (MVP):** the migration rules above run lazily when a journey loads on a newer release. Rule changes that would break saves need a fix-up rule ([18](18-rules-time-and-randomness.md#decisions-oct-2026-piecemeal-rules-gen-1-first)).
 - **Shared state (post-MVP):** each publish review also checks the release against the region's `RegionState`, and region-state migrations run once, at publish, inside the publish transaction, because the state is shared. The rules are in [24 § Publishing](24-shared-state-region-and-server.md#publishing-decided-oct-2026).
 
 ## Open questions
+
 - ~~Hot-fix a published release?~~ **Decided (Oct 2026):** no. Every change, typo fixes included, goes live only through a publish (with its review step, see [16](16-authoring-validation-and-portability.md)). One path means one set of validation and one change history.
 - ~~Announce releases to players?~~ Decided: opt-in, configurable channel (see above).
 - ~~Undeploy semantics?~~ Decided: pause play. Discovery is a separate axis (see above).

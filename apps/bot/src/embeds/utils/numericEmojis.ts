@@ -31,7 +31,7 @@ const getNumericEmojisForIndex = (value: number): string => {
 export const getNumericEmojiLabel = (
   value: number,
   shouldPadSingleEmojiLabels = false,
-  shouldPadDoubleDigitEmojiLabels = false
+  shouldPadDoubleDigitEmojiLabels = false,
 ): string => {
   const emojiLabel = `${getNumericEmojisForIndex(value)}\u2009`;
   if (!emojiLabel) return '';
@@ -54,7 +54,7 @@ export const getNumericEmojiLabel = (
  * @returns Object with padding requirements for single and double digit ranges
  */
 export const getNumericEmojiPaddingRules = (
-  column: { index: number }[]
+  column: { index: number }[],
 ): { padSingle: boolean; padDouble: boolean } => {
   const hasSingle = column.some(({ index }) => index <= 9);
   const hasDouble = column.some(({ index }) => index >= 10 && index <= 99);

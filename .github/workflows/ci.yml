@@ -1,8 +1,8 @@
 name: CI
 
-# Lint, typecheck, and unit tests on every PR into develop (affected projects
-# only) and a full run on every push to develop. The full run also gives
-# SonarCloud complete main-branch coverage.
+# Format check, lint, typecheck, build, and unit tests on every PR into develop
+# (affected projects only) and a full run on every push to develop. The full run
+# also gives SonarCloud complete main-branch coverage.
 
 on:
   pull_request:
@@ -44,19 +44,23 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
+      - name: Format check
+        # Whole repo (fast), so files outside Nx projects (docs, workflows, scripts) are covered too.
+        run: npm run format:check
+
       - name: Derive affected base/head SHAs
         uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
 
-      - name: Lint, typecheck & test (affected)
+      - name: Lint, typecheck, build & test (affected)
         if: github.event_name == 'pull_request'
         run: |
-          npx nx affected -t lint typecheck --outputStyle=static
+          npx nx affected -t lint typecheck build --outputStyle=static
           npx nx affected -t test --coverage --outputStyle=static
 
-      - name: Lint, typecheck & test (all projects)
+      - name: Lint, typecheck, build & test (all projects)
         if: github.event_name == 'push'
         run: |
-          npx nx run-many -t lint typecheck --outputStyle=static
+          npx nx run-many -t lint typecheck build --outputStyle=static
           npx nx run-many -t test --coverage --outputStyle=static
 
       - name: Normalize coverage paths for SonarCloud

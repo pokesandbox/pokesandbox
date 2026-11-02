@@ -17,11 +17,11 @@ type AutocompleteChoice = { name: string; value: string };
  */
 export const filterAndFormatChoices = (
   choices: AutocompleteChoice[],
-  focusedValue: string
+  focusedValue: string,
 ): AutocompleteChoice[] =>
   choices
     .filter((choice) =>
-      choice.name.toLowerCase().includes(focusedValue.toLowerCase())
+      choice.name.toLowerCase().includes(focusedValue.toLowerCase()),
     )
     .slice(0, 25);
 
@@ -30,7 +30,7 @@ export const filterAndFormatChoices = (
  */
 export const getRegionChoices = async (
   guildId: string,
-  focusedValue: string
+  focusedValue: string,
 ): Promise<AutocompleteChoice[]> => {
   const server = await getCachedServer(guildId);
   if (!server) return [];
@@ -41,7 +41,7 @@ export const getRegionChoices = async (
       name: region.name,
       value: region._id.toString(),
     })),
-    focusedValue
+    focusedValue,
   );
 };
 
@@ -50,7 +50,7 @@ export const getRegionChoices = async (
  */
 export const getProgressionKeyChoices = async (
   regionId: string,
-  focusedValue: string
+  focusedValue: string,
 ): Promise<AutocompleteChoice[]> => {
   const region = await getCachedRegion(regionId);
   if (!region) return [];
@@ -60,7 +60,7 @@ export const getProgressionKeyChoices = async (
       name: def.name,
       value: key,
     })),
-    focusedValue
+    focusedValue,
   );
 };
 
@@ -69,7 +69,7 @@ export const getProgressionKeyChoices = async (
  */
 export const handleRegionAutocomplete = async (
   _client: BotClient,
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ): Promise<void> => {
   const guildId = interaction.guildId;
   if (!guildId) return;
@@ -82,7 +82,7 @@ export const handleRegionAutocomplete = async (
 /** Handles autocomplete for commands with both region_id and pokedex_no fields. Where pokedex_no can be autocompleted with the corresponding Pokémon name */
 export const handleRegionAndPokedexNoOrNameAutocomplete = async (
   _client: BotClient,
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ): Promise<void> => {
   const guildId = interaction.guildId;
   if (!guildId) return;
@@ -104,7 +104,7 @@ export const handleRegionAndPokedexNoOrNameAutocomplete = async (
 
 const getPokedexNoWithNameChoices = async (
   regionId: string | null,
-  focusedValue: string
+  focusedValue: string,
 ): Promise<AutocompleteChoice[]> => {
   if (!regionId) return [];
   const region = await getCachedRegion(regionId);
@@ -117,7 +117,7 @@ const getPokedexNoWithNameChoices = async (
         name: `${i + 1}. ${region?.pokedex[i]?.name}`,
         value: `${i + 1}`,
       };
-    }
+    },
   );
   return filterAndFormatChoices(choices, focusedValue);
   // .filter((choice) => choice.name.includes(focused.value))
@@ -129,7 +129,7 @@ const getPokedexNoWithNameChoices = async (
  */
 export const handleRegionAndProgressionAutocomplete = async (
   _client: BotClient,
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ): Promise<void> => {
   const guildId = interaction.guildId;
   if (!guildId) return;
@@ -155,7 +155,7 @@ export const handleRegionAndProgressionAutocomplete = async (
  */
 export const getLocationChoices = async (
   regionId: string,
-  focusedValue: string
+  focusedValue: string,
 ): Promise<AutocompleteChoice[]> => {
   const region = await getCachedRegion(regionId);
   if (!region || !region.locations.length) return [];
@@ -168,7 +168,7 @@ export const getLocationChoices = async (
       name: location.name,
       value: location._id.toString(),
     })),
-    focusedValue
+    focusedValue,
   );
 };
 
@@ -177,7 +177,7 @@ export const getLocationChoices = async (
  */
 export const handleRegionAndLocationAutocomplete = async (
   _client: BotClient,
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ): Promise<void> => {
   const guildId = interaction.guildId;
   if (!guildId) return;

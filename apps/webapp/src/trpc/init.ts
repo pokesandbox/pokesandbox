@@ -1,8 +1,8 @@
-import { initTRPC, TRPCError } from "@trpc/server";
-import type { Session } from "next-auth";
-import superjson from "superjson";
+import { initTRPC, TRPCError } from '@trpc/server';
+import type { Session } from 'next-auth';
+import superjson from 'superjson';
 
-import { type Context } from "./context";
+import { type Context } from './context';
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -18,7 +18,7 @@ export const publicProcedure = t.procedure;
 export type ProtectedContext = {
   req?: Request;
   session: Session & {
-    user: NonNullable<Session["user"]> & { id: string };
+    user: NonNullable<Session['user']> & { id: string };
   };
 };
 
@@ -28,7 +28,7 @@ export type ProtectedContext = {
  * It builds on top of the context and throws an error if no session exists.
  */
 export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
-  if (!ctx.session?.user?.id) throw new TRPCError({ code: "UNAUTHORIZED" });
+  if (!ctx.session?.user?.id) throw new TRPCError({ code: 'UNAUTHORIZED' });
   return next({ ctx: ctx as ProtectedContext });
 });
 

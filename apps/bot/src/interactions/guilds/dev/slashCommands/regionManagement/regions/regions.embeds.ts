@@ -1,12 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 
 import type { AdminMenuContext } from '@bot/classes';
-
 import { RegionsMenuState } from './types';
 
 export const getRegionsMenuEmbeds = async (
   ctx: AdminMenuContext<RegionsMenuState>,
-  defaultPrompt = 'Please select a Region to manage.'
+  defaultPrompt = 'Please select a Region to manage.',
 ): Promise<EmbedBuilder[]> => {
   const server = await ctx.admin.getServer();
   const regions = await ctx.admin.getRegions();
@@ -34,7 +33,7 @@ export const getRegionsMenuEmbeds = async (
       .setDescription(
         regions.length === 0
           ? firstRegionDescription
-          : addtionalRegionDescription
+          : addtionalRegionDescription,
       )
       .setTimestamp(),
   ];

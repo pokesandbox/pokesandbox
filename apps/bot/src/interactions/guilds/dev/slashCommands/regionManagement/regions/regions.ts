@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -9,13 +10,12 @@ import {
   type ModalSubmitFields,
 } from 'discord.js';
 
+import { Region } from '@shared/models';
+
 import { saveServer } from '@bot/cache';
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
-import { Region } from '@shared/models';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import { REGION_COMMAND_NAME } from '../region/region';
 import { getRegionsMenuEmbeds } from './regions.embeds';
 import { RegionsMenuState } from './types';
@@ -46,13 +46,13 @@ export const RegionsCommand: ISlashCommand = {
           const existingRegions = await ctx.admin.getRegions();
           const hasDuplicateRegionName = existingRegions.some(
             (region) =>
-              region.name.trim().toLowerCase() === regionName.toLowerCase()
+              region.name.trim().toLowerCase() === regionName.toLowerCase(),
           );
 
           if (hasDuplicateRegionName) {
             ctx.state.set(
               'prompt',
-              `A region named "${regionName}" already exists. Please choose a different name.`
+              `A region named "${regionName}" already exists. Please choose a different name.`,
             );
             return;
           }
@@ -87,7 +87,7 @@ export const RegionsCommand: ISlashCommand = {
 
           ctx.state.set(
             'prompt',
-            `Successfully created the new region: \`${region.name}\``
+            `Successfully created the new region: \`${region.name}\``,
           );
         },
       }))
@@ -110,8 +110,8 @@ const getRegionCreateModal = (): ModalBuilder => {
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('e.g. Kanto, Johto, etc.')
             .setRequired(true)
-            .setMaxLength(80)
-        )
+            .setMaxLength(80),
+        ),
     );
 };
 
@@ -120,7 +120,7 @@ const getRegionNameFromModal = (fields: ModalSubmitFields): string => {
 };
 
 const getRegionsButtons = async (
-  ctx: AdminMenuContext<RegionsMenuState>
+  ctx: AdminMenuContext<RegionsMenuState>,
 ): Promise<ButtonInputConfig<AdminMenuContext<RegionsMenuState>>[]> => {
   const regions = await ctx.admin.getRegions();
 

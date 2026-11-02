@@ -1,10 +1,10 @@
 import {
   ApplicationCommandType,
-  type ChatInputCommandInteraction,
+  InteractionType,
   type AutocompleteInteraction,
+  type ChatInputCommandInteraction,
   type CommandInteraction,
   type Interaction,
-  InteractionType,
   type MessageComponentInteraction,
   type ModalSubmitInteraction,
 } from 'discord.js';
@@ -46,10 +46,10 @@ export const InteractionCreate: IBotEvent = {
 
 const handleAutocompleteInteraction = async (
   client: BotClient,
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ): Promise<void> => {
   const slashCommand: ISlashCommand | undefined = client.slashCommands.get(
-    interaction.commandName
+    interaction.commandName,
   );
 
   if (!slashCommand?.autocomplete) return;
@@ -63,11 +63,11 @@ const handleAutocompleteInteraction = async (
 
 const handleApplicationCommandInteraction = async (
   client: BotClient,
-  interaction: CommandInteraction
+  interaction: CommandInteraction,
 ): Promise<void> => {
   if (interaction.isChatInputCommand()) {
     const slashCommand: ISlashCommand | undefined = client.slashCommands.get(
-      interaction.commandName
+      interaction.commandName,
     );
 
     if (!slashCommand || slashCommand.ignore) {
@@ -83,7 +83,7 @@ const handleApplicationCommandInteraction = async (
       interaction,
       slashCommand,
       true,
-      'SlashCommand'
+      'SlashCommand',
     );
 
     if (authenticatedCMDOptions) {
@@ -108,7 +108,7 @@ const handleApplicationCommandInteraction = async (
       return client.flowcord.handleInteraction(
         interaction,
         interaction.commandName,
-        Object.keys(menuOptions).length ? menuOptions : undefined
+        Object.keys(menuOptions).length ? menuOptions : undefined,
       );
     }
   }
@@ -130,7 +130,7 @@ const handleApplicationCommandInteraction = async (
       interaction,
       messageContextMenuCommand,
       true,
-      'MessageContextMenuCommand'
+      'MessageContextMenuCommand',
     );
 
     if (authenticatedCMDOptions) {
@@ -155,7 +155,7 @@ const handleApplicationCommandInteraction = async (
       interaction,
       userContextMenuCommand,
       true,
-      'UserContextCommand'
+      'UserContextCommand',
     );
 
     if (authenticatedCMDOptions) {
@@ -166,7 +166,7 @@ const handleApplicationCommandInteraction = async (
 
 const handleMessageComponentInteraction = async (
   client: BotClient,
-  interaction: MessageComponentInteraction
+  interaction: MessageComponentInteraction,
 ): Promise<void> => {
   // FlowCord interactions are routed by session ID embedded in the customId
   if (client.flowcord?.isFlowCordInteraction(interaction.customId)) {
@@ -186,7 +186,7 @@ const handleMessageComponentInteraction = async (
       interaction,
       button,
       true,
-      'Button'
+      'Button',
     );
 
     if (!button.execute) return;
@@ -204,7 +204,7 @@ const handleMessageComponentInteraction = async (
       interaction,
       roleSelectMenu,
       true,
-      'RoleSelectMenu'
+      'RoleSelectMenu',
     );
 
     if (!roleSelectMenu.execute) return;
@@ -223,7 +223,7 @@ const handleMessageComponentInteraction = async (
       interaction,
       stringSelectMenu,
       true,
-      'StringSelectMenu'
+      'StringSelectMenu',
     );
 
     if (authenticatedCMDOptions)
@@ -241,7 +241,7 @@ const handleMessageComponentInteraction = async (
       interaction,
       userSelectMenu,
       true,
-      'UserSelectMenu'
+      'UserSelectMenu',
     );
     if (authenticatedCMDOptions)
       return userSelectMenu.execute(client, interaction);
@@ -250,12 +250,12 @@ const handleMessageComponentInteraction = async (
 
 const handleModalSubmitInteraction = async (
   client: BotClient,
-  interaction: ModalSubmitInteraction
+  interaction: ModalSubmitInteraction,
 ): Promise<void> => {
   if (!interaction.isModalSubmit()) return;
 
   const modalForm: IModalForm | undefined = client.modalForms.get(
-    interaction.customId
+    interaction.customId,
   );
   if (!modalForm) return;
 
@@ -264,7 +264,7 @@ const handleModalSubmitInteraction = async (
     interaction,
     modalForm,
     true,
-    'ModalForm'
+    'ModalForm',
   );
   if (authenticatedCMDOptions) return modalForm.execute(client, interaction);
 };
@@ -276,7 +276,7 @@ type OptionNode = {
 };
 
 const parseChatInputOptions = (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ): Record<string, unknown> => {
   const parsed: Record<string, unknown> = {};
 

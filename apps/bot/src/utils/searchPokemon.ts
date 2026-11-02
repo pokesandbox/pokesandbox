@@ -7,7 +7,7 @@ type PokemonSearchResult = {
 
 export const searchPokemon = async (
   serverId: string,
-  searchName: string
+  searchName: string,
 ): Promise<PokemonSearchResult> => {
   let exactMatch: DexEntry | undefined;
   const potentialMatches: DexEntry[] = await DexEntry.find({

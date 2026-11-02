@@ -17,10 +17,10 @@
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
+import { collectionSeedMap, SUPPORTED_COLLECTIONS } from './collections';
+
 // Load .env from repo root
 dotenv.config();
-
-import { collectionSeedMap, SUPPORTED_COLLECTIONS } from './collections';
 
 const DATABASE_URI =
   process.env.DATABASE_URI || 'mongodb://localhost:27017/pokesandbox';
@@ -33,13 +33,13 @@ type SeedDocument = Record<string, unknown>;
 function applyDevGuildId(
   name: string,
   seedData: SeedDocument[],
-  devGuildId: string
+  devGuildId: string,
 ): SeedDocument[] {
   if (name !== 'servers') return seedData;
   return seedData.map((server) =>
     server.serverId === SEED_GUILD_ID
       ? { ...server, serverId: devGuildId }
-      : server
+      : server,
   );
 }
 

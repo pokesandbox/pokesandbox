@@ -4,7 +4,7 @@ import type { AdminMenuContext } from '@bot/classes';
 
 export const getServerMenuEmbeds = async (
   ctx: AdminMenuContext,
-  defaultPrompt = 'Please select an option to manage your server settings.'
+  defaultPrompt = 'Please select an option to manage your server settings.',
 ) => {
   const server = await ctx.admin.getServer();
   const prompt = (ctx.state.get('prompt') as string) || defaultPrompt;
@@ -38,7 +38,7 @@ export const getServerMenuEmbeds = async (
             server.discovery.enabled
               ? 'Modify Server Discovery Settings'
               : 'Enable Server Discovery'
-          }`
+          }`,
       )
       .setTimestamp(),
   ];

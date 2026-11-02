@@ -20,14 +20,16 @@ type FieldCheck<T> = {
 export function findDuplicate<T extends { _id: { toString(): string } }>(
   items: T[],
   checks: FieldCheck<T>[],
-  excludeId?: string
+  excludeId?: string,
 ): string | undefined {
   const activeChecks = checks.filter((c) => !c.skip);
   for (const item of items) {
     if (excludeId && item._id.toString() === excludeId) continue;
     for (const check of activeChecks) {
       if (check.value === check.getValue(item)) {
-        return typeof check.message === 'function' ? check.message(item) : check.message;
+        return typeof check.message === 'function'
+          ? check.message(item)
+          : check.message;
       }
     }
   }

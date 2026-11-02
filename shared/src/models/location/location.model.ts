@@ -1,13 +1,13 @@
 import {
-  type HydratedDocument,
-  type Model,
   model,
   models,
+  Schema,
+  Types,
+  type HydratedDocument,
+  type Model,
   type Query,
   type QueryFilter,
   type QueryWithHelpers,
-  Schema,
-  Types,
 } from 'mongoose';
 import { z } from 'zod';
 
@@ -49,7 +49,7 @@ export type Location = HydratedDocument<ILocation>;
 interface ILocationQueryHelpers {
   byIds(ids: string[]): QueryWithHelpers<any, Location, ILocationQueryHelpers>;
   byRegionId(
-    regionId: string
+    regionId: string,
   ): QueryWithHelpers<any, Location, ILocationQueryHelpers>;
 }
 
@@ -57,7 +57,7 @@ interface ILocationModel extends Model<ILocation, ILocationQueryHelpers> {
   createLocation(location: ILocationInput): Promise<Location>;
   upsertLocation(
     filter: QueryFilter<ILocation>,
-    update: ILocationUpdate
+    update: ILocationUpdate,
   ): Query<Location | null, ILocation>;
 }
 
@@ -72,7 +72,7 @@ const connectionDbSchema = new Schema(
     },
     requirements: { type: requirementDbSchema, required: false },
   },
-  { _id: false }
+  { _id: false },
 );
 
 export const locationSchema = new Schema<
@@ -103,13 +103,13 @@ export const locationSchema = new Schema<
     query: {
       byIds(
         this: QueryWithHelpers<any, Location, ILocationQueryHelpers>,
-        ids: string[]
+        ids: string[],
       ) {
         return this.where({ _id: { $in: ids } });
       },
       byRegionId(
         this: QueryWithHelpers<any, Location, ILocationQueryHelpers>,
-        regionId: string
+        regionId: string,
       ) {
         return this.where({ regionId });
       },
@@ -119,7 +119,9 @@ export const locationSchema = new Schema<
         // Auto-assign ordinal if not provided
         let ordinal = location.ordinal;
         if (ordinal === undefined) {
-          const maxLocation = await this.findOne({ regionId: location.regionId })
+          const maxLocation = await this.findOne({
+            regionId: location.regionId,
+          })
             .sort({ ordinal: -1 })
             .select('ordinal')
             .lean();
@@ -133,7 +135,7 @@ export const locationSchema = new Schema<
         return this.findOneAndUpdate(filter, update, { upsert: true });
       },
     },
-  }
+  },
 );
 
 export const Location =
@@ -141,5 +143,5 @@ export const Location =
   (model<ILocation, ILocationModel>(
     'Location',
     locationSchema,
-    'locations'
+    'locations',
   ) as ILocationModel);

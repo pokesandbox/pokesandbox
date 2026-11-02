@@ -1,18 +1,19 @@
-"use client";
+'use client';
 
-import { UserOutlined } from "@ant-design/icons";
-import { AutoComplete, Input } from "antd";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { UserOutlined } from '@ant-design/icons';
+import { AutoComplete, Input } from 'antd';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { RegionDTO, ServerDTO, UserDTO } from "@shared/dtos";
-import { trpc } from "@webapp/trpc";
+import type { RegionDTO, ServerDTO, UserDTO } from '@shared/dtos';
+
+import { trpc } from '@webapp/trpc';
 
 export enum SearchType {
-  Any = "Any",
-  Servers = "Servers",
-  Regions = "Regions",
-  Users = "Users",
+  Any = 'Any',
+  Servers = 'Servers',
+  Regions = 'Regions',
+  Users = 'Users',
 }
 
 interface SelectItem {
@@ -34,7 +35,7 @@ interface SearchTypeOption {
 
 export const SearchBar = () => {
   const router = useRouter();
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>('');
   const [searchTypes, setSearchType] = useState<SearchType[]>([SearchType.Any]);
   const { data: regions = [], isLoading: regionsLoading } =
     trpc.regions.getAll.useQuery();
@@ -48,27 +49,27 @@ export const SearchBar = () => {
   const [keepOpen, setKeepOpen] = useState<boolean>(false);
 
   const getAnySearchOptions = useCallback(
-    (value = ""): SelectOptions[] => {
+    (value = ''): SelectOptions[] => {
       const types: SearchTypeOption[] = [
-        { name: "Servers", quantity: servers.length },
-        { name: "Regions", quantity: regions.length },
-        { name: "Users", quantity: users.length },
+        { name: 'Servers', quantity: servers.length },
+        { name: 'Regions', quantity: regions.length },
+        { name: 'Users', quantity: users.length },
       ];
       const filteredTypes = types.filter((type: SearchTypeOption) =>
-        type.name.toLowerCase().includes(value.toLowerCase())
+        type.name.toLowerCase().includes(value.toLowerCase()),
       );
       return filteredTypes.length > 0
         ? [
             {
-              label: renderTitle("Search Options"),
+              label: renderTitle('Search Options'),
               options: filteredTypes.map((type: SearchTypeOption) =>
-                renderItem(type.name, type.quantity)
+                renderItem(type.name, type.quantity),
               ),
             },
           ]
         : [];
     },
-    [servers, regions, users]
+    [servers, regions, users],
   );
 
   useEffect(() => {
@@ -78,79 +79,79 @@ export const SearchBar = () => {
   const searchTypeString = useMemo(() => {
     return searchTypes
       .filter((type: SearchType) => type !== SearchType.Any)
-      .join("/");
+      .join('/');
   }, [searchTypes]);
 
   const getServersSearchOptions = useCallback(
-    (value = ""): SelectOptions[] => {
+    (value = ''): SelectOptions[] => {
       const filteredServers = servers.filter((server: ServerDTO) =>
-        server.name.toLowerCase().includes(value.toLowerCase())
+        server.name.toLowerCase().includes(value.toLowerCase()),
       );
       return filteredServers.length > 0
         ? [
             {
-              label: renderTitle("Servers"),
+              label: renderTitle('Servers'),
               options: filteredServers.map((server: ServerDTO) =>
                 renderItem(
                   server.name,
                   server.playerList.length,
                   SearchType.Servers,
-                  server.serverId
-                )
+                  server.serverId,
+                ),
               ),
             },
           ]
         : [];
     },
-    [servers]
+    [servers],
   );
 
   const getRegionsSearchOptions = useCallback(
-    (value = ""): SelectOptions[] => {
+    (value = ''): SelectOptions[] => {
       const filteredRegions = regions.filter((region: RegionDTO) =>
-        region.name.toLowerCase().includes(value.toLowerCase())
+        region.name.toLowerCase().includes(value.toLowerCase()),
       );
       return filteredRegions.length > 0
         ? [
             {
-              label: renderTitle("Regions"),
+              label: renderTitle('Regions'),
               options: filteredRegions.map((region: RegionDTO) =>
                 renderItem(
                   region.name,
                   undefined,
                   SearchType.Regions,
-                  region._id.toString()
-                )
+                  region._id.toString(),
+                ),
               ),
             },
           ]
         : [];
     },
-    [regions]
+    [regions],
   );
 
   const getUsersSearchOptions = useCallback(
-    (value = ""): SelectOptions[] => {
+    (value = ''): SelectOptions[] => {
       const filteredUsers = users.filter((user: UserDTO) =>
-        user.globalName.toLowerCase().includes(value.toLowerCase())
+        user.globalName.toLowerCase().includes(value.toLowerCase()),
       );
       return filteredUsers.length > 0
         ? [
             {
-              label: renderTitle("Users"),
+              label: renderTitle('Users'),
               options: filteredUsers.map((user: UserDTO) =>
                 renderItem(
                   user.globalName,
                   undefined,
                   SearchType.Users,
-                  user.userId
-                )
+                  user.userId,
+                ),
               ),
             },
           ]
         : [];
     },
-    [users]
+    [users],
   );
 
   const updateOptions = useCallback(
@@ -186,7 +187,7 @@ export const SearchBar = () => {
       getServersSearchOptions,
       getRegionsSearchOptions,
       getUsersSearchOptions,
-    ]
+    ],
   );
 
   const handleSelect = useCallback(
@@ -197,15 +198,15 @@ export const SearchBar = () => {
       if (Object.keys(SearchType).includes(value)) {
         const newValue = value as SearchType;
         newSearchTypes = [...searchTypes, newValue].filter(
-          (type: SearchType) => type !== SearchType.Any
+          (type: SearchType) => type !== SearchType.Any,
         );
         // Set flag to keep dropdown open when selecting a search type
         setKeepOpen(true);
       } else {
-        newSearch = "";
+        newSearch = '';
         const selectionOption = valueOptions as unknown as SelectItem;
         router.push(
-          `/${selectionOption.type.toLowerCase()}/${selectionOption.id}`
+          `/${selectionOption.type.toLowerCase()}/${selectionOption.id}`,
         );
         // Allow dropdown to close when navigating
         setKeepOpen(false);
@@ -214,21 +215,21 @@ export const SearchBar = () => {
       setSearchType(newSearchTypes);
       updateOptions(newSearch, newSearchTypes);
     },
-    [router, search, searchTypes, updateOptions]
+    [router, search, searchTypes, updateOptions],
   );
 
   const handleChange = useCallback(
     (value: string): void => {
-      if (value.includes(": ")) {
-        const [inputSearchTypes, inputSearch] = value.split(": ");
-        const parsedSearchTypes = inputSearchTypes.split("/");
+      if (value.includes(': ')) {
+        const [inputSearchTypes, inputSearch] = value.split(': ');
+        const parsedSearchTypes = inputSearchTypes.split('/');
         if (
           !searchTypes.every(
             (type: SearchType, index: number) =>
-              type === parsedSearchTypes[index]
+              type === parsedSearchTypes[index],
           ) &&
           parsedSearchTypes.every((type: string) =>
-            Object.keys(SearchType).includes(type)
+            Object.keys(SearchType).includes(type),
           )
         ) {
           setSearchType(parsedSearchTypes as SearchType[]);
@@ -241,7 +242,7 @@ export const SearchBar = () => {
         updateOptions(value, [SearchType.Any]);
       }
     },
-    [searchTypes, updateOptions]
+    [searchTypes, updateOptions],
   );
 
   const handleOpenChange = useCallback(
@@ -254,14 +255,14 @@ export const SearchBar = () => {
         setOpen(isOpen);
       }
     },
-    [keepOpen]
+    [keepOpen],
   );
 
   return (
     <AutoComplete
       classNames={{
         popup: {
-          root: "certain-category-search-dropdown",
+          root: 'certain-category-search-dropdown',
         },
       }}
       onOpenChange={handleOpenChange}
@@ -270,7 +271,7 @@ export const SearchBar = () => {
       onSelect={handleSelect}
       options={options}
       popupMatchSelectWidth={350}
-      value={`${searchTypeString ? searchTypeString + ": " : ""}${search}`}
+      value={`${searchTypeString ? searchTypeString + ': ' : ''}${search}`}
     >
       <Input.Search
         loading={regionsLoading || serversLoading || usersLoading}
@@ -288,14 +289,14 @@ const renderItem = (
   title: string,
   count: number | undefined,
   type: string = SearchType.Any,
-  id = ""
+  id = '',
 ): SelectItem => ({
   id,
   label: (
     <div
       style={{
-        display: "flex",
-        justifyContent: "space-between",
+        display: 'flex',
+        justifyContent: 'space-between',
       }}
     >
       {title}

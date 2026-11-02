@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import Image from "next/image";
+import Image from 'next/image';
 
-import { trpc } from "@webapp/trpc";
+import { trpc } from '@webapp/trpc';
 
 export const HomePagePrivate = () => {
   const { data: user } = trpc.users.getCurrentUser.useQuery();
-  const avatarUrl: string = user?.avatarUrl ?? "";
+  const avatarUrl: string = user?.avatarUrl ?? '';
 
   return (
     <div>

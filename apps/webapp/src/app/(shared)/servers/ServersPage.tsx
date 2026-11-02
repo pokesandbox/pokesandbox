@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import type { ServerDTO } from "@shared/dtos";
-import { trpc } from "@webapp/trpc";
+import type { ServerDTO } from '@shared/dtos';
 
-import ServerCard from "./components/ServerCard";
+import { trpc } from '@webapp/trpc';
+import ServerCard from './components/ServerCard';
 
 const ServersPage = () => {
   const { data: servers = [] } = trpc.servers.getAll.useQuery();
@@ -15,7 +15,7 @@ const ServersPage = () => {
         {servers.map((server: ServerDTO) =>
           server.discovery.enabled ? (
             <ServerCard key={server.serverId} server={server} />
-          ) : null
+          ) : null,
         )}
       </div>
     </div>

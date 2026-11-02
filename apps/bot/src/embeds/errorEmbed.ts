@@ -14,7 +14,7 @@ export const buildErrorEmbed = (
   client: BotClient,
   member: GuildMember | null,
   description: string,
-  addSupportInfo = false
+  addSupportInfo = false,
 ): EmbedBuilder => {
   return new EmbedBuilder()
     .setColor('DarkRed')
@@ -30,7 +30,7 @@ export const buildErrorEmbed = (
           addSupportInfo
             ? '\n\nPlease try again and reach out to the support channel on the official [PokeSandbox Server](https://discord.gg/2BDghKaGQu) if the issue persists.'
             : ''
-        }`
+        }`,
     )
     .setTimestamp();
 };

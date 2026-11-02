@@ -4,7 +4,6 @@ import { saveServer } from '@bot/cache';
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
-
 import { DISCOVERY_COMMAND_NAME } from './discovery';
 import getDiscoveryMenuEmbeds from './discovery.embeds';
 

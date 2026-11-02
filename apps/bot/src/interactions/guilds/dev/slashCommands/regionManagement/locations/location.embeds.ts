@@ -1,13 +1,13 @@
 import { EmbedBuilder } from 'discord.js';
 
-import { getCachedLocations } from '@bot/cache';
-import type { AdminMenuContext } from '@bot/classes';
 import type { Location } from '@shared/models';
 
+import { getCachedLocations } from '@bot/cache';
+import type { AdminMenuContext } from '@bot/classes';
 import type { LocationMenuState } from './types';
 
 const getRequirementsValue = (
-  requirements: Location['requirements']
+  requirements: Location['requirements'],
 ): string => {
   const parts: string[] = [];
   if (
@@ -15,7 +15,7 @@ const getRequirementsValue = (
     Object.keys(requirements.progressions).length > 0
   ) {
     parts.push(
-      `Progressions: ${Object.keys(requirements.progressions).length}`
+      `Progressions: ${Object.keys(requirements.progressions).length}`,
     );
   }
   if (requirements?.items && requirements.items.length > 0) {
@@ -35,7 +35,7 @@ const getWildTablesValue = (wildTables: Location['wildTables']): string => {
 export const getLocationMenuEmbeds = async (
   ctx: AdminMenuContext<LocationMenuState>,
   regionId: string,
-  locationId: string
+  locationId: string,
 ): Promise<EmbedBuilder[]> => {
   const region = await ctx.admin.getRegion(regionId);
   const location = await ctx.admin.getLocation(locationId);
@@ -48,7 +48,7 @@ export const getLocationMenuEmbeds = async (
 
   const connectedNames = location.connections.map((conn) => {
     const found = connectedLocations.find(
-      (loc) => loc._id.toString() === conn.toLocationId.toString()
+      (loc) => loc._id.toString() === conn.toLocationId.toString(),
     );
     return found ? found.name : '(Unknown Location)';
   });
@@ -82,7 +82,7 @@ export const getLocationMenuEmbeds = async (
         name: 'Wild Tables',
         value: getWildTablesValue(location.wildTables),
         inline: true,
-      }
+      },
     );
 
   const warningMessage = ctx.state.get('warningMessage');

@@ -1,0 +1,7 @@
+# Typechecks the projects changed since develop (cached by Nx). Build and tests
+# run in CI.
+if git rev-parse --verify --quiet origin/develop >/dev/null; then
+  NX_DAEMON=false npx nx affected -t typecheck --base=origin/develop --outputStyle=static
+else
+  NX_DAEMON=false npx nx run-many -t typecheck --outputStyle=static
+fi

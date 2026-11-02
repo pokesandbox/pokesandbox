@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto';
+
+import type { ModalConfig } from '@flowcord/core';
 import {
   LabelBuilder,
   ModalBuilder,
@@ -6,6 +8,8 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from 'discord.js';
+
+import type { ProgressionMilestone } from '@shared/models';
 
 import { saveRegion } from '@bot/cache';
 import type { AdminMenuContext } from '@bot/classes';
@@ -15,9 +19,6 @@ import {
   getModalTextValue,
   setValueOnInputBuilderIfExists,
 } from '@bot/utils';
-import type { ProgressionMilestone } from '@shared/models';
-import type { ModalConfig } from '@flowcord/core';
-
 import { assertProgressionKind } from '../utils';
 import type { MilestonesMenuState } from './types';
 
@@ -27,7 +28,7 @@ const MILESTONE_EDIT_MODAL_PREFIX = 'milestone-edit-';
 export const getMilestoneModals = async (
   ctx: AdminMenuContext<MilestonesMenuState>,
   regionId: string,
-  progressionKey: string
+  progressionKey: string,
 ): Promise<ModalConfig<AdminMenuContext<MilestonesMenuState>>[]> => {
   const region = await ctx.admin.getRegion(regionId);
   const progression = region.progressionDefinitions.get(progressionKey);
@@ -41,8 +42,8 @@ export const getMilestoneModals = async (
         regionId,
         progressionKey,
         `${MILESTONE_EDIT_MODAL_PREFIX}${milestone.key}`,
-        milestone
-      )
+        milestone,
+      ),
     ),
   ];
 
@@ -59,7 +60,7 @@ const buildMilestoneModal = (
   regionId: string,
   progressionKey: string,
   modalId: string,
-  milestone?: ProgressionMilestone
+  milestone?: ProgressionMilestone,
 ): ModalConfig<AdminMenuContext<MilestonesMenuState>> => {
   const isNewMilestone = !milestone;
 
@@ -76,9 +77,9 @@ const buildMilestoneModal = (
               .setStyle(TextInputStyle.Short)
               .setPlaceholder('Ex: Boulder Badge (Must be unique)')
               .setRequired(true),
-            milestone?.label
-          )
-        )
+            milestone?.label,
+          ),
+        ),
     )
     .addLabelComponents(
       new LabelBuilder()
@@ -89,12 +90,12 @@ const buildMilestoneModal = (
               .setCustomId('milestone-description')
               .setStyle(TextInputStyle.Paragraph)
               .setPlaceholder(
-                'Ex: Defeat the Pewter City Gym Leader to earn the Boulder Badge.'
+                'Ex: Defeat the Pewter City Gym Leader to earn the Boulder Badge.',
               )
               .setRequired(false),
-            milestone?.description
-          )
-        )
+            milestone?.description,
+          ),
+        ),
     )
     .addLabelComponents(
       new LabelBuilder()
@@ -106,9 +107,9 @@ const buildMilestoneModal = (
               .setStyle(TextInputStyle.Short)
               .setPlaceholder('Ex: 1 (Must be a unique integer)')
               .setRequired(false),
-            milestone?.ordinal?.toString()
-          )
-        )
+            milestone?.ordinal?.toString(),
+          ),
+        ),
     );
 
   if (!isNewMilestone) {
@@ -126,10 +127,10 @@ const buildMilestoneModal = (
               {
                 label: 'No',
                 value: 'no',
-              }
+              },
             )
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     );
   }
 
@@ -144,26 +145,26 @@ const buildMilestoneModal = (
       const name = getModalTextValue(fields.fields, 'milestone-name', true);
       const description = getModalTextValue(
         fields.fields,
-        'milestone-description'
+        'milestone-description',
       );
       const ordinal = assertNumericInput(
         getModalTextValue(fields.fields, 'milestone-ordinal'),
-        'Milestone Position'
+        'Milestone Position',
       );
       const deleteOption = getModalSelectValues(
         fields.fields,
-        'milestone-delete'
+        'milestone-delete',
       );
 
       if (deleteOption?.includes('yes')) {
         progression.milestones = progression.milestones.filter(
-          (m) => m.key !== milestone?.key
+          (m) => m.key !== milestone?.key,
         );
       } else if (isNewMilestone) {
         const warning = validateMilestone(
           progression.milestones,
           name,
-          ordinal
+          ordinal,
         );
         if (warning) {
           ctx.state.set('warningMessage', warning);
@@ -178,7 +179,7 @@ const buildMilestoneModal = (
         });
       } else {
         const existing = progression.milestones.find(
-          (m) => m.key === milestone?.key
+          (m) => m.key === milestone?.key,
         );
         if (!existing) {
           throw new Error(`There was an error updating the milestone.`);
@@ -187,7 +188,7 @@ const buildMilestoneModal = (
           progression.milestones,
           name,
           ordinal,
-          existing.key
+          existing.key,
         );
         if (warning) {
           ctx.state.set('warningMessage', warning);
@@ -209,12 +210,12 @@ const validateMilestone = (
   existingMilestones: ProgressionMilestone[],
   name: string,
   ordinal?: number,
-  key?: string
+  key?: string,
 ) => {
   const isUniqueNameAndOrdinal = !existingMilestones.some(
     (m) =>
       m.key !== key &&
-      (m.label === name || (ordinal !== undefined && m.ordinal === ordinal))
+      (m.label === name || (ordinal !== undefined && m.ordinal === ordinal)),
   );
 
   if (!isUniqueNameAndOrdinal) {

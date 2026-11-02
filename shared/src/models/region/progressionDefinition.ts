@@ -56,7 +56,7 @@ const milestoneDbSchema = new Schema(
     imageUrl: { type: String },
     ordinal: { type: Number },
   },
-  { _id: false }
+  { _id: false },
 );
 
 export const progressionDefinitionDbSchema = new Schema(
@@ -87,5 +87,5 @@ export const progressionDefinitionDbSchema = new Schema(
       default: [],
     },
   },
-  { _id: false }
+  { _id: false },
 );

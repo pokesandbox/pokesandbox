@@ -29,13 +29,12 @@ export type PopulatedQuery<TResult, TDoc, TPopulatedFields> =
         TDoc
       >
     : TResult extends null
-    ? Query<null, TDoc>
-    : Query<
-        null extends TResult
-          ?
-              | (Omit<Exclude<TResult, null>, keyof TPopulatedFields> &
+      ? Query<null, TDoc>
+      : Query<
+          null extends TResult
+            ? | (Omit<Exclude<TResult, null>, keyof TPopulatedFields> &
                   TPopulatedFields)
               | null
-          : Omit<TResult, keyof TPopulatedFields> & TPopulatedFields,
-        TDoc
-      >;
+            : Omit<TResult, keyof TPopulatedFields> & TPopulatedFields,
+          TDoc
+        >;

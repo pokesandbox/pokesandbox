@@ -1,12 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 
 import type { AdminMenuContext } from '@bot/classes';
-
 import type { RegionMenuState } from './types';
 
 export const getRegionMenuEmbeds = async (
   ctx: AdminMenuContext<RegionMenuState>,
-  regionId: string
+  regionId: string,
 ) => {
   const region = await ctx.admin.getRegion(regionId);
 
@@ -44,7 +43,7 @@ export const getRegionMenuEmbeds = async (
         iconURL: ctx.interaction.guild?.iconURL() || undefined,
       })
       .setDescription(
-        `__Status: ${region.deployed ? 'Deployed' : 'Not Deployed'}__`
+        `__Status: ${region.deployed ? 'Deployed' : 'Not Deployed'}__`,
       )
       .addFields(
         {
@@ -65,7 +64,7 @@ export const getRegionMenuEmbeds = async (
             `\n:eight: ${mechanicsOptionText}` +
             `\n:nine: ${graphicsOptionText}`,
           inline: true,
-        }
+        },
       )
       .setFooter({
         text: !region.deployable

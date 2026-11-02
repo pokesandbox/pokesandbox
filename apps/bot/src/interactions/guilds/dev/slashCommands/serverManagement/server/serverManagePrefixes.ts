@@ -1,3 +1,4 @@
+import type { ButtonInputConfig } from '@flowcord/core';
 import {
   ButtonStyle,
   InteractionContextType,
@@ -8,8 +9,6 @@ import { saveServer } from '@bot/cache';
 import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
-
 import { getServerMenuEmbeds } from './server.embeds';
 import { SERVER_ADD_PREFIX_COMMAND_NAME } from './serverAddPrefix';
 
@@ -37,7 +36,7 @@ export const ServerManagePrefixesCommand: ISlashCommand = {
 };
 
 export const getServerManagePrefixesButtons = async (
-  ctx: AdminMenuContext
+  ctx: AdminMenuContext,
 ): Promise<ButtonInputConfig<AdminMenuContext>[]> => {
   const server = await ctx.admin.getServer();
 
@@ -59,7 +58,7 @@ export const getServerManagePrefixesButtons = async (
         await saveServer(server);
         ctx.state.set(
           'prompt',
-          `Successfully removed the prefix: \`${removedPrefix}\``
+          `Successfully removed the prefix: \`${removedPrefix}\``,
         );
       },
       id: idx.toString(),
