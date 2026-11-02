@@ -128,7 +128,7 @@ Region.flavor: {
 
 ### 4. Battles: log and flavor are separate layers
 - **The battle log** is Showdown's text, unchanged: authoritative and factual ([26 § Battles](26-discord-surface-and-ux-patterns.md#battles)).
-- **Flavor** is generated from BattleService's structured events (M1-09) and rendered in its own visually distinct section (e.g. italic prose under the log), never mixed into log lines.
+- **Flavor** is generated from BattleService's structured events ([M1-09](https://github.com/pokesandbox/pokesandbox/issues/166)) and rendered in its own visually distinct section (e.g. italic prose under the log), never mixed into log lines.
 - **Region setting:** `RegionRules.presentation.battleText: { log: boolean; flavor: boolean }`, default both on. At least one must be on. Flavor-only suits heavy roleplay servers.
 - **No lost facts with flavor-only:** HP, status, and level are always shown in the battle view, and any event that has no flavor variant falls back to its log line, so nothing that happened goes unreported.
 - **Volume:** a per-turn flavor budget (e.g. at most three lines, prioritized: faint > catch > critical / effectiveness > status > move) plus per-entry `chance`, so long battles don't become walls of text.
@@ -148,7 +148,7 @@ Engine responses, explanations, reward lines, and the battle log are never repla
 - **Authored prose is embedded.** A `Passage` is a plain value with no ID of its own, nested in the model that owns it (a script step, a location, a gate). It's read with its owner, published with it, and deleted with it. No references to manage.
 - **Flavor entries are standalone records that point at what they're about**, through their `match` (species IDs, move IDs, location and trainer content keys). The things they describe never point back. That's the right direction because flavor is many-to-many and layered: one entry can cover a whole trainer class or every species, several layers can describe the same trainer, and canon packs describe content they've never seen. It also follows the no-back-references rule ([02](02-identity-and-references.md)): a trainer doesn't need editing when someone writes a line for it.
 - **Storage:** region entries live with the region's other draft content (keyed by `regionId` + `ContentKey`); server packs live in the server's content library ([27](27-server-content-library-and-overrides.md)); the canon pack is a JSON bundle in the repo, installed on deploy like the Kanto Classic template.
-- **Integrity:** an entry's `match` references are reported through `references()`, so deleting a location or trainer shows "used by 3 flavor entries" ([M0B-15](../../backlog/m0b-content-foundations.md)), and the validator flags dangling references and unknown placeholders.
+- **Integrity:** an entry's `match` references are reported through `references()`, so deleting a location or trainer shows "used by 3 flavor entries" ([M0B-15](https://github.com/pokesandbox/pokesandbox/issues/143)), and the validator flags dangling references and unknown placeholders.
 - **The builder hides the indirection.** A trainer's screen shows a "Lines" tab listing the entries that match it (its own and its class's, with the layer each comes from); editing there creates or updates a flavor entry. The same goes for a location's "Encounter intros" and a Pokédex entry's "First sighting".
 
 **Examples**
@@ -209,8 +209,8 @@ The event carries a **reference**, not the text: the presentation layer resolves
 
 ## MVP hooks (recommended)
 Nothing in this doc is MVP content, but these keep it cheap to add:
-- **Events carry identities and perspective:** BattleService's structured events (M1-09) include side, species, move, item, status, and the acting Pokémon's instance ID (adventure) so later flavor can resolve tags. Engine events for evolution, level-up, catch, travel, and healing carry the same.
-- **The battle view keeps a flavor slot** (empty in the MVP), so adding flavor is a new section, not a re-layout (M1-10).
+- **Events carry identities and perspective:** BattleService's structured events ([M1-09](https://github.com/pokesandbox/pokesandbox/issues/166)) include side, species, move, item, status, and the acting Pokémon's instance ID (adventure) so later flavor can resolve tags. Engine events for evolution, level-up, catch, travel, and healing carry the same.
+- **The battle view keeps a flavor slot** (empty in the MVP), so adding flavor is a new section, not a re-layout ([M1-10](https://github.com/pokesandbox/pokesandbox/issues/167)).
 - **Location descriptions are `Passage`s** from the start (CP0a, CP1).
 - **`PokemonInstance.tags`** is reserved ([13](13-pokemon-instances-and-trading.md)).
 - **`Region.flavor` and `FlavorEntry`** are reserved names only; no storage or UI in the MVP.

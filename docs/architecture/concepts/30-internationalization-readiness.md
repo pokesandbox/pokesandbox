@@ -67,7 +67,7 @@ An address is always **owner key + field + ids down to the segment**. For exampl
 Message keys (`encounter.wildAppeared`) in catalog files are the standard pattern for an app's own text; stable ids are the standard pattern for authored content. We use both, each for what it's built for.
 
 **Libraries, not hand-rolled:**
-- **System text:** [FormatJS](https://formatjs.github.io/)'s `intl-messageformat` in `libs/core` (bot and engine), and `next-intl` in the webapp. Both use ICU MessageFormat, so one set of catalog files serves both. ICU handles plurals, gender, and selects, which are easy to get wrong by hand. (i18next is the main alternative; its own format and ecosystem are fine, but ICU is the more portable standard.) Confirm current versions when M0A-23 starts.
+- **System text:** [FormatJS](https://formatjs.github.io/)'s `intl-messageformat` in `libs/core` (bot and engine), and `next-intl` in the webapp. Both use ICU MessageFormat, so one set of catalog files serves both. ICU handles plurals, gender, and selects, which are easy to get wrong by hand. (i18next is the main alternative; its own format and ecosystem are fine, but ICU is the more portable standard.) Confirm current versions when [M0A-23](https://github.com/pokesandbox/pokesandbox/issues/115) starts.
 - **Formatting:** the built-in `Intl` APIs (numbers, money, dates, lists).
 - **Discord commands:** discord.js's built-in name and description localizations.
 - **Content translations:** our own `Translation` model (above), because it's domain data; no library owns it. Translation workflow later exports and imports segments in a standard format (XLIFF or JSON) for tools like Weblate or Crowdin, both of which have free plans for open-source projects.
@@ -91,9 +91,9 @@ Current upstream Showdown ships localized text in `data/text/<lang>/` for **Germ
 - `Dex.loadTextData(lang)` in the sim returns the merged table for a language, with English fallback.
 
 What this means for us:
-- **Our fork predates this** (upstream base Aug 2023), so the rebase (M0C-04) is what brings it in. Nothing to build for the MVP.
-- **Canon names need no other source.** When translation ships, the catalog import (M1-02) also reads each language's names and descriptions into the catalog's `text`, per locale.
-- **Localized battle logs need a template renderer that understands the modifiers.** The sim ships the templates; the renderer that applies them lives in Showdown's client. M1-09's text rendering is written so it can take a locale later (port or depend on the client's parser at that point, and check its license then).
+- **Our fork predates this** (upstream base Aug 2023), so the rebase ([M0C-04](https://github.com/pokesandbox/pokemon-showdown/issues/9)) is what brings it in. Nothing to build for the MVP.
+- **Canon names need no other source.** When translation ships, the catalog import ([M1-02](https://github.com/pokesandbox/pokesandbox/issues/158)) also reads each language's names and descriptions into the catalog's `text`, per locale.
+- **Localized battle logs need a template renderer that understands the modifiers.** The sim ships the templates; the renderer that applies them lives in Showdown's client. [M1-09](https://github.com/pokesandbox/pokesandbox/issues/166)'s text rendering is written so it can take a locale later (port or depend on the client's parser at that point, and check its license then).
 - **Coverage is Showdown's**, not ours: other languages (e.g. Portuguese) would need our own catalog translations, through the same `Translation` model as custom content.
 
 ## Images with text

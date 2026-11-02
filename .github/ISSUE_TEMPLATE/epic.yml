@@ -1,0 +1,56 @@
+name: Epic
+description: A body of work split into Task and Planned Feature sub-issues
+type: Epic
+projects: ['pokesandbox/1']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        An epic groups the issues that deliver one outcome inside a milestone. Add its issues as **sub-issues**, and set the milestone and Priority.
+        See [Writing issues](https://github.com/pokesandbox/pokesandbox/blob/develop/docs/roadmap/github-project-setup.md#writing-issues).
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: The outcome this epic delivers, and what's deliberately not in it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: Background
+      description: Context a newcomer needs before picking up one of its issues (what to read, where the code goes, the order), linking to docs/start-here.md for everything general.
+    validations:
+      required: false
+
+  - type: textarea
+    id: changes_later
+    attributes:
+      label: Changes once foundations land
+      description: Follow-ups its issues get when a foundation they start ahead of lands (also listed on each foundation's issue).
+      placeholder: |
+        | When this lands | Follow-up | Affects |
+        |---|---|---|
+    validations:
+      required: false
+
+  - type: textarea
+    id: refs
+    attributes:
+      label: Refs
+      description: The concept docs and roadmap sections this epic implements.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 (blocks the milestone)
+        - P1 (needed for the milestone)
+        - P2 (nice to have)
+    validations:
+      required: true

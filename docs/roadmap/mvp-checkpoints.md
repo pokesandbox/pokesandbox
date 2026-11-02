@@ -30,7 +30,7 @@ The MVP milestones in [`mvp.md`](mvp.md) are organized by system (M3 authoring, 
 | **CP7 · Champion** | Route 23 badge checks, Victory Road (Moltres), Indigo Plateau, Elite Four, Champion | The endgame | Badge-check gates, Gauntlet with `resetOnLoss` and no healing, Hall of Fame milestone and log entry, `smart` AI for the League |
 | **CP8 · Mewtwo (MVP complete)** | Cerulean Cave after becoming Champion; Mewtwo | Post-game content | A post-Champion gate; the full Kanto Classic template |
 
-The **MVP release** adds the release work from M6 on top of the last checkpoint: webapp hosting (needed earlier, privately, from CP1 for builder dogfooding), trust and safety ([M6 backlog](../backlog/m6-kanto-classic-and-release.md)), load test, documentation, and discovery.
+The **MVP release** adds the release work from M6 on top of the last checkpoint: webapp hosting (needed earlier, privately, from CP1 for builder dogfooding), trust and safety ([E-M6-1](https://github.com/pokesandbox/pokesandbox/issues/205)), load test, documentation, and discovery.
 
 ## How this maps onto the existing plan
 - **Nothing in the architecture changes.** Checkpoints change the **order** systems are built in, not what they are.
@@ -40,7 +40,7 @@ The **MVP release** adds the release work from M6 on top of the last checkpoint:
 - **The Arena track is independent** and runs as before (M0c → M1 → M2), sharing BattleService with CP0.
 
 ## Decisions (Nov 2026)
-1. **Checkpoint milestones replace M3–M6:** `CP0a`, `CP0b`, `CP0c`, `CP1` … `CP8`, then `MVP Release`. The scheduled agent and the board work from the current milestone, so work is ordered by the next playable stretch. The old M3–M5 groupings live on as epics; draft IDs (`M3-01`, `M6-01`) keep their names.
+1. **Checkpoint milestones replace M3–M6:** `CP0a`, `CP0b`, `CP0c`, `CP1` … `CP8`, then `MVP Release`. The scheduled agent and the board work from the current milestone, so work is ordered by the next playable stretch. The old M3–M5 groupings live on as epics; draft IDs (`M3-01`, `M6-01`) stay in each issue's body.
 2. **Who plays:** the team and invited members of the Pokémon community. **CP4 and CP7 are public playtests on the PokeSandbox server only**, not a general release: adventure play is behind the `adventure.play` feature flag ([21 § Feature flags](../architecture/concepts/21-hosting-and-environments.md#feature-flags-decided-oct-2026)), on only for that server until the MVP Release. The Arena keeps running everywhere as released in M2.
 3. **Mewtwo (CP8) is part of the MVP.**
 

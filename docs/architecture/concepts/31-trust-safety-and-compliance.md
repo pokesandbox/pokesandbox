@@ -5,10 +5,10 @@
 **MVP impact:** Medium (verification and deletion are Arena-release blockers; reporting is an MVP-release blocker) · **Cost to change later:** Low for policies, medium for deletion if data isn't designed for it
 
 ## Discord verification and intents
-- **The limit:** an unverified app can be in at most **100 servers**. Discord opens the verification application at 75. The Arena release could reach that, so verification is part of launch readiness (M2-15).
+- **The limit:** an unverified app can be in at most **100 servers**. Discord opens the verification application at 75. The Arena release could reach that, so verification is part of launch readiness ([M2-15](https://github.com/pokesandbox/pokesandbox/issues/188)).
 - **What verification asks for:** the owner's identity verification, a privacy policy URL and a terms of service URL on the app, and a justification for each **privileged intent** requested.
 - **Privileged intents: none.** The bot is slash-command and component driven:
-  - **Message Content:** only legacy prefix commands need it, and none exist (the message-command registry is empty). Custom server prefixes are deprecated and the prefix system is removed (M0A-25).
+  - **Message Content:** only legacy prefix commands need it, and none exist (the message-command registry is empty). Custom server prefixes are deprecated and the prefix system is removed ([M0A-25](https://github.com/pokesandbox/pokesandbox/issues/106)).
   - **Server Members:** not needed. Interactions carry the presser's member and roles, and the webapp's role checks fetch a single member over REST, which doesn't need the intent.
   - **Presence:** unused.
 - **Least privilege for the rest too:** request only `Guilds` (and whatever a later feature proves it needs). The current extra non-privileged intents (messages, reactions, DMs, voice states, invites, webhooks) are dropped.

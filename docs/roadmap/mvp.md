@@ -9,7 +9,7 @@ This doc breaks Phases 0–2 of [`roadmap.md`](roadmap.md) into **GitHub milesto
 | # | Milestone | Outcome | Depends on |
 |---|---|---|---|
 | M0a | **Platform Hygiene** | Org/CI, agent rules, `libs/core` + boundaries, persistence basics, species IDs | — |
-| M0c | **Arena Foundations** | `libs/battle` interfaces, `Clock`/`Rng`, the fork cleaned up, rebased, and packaged | `libs/core` (M0A-09) only |
+| M0c | **Arena Foundations** | `libs/battle` interfaces, `Clock`/`Rng`, the fork cleaned up, rebased, and packaged | `libs/core` ([M0A-09](https://github.com/pokesandbox/pokesandbox/issues/113)) only |
 | M0b | **Engine & Content Foundations** | Engine skeleton (`libs/engine`, `dispatch`), conditions/effects/gates, content keys + model cleanup, authoring layer, releases | M0a, M0c's battle interfaces |
 | M1 | **Battle Core & Catalog** | BattleService, moves/learnsets catalog, teams and formats, AI (the sim patches moved to the checkpoints) | M0c |
 | M2 | **Arena Release (Pre-MVP)** 🚀 | Public PvP/PvAI in Discord; hosting & operations (launch readiness) | M1 |
@@ -101,27 +101,27 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 ## M0a: Platform Hygiene
 
-> Issue-level drafts: [`../backlog/m0a-platform-hygiene.md`](../backlog/m0a-platform-hygiene.md)
+> Issues: [M0a milestone](https://github.com/pokesandbox/pokesandbox/milestone/1)
 
 **Epic: Org & Delivery Setup**
 - [ ] Move `pokesandbox` and `pokemon-showdown` (name unchanged) to the org; update README links, CODEOWNERS, agents.md (S)
 - [ ] CI: lint + typecheck + unit tests on PR (M)
 - [ ] Create labels (incl. `agent-ready`), issue types, milestones, and project board per [`github-project-setup.md`](github-project-setup.md) (S)
-- [ ] Owner review: deep-dive concepts 09–30 and record any changed decisions (M0A-24) (L)
-- [ ] Feature flag registry: env override (`FEATURE_FLAGS=*` in dev), per-server override, per-environment defaults; `discord.authoring` off in prod (M0A-21) (S)
-- [ ] Fix the critical Dependabot alerts now (Next.js, NextAuth, transitive runtime packages; Nx tooling upgrade in its own PR); high and below stay in M2-14 (M0A-22) (M)
-- [ ] Deprecate custom command prefixes: remove the `/server` Prefix option, its commands, the message-command pipeline, and `Server.prefixes` (M0A-25) (S)
-- [ ] Switch slash commands to global registration; flag-off commands only as guild commands on override servers (M0A-07) (M)
+- [ ] Owner review: deep-dive concepts 09–30 and record any changed decisions ([M0A-24](https://github.com/pokesandbox/pokesandbox/issues/105)) (L)
+- [ ] Feature flag registry: env override (`FEATURE_FLAGS=*` in dev), per-server override, per-environment defaults; `discord.authoring` off in prod ([M0A-21](https://github.com/pokesandbox/pokesandbox/issues/109)) (S)
+- [ ] Fix the critical Dependabot alerts now (Next.js, NextAuth, transitive runtime packages; Nx tooling upgrade in its own PR); high and below stay in [M2-14](https://github.com/pokesandbox/pokesandbox/issues/187) ([M0A-22](https://github.com/pokesandbox/pokesandbox/issues/110)) (M)
+- [ ] Deprecate custom command prefixes: remove the `/server` Prefix option, its commands, the message-command pipeline, and `Server.prefixes` ([M0A-25](https://github.com/pokesandbox/pokesandbox/issues/106)) (S)
+- [ ] Switch slash commands to global registration; flag-off commands only as guild commands on override servers ([M0A-07](https://github.com/pokesandbox/pokesandbox/issues/108)) (M)
 
 **Epic: Shared Library Foundations**
 - [ ] Structured logging port; debug events out of Mongo (S)
 - [ ] Scaffold `libs/core` (shared schemas, registries home) (S)
-- [ ] Message catalog + `t()` (ICU MessageFormat, English only) for all player-facing system text; no sentence concatenation (M0A-23) (S)
+- [ ] Message catalog + `t()` (ICU MessageFormat, English only) for all player-facing system text; no sentence concatenation ([M0A-23](https://github.com/pokesandbox/pokesandbox/issues/115)) (S)
 - [ ] Nx module-boundary tags + lint rule enforcing core/engine/battle/authoring layering (webapp must not import battle); each later library adds its tag (S)
 
 ## M0c: Arena Foundations
 
-> Issue-level drafts: [`../backlog/m0c-arena-foundations.md`](../backlog/m0c-arena-foundations.md)
+> Issues: [M0c milestone](https://github.com/pokesandbox/pokesandbox/milestone/2)
 
 **Epic: Battle Library Scaffold**
 - [ ] Scaffold `libs/battle`; `BattlePort`/`ExternalActionResolver` interface types in `libs/core` ports (S)
@@ -131,7 +131,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Preserve the 10 custom moves on an archive branch. Remove them from `master` and restore the 3 commented-out upstream tests (S)
 - [ ] Rebase onto current upstream (fallback: fresh from upstream + re-apply kept changes as new commits) (M)
 - [ ] Remove debug code (`pause`/`resume`/`sendToJSON`) (S)
-- [ ] Publish as a versioned package consumed by the monorepo (then re-point the catalog imports M1-02/M1-03 at it and re-run). Set up the monthly upstream-sync PR. The repo keeps the name `pokemon-showdown` (M)
+- [ ] Publish as a versioned package consumed by the monorepo (then re-point the catalog imports [M1-02](https://github.com/pokesandbox/pokesandbox/issues/158)/[M1-03](https://github.com/pokesandbox/pokesandbox/issues/159) at it and re-run). Set up the monthly upstream-sync PR. The repo keeps the name `pokemon-showdown` (M)
 
 **Epic: Persistence & Data Basics**
 - [ ] docker-compose Mongo as a replica set (transactions) for local dev (S)
@@ -141,7 +141,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 ## M0b: Engine & Content Foundations
 
-> Issue-level drafts: [`../backlog/m0b-content-foundations.md`](../backlog/m0b-content-foundations.md)
+> Issues: [M0b milestone](https://github.com/pokesandbox/pokesandbox/milestone/3)
 
 **Epic: Engine Skeleton** (Q18)
 - [ ] Scaffold `libs/engine` (pure TS, no discord.js) with repository and ContentProvider interfaces (M)
@@ -172,52 +172,52 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 **Adventure-only items moved to the checkpoints (Nov 2026).** M1 holds what the Arena needs plus the moves and learnsets catalog. The sim patches, `ItemDefinition`, `RegionRules`, and the Gen 1 formulas moved to the checkpoint that first needs them (CP0a–CP2). The **isolated custom-data dexes** (and assembling mixed-generation data into them) moved **past the MVP**: Kanto Classic is pure Gen 1, so Showdown's own `gen1` mod covers it, and the MVP ships only the Classic Gen 1 preset. They return with custom content, mixed-generation rules, and library-based Arena formats ([27](../architecture/concepts/27-server-content-library-and-overrides.md)).
 
 **Epic: Catalog**
-- [ ] Canon catalog import from Showdown (pinned version): SpeciesDefinition, MoveDefinition (per-gen data via the resolved Dex, behavior `hooks`, text), Learnset (per-gen sources) into Mongo; re-runnable with diff on upgrades (L). Moves and learnsets drafted as E-M1-2 ([`m1-battle-core-and-catalog.md`](../backlog/m1-battle-core-and-catalog.md))
+- [ ] Canon catalog import from Showdown (pinned version): SpeciesDefinition, MoveDefinition (per-gen data via the resolved Dex, behavior `hooks`, text), Learnset (per-gen sources) into Mongo; re-runnable with diff on upgrades (L). Moves and learnsets: [E-M1-2](https://github.com/pokesandbox/pokesandbox/issues/156)
 - [ ] Catalog read service + move detail display (M)
 
-**Epic: Teams** (drafted as E-M1-4 in [`m1-battle-core-and-catalog.md`](../backlog/m1-battle-core-and-catalog.md#e-m1-4--teams--formats))
-- [ ] `PokemonSet` shared type and `TeamPreset` model (M1-11) (S)
-- [ ] `ArenaFormat` model (server-scoped) + built-in canon formats → Showdown custom format + TeamValidator (M1-12) (M)
-- [ ] Showdown paste import/export (M1-13) (M)
+**Epic: Teams** ([E-M1-4](https://github.com/pokesandbox/pokesandbox/issues/168))
+- [ ] `PokemonSet` shared type and `TeamPreset` model ([M1-11](https://github.com/pokesandbox/pokesandbox/issues/169)) (S)
+- [ ] `ArenaFormat` model (server-scoped) + built-in canon formats → Showdown custom format + TeamValidator ([M1-12](https://github.com/pokesandbox/pokesandbox/issues/170)) (M)
+- [ ] Showdown paste import/export ([M1-13](https://github.com/pokesandbox/pokesandbox/issues/171)) (M)
 - [ ] Guided team builder (Components v2 + FlowCord submenu/pagination flows; reuse the Pokédex builder's Pokémon search flow; autocomplete for moves). Can follow the Arena launch (L)
-- [ ] Random legal team for a format + per-Pokémon validation error messages (M1-14) (M)
+- [ ] Random legal team for a format + per-Pokémon validation error messages ([M1-14](https://github.com/pokesandbox/pokesandbox/issues/172)) (M)
 
-**Epic: BattleService** (drafted as E-M1-3)
-- [ ] BattleService start/choose/events API, in-process (M1-05) (L)
-- [ ] Battle persistence (seed + input log, `guildId`), battle leases (`ownerInstance` + heartbeat) and `ownsGuild` ownership, recovery on boot of owned unleased battles only (test: two overlapping processes run each battle once), compressed retention (7-day support window for adventure battles; Arena per replay policy) (M1-06, M1-07) (M)
-- [ ] Protocol → GameEvent translation; battle text from Showdown's text data, not hand-written strings (M1-09) (M)
-- [ ] Discord battle view builders (pure `BattleView` → Components v2: turn messages, both actives with level/HP/status, the two sprites as separate images, choice prompts; a composed side-by-side image is post-MVP). The Arena wiring is in M2 E-M2-2 (M1-10) (M)
-- [ ] Turn timers and timeout policy in BattleService: persisted per-side deadlines, `default` choice on timeout, forfeit after 3 consecutive, fresh window on recovery, `choose` with `rqid` + per-battle queue (M1-08) (M). Contract in [25 § Ownership](../architecture/concepts/25-arena.md#ownership)
+**Epic: BattleService** ([E-M1-3](https://github.com/pokesandbox/pokesandbox/issues/161))
+- [ ] BattleService start/choose/events API, in-process ([M1-05](https://github.com/pokesandbox/pokesandbox/issues/162)) (L)
+- [ ] Battle persistence (seed + input log, `guildId`), battle leases (`ownerInstance` + heartbeat) and `ownsGuild` ownership, recovery on boot of owned unleased battles only (test: two overlapping processes run each battle once), compressed retention (7-day support window for adventure battles; Arena per replay policy) ([M1-06](https://github.com/pokesandbox/pokesandbox/issues/163), [M1-07](https://github.com/pokesandbox/pokesandbox/issues/164)) (M)
+- [ ] Protocol → GameEvent translation; battle text from Showdown's text data, not hand-written strings ([M1-09](https://github.com/pokesandbox/pokesandbox/issues/166)) (M)
+- [ ] Discord battle view builders (pure `BattleView` → Components v2: turn messages, both actives with level/HP/status, the two sprites as separate images, choice prompts; a composed side-by-side image is post-MVP). The Arena wiring is in M2 [E-M2-2](https://github.com/pokesandbox/pokesandbox/issues/190) ([M1-10](https://github.com/pokesandbox/pokesandbox/issues/167)) (M)
+- [ ] Turn timers and timeout policy in BattleService: persisted per-side deadlines, `default` choice on timeout, forfeit after 3 consecutive, fresh window on recovery, `choose` with `rqid` + per-battle queue ([M1-08](https://github.com/pokesandbox/pokesandbox/issues/165)) (M). Contract in [25 § Ownership](../architecture/concepts/25-arena.md#ownership)
 
-**Epic: AI Players** (drafted as E-M1-5)
-- [ ] AI player interface + `random` profile (M1-15) (S)
-- [ ] `basic` profile using `@smogon/calc` (M1-16) (M), plus trainer item use (heal at low HP, cure status) shared by all non-random profiles, needing the external choice hook and not needed for the Arena (M1-17) (S)
-- [ ] `smart` profile (switching, status, items); the Arena can launch without it (M1-18) (L)
+**Epic: AI Players** ([E-M1-5](https://github.com/pokesandbox/pokesandbox/issues/173))
+- [ ] AI player interface + `random` profile ([M1-15](https://github.com/pokesandbox/pokesandbox/issues/174)) (S)
+- [ ] `basic` profile using `@smogon/calc` ([M1-16](https://github.com/pokesandbox/pokesandbox/issues/175)) (M), plus trainer item use (heal at low HP, cure status) shared by all non-random profiles, needing the external choice hook and not needed for the Arena ([M1-17](https://github.com/pokesandbox/pokesandbox/issues/176)) (S)
+- [ ] `smart` profile (switching, status, items); the Arena can launch without it ([M1-18](https://github.com/pokesandbox/pokesandbox/issues/177)) (L)
 
 ## M2: Arena Release 🚀
 
-> **FlowCord is no longer on the critical path (decided Oct 2026, Q34).** FlowCord menus are single-person actionable. BattleService owns rounds and timers. The Arena's shared surfaces (challenges, public battle message, participant checks, private prompts) are plain discord.js handlers behind a `BattleSurface` port (E-M2-2), and FlowCord runs the single-user `/arena` hub. The FlowCord issues that would help (flowcord#105–#107) are listed in [M2 § FlowCord dependencies](../backlog/m2-launch-readiness.md#flowcord-dependencies). See [25 § Multiplayer boundary](../architecture/concepts/25-arena.md#multiplayer-boundary-with-flowcord-decided-oct-2026-q34).
+> **FlowCord is no longer on the critical path (decided Oct 2026, Q34).** FlowCord menus are single-person actionable. BattleService owns rounds and timers. The Arena's shared surfaces (challenges, public battle message, participant checks, private prompts) are plain discord.js handlers behind a `BattleSurface` port ([E-M2-2](https://github.com/pokesandbox/pokesandbox/issues/190)), and FlowCord runs the single-user `/arena` hub. The FlowCord issues that would help (flowcord#105–#107) are listed in [E-M2-2 § Background](https://github.com/pokesandbox/pokesandbox/issues/190). See [25 § Multiplayer boundary](../architecture/concepts/25-arena.md#multiplayer-boundary-with-flowcord-decided-oct-2026-q34).
 
-**Epic: Launch Readiness: Hosting & Operations** (Q30, see [21](../architecture/concepts/21-hosting-and-environments.md); drafts in [`../backlog/m2-launch-readiness.md`](../backlog/m2-launch-readiness.md))
+**Epic: Launch Readiness: Hosting & Operations** (Q30, see [21](../architecture/concepts/21-hosting-and-environments.md); [E-M2-1](https://github.com/pokesandbox/pokesandbox/issues/179))
 Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Choose and set up a managed app host (or the offered family host): always-on bot service, env secrets; able to add a webapp service later (M)
 - [ ] Atlas: prod database on the free cluster, separate staging/dev databases, IP allowlist, least-privilege users (S)
 - [ ] Nightly `mongodump` backups to object storage with retention + a tested restore (M)
 - [ ] GitHub Actions deploy: version tag → prod; `master` → staging (staging added before the Arena goes public) (M)
 - [ ] Error monitoring (Sentry) + bot heartbeat (S)
-- [ ] Dependency security: clear the remaining Dependabot alerts (high fixed or justified, moderate/low triaged; critical already done in M0A-22), enable Dependabot updates, CI audit gate (M2-14) (M)
+- [ ] Dependency security: clear the remaining Dependabot alerts (high fixed or justified, moderate/low triaged; critical already done in [M0A-22](https://github.com/pokesandbox/pokesandbox/issues/110)), enable Dependabot updates, CI audit gate ([M2-14](https://github.com/pokesandbox/pokesandbox/issues/187)) (M)
 
-- [ ] Challenge/accept/decline: direct + open challenges, atomic claim, 5-min expiry (M2-09) (M)
-- [ ] Arena interaction router with stable custom IDs (M2-08) + private choice prompts (M2-11) (M)
+- [ ] Challenge/accept/decline: direct + open challenges, atomic claim, 5-min expiry ([M2-09](https://github.com/pokesandbox/pokesandbox/issues/192)) (M)
+- [ ] Arena interaction router with stable custom IDs ([M2-08](https://github.com/pokesandbox/pokesandbox/issues/191)) + private choice prompts ([M2-11](https://github.com/pokesandbox/pokesandbox/issues/194)) (M)
 - [ ] `/arena` hub: teams, challenge member, battle AI (M)
-- [ ] Public battle message projector + spectating, re-attached after restart (M2-10) (M)
-- [ ] Arena scenario tests + restart drill (M2-12) (S)
+- [ ] Public battle message projector + spectating, re-attached after restart ([M2-10](https://github.com/pokesandbox/pokesandbox/issues/193)) (M)
+- [ ] Arena scenario tests + restart drill ([M2-12](https://github.com/pokesandbox/pokesandbox/issues/195)) (S)
 - [ ] PvAI: random legal team generated from the format, difficulty by AI profile (M)
 - [ ] Battle history list (per user) (S)
 - [ ] Alpha test on the community server; feedback triage (M)
 - [ ] Release notes + admin/player docs (S)
-- [ ] Discord verification readiness: no privileged intents (prefix commands removed in M0A-25), privacy policy and terms published, verification application at 75 servers (M2-15) (M)
-- [ ] `/account delete` for Arena data (M2-16) (M)
+- [ ] Discord verification readiness: no privileged intents (prefix commands removed in [M0A-25](https://github.com/pokesandbox/pokesandbox/issues/106)), privacy policy and terms published, verification application at 75 servers ([M2-15](https://github.com/pokesandbox/pokesandbox/issues/188)) (M)
+- [ ] `/account delete` for Arena data ([M2-16](https://github.com/pokesandbox/pokesandbox/issues/189)) (M)
 
 ## The Kanto checkpoints (CP0a–CP8)
 > **Authoring is webapp-first and mobile-first (decided Oct 2026, Q36, [28](../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).** Builder items are webapp screens on `libs/authoring` commands. Discord keeps Region Health, publishing, and Open in builder links; the existing Pokédex, progression, and location builders keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (on in dev).
@@ -232,7 +232,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Generator script, first stretch: bulk Kanto data → region bundle; extended stretch by stretch at every checkpoint (L)
 - [ ] Region bundle export/import (JSON), deterministic and lossless; canonical bundle in repo (`templates/kanto-classic/`); CI validation; deploy-time install (M)
 - [ ] Headless playthrough harness: scripted journeys run against the bundle in CI (each checkpoint adds its path) (M)
-- [ ] Piecemeal `RegionRules` model with compatibility validation and the "Classic Gen 1" preset (data dimensions now; formulas arrive with the checkpoints that use them); switch M1-04 and M3-03 from their "default Gen 1" to the region's rules (M)
+- [ ] Piecemeal `RegionRules` model with compatibility validation and the "Classic Gen 1" preset (data dimensions now; formulas arrive with the checkpoints that use them); switch [M1-04](https://github.com/pokesandbox/pokesandbox/issues/160) and [M3-03](https://github.com/pokesandbox/pokesandbox/issues/199) from their "default Gen 1" to the region's rules (M)
 - [ ] Journey + PokemonInstance models (with reserved `tags`, Q37), OCC, transactions; engine events (evolution, level-up, catch, travel, heal) carry the Pokémon's identity for later flavor (M)
 - [ ] Character creation (with an `idNo`; the character is the original trainer of Pokémon it obtains) + journey start (1 active journey per user per region) + name slots (`Journey.names`; Kanto Classic names the rival) + restart (archive, 24h cooldown) + admin reset + onboarding trigger + release-version migration rules (M)
 - [ ] Script + Trigger models (M)
@@ -249,7 +249,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 ## CP0b: Pallet Town, first battle
 - [ ] Fork patch: generalized state injection (any side; HP/status/PP/fainted state; level/stats/move slots mid-battle for authentic level-ups), every injection recorded in the input log so recovery replays it, with sim tests (M)
-- [ ] Adventure battles in `/play`: BattleService `trainer` kind, the await-in-action pattern, the M1-10 battle view, resume after restart (M)
+- [ ] Adventure battles in `/play`: BattleService `trainer` kind, the await-in-action pattern, the [M1-10](https://github.com/pokesandbox/pokesandbox/issues/167) battle view, resume after restart (M)
 - [ ] Script VM `battle` step (`canLose`, `onWin`/`onLose`; the first rival battle can be lost without a whiteout) (S)
 - [ ] TrainerClass registry (canon seed) + Trainer with conditioned party variants (the rival's team by starter) (M)
 - [ ] Trainer intro and defeat lines: minimal flavor slice (`FlavorEntry` in the region layer, resolver for `battle.trainerIntro` / `battle.trainerDefeat` matching trainer → class → default) ([29](../architecture/concepts/29-flavor-text-and-prose.md#mvp-scope)) (M)
@@ -270,10 +270,10 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Pokédex seen/caught on the profile (S)
 
 ## CP1: Boulder Badge
-**Epic: Webapp Builder (Q24, Q36)** (drafted as E-M3-2 in [`m3-region-authoring.md`](../backlog/m3-region-authoring.md#e-m3-2--webapp-builder))
-- [ ] **First, before any webapp authoring work (can start any time):** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks (M3-05) (S)
-- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it (M3-07) (M)
-- [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width; blocked by M3-05 and M3-07 (M3-06) (M)
+**Epic: Webapp Builder (Q24, Q36)** ([E-M3-2](https://github.com/pokesandbox/pokesandbox/issues/201))
+- [ ] **First, before any webapp authoring work (can start any time):** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks ([M3-05](https://github.com/pokesandbox/pokesandbox/issues/202)) (S)
+- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it ([M3-07](https://github.com/pokesandbox/pokesandbox/issues/203)) (M)
+- [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width; blocked by [M3-05](https://github.com/pokesandbox/pokesandbox/issues/202) and [M3-07](https://github.com/pokesandbox/pokesandbox/issues/203) ([M3-06](https://github.com/pokesandbox/pokesandbox/issues/204)) (M)
 - [ ] Shared builder components: search combobox (species/moves/items), sortable list, confirm dialog, passage editor with Discord preview (M)
 - [ ] Open in builder links from `/region` (plain URLs, Discord OAuth sign-in) (S)
 - [ ] Shared condition builder component (flat "all of" + one nesting level + templates) (L)
@@ -293,9 +293,9 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Trigger events `battleEnd` and `explore` (S)
 - [ ] Traversal requirements: location progress counters (lifetime/visit), one-time + permanent costs, compiled exit gates with explanations (M)
 - [ ] Templates: Gym Leader, Forced Encounter (the Route 22 rival), Gift NPC (M)
-- [ ] TM/HM lists (E-M3-1, [`m3-region-authoring.md`](../backlog/m3-region-authoring.md)) and teaching a TM from the bag (M)
+- [ ] TM/HM lists ([E-M3-1](https://github.com/pokesandbox/pokesandbox/issues/196)) and teaching a TM from the bag (M)
 - [ ] Post-battle level evolution (S)
-- [ ] AI trainer item use (M1-17) (S)
+- [ ] AI trainer item use ([M1-17](https://github.com/pokesandbox/pokesandbox/issues/176)) (S)
 - [ ] Profile: badge case, milestones, visited (M)
 - [ ] Adventure log: engine-written entries (trainer battles with turn digests, catches, trades, releases, wild rollups, milestones, evolutions, scenes; Pokémon stored as snapshots so entries survive the 30-day release purge); ephemeral opponent Pokémon from recipes. The webapp log view arrives with the MVP Release (M)
 
@@ -319,7 +319,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 ## CP4: Rainbow Badge 🧪 (public playtest #1)
 - [ ] Shops with conditioned entries and progression-priced entries (Game Corner coins) + the shop builder screen (M)
 - [ ] Release chunking for large regions + rollback hooks (publish core lands in M0b) (M)
-- [ ] Extend `/account delete` to adventure data (M6-02), before community members start playing (M)
+- [ ] Extend `/account delete` to adventure data ([M6-02](https://github.com/pokesandbox/pokesandbox/issues/207)), before community members start playing (M)
 - [ ] Public playtest on the PokeSandbox server: `adventure.play` stays limited to that server; feedback triage (M)
 
 ## CP5: Soul & Marsh (6 badges)
@@ -332,7 +332,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 ## CP7: Champion 🧪 (public playtest #2)
 - [ ] Gauntlet `resetOnLoss` and `lockedUntilComplete`; Hall of Fame milestone and log entry (S)
-- [ ] `smart` AI profile for the League, if not already done in M1 (M1-18) (L)
+- [ ] `smart` AI profile for the League, if not already done in M1 ([M1-18](https://github.com/pokesandbox/pokesandbox/issues/177)) (L)
 - [ ] Human playtest Pallet → Champion; balance pass (L)
 - [ ] Public playtest #2 on the PokeSandbox server; feedback triage (M)
 
@@ -341,7 +341,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 ## MVP Release 🚀
 - [ ] Webapp goes public: player profile and character pages (with their journeys), privacy settings, the adventure log view (M)
-- [ ] Report content + staff takedown tools for discovery, public pages, and narration (M6-01) (L)
+- [ ] Report content + staff takedown tools for discovery, public pages, and narration ([M6-01](https://github.com/pokesandbox/pokesandbox/issues/206)) (L)
 - [ ] Load test: N concurrent players + battles on target hosting (M)
 - [ ] Dependency security re-check: no open critical/high Dependabot alerts before release (S)
 - [ ] Admin guide + player guide + template walkthrough (M)

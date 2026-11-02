@@ -80,8 +80,16 @@ MS
     gh project field-create "$num" --owner "$org" --name "Area"     --data-type SINGLE_SELECT --single-select-options "engine,bot,webapp,shared-models,battle,showdown-fork,authoring,presentation,infra,docs"
     gh project field-create "$num" --owner "$org" --name "Track"    --data-type SINGLE_SELECT --single-select-options "Arena,Content,Platform"
     gh project field-create "$num" --owner "$org" --name "Skill"    --data-type SINGLE_SELECT --single-select-options "agent,any,junior,senior,owner"
-    echo "Status is a built-in field: set its options to Backlog, Ready, In Progress, In Review, Done in the project settings."
-    echo "Create the views (Board by Status, Roadmap by Milestone, Table grouped by parent issue) in the UI."
+    status=$(gh project field-list "$num" --owner "$org" --format json --jq '.fields[] | select(.name == "Status") | .id')
+    gh api graphql -f query="mutation { updateProjectV2Field(input: {fieldId: \"$status\", singleSelectOptions: [
+      {name: \"Backlog\", color: GRAY, description: \"Not yet ready to start\"},
+      {name: \"Ready\", color: BLUE, description: \"Specified and unblocked\"},
+      {name: \"In Progress\", color: YELLOW, description: \"Being worked on\"},
+      {name: \"In Review\", color: ORANGE, description: \"PR open, awaiting owner review\"},
+      {name: \"Done\", color: GREEN, description: \"Merged or complete\"}]}) { clientMutationId } }" >/dev/null
+    echo "set Status options"
+    echo "Link repos with: gh project link $num --owner $org --repo $org/<repo>"
+    echo "Create the views in the UI (the API can't): Board by Status, Roadmap by Milestone, Table by Epic (grouped by parent issue), Decisions (type:Decision)."
     ;;
 
   add-issues)

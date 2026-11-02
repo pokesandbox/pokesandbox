@@ -1,6 +1,6 @@
 # Start Here
 
-The one-page orientation for anyone joining PokeSandbox. Read this first, then the "Start here" section of whichever backlog file you're working from.
+The one-page orientation for anyone joining PokeSandbox. Read this first, then the **Background** section of the epic you're working in (every issue links its parent epic).
 
 ## What PokeSandbox is
 A Discord bot plus a web app that lets Discord servers **build their own Pokémon games ("regions")** and play them in Discord: a faithful Kanto remake, a fan region with custom Pokémon, a story-driven roleplay server. Server admins author regions (maps, encounters, trainers, story scripts, rules) in the web app, built for phones first; players play them through a `/play` menu, battle in a Showdown-powered battle system, and trade. The first public piece is the **Arena**: Showdown-style PvP and PvAI battles between server members, before any region exists. It's a non-commercial fan project.
@@ -35,9 +35,9 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 | DTOs (read shapes for bot and webapp) | `shared/src/dtos/` | `region.dto.ts` |
 | Seed data | `scripts/seed/data/*.json`, registered in `scripts/seed/collections.ts` | the `dexentries` entry |
 | Bot commands and menus | `apps/bot/src/interactions/` (admin builders under `…/regionManagement/`) | the Pokédex builder (`pokedex/`) |
-| Webapp | `apps/webapp/` (moving off antd to Tailwind + a headless library: trial M3-05, migration M3-07) | existing tRPC routers |
+| Webapp | `apps/webapp/` (moving off antd to Tailwind + a headless library: trial [M3-05](https://github.com/pokesandbox/pokesandbox/issues/202), migration [M3-07](https://github.com/pokesandbox/pokesandbox/issues/203)) | existing tRPC routers |
 | New libraries | `libs/core`, `libs/battle`, `libs/engine`, `libs/authoring` (being created in M0a, M0c, M0b) | their scaffold issues |
-| Showdown fork | separate repo, `pokesandbox/pokemon-showdown` | [M0c § Start here](backlog/m0c-arena-foundations.md#start-here) |
+| Showdown fork | separate repo, `pokesandbox/pokemon-showdown` | [M0c § Background](https://github.com/pokesandbox/pokesandbox/issues/122) |
 | Design docs | `docs/architecture/concepts/` (one per topic) | the concept index in [`architecture/README.md`](architecture/README.md) |
 
 **Model conventions:** the Zod schema is the source of truth (`fooSchema`), mirrored by the Mongoose schema (`fooDbSchema`); embedded sub-schemas are standalone `Schema` consts with `{ _id: false }`; map fields use `zMapHydrator`.
@@ -48,8 +48,8 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 - Tests run with Jest through Nx, e.g. `npx nx test shared`.
 
 ## How work is organized
-- **Until the GitHub project exists, work is drafted in [`backlog/`](backlog/README.md)**, one file per milestone. Each issue has a stable ID (`M0C-03`), a parent epic, priority, size, blockers, and checkable acceptance criteria. Each file starts with a "Start here" section with the context that milestone needs.
-- **`agent-ready: yes`** means no design judgement is left; anyone (or an AI agent) can pick it up.
+- **Work is tracked as GitHub issues** on the [project board](https://github.com/orgs/pokesandbox/projects/1), grouped into epics within milestones. Each issue has a parent epic, priority, size, "blocked by" links, and checkable acceptance criteria; each epic has a **Background** section with the context its issues need. Issues that started as backlog drafts keep their draft ID (`M0C-03`) in the body. New issues use the issue templates; see [Writing issues](roadmap/github-project-setup.md#writing-issues).
+- **The `agent-ready` label** means no design judgement is left; anyone (or an AI agent) can pick it up.
 - **One PR per issue.** Every PR is reviewed by the owner. CI runs lint, typecheck, and tests.
 - **If an issue leaves a real question open, ask the owner** rather than deciding it in code; answers get recorded in `open-questions.md`.
 
@@ -70,9 +70,9 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 ## Where to go next
 | You want to work on | Start with |
 |---|---|
-| The Arena | [M0c: Arena Foundations](backlog/m0c-arena-foundations.md), then [M1: Arena epics](backlog/m1-battle-core-and-catalog.md#arena-epics-e-m1-3-e-m1-4-e-m1-5) |
-| Moves, learnsets, TMs | [M1: Catalog](backlog/m1-battle-core-and-catalog.md), then [TM/HM lists](backlog/m3-region-authoring.md) (CP1) |
-| The webapp builder | [Webapp Builder](backlog/m3-region-authoring.md#e-m3-2--webapp-builder) (CP1) and concept [28](architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md) |
-| Platform, CI, data hygiene | [M0a: Platform Hygiene](backlog/m0a-platform-hygiene.md) |
-| The engine and content primitives | [M0b: Engine & Content Foundations](backlog/m0b-content-foundations.md) |
-| Going live (hosting, operations, the Arena's Discord side) | [M2: Arena Release](backlog/m2-launch-readiness.md) |
+| The Arena | [M0c: Arena Foundations](https://github.com/pokesandbox/pokesandbox/milestone/2), then [M1: Arena epics](https://github.com/pokesandbox/pokesandbox/issues/161) |
+| Moves, learnsets, TMs | [Catalog: Moves & Learnsets](https://github.com/pokesandbox/pokesandbox/issues/156), then [TM/HM Lists](https://github.com/pokesandbox/pokesandbox/issues/196) (CP1) |
+| The webapp builder | [Webapp Builder](https://github.com/pokesandbox/pokesandbox/issues/201) (CP1) and concept [28](architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md) |
+| Platform, CI, data hygiene | [M0a: Platform Hygiene](https://github.com/pokesandbox/pokesandbox/milestone/1) |
+| The engine and content primitives | [M0b: Engine & Content Foundations](https://github.com/pokesandbox/pokesandbox/milestone/3) |
+| Going live (hosting, operations, the Arena's Discord side) | [M2: Arena Release](https://github.com/pokesandbox/pokesandbox/milestone/5) |

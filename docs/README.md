@@ -11,5 +11,5 @@
 | [`architecture/audit-current-state.md`](architecture/audit-current-state.md) | Audit of current models, commands, and the Showdown fork |
 | [`architecture/open-questions.md`](architecture/open-questions.md) | The decision record: Q1–Q38 plus the smaller decisions index |
 | [`architecture/concepts/`](architecture/concepts/) | One doc per domain concept (current shape, options, decisions, MVP scope) |
-| [`backlog/`](backlog/README.md) | Issue drafts (M0a, M0b, M0c, M1's catalog and Arena epics, M2, and parts of the checkpoint work so far) and the guide for drafting the rest |
+| [Project board](https://github.com/orgs/pokesandbox/projects/1) | The backlog: epics and their issues, one milestone each. How to write new ones: [Writing issues](roadmap/github-project-setup.md#writing-issues) |
 | [`erd.md`](erd.md) | Generated ERD of current models (`npm run erd:generate`) |

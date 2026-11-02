@@ -48,7 +48,7 @@ ArenaFormat {
 ```
 
 - **Built-in formats** (e.g. National Dex Lv50, a Gen 1 151 format) ship by default, so the Arena works on a fresh server with zero setup.
-- Admins can create server formats that mix canon and **server library** content once the library exists (post-MVP; at the Arena launch, server formats are canon-only, M1-12) (see [27](27-server-content-library-and-overrides.md#server-content-library-decided-oct-2026)). `fromRegionDex` is just a convenience source. A format never depends on a region being deployed.
+- Admins can create server formats that mix canon and **server library** content once the library exists (post-MVP; at the Arena launch, server formats are canon-only, [M1-12](https://github.com/pokesandbox/pokesandbox/issues/170)) (see [27](27-server-content-library-and-overrides.md#server-content-library-decided-oct-2026)). `fromRegionDex` is just a convenience source. A format never depends on a region being deployed.
 - Compiles to a custom format whose data (canon + selected library entries + overrides) is injected into its own isolated dex, so `TeamValidator` enforces it. See [27 § Species identity](27-server-content-library-and-overrides.md#species-identity-canon-custom-species-variants-overrides--sharing-decided-oct-2026-q19).
 - Pausing a region has **no effect** on Arena battles. (Only Phase 3 in-game PvP with *adventure parties* is region-bound.)
 
@@ -117,7 +117,7 @@ The Arena battles a **copy** of an adventure Pokémon in Showdown set shape, nev
 
 ## MVP scope
 - M1: `TeamPreset`, `ArenaFormat` + built-in formats, paste import/export, random legal teams, BattleService timers.
-- M2 (E-M2-2): the interaction router with stable IDs, challenges, the public battle message projector, private choice prompts, scenario tests and a restart drill, the `/arena` hub, PvAI setup, battle history.
+- M2 ([E-M2-2](https://github.com/pokesandbox/pokesandbox/issues/190)): the interaction router with stable IDs, challenges, the public battle message projector, private choice prompts, scenario tests and a restart drill, the `/arena` hub, PvAI setup, battle history.
 - Later: the guided builder, admin-authored AI teams, team sharing, adventure Pokémon in the Arena.
 
 ## Open questions

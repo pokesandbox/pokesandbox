@@ -1,6 +1,8 @@
 name: Bug Report
 description: Report a bug to help us improve
-labels: ['bug']
+labels: []
+type: Bug
+projects: ['pokesandbox/1']
 body:
   - type: markdown
     attributes:

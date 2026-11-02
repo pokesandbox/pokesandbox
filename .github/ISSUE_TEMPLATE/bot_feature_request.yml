@@ -1,6 +1,8 @@
 name: Bot Feature Request
 description: Suggest an enhancement or new feature for the Discord bot
-labels: ['enhancement', 'bot']
+labels: ['area:bot']
+type: Feature
+projects: ['pokesandbox/1']
 body:
   - type: markdown
     attributes:
@@ -118,10 +120,9 @@ body:
       label: Priority
       description: How important is this feature?
       options:
-        - 'Low'
-        - 'Medium'
-        - 'High'
-        - 'Critical'
+        - P2 (nice to have)
+        - P1 (needed for the milestone)
+        - P0 (blocks the milestone)
     validations:
       required: false
 
