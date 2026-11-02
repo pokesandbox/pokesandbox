@@ -14,7 +14,7 @@ New to the project? Read [`docs/start-here.md`](../start-here.md) first. Context
 **How the pieces fit**
 | Piece | Where | What it does | Milestone |
 |---|---|---|---|
-| Showdown fork | `nbely/pokemon-showdown` (moving to the org) | The battle simulator: damage, turns, every mechanic. We keep a small, named patch set on top of upstream. | M0c (clean-up, rebase, package), M1 (patches) |
+| Showdown fork | `pokesandbox/pokemon-showdown` | The battle simulator: damage, turns, every mechanic. We keep a small, named patch set on top of upstream. | M0c (clean-up, rebase, package), M1 (patches) |
 | `libs/battle` | monorepo, new Nx library | Our wrapper: `BattleService` runs live battles, timers, persistence and recovery, and AI players | M0c (interfaces), M1 (implementation) |
 | Arena module | `apps/bot` | Discord side: challenges, the public battle message, private choice prompts, the `/arena` hub | M2 |
 

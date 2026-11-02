@@ -46,7 +46,7 @@ See the official [Discord Getting Started guide][9] and [Discord.js guide][10] f
 ### 1. Clone & Install Dependencies
 
 ```bash
-git clone https://github.com/nbely/pokesandbox.git
+git clone https://github.com/pokesandbox/pokesandbox.git
 cd pokesandbox
 npm install
 ```
@@ -135,7 +135,7 @@ After running `npm run env-setup` (or `npm run setup`), open `.env` and fill in:
   - Visit [Altered Origin][11] or the [PhoenixDex][12] for more of her work!
 
 [1]: https://discord.gg/5BSMak3m9V
-[2]: https://github.com/nbely/pokemon-showdown#pok%C3%A9mon-showdown
+[2]: https://github.com/pokesandbox/pokemon-showdown#pok%C3%A9mon-showdown
 [3]: https://nodejs.org/en/download
 [4]: https://github.com/nvm-sh/nvm
 [5]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
