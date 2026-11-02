@@ -37,13 +37,11 @@ Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for how work 
 
 - [Nick Bely](https://github.com/nbely) (Chronicler) - Architect, Team Lead, and Full-stack Developer
 - [Kevin Nguyen](https://github.com/Kevnien) - Full-stack Developer
+- [Rodney Dennings (Eve)](https://github.com/rdennings) - Full-stack Developer
 
 **Other Credits**
 
 - Pokémon Showdown Team - for the Pokémon Battle Simulator Base
-- Phoenixsong - for providing base battle calculator algorithms for various game functions.
-
-  - Visit [Altered Origin][11] or the [PhoenixDex][12] for more of her work!
 
 ## License & legal
 
@@ -56,5 +54,3 @@ PokeSandbox is a free, non-commercial fan project. It is not affiliated with, en
 [3]: https://github.com/orgs/pokesandbox/projects/1
 [4]: https://github.com/pokesandbox/pokesandbox/issues/new/choose
 [5]: https://github.com/pokesandbox/pokesandbox/labels/good%20first%20issue
-[11]: https://alteredorigin.net/
-[12]: https://phoenixdex.alteredorigin.net/
