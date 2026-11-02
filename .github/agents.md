@@ -777,9 +777,10 @@ If the data is global and used on many pages, pre-fetch in the root layout and h
 
 ### Git Conventions
 
-- Branch from `main`. Branch names: `feat/`, `fix/`, `chore/`, `docs/`.
+- Branch from `develop`. Branch names: `<issue#>-<short-overview>`, e.g. `103-ci-sonar-pr-automation`.
 - One logical change per commit. If a feature spans shared + bot + webapp, structure commits by layer.
-- Run `nx affected --target=lint` and `nx affected --target=test` before pushing.
+- Run `npm run affected` (lint, typecheck, and test for affected projects) before pushing; CI runs the same.
+- The PR description must close its issue (`Closes #N`) and follow `.github/pull_request_template.md`.
 
 ### Validation Strategy
 

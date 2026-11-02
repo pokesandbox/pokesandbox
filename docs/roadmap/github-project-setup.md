@@ -81,6 +81,38 @@ Every template adds the issue to the project. Milestone, labels, parent epic, an
 **Still to write:** the rest of M1 (catalog read service details, if needed), the rest of M2 (`/arena` hub, PvAI setup, battle history, alpha test, release notes), and the checkpoint issues from CP0a onward (TM/HM lists, the webapp builder foundation, and trust and safety exist). The candidate issues are the checklists in [`mvp.md`](mvp.md).
 
 
+## Automation
+GitHub Actions in [`.github/workflows`](../../.github/workflows) keep checks and the board up to date.
+
+| Workflow | Runs on | What it does |
+|---|---|---|
+| `ci.yml` (check **CI**) | PRs into `develop`, pushes to `develop` | Lint, typecheck, and unit tests (`nx affected` on PRs, every project on `develop`), then a SonarCloud scan |
+| `pr-gate.yml` (check **Linked issue**) | PRs into `develop` | Fails unless the PR description closes an open issue in this repo (`Closes #N`). It never closes or comments on the PR. Dependabot is exempt. |
+| `issue-status.yml` | PR opened, edited, drafted, ready, closed | Sets **Status** on the issues the PR closes (table below) |
+
+**Status rules** (the PR's current state decides, so re-runs are safe):
+
+| PR | Issue Status |
+|---|---|
+| Draft | In Progress |
+| Ready for review (or opened ready) | In Review |
+| Merged | Done (GitHub also closes the issue) |
+| Closed without merging | Ready, unless the issue is closed or another open PR still closes it |
+
+An issue already in **Done** is left alone unless the PR is reopened. Turn off the board's built-in workflows that set Status from PR events (Project → Workflows), and keep "Item closed → Done".
+
+**Setup** (repo Settings → Secrets and variables → Actions):
+
+| Name | Kind | Value |
+|---|---|---|
+| `SONAR_TOKEN` | Secret | A SonarCloud token for the `pokesandbox` org. Without it the scan is skipped with a warning. |
+| `PROJECTS_TOKEN` | Secret | A fine-grained PAT owned by the `pokesandbox` org: org **Projects: read and write**; repo `pokesandbox/pokesandbox` **Issues, Pull requests, Metadata: read**. `GITHUB_TOKEN` can't write org projects. Without it, status sync is skipped with a warning; a rejected (expired) token fails the job with a "rotate" message. |
+| `PROJECT_NUMBER` | Variable (optional) | The board's number; defaults to `1` |
+
+**SonarCloud:** one project for the monorepo ([`sonar-project.properties`](../../sonar-project.properties)), with Automatic Analysis turned off because CI does the analysis. A new app or lib adds its `src` to `sonar.sources` and its lcov file to `sonar.javascript.lcov.reportPaths`.
+
+**Branch protection on `develop`:** require **CI**, **Linked issue**, and **SonarCloud Code Analysis**.
+
 ## Team & workflow (decided Oct 2026, Q29)
 - **Team:** owner (senior), possibly a second senior (commitment TBD), 2 junior-to-mid devs, plus AI agents.
 - **Backlog shape:** epics plus self-contained issues, every one attributed to a **milestone**.
