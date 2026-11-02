@@ -28,6 +28,16 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "typecheck": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": ["typescript"]
+        }
+      ]
     }
   },
   "plugins": [
@@ -42,7 +52,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/server-e2e/**/*", "apps/bot-e2e/**/*"]
+      "exclude": ["apps/bot-e2e/**/*"]
     },
     {
       "plugin": "@nx/next/plugin",

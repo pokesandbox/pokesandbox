@@ -13,6 +13,16 @@
           "projects": "dependencies"
         }
       ]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "tsc -p {projectRoot}/tsconfig.json --noEmit",
+          "tsc -p {projectRoot}/tsconfig.spec.json --noEmit"
+        ],
+        "parallel": false
+      }
     }
   },
   "implicitDependencies": ["shared"]
