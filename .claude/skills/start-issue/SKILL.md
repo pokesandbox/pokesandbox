@@ -32,13 +32,13 @@ git checkout -b <issue>-<kebab-description> origin/develop   # e.g. 104-encode-a
 
 Use this name even if your tool or harness suggested a different branch: the PR Gate fails other names. If dependencies aren't installed, run `npm ci` (it also installs the git hooks).
 
-## 4. Plan
+## 4. Check the approach
 
-Before writing code, write a short plan:
+Before you start changing code, make sure:
 
-- Each acceptance criterion and the change that satisfies it.
-- The files and packages you'll touch, and which target-shape rule from `AGENTS.md` applies to each. Check the **Legacy: don't copy** table before copying a pattern from nearby code.
-- The tests you'll add.
-- Whether the work fits the issue's size. If it clearly doesn't, propose splitting the issue now (see `AGENTS.md`, Musts).
+- Every acceptance criterion maps to a change.
+- You know which target-shape rule from `AGENTS.md` applies to each file and package you'll touch. Check the **Legacy: don't copy** table before copying a pattern from nearby code.
+- You know which tests you'll add.
+- The work fits the issue's size. If it clearly doesn't, propose splitting the issue now (see `AGENTS.md`, Musts).
 
 When the work is done, use the `ship` skill.
