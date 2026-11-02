@@ -528,18 +528,19 @@ ${mermaid}\`\`\`
 async function generateERD() {
   try {
     // Manually import models (since we can't use dynamic requires in ts-node safely)
-    const { userSchema } = await import('../shared/src/models/user.model');
-    const { serverSchema } = await import('../shared/src/models/server.model');
-    const { regionSchema } =
+    const { userDbSchema } = await import('../shared/src/models/user.model');
+    const { serverDbSchema } =
+      await import('../shared/src/models/server.model');
+    const { regionDbSchema } =
       await import('../shared/src/models/region/region.model');
-    const { locationSchema } =
+    const { locationDbSchema } =
       await import('../shared/src/models/location/location.model');
 
     const entities: EntityDefinition[] = [
-      extractEntityDefinition('User', userSchema),
-      extractEntityDefinition('Server', serverSchema),
-      extractEntityDefinition('Region', regionSchema),
-      extractEntityDefinition('Location', locationSchema),
+      extractEntityDefinition('User', userDbSchema),
+      extractEntityDefinition('Server', serverDbSchema),
+      extractEntityDefinition('Region', regionDbSchema),
+      extractEntityDefinition('Location', locationDbSchema),
     ];
 
     // Generate Mermaid diagram
