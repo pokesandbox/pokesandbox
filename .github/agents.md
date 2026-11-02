@@ -34,6 +34,7 @@ Guidelines for AI agents working in this NX monorepo. Read before implementing a
 | **Bot**    | Discord.js + Mongoose     | `apps/bot/src/`    | Direct model imports from `@shared`                 |
 | **Webapp** | Next.js App Router + tRPC | `apps/webapp/src/` | tRPC procedures only — never import models directly |
 | **Shared** | Mongoose + Zod            | `shared/src/`      | Models, DTOs, DB connection, cache                  |
+| **Core**   | Pure TypeScript + Zod     | `libs/core/src/`   | None — no I/O, mongoose, discord.js, or Showdown    |
 
 ### Hard Rules
 
@@ -42,7 +43,7 @@ Guidelines for AI agents working in this NX monorepo. Read before implementing a
 3. **Model logic lives in `/shared`.** Statics, query helpers, and schemas go on the Mongoose model.
 4. **DTOs are the API boundary.** tRPC returns DTOs (zod-parsed), never raw Mongoose docs.
 5. **Auth enforcement is at the procedure level.** Use `protectedProcedure` for mutations and user-specific data.
-6. **Imports use path aliases.** `@shared/models`, `@shared/dtos`, `@webapp/...`, `@bot/...`.
+6. **Imports use path aliases.** `@shared/models`, `@shared/dtos`, `@core/...`, `@webapp/...`, `@bot/...`.
 
 ---
 
@@ -753,6 +754,7 @@ If the data is global and used on many pages, pre-fetch in the root layout and h
 
 | Alias                  | Maps To                             |
 | ---------------------- | ----------------------------------- |
+| `@core/*`              | `libs/core/src/*`                   |
 | `@shared/models`       | `shared/src/models/index.ts`        |
 | `@shared/dtos`         | `shared/src/dtos/index.ts`          |
 | `@shared/connectDb`    | `shared/src/connectDb.ts`           |
