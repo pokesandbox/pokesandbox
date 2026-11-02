@@ -108,13 +108,13 @@ The PR template has two checkboxes: one discloses that you used AI tools (no jud
 
 The repo ships context for coding agents. It describes the same rules as this page, plus the repo layout and commands:
 
-| File                                             | For                                                                                             |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| [`AGENTS.md`](AGENTS.md)                         | The rules every agent loads: musts, architecture rules, the legacy table                        |
-| `AGENTS.md` in each package                      | Package conventions (`shared/`, `apps/bot/`, `apps/webapp/`, `libs/core/`)                      |
-| [`CLAUDE.md`](CLAUDE.md)                         | Imports `AGENTS.md` for Claude Code                                                             |
-| [`.claude/skills/`](.claude/skills/)             | Step-by-step procedures: picking up an issue, shipping a PR, adding a model                     |
-| [`.claude/settings.json`](.claude/settings.json) | Claude Code hooks: install dependencies in cloud sessions, run `npm run affected` before a push |
-| `.github/copilot-instructions.md`                | Points GitHub Copilot at `AGENTS.md`, plus a code-review checklist                              |
+| File                                             | For                                                                                                                                                                                                                 |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`AGENTS.md`](AGENTS.md)                         | The rules every agent loads: musts, architecture rules, the legacy table                                                                                                                                            |
+| `AGENTS.md` in each package                      | Package conventions (`shared/`, `apps/bot/`, `apps/webapp/`, `libs/core/`). Each package also has a one-line `CLAUDE.md` that imports it, because Claude Code reads only `CLAUDE.md` files once the root one exists |
+| [`CLAUDE.md`](CLAUDE.md)                         | Imports `AGENTS.md` for Claude Code                                                                                                                                                                                 |
+| [`.claude/skills/`](.claude/skills/)             | Step-by-step procedures: picking up an issue, shipping a PR, adding a model                                                                                                                                         |
+| [`.claude/settings.json`](.claude/settings.json) | Claude Code hooks: install dependencies in cloud sessions, run `npm run affected` before a push                                                                                                                     |
+| `.github/copilot-instructions.md`                | Points GitHub Copilot at `AGENTS.md`, plus a code-review checklist                                                                                                                                                  |
 
 If your PR changes a convention, command, or structure these files describe, update them in the same PR.
