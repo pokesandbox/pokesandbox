@@ -3,18 +3,14 @@ import pluralize from 'pluralize';
 
 import { DexEntry, Gen5 } from '@shared/models';
 
-import {
-  getAssertedCachedDexEntry,
-  getAssertedCachedRegion,
-  getCachedDexEntries,
-} from '@bot/cache';
+import { getAssertedCachedDexEntry, getCachedDexEntries } from '@bot/cache';
 import type { AdminMenuContext } from '@bot/classes';
 import { PokedexSlotCustomizeMenuState, type PokedexMenuState } from './types';
 
 export const getManagePokedexMenuEmbeds = async (
   ctx: AdminMenuContext<PokedexMenuState>,
   regionId: string,
-  defaultPrompt = 'Enter a space-separated Pokédex number (up to 1500) and Pokémon name to add a Pokémon to a blank Pokédex slot, or enter just a number to modify a Pokédex slot',
+  defaultPrompt = 'Press Add / Edit Slot, then enter a Pokédex number (up to 1500) and a Pokémon name to fill a blank slot, or just a number to modify an existing slot',
 ) => {
   const region = await ctx.admin.getRegion(regionId);
   const pokedexLines: string[] = [];
@@ -87,7 +83,7 @@ export const getAddPokedexSlotEmbeds = async (
   ctx: AdminMenuContext<PokedexMenuState>,
   regionId: string,
   pokedexNo: string,
-  defaultPrompt = 'This slot is currently empty. Please enter the name of a Pokémon to add to the Pokédex slot.',
+  defaultPrompt = 'This slot is currently empty. Press Add Pokémon to enter the name of a Pokémon to add to the Pokédex slot.',
 ) => {
   const region = await ctx.admin.getRegion(regionId);
 
@@ -186,32 +182,6 @@ export const getSelectMatchedPokemonEmbeds = async (
       })
       .setTimestamp(),
   ];
-};
-
-export const getSwapPokedexSlotMenuEmbeds = async (
-  ctx: AdminMenuContext<PokedexMenuState>,
-  regionId: string,
-  pokedexNo: string,
-) => {
-  const region = await getAssertedCachedRegion(regionId);
-  const dexEntryId = region.pokedex[+pokedexNo - 1]?.id;
-  const dexEntry = await getAssertedCachedDexEntry(dexEntryId);
-
-  const embed = new EmbedBuilder()
-    .setColor('Gold')
-    .setAuthor({
-      name: `#${pokedexNo}: ${dexEntry.name} - The ${dexEntry.classification} Pokémon`,
-      iconURL: ctx.interaction.guild?.iconURL() || undefined,
-    })
-    .setDescription(
-      ctx.state.get('prompt') ||
-        'Please enter the name of the Pokémon you would like to swap into this Pokédex slot.',
-    )
-    .setTimestamp();
-
-  setPokemonThumbnail(embed, dexEntry);
-
-  return [embed];
 };
 
 const setPokemonThumbnail = (embed: EmbedBuilder, dexEntry: DexEntry): void => {

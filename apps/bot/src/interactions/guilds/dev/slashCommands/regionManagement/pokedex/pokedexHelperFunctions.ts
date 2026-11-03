@@ -74,6 +74,24 @@ export const handleAddPokemonToSlot = async (
   );
 };
 
+/**
+ * Replaces the Pokémon in an occupied slot. The original is put back if no
+ * replacement is found, so a failed search never empties the slot.
+ */
+export const handleSwapPokemonInSlot = async (
+  ctx: AdminMenuContext,
+  regionId: string,
+  pokedexNo: string,
+  pokemonName: string,
+) => {
+  const region = await ctx.admin.getRegion(regionId);
+  const pokedexSlot = removePokedexSlot(region, +pokedexNo - 1);
+  await handleAddPokemonToSlot(ctx, regionId, pokedexNo, pokemonName);
+  if (!region.pokedex[+pokedexNo - 1]) {
+    region.pokedex[+pokedexNo - 1] = pokedexSlot;
+  }
+};
+
 export const handlePokemonSelected = async (
   ctx: AdminMenuContext,
   selectedPokemon: DexEntry,

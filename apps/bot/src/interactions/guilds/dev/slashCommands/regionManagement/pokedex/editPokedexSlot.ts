@@ -17,9 +17,11 @@ import {
   getAddPokedexSlotEmbeds,
   getEditPokedexSlotEmbeds,
 } from './pokedex.embeds';
+import { getPokemonNameModal, POKEMON_NAME_MODAL_ID } from './pokedex.modal';
 import {
   checkHasOtherFormes,
   handleAddPokemonToSlot,
+  handleSwapPokemonInSlot,
   removePokedexSlot,
 } from './pokedexHelperFunctions';
 import { pokedexNoCommandOptionsSchema } from './schemas';
@@ -74,8 +76,17 @@ export const EditPokedexSlotCommand: ISlashCommand = {
       // handle add pokedex slot
       builder
         .setEmbeds((ctx) => getAddPokedexSlotEmbeds(ctx, region_id, pokedex_no))
-        .setMessageHandler((ctx, response) =>
-          handleAddPokemonToSlot(ctx, region_id, pokedex_no, response),
+        .setButtons(() => [
+          {
+            label: 'Add Pokémon',
+            style: ButtonStyle.Success,
+            opensModal: POKEMON_NAME_MODAL_ID,
+          },
+        ])
+        .setModal(() =>
+          getPokemonNameModal('Add Pokémon to Slot', (ctx, pokemonName) =>
+            handleAddPokemonToSlot(ctx, region_id, pokedex_no, pokemonName),
+          ),
         );
     } else {
       builder
@@ -84,6 +95,11 @@ export const EditPokedexSlotCommand: ISlashCommand = {
         )
         .setButtons((ctx) =>
           getEditPokedexSlotButtons(ctx, region_id, pokedex_no),
+        )
+        .setModal(() =>
+          getPokemonNameModal('Swap In Pokémon', (ctx, pokemonName) =>
+            handleSwapPokemonInSlot(ctx, region_id, pokedex_no, pokemonName),
+          ),
         );
     }
 
@@ -115,11 +131,7 @@ const getEditPokedexSlotButtons = async (
     {
       label: 'Swap',
       style: ButtonStyle.Primary,
-      action: async (ctx) =>
-        ctx.goTo('swap-pokedex-slot', {
-          region_id: regionId,
-          pokedex_no: pokedexNo,
-        }),
+      opensModal: POKEMON_NAME_MODAL_ID,
     },
     {
       label: 'Remove',
