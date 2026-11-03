@@ -270,7 +270,7 @@ interface IDexEntryModel extends Model<IDexEntry, IDexEntryQueryHelpers> {
   ): Query<DexEntry | null, IDexEntry>;
 }
 
-export const DexEntrySchema = new Schema<
+export const dexEntryDbSchema = new Schema<
   IDexEntry,
   IDexEntryModel,
   Record<string, never>,
@@ -737,6 +737,6 @@ export const DexEntrySchema = new Schema<
 export const DexEntry = (models.DexEntry ||
   model<IDexEntry, IDexEntryModel>(
     'DexEntry',
-    DexEntrySchema,
+    dexEntryDbSchema,
     'dexentries',
   )) as IDexEntryModel;

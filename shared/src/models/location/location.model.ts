@@ -28,7 +28,7 @@ export const connectionSchema = z.object({
 /**
  * Location entity — an explorable area within a Region
  */
-export const locationEntitySchema = baseEntitySchema.extend({
+export const locationSchema = baseEntitySchema.extend({
   name: z.string(),
   regionId: z.instanceof(Types.ObjectId),
   requirements: requirementSchema.optional(),
@@ -38,7 +38,7 @@ export const locationEntitySchema = baseEntitySchema.extend({
   ordinal: z.number().int().positive(),
 });
 
-export type ILocation = z.infer<typeof locationEntitySchema>;
+export type ILocation = z.infer<typeof locationSchema>;
 export type ILocationInput = Omit<IModelInput<ILocation>, 'ordinal'> & {
   ordinal?: number;
 };
@@ -75,7 +75,7 @@ const connectionDbSchema = new Schema(
   { _id: false },
 );
 
-export const locationSchema = new Schema<
+export const locationDbSchema = new Schema<
   ILocation,
   ILocationModel,
   Record<string, never>,
@@ -142,6 +142,6 @@ export const Location =
   (models.Location as ILocationModel) ||
   (model<ILocation, ILocationModel>(
     'Location',
-    locationSchema,
+    locationDbSchema,
     'locations',
   ) as ILocationModel);

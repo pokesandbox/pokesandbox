@@ -18,7 +18,7 @@ export const pokedexSlotSchema = z
   })
   .nullable();
 
-export const PokedexSlotSchema = new Schema({
+export const pokedexSlotDbSchema = new Schema({
   id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
   name: String,
   isBaseFormNotIncluded: Boolean,

@@ -16,7 +16,7 @@ import { baseEntitySchema, IModelInput } from './base';
 import { Server } from './server.model';
 import type { PopulatedQuery } from './types';
 
-export const userEntitySchema = baseEntitySchema.extend({
+export const userSchema = baseEntitySchema.extend({
   avatarUrl: z.string().optional(),
   globalName: z.string(),
   servers: z.array(z.instanceof(Types.ObjectId)).default([]),
@@ -24,7 +24,7 @@ export const userEntitySchema = baseEntitySchema.extend({
   username: z.string(),
 });
 
-export type IUser = z.infer<typeof userEntitySchema>;
+export type IUser = z.infer<typeof userSchema>;
 export type IUserInput = IModelInput<IUser>;
 export type IUserUpdate = Partial<IUserInput>;
 export type User = HydratedDocument<IUser>;
@@ -45,7 +45,7 @@ interface IUserModel extends Model<IUser, IUserQueryHelpers> {
   ): Query<User | null, IUser>;
 }
 
-export const userSchema = new Schema<
+export const userDbSchema = new Schema<
   IUser,
   IUserModel,
   Record<string, never>,
@@ -101,4 +101,4 @@ export const userSchema = new Schema<
 
 export const User =
   (models.User as IUserModel) ||
-  (model<IUser, IUserModel>('User', userSchema, 'users') as IUserModel);
+  (model<IUser, IUserModel>('User', userDbSchema, 'users') as IUserModel);

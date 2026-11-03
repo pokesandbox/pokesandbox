@@ -10,6 +10,8 @@ erDiagram
         Server[] servers
         string userId
         string username
+        date createdAt
+        date updatedAt
     }
 
     Server {
@@ -25,6 +27,8 @@ erDiagram
         User[] playerList
         string[] prefixes
         Region[] regions
+        date createdAt
+        date updatedAt
     }
 
     Region {
@@ -44,6 +48,11 @@ erDiagram
         object[] pokedex
         ObjectId pokedex_id
         string pokedex_name
+        boolean pokedex_isBaseFormNotIncluded
+        number pokedex_baseFormOrdinal
+        object[] pokedex_includedForms
+        ObjectId pokedex_includedForms_id
+        number pokedex_includedForms_ordinal
         Map progressionDefinitions
         object quests
         Quest[] quests_active
@@ -51,6 +60,8 @@ erDiagram
         number quests_maxPassiveQuests
         Shop[] shops
         string[] transportationTypes
+        date createdAt
+        date updatedAt
     }
 
     Location {
@@ -86,6 +97,9 @@ erDiagram
         number wildTables_timeBlocks_slots_minLevel
         number wildTables_timeBlocks_slots_maxLevel
         number wildTables_timeBlocks_slots_weight
+        number ordinal
+        date createdAt
+        date updatedAt
     }
 
     User ||--o{ Server : "servers"
@@ -94,6 +108,7 @@ erDiagram
     Region ||--o{ Character : "characterList"
     Region ||--o{ Location : "locations"
     Region ||--o{ DexEntry : "pokedex_id"
+    Region ||--o{ DexEntry : "pokedex_includedForms_id"
     Region ||--o{ Quest : "quests_active"
     Region ||--o{ Quest : "quests_passive"
     Region ||--o{ Shop : "shops"
@@ -116,6 +131,8 @@ erDiagram
 | `servers`    | Server[] | ✓        | References: Server |
 | `userId`     | string   | ✓        |                    |
 | `username`   | string   | ✓        |                    |
+| `createdAt`  | date     |          |                    |
+| `updatedAt`  | date     |          |                    |
 
 ### Server
 
@@ -133,34 +150,43 @@ erDiagram
 | `playerList`    | User[]   | ✓        | References: User   |
 | `prefixes`      | string[] | ✓        |                    |
 | `regions`       | Region[] | ✓        | References: Region |
+| `createdAt`     | date     |          |                    |
+| `updatedAt`     | date     |          |                    |
 
 ### Region
 
-| Field                    | Type        | Required | Notes                 |
-| ------------------------ | ----------- | -------- | --------------------- |
-| `baseGeneration`         | number      | ✓        |                       |
-| `charactersPerPlayer`    | number      | ✓        |                       |
-| `characterList`          | Character[] |          | References: Character |
-| `currencyType`           | string      | ✓        |                       |
-| `deployable`             | boolean     | ✓        |                       |
-| `deployed`               | boolean     | ✓        |                       |
-| `graphicSettings`        | object      | ✓        |                       |
-| `↳ backSpritesEnabled`   | boolean     |          |                       |
-| `↳ frontSpritesEnabled`  | boolean     |          |                       |
-| `↳ iconSpritesEnabled`   | boolean     |          |                       |
-| `↳ mapImageLink`         | string      |          |                       |
-| `locations`              | Location[]  | ✓        | References: Location  |
-| `name`                   | string      | ✓        |                       |
-| `pokedex`                | object[]    | ✓        |                       |
-| `↳ id`                   | ObjectId    |          | References: DexEntry  |
-| `↳ name`                 | string      |          |                       |
-| `progressionDefinitions` | Map         | ✓        |                       |
-| `quests`                 | object      | ✓        |                       |
-| `↳ active`               | Quest[]     | ✓        | References: Quest     |
-| `↳ passive`              | Quest[]     | ✓        | References: Quest     |
-| `↳ maxPassiveQuests`     | number      |          |                       |
-| `shops`                  | Shop[]      | ✓        | References: Shop      |
-| `transportationTypes`    | string[]    | ✓        |                       |
+| Field                     | Type        | Required | Notes                 |
+| ------------------------- | ----------- | -------- | --------------------- |
+| `baseGeneration`          | number      | ✓        |                       |
+| `charactersPerPlayer`     | number      | ✓        |                       |
+| `characterList`           | Character[] |          | References: Character |
+| `currencyType`            | string      | ✓        |                       |
+| `deployable`              | boolean     | ✓        |                       |
+| `deployed`                | boolean     | ✓        |                       |
+| `graphicSettings`         | object      | ✓        |                       |
+| `↳ backSpritesEnabled`    | boolean     |          |                       |
+| `↳ frontSpritesEnabled`   | boolean     |          |                       |
+| `↳ iconSpritesEnabled`    | boolean     |          |                       |
+| `↳ mapImageLink`          | string      |          |                       |
+| `locations`               | Location[]  | ✓        | References: Location  |
+| `name`                    | string      | ✓        |                       |
+| `pokedex`                 | object[]    | ✓        |                       |
+| `↳ id`                    | ObjectId    |          | References: DexEntry  |
+| `↳ name`                  | string      |          |                       |
+| `↳ isBaseFormNotIncluded` | boolean     |          |                       |
+| `↳ baseFormOrdinal`       | number      |          |                       |
+| `↳ includedForms`         | object[]    |          |                       |
+| `↳ ↳ id`                  | ObjectId    |          | References: DexEntry  |
+| `↳ ↳ ordinal`             | number      |          |                       |
+| `progressionDefinitions`  | Map         | ✓        |                       |
+| `quests`                  | object      | ✓        |                       |
+| `↳ active`                | Quest[]     | ✓        | References: Quest     |
+| `↳ passive`               | Quest[]     | ✓        | References: Quest     |
+| `↳ maxPassiveQuests`      | number      |          |                       |
+| `shops`                   | Shop[]      | ✓        | References: Shop      |
+| `transportationTypes`     | string[]    | ✓        |                       |
+| `createdAt`               | date        |          |                       |
+| `updatedAt`               | date        |          |                       |
 
 #### Map: `progressionDefinitions`
 
@@ -218,6 +244,9 @@ erDiagram
 | `↳ ↳ ↳ minLevel`    | number    | ✓        |                      |
 | `↳ ↳ ↳ maxLevel`    | number    | ✓        |                      |
 | `↳ ↳ ↳ weight`      | number    | ✓        |                      |
+| `ordinal`           | number    | ✓        |                      |
+| `createdAt`         | date      |          |                      |
+| `updatedAt`         | date      |          |                      |
 
 #### Map: `requirements_progressions`
 
@@ -241,6 +270,7 @@ _No structured fields (primitive values or complex schema)._
 | Region   | `characterList`                         | Character |
 | Region   | `locations`                             | Location  |
 | Region   | `pokedex_id`                            | DexEntry  |
+| Region   | `pokedex_includedForms_id`              | DexEntry  |
 | Region   | `quests_active`                         | Quest     |
 | Region   | `quests_passive`                        | Quest     |
 | Region   | `shops`                                 | Shop      |

@@ -17,7 +17,7 @@
     "typecheck": "nx run-many -t typecheck",
     "test": "nx run-many -t test",
     "test:coverage": "nx run-many -t test --coverage",
-    "affected": "nx affected -t lint typecheck test",
+    "affected": "nx affected -t lint typecheck test --base=origin/develop",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"

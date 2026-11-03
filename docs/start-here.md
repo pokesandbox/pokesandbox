@@ -55,7 +55,7 @@ Two tracks run in parallel: **Arena** (M0c → M1 → M2, which needs only `libs
 
 - **Work is tracked as GitHub issues** on the [project board](https://github.com/orgs/pokesandbox/projects/1), grouped into epics within milestones. Each issue has a parent epic, priority, size, "blocked by" links, and checkable acceptance criteria; each epic has a **Background** section with the context its issues need. New issues use the issue templates; see [Writing issues](roadmap/github-project-setup.md#writing-issues).
 - **The `agent-ready` label** means no design judgement is left; anyone (or an AI agent) can pick it up.
-- **One PR per issue.** Every PR is reviewed by the owner. CI runs lint, typecheck, and tests.
+- **One PR per issue.** Every PR is reviewed by the owner. CI runs lint, typecheck, and tests. Branch, commit, and PR conventions are in [`CONTRIBUTING.md`](../CONTRIBUTING.md); the rules for building the new shape are in [`AGENTS.md`](../AGENTS.md), with one per package.
 - **If an issue leaves a real question open, ask the owner** rather than deciding it in code; answers get recorded in `open-questions.md`.
 
 ## Words you'll see

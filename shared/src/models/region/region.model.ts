@@ -13,13 +13,13 @@ import { z } from 'zod';
 
 import { baseEntitySchema, IModelInput } from '../base';
 import { zMapHydrator } from '../utils';
-import { PokedexSlotSchema, pokedexSlotSchema } from './pokedexSlot';
+import { pokedexSlotDbSchema, pokedexSlotSchema } from './pokedexSlot';
 import {
   progressionDefinitionDbSchema,
   progressionDefinitionSchema,
 } from './progressionDefinition';
 
-export const regionEntitySchema = baseEntitySchema.extend({
+export const regionSchema = baseEntitySchema.extend({
   baseGeneration: z.number(),
   charactersPerPlayer: z.number(),
   characterList: z.array(z.instanceof(Types.ObjectId)),
@@ -45,7 +45,7 @@ export const regionEntitySchema = baseEntitySchema.extend({
   transportationTypes: z.array(z.string()),
 });
 
-export type IRegion = z.infer<typeof regionEntitySchema>;
+export type IRegion = z.infer<typeof regionSchema>;
 export type IRegionInput = IModelInput<IRegion>;
 export type IRegionUpdate = Partial<IRegionInput>;
 export type Region = HydratedDocument<IRegion>;
@@ -63,7 +63,7 @@ interface IRegionModel extends Model<IRegion, IRegionQueryHelpers> {
   ): Query<Region | null, IRegion>;
 }
 
-export const regionSchema = new Schema<
+export const regionDbSchema = new Schema<
   IRegion,
   IRegionModel,
   Record<string, never>,
@@ -92,7 +92,7 @@ export const regionSchema = new Schema<
     },
     name: { type: String, required: true },
     pokedex: {
-      type: [PokedexSlotSchema],
+      type: [pokedexSlotDbSchema],
       required: true,
     },
     progressionDefinitions: {
@@ -141,6 +141,6 @@ export const Region =
   (models.Region as IRegionModel) ||
   (model<IRegion, IRegionModel>(
     'Region',
-    regionSchema,
+    regionDbSchema,
     'regions',
   ) as IRegionModel);

@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 import { Server } from '../models/server.model';
-import { User, userEntitySchema } from '../models/user.model';
+import { User, userSchema } from '../models/user.model';
 import { serverDTOSchema } from './server.dto';
 import { convertToDTO } from './utils';
 
 // Base DTO schema: extends entity schema with servers as string array
-export const baseUserDTOSchema = userEntitySchema.extend({
+export const baseUserDTOSchema = userSchema.extend({
   servers: z.array(z.string()),
 });
 
@@ -29,16 +29,16 @@ export const UserDTO = {
   },
 };
 
-export const UserWithServersDTOSchema = userDTOSchema.extend({
+export const userWithServersDTOSchema = userDTOSchema.extend({
   servers: z.array(serverDTOSchema),
 });
 
-export type UserWithServersDTO = z.infer<typeof UserWithServersDTOSchema>;
+export type UserWithServersDTO = z.infer<typeof userWithServersDTOSchema>;
 
 export const UserWithServersDTO = {
   convertFromEntity(
     entity: Omit<User, 'servers'> & { servers: Server[] },
   ): UserWithServersDTO {
-    return UserWithServersDTOSchema.parse(convertToDTO(entity));
+    return userWithServersDTOSchema.parse(convertToDTO(entity));
   },
 };

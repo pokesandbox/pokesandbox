@@ -1,0 +1,4 @@
+# Checks the commit subject format: "[#<issue>] <type>(<scope>)?: <summary>",
+# at most 72 characters. Merge, revert, fixup! and squash! commits are exempt.
+# Rules: .github/scripts/conventions.js (shared with the PR gate).
+node .github/scripts/conventions.js commit-msg "$1"

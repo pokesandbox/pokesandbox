@@ -15,7 +15,7 @@ import { baseEntitySchema, IModelInput } from './base';
 import { Region } from './region/region.model';
 import type { PopulatedQuery } from './types';
 
-export const serverEntitySchema = baseEntitySchema.extend({
+export const serverSchema = baseEntitySchema.extend({
   serverId: z.string(),
   adminRoleIds: z.array(z.string()),
   discovery: z.object({
@@ -31,7 +31,7 @@ export const serverEntitySchema = baseEntitySchema.extend({
   regions: z.array(z.instanceof(Types.ObjectId)),
 });
 
-export type IServer = z.infer<typeof serverEntitySchema>;
+export type IServer = z.infer<typeof serverSchema>;
 export type IServerInput = IModelInput<IServer>;
 export type IServerUpdate = Partial<IServerInput>;
 export type Server = HydratedDocument<IServer>;
@@ -54,7 +54,7 @@ interface IServerModel extends Model<IServer, IServerQueryHelpers> {
   ): Query<Server | null, IServer>;
 }
 
-export const serverSchema = new Schema<
+export const serverDbSchema = new Schema<
   IServer,
   IServerModel,
   Record<string, never>,
@@ -107,6 +107,6 @@ export const Server =
   (models.Server as IServerModel) ||
   (model<IServer, IServerModel>(
     'Server',
-    serverSchema,
+    serverDbSchema,
     'servers',
   ) as IServerModel);
