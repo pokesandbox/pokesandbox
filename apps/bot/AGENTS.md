@@ -35,4 +35,4 @@ Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/inter
 
 ## Checks
 
-`npx nx test bot`, `npx nx lint bot`, `npx nx typecheck bot`. Bot changes need a manual check in the PR (the bot starts, the changed menu works), since there are no e2e tests yet. Menus can be driven headless with `MenuHarness` from `@flowcord/testing` (mock `@bot/cache`); see `managePokedex.integration.test.ts`. For modals, use `submitModalFields` from `src/testing/`, not `harness.submitModal`.
+`npx nx test bot`, `npx nx lint bot`, `npx nx typecheck bot`. Bot changes need a manual check in the PR (the bot starts, the changed menu works), since there are no e2e tests yet. Menus are tested headless as `*.integration.test.ts` with `MenuHarness`; see [Bot integration tests](../../docs/testing.md#bot-integration-tests).
