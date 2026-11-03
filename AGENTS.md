@@ -102,7 +102,6 @@ The code is mid-migration. Build the **target** shape below; don't copy the lega
 | ObjectId content references (`speciesId`, `itemId`, `toLocationId`)                                    | Showdown IDs and content keys                                     | #120, #138 |
 | AND-only requirement buckets (`shared/src/models/requirement.ts`)                                      | Condition tree + gates                                            | #127       |
 | `baseGeneration`                                                                                       | `RegionRules`                                                     | rules work |
-| `/server` command prefixes                                                                             | Remove                                                            | #106       |
 | Per-guild command folders (`interactions/guilds/dev`)                                                  | Global registration + feature flags                               | #108       |
 | antd in the webapp                                                                                     | Tailwind + the chosen headless library                            | #202, #203 |
 | DexEntry has no Zod schema                                                                             | Catalog rework                                                    | #120, #157 |

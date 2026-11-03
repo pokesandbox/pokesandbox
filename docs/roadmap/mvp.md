@@ -110,13 +110,13 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 
 **Epic: Org & Delivery Setup**
 
-- [ ] Move `pokesandbox` and `pokemon-showdown` (name unchanged) to the org; update README links, CODEOWNERS, agents.md (S)
-- [ ] CI: lint + typecheck + unit tests on PR (M)
-- [ ] Create labels (incl. `agent-ready`), issue types, milestones, and project board per [`github-project-setup.md`](github-project-setup.md) (S)
+- [x] Move `pokesandbox` and `pokemon-showdown` (name unchanged) to the org; update README links, CODEOWNERS, agents.md (S)
+- [x] CI: lint + typecheck + unit tests on PR (M)
+- [x] Create labels (incl. `agent-ready`), issue types, milestones, and project board per [`github-project-setup.md`](github-project-setup.md) (S)
 - [ ] Owner review: deep-dive concepts 09–30 and record any changed decisions ([#105](https://github.com/pokesandbox/pokesandbox/issues/105)) (L)
 - [ ] Feature flag registry: env override (`FEATURE_FLAGS=*` in dev), per-server override, per-environment defaults; `discord.authoring` off in prod ([#109](https://github.com/pokesandbox/pokesandbox/issues/109)) (S)
 - [ ] Fix the critical Dependabot alerts now (Next.js, NextAuth, transitive runtime packages; Nx tooling upgrade in its own PR); high and below stay in [#187](https://github.com/pokesandbox/pokesandbox/issues/187) ([#110](https://github.com/pokesandbox/pokesandbox/issues/110)) (M)
-- [ ] Deprecate custom command prefixes: remove the `/server` Prefix option, its commands, the message-command pipeline, and `Server.prefixes` ([#106](https://github.com/pokesandbox/pokesandbox/issues/106)) (S)
+- [x] Deprecate custom command prefixes: remove the `/server` Prefix option, its commands, the message-command pipeline, and `Server.prefixes` ([#106](https://github.com/pokesandbox/pokesandbox/issues/106)) (S)
 - [ ] Switch slash commands to global registration; flag-off commands only as guild commands on override servers ([#108](https://github.com/pokesandbox/pokesandbox/issues/108)) (M)
 
 **Epic: Shared Library Foundations**

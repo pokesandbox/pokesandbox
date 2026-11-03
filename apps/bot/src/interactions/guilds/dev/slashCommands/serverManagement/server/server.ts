@@ -10,7 +10,6 @@ import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
 import { DISCOVERY_COMMAND_NAME } from '../discovery/discovery';
 import { getServerMenuEmbeds } from './server.embeds';
-import { SERVER_MANAGE_PREFIXES_COMMAND_NAME } from './serverManagePrefixes';
 import { SERVER_MANAGE_ROLES_COMMAND_NAME } from './serverManageRoles';
 
 const COMMAND_NAME = 'server';
@@ -39,7 +38,6 @@ const getServerButtons = async (): Promise<
   ButtonInputConfig<AdminMenuContext>[]
 > => {
   const subMenuButtons: { id: string; command: string; option?: string }[] = [
-    { id: 'Prefix', command: SERVER_MANAGE_PREFIXES_COMMAND_NAME },
     {
       id: 'Admin',
       command: SERVER_MANAGE_ROLES_COMMAND_NAME,

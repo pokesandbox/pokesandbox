@@ -25,7 +25,6 @@ erDiagram
         string[] modRoleIds
         string name
         User[] playerList
-        string[] prefixes
         Region[] regions
         date createdAt
         date updatedAt
@@ -148,7 +147,6 @@ erDiagram
 | `modRoleIds`    | string[] | ✓        |                    |
 | `name`          | string   | ✓        |                    |
 | `playerList`    | User[]   | ✓        | References: User   |
-| `prefixes`      | string[] | ✓        |                    |
 | `regions`       | Region[] | ✓        | References: Region |
 | `createdAt`     | date     |          |                    |
 | `updatedAt`     | date     |          |                    |

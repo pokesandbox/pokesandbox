@@ -31,7 +31,6 @@ Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/inter
 
 - **`src/cache/`** (`getCachedRegion` → mutate → `saveRegion`) caches and shares hydrated mutable Mongoose documents, which concept [15](../../docs/architecture/concepts/15-persistence-concurrency-and-runtime.md#recommendations) rules out. Don't add helpers for new models. Read fresh per action (or `lean()` for cached reads) and write with atomic updates. #119 replaces it.
 - **The `/region` builders** (Pokédex, progressions, locations) keep their logic in handlers; #146–#148 move them onto authoring commands. When editing them for another issue, keep the change minimal and don't add new logic there.
-- **`/server` prefixes** and the message-command pipeline are being removed (#106).
 - **Per-guild registration** under `interactions/guilds/dev` becomes global registration with flags (#108).
 
 ## Checks

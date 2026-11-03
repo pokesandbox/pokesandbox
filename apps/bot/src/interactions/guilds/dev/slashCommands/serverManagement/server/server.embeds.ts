@@ -10,11 +10,6 @@ export const getServerMenuEmbeds = async (
   const prompt = (ctx.state.get('prompt') as string) || defaultPrompt;
   const interaction = ctx.interaction as ChatInputCommandInteraction;
 
-  const prefixes: string =
-    server.prefixes && server.prefixes.length > 0
-      ? server.prefixes.map((prefix) => `\`${prefix}\``).join(', ')
-      : '`.` (default)';
-
   const adminRoles = await ctx.admin.getRoles('admin');
   const adminRolesList: string = adminRoles.length
     ? adminRoles.join(', ')
@@ -31,10 +26,9 @@ export const getServerMenuEmbeds = async (
       })
       .setDescription(
         `${prompt ? '**' + prompt + '**\n\n' : ''}` +
-          `:one: Update Bot Prefixes: ${prefixes}` +
-          `\n:two: Update Admin Roles: ${adminRolesList}` +
-          `\n:three: Update Mod Roles: ${modRolesList}` +
-          `\n:four: ${
+          `:one: Update Admin Roles: ${adminRolesList}` +
+          `\n:two: Update Mod Roles: ${modRolesList}` +
+          `\n:three: ${
             server.discovery.enabled
               ? 'Modify Server Discovery Settings'
               : 'Enable Server Discovery'

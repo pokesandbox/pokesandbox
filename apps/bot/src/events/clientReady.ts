@@ -22,10 +22,6 @@ export const ClientReady: IBotEvent = {
         console.log(
           `[MessageContextCommands] Loaded ${client.messageContextCommands.size} MessageContextCommands.`,
         );
-      if (client.messageCommands.size > 0)
-        console.log(
-          `[MessageCommands] Loaded ${client.messageCommands.size} MessageCommands with ${client.messageCommandsAliases.size} Aliases`,
-        );
       if (client.modalForms.size > 0)
         console.log(`[ModalForms] Loaded ${client.modalForms.size} Modals.`);
       if (client.roleSelectMenus.size > 0)
