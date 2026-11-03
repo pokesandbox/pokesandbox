@@ -2,7 +2,6 @@ import type { AdminMenuContext } from '@bot/classes';
 import {
   getPokedexSlotModal,
   getPokemonNameModal,
-  INVALID_POKEDEX_NO_PROMPT,
   parsePokedexNo,
 } from './pokedex.modal';
 import { handleAddPokemonToSlot } from './pokedexHelperFunctions';
@@ -50,27 +49,8 @@ describe('getPokedexSlotModal onSubmit', () => {
       .then(() => ctx);
   };
 
-  beforeEach(() => jest.clearAllMocks());
-
-  it('shows the validation prompt for an invalid number', async () => {
-    const ctx = await submit({ 'pokedex-no': 'abc' });
-    expect(ctx?.state.set).toHaveBeenCalledWith(
-      'prompt',
-      INVALID_POKEDEX_NO_PROMPT,
-    );
-    expect(ctx?.goTo).not.toHaveBeenCalled();
-    expect(handleAddPokemonToSlot).not.toHaveBeenCalled();
-  });
-
-  it('opens the slot when only a number is given', async () => {
-    const ctx = await submit({ 'pokedex-no': '25', 'pokemon-name': '  ' });
-    expect(ctx?.goTo).toHaveBeenCalledWith('edit-pokedex-slot', {
-      region_id: 'region1',
-      pokedex_no: 25,
-    });
-    expect(handleAddPokemonToSlot).not.toHaveBeenCalled();
-  });
-
+  // The invalid-number and number-only paths are covered end to end in
+  // managePokedex.integration.test.ts.
   it('adds the Pokémon when a name is given', async () => {
     const ctx = await submit({
       'pokedex-no': '25',
