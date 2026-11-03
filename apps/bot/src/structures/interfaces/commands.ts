@@ -4,7 +4,6 @@ import type {
   ButtonBuilder,
   ButtonInteraction,
   ContextMenuCommandBuilder,
-  Message,
   MessageContextMenuCommandInteraction,
   ModalBuilder,
   ModalSubmitInteraction,
@@ -57,13 +56,6 @@ export interface IButtonCommand extends IBaseCommand {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   create: (options?: any) => ButtonBuilder;
   execute?: (client: BotClient, interaction: ButtonInteraction) => void;
-}
-
-export interface IMessageCommand extends IBaseCommand {
-  aliases?: string[];
-  allowBots?: boolean;
-  allowInDms?: boolean;
-  execute: (client: BotClient, message: Message, args: string[]) => void;
 }
 
 export interface IMessageContextCommand extends IBaseCommand {
@@ -125,7 +117,6 @@ export interface IUserSelectMenu extends IBaseCommand {
 
 export type AnyCommand =
   | IButtonCommand
-  | IMessageCommand
   | IMessageContextCommand
   | IModalForm
   | IRoleSelectMenu

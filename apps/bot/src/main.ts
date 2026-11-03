@@ -7,7 +7,6 @@ import { BotClient } from '@bot/classes';
 import {
   buttonsManager,
   eventsManager,
-  messageCommandsManager,
   modalFormsManager,
   roleSelectMenusManager,
   slashCommandsManager,
@@ -25,7 +24,6 @@ connectDb().then(async () => {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildPresences,
       GatewayIntentBits.DirectMessages,
-      GatewayIntentBits.MessageContent, // Only for bots with message content intent access.
       GatewayIntentBits.DirectMessageReactions,
       GatewayIntentBits.GuildMembers,
       GatewayIntentBits.GuildMessageReactions,
@@ -37,7 +35,6 @@ connectDb().then(async () => {
   });
 
   await buttonsManager(client);
-  await messageCommandsManager(client);
   await modalFormsManager(client);
   await roleSelectMenusManager(client);
   await slashCommandsManager(client);

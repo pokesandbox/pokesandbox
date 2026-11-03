@@ -165,7 +165,6 @@ async function ensureServerInitialized(ctx: AdminMenuContext): Promise<void> {
       modRoleIds: [],
       name: interaction.guild.name,
       playerList: [],
-      prefixes: [],
       regions: [],
       serverId: interaction.guild.id,
     });

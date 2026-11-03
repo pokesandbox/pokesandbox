@@ -24,7 +24,7 @@ export const ServerManageRolesCommand: ISlashCommand = {
   returnOnlyRolesError: false,
   command: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
-    .setDescription('Manage command prefixes for your server')
+    .setDescription('Manage admin and mod roles for your server')
     .setContexts(InteractionContextType.Guild)
     .addStringOption((option) =>
       option

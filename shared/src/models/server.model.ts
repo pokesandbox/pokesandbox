@@ -27,7 +27,6 @@ export const serverSchema = baseEntitySchema.extend({
   modRoleIds: z.array(z.string()),
   name: z.string(),
   playerList: z.array(z.instanceof(Types.ObjectId)),
-  prefixes: z.array(z.string()),
   regions: z.array(z.instanceof(Types.ObjectId)),
 });
 
@@ -75,7 +74,6 @@ export const serverDbSchema = new Schema<
     modRoleIds: { type: [String], required: true },
     name: { type: String, required: true },
     playerList: { type: [Schema.Types.ObjectId], ref: 'User', required: true },
-    prefixes: { type: [String], required: true },
     regions: { type: [Schema.Types.ObjectId], ref: 'Region', required: true },
   },
   {
