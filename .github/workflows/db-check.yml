@@ -38,6 +38,9 @@ jobs:
     name: DB check
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # The seed requires a guild ID; this placeholder is not a real server.
+      DEV_GUILD_ID: '000000000000000000'
 
     steps:
       - name: Checkout
