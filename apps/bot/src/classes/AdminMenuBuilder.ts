@@ -147,7 +147,9 @@ function buildAdminHelpers(
 // Server auto-initialization
 // ---------------------------------------------------------------------------
 
-async function ensureServerInitialized(ctx: AdminMenuContext): Promise<void> {
+export async function ensureServerInitialized(
+  ctx: AdminMenuContext,
+): Promise<void> {
   const interaction = ctx.interaction as ChatInputCommandInteraction;
   const server = await getCachedServer(interaction.guild?.id);
 
