@@ -5,7 +5,7 @@ The pure base layer: content and catalog schemas, `ContentKey`, port interfaces,
 ## Rules ([03 § Package layout](../../docs/architecture/concepts/03-engine-boundary-and-game-loop.md#package-layout--encapsulation-rules-decided-oct-2026))
 
 - **No I/O.** No `mongoose`, `discord.js`, Showdown, React, network, filesystem, or `Date.now()` / `Math.random()`: time and randomness come in through the `Clock` and `Rng` ports.
-- **Imports nothing internal.** `core` depends on no other workspace package (`@shared/*` included). Everything else may depend on it. Enforced by lint once #114 lands.
+- **Imports nothing internal.** `core` depends on no other workspace package (`@shared/*` included). Everything else may depend on it. Enforced by `nx lint` (`@nx/enforce-module-boundaries`, tag `scope:core`), which also bans `discord.js`, `mongoose`, React, and Showdown imports here.
 - **Ports are interfaces only**, and everything crossing them is serializable data (no class instances, functions, or documents), so a port can become an API call later.
 - **No module-level singletons or state.** Registries are built and passed in, not global.
 - **Zod schemas** follow the repo naming: `fooSchema`, types via `z.infer` ([`shared/AGENTS.md`](../../shared/AGENTS.md#model-conventions)).
