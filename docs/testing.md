@@ -13,11 +13,11 @@ How we write tests in this repo. [`AGENTS.md`](../AGENTS.md) holds the rules eve
 
 ## Files and naming
 
-| Kind                    | File                                 | Runs in                                                        |
-| ----------------------- | ------------------------------------ | -------------------------------------------------------------- |
-| Unit                    | `foo.test.ts` next to `foo.ts`       | the project's unit Jest project                                |
-| Integration (bot)       | `foo.integration.test.ts` next to it | the `bot:integration` Jest project (`apps/bot/jest.config.ts`) |
-| Jest setup, workarounds | `apps/bot/src/testing/`              | test builds only (excluded from `tsconfig.app.json`)           |
+| Kind                    | File                                 | Runs in                                                                                                 |
+| ----------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Unit                    | `foo.test.ts` next to `foo.ts`       | the project's unit Jest project                                                                         |
+| Integration (bot)       | `foo.integration.test.ts` next to it | the `bot:integration` Jest project (`apps/bot/jest.config.ts`)                                          |
+| Jest setup, workarounds | `apps/bot/src/testing/`              | test builds only (excluded from `tsconfig.app.json`); SonarCloud treats `testing/` folders as test code |
 
 Use only the `.test` suffix. CI rejects `*.spec.*` files.
 
