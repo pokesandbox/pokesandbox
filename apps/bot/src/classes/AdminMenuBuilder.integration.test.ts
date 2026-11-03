@@ -55,11 +55,12 @@ describe('AdminMenuBuilder server initialization', () => {
 /**
  * Opens a bare admin menu in a guild; its setup runs the server initialization.
  *
- * MenuHarness doesn't let a test supply the command interaction (no guild), so
- * this adds the guild and a `followUp` spy to the harness's own stub.
+ * MenuHarness doesn't let a test supply the command interaction, so this adds
+ * a guild to the harness's stub. The welcome goes out through
+ * `interaction.followUp`, which the menu render never shows, so the stub's own
+ * `followUp` mock is returned for assertions.
  */
 async function startMenu() {
-  const followUp = jest.fn();
   const harness = new MenuHarness({
     main: (session) =>
       new AdminMenuBuilder(session, 'main')
@@ -68,15 +69,17 @@ async function startMenu() {
         .setCancellable()
         .build(),
   });
-  Object.assign((harness as unknown as { _interaction: object })._interaction, {
+  const interaction = (
+    harness as unknown as { _interaction: { followUp: jest.Mock } }
+  )._interaction;
+  Object.assign(interaction, {
     guild: {
       id: 'guild-1',
       name: 'Test Guild',
       icon: null,
       iconURL: () => null,
     },
-    followUp,
   });
   await harness.start('main');
-  return { harness, followUp };
+  return { harness, followUp: interaction.followUp };
 }

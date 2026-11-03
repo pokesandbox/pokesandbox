@@ -11,7 +11,7 @@
     "db:down": "docker compose down",
     "db:check": "ts-node --project scripts/tsconfig.json scripts/db/check-transactions.ts",
     "db:indexes": "ts-node --project scripts/tsconfig.json scripts/db/create-indexes.ts",
-    "db:seed": "ts-node --project scripts/tsconfig.json scripts/seed/import.ts",
+    "db:seed": "ts-node --project scripts/tsconfig.json scripts/seed/import.ts && npm run db:indexes",
     "db:reset": "npm run db:seed",
     "db:export": "ts-node --project scripts/tsconfig.json scripts/seed/export.ts",
     "erd:generate": "ts-node --project scripts/tsconfig.json scripts/generate-erd.ts",

@@ -1,13 +1,3 @@
-import { shouldAutoIndex } from './connectDb';
-
-describe('shouldAutoIndex', () => {
-  it('is off in production only', () => {
-    expect(shouldAutoIndex('production')).toBe(false);
-    expect(shouldAutoIndex('development')).toBe(true);
-    expect(shouldAutoIndex(undefined)).toBe(true);
-  });
-});
-
 describe('connectDb', () => {
   const env = { ...process.env };
 
@@ -21,28 +11,20 @@ describe('connectDb', () => {
     process.env = { ...env };
   });
 
-  async function load(nodeEnv: string) {
-    const connect = jest.fn().mockResolvedValue({ connected: true });
-    jest.doMock('mongoose', () => ({ connect }));
-    process.env.NODE_ENV = nodeEnv;
-    process.env.DATABASE_URI = 'mongodb://example/test';
-    const { connectDb } = await import('./connectDb');
-    return { connect, connectDb };
-  }
+  it.each(['production', 'development'])(
+    'connects with autoIndex off when NODE_ENV is %s',
+    async (nodeEnv) => {
+      const connect = jest.fn().mockResolvedValue({ connected: true });
+      jest.doMock('mongoose', () => ({ connect }));
+      process.env.NODE_ENV = nodeEnv;
+      process.env.DATABASE_URI = 'mongodb://example/test';
 
-  it('connects with autoIndex off in production', async () => {
-    const { connect, connectDb } = await load('production');
-    await connectDb();
-    expect(connect).toHaveBeenCalledWith('mongodb://example/test', {
-      autoIndex: false,
-    });
-  });
+      const { connectDb } = await import('./connectDb');
+      await connectDb();
 
-  it('connects with autoIndex on in development', async () => {
-    const { connect, connectDb } = await load('development');
-    await connectDb();
-    expect(connect).toHaveBeenCalledWith('mongodb://example/test', {
-      autoIndex: true,
-    });
-  });
+      expect(connect).toHaveBeenCalledWith('mongodb://example/test', {
+        autoIndex: false,
+      });
+    },
+  );
 });
