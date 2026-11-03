@@ -13,18 +13,18 @@ How we write tests in this repo. [`AGENTS.md`](../AGENTS.md) holds the rules eve
 
 ## Files and naming
 
-| Kind              | File                                 | Runs in                                                        |
-| ----------------- | ------------------------------------ | -------------------------------------------------------------- |
-| Unit              | `foo.test.ts` next to `foo.ts`       | the project's unit Jest project                                |
-| Integration (bot) | `foo.integration.test.ts` next to it | the `bot:integration` Jest project (`apps/bot/jest.config.ts`) |
-| Jest setup files  | `apps/bot/src/testing/`              | test builds only (excluded from `tsconfig.app.json`)           |
+| Kind                    | File                                 | Runs in                                                        |
+| ----------------------- | ------------------------------------ | -------------------------------------------------------------- |
+| Unit                    | `foo.test.ts` next to `foo.ts`       | the project's unit Jest project                                |
+| Integration (bot)       | `foo.integration.test.ts` next to it | the `bot:integration` Jest project (`apps/bot/jest.config.ts`) |
+| Jest setup, workarounds | `apps/bot/src/testing/`              | test builds only (excluded from `tsconfig.app.json`)           |
 
 Use only the `.test` suffix. CI rejects `*.spec.*` files.
 
 ## Writing a test
 
 - **No `beforeEach` / `afterEach` (or `beforeAll` / `afterAll`) in test files.** Hooks hide what a given test runs. Each test sets up its own data and mocks, or calls a helper function that does; a function call can be traced from the test, a hook can't. Housekeeping that applies to every test (resetting mocks, ending sessions) goes in a Jest setup file wired through the Jest config instead.
-- **Keep each test file self-contained.** Shared setup goes in helper functions in the same test file, below the tests. Don't import test helpers from other files, even if that means two test files carry the same small helper.
+- **Keep each test file self-contained.** Shared setup goes in helper functions in the same test file, below the tests. Don't import test helpers from other files, even if that means two test files carry the same small helper. The one exception is a temporary workaround for a bug in an external package, which lives in `apps/bot/src/testing/` with a link to the bug and to the issue that deletes it (today: `submitModalFields`).
 - **Type mocks with `jest.mocked(fn)`** on the real import, rather than casting `jest.requireMock(...)`.
 - **Fixtures** that are plain data (a `DexEntry`, a region) can live at the top of the file. Anything stateful is created inside the test, or in a helper the test calls.
 
@@ -36,7 +36,7 @@ Bot menus are driven headless with [`MenuHarness`](https://www.npmjs.com/package
 - **Mock the data layer, not FlowCord.** Mock `@bot/cache` (and other I/O such as `searchPokemon`) per test with `jest.mocked(...)`. Mock only what the path you're testing calls; a missing mock fails loudly, which is how hidden dependencies between tests show up.
 - **Register every menu the test navigates to**, wrapping each command's `createMenu`. Use an `async` wrapper when `createMenu` is async: FlowCord rejects a sync factory that returns a promise.
 - **Assert on the rendered menu:** `harness.currentMenu`, `harness.hasText(...)`, `harness.queryButton(...)`. Then assert on writes (`saveRegion`, `saveServer`) and the resulting data.
-- **Modals:** open with `harness.clickModal(label)`, then submit with a `submitModalFields(harness, values)` helper in the test file that enqueues the submit on `harness.adapter` (copy it from an existing integration test). Don't use `harness.submitModal`: it only fakes `fields.getField`, while our handlers read the `ModalSubmitFields` collection (flowcord-dev/flowcord#112; #229 removes the helpers once that's fixed).
+- **Modals:** open with `harness.clickModal(label)`, then submit with `submitModalFields(harness, values)` from `apps/bot/src/testing/`. Don't use `harness.submitModal`: it only fakes `fields.getField`, while our handlers read the `ModalSubmitFields` collection (flowcord-dev/flowcord#112; #229 removes the helper once that's fixed).
 - **A test that times out** usually means a menu callback threw. The harness waits for a render that never comes. Look for an unmocked call first.
 
 ## Coverage

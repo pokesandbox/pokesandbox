@@ -3,6 +3,7 @@ import { MenuHarness } from '@flowcord/testing';
 import type { Server } from '@shared/models';
 
 import { getCachedServer, saveServer } from '@bot/cache';
+import { submitModalFields } from '../../../../../../testing/submitModalFields';
 import { DiscoveryCommand } from './discovery';
 
 jest.mock('@bot/cache', () => ({
@@ -33,28 +34,3 @@ describe('discovery menu', () => {
     ).toBe(true);
   });
 });
-
-/**
- * Submits the open modal. `harness.submitModal` only fakes `fields.getField`,
- * but our handlers read the `ModalSubmitFields` collection, so this enqueues a
- * submit in that shape (flowcord-dev/flowcord#112, #229).
- */
-async function submitModalFields(
-  harness: MenuHarness,
-  values: Record<string, string>,
-) {
-  harness.adapter.enqueueModalSubmit({
-    getFieldValue: (id: string) => values[id] ?? '',
-    raw: {
-      deferred: false,
-      replied: false,
-      deferUpdate: async () => undefined,
-      fields: {
-        fields: new Map(
-          Object.entries(values).map(([id, value]) => [id, { value }]),
-        ),
-      },
-    },
-  } as never);
-  await harness.adapter.waitForNextRender();
-}

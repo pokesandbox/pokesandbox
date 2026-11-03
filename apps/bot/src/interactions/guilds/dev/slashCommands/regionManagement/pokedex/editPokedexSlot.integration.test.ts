@@ -11,6 +11,7 @@ import {
   saveRegion,
 } from '@bot/cache';
 import { searchPokemon } from '@bot/utils';
+import { submitModalFields } from '../../../../../../testing/submitModalFields';
 import { EditPokedexSlotCommand } from './editPokedexSlot';
 
 jest.mock('@bot/cache', () => ({
@@ -118,29 +119,4 @@ async function startEditSlotMenu(pokedex: Region['pokedex']) {
     pokedex_no: 1,
   });
   return { harness, region };
-}
-
-/**
- * Submits the open modal. `harness.submitModal` only fakes `fields.getField`,
- * but our handlers read the `ModalSubmitFields` collection, so this enqueues a
- * submit in that shape (flowcord-dev/flowcord#112, #229).
- */
-async function submitModalFields(
-  harness: MenuHarness,
-  values: Record<string, string>,
-) {
-  harness.adapter.enqueueModalSubmit({
-    getFieldValue: (id: string) => values[id] ?? '',
-    raw: {
-      deferred: false,
-      replied: false,
-      deferUpdate: async () => undefined,
-      fields: {
-        fields: new Map(
-          Object.entries(values).map(([id, value]) => [id, { value }]),
-        ),
-      },
-    },
-  } as never);
-  await harness.adapter.waitForNextRender();
 }
