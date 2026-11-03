@@ -11,7 +11,6 @@ import {
   saveRegion,
 } from '@bot/cache';
 import { searchPokemon } from '@bot/utils';
-import { submitModalFields } from '../../../../../../testing/submitModalFields';
 import { EditPokedexSlotCommand } from './editPokedexSlot';
 
 jest.mock('@bot/cache', () => ({
@@ -45,15 +44,6 @@ const raichu = {
 
 describe('edit pokedex slot menu', () => {
   it('opens the name modal from Swap and replaces the slot', async () => {
-    const region = {
-      name: 'Kanto',
-      pokedex: [{ id: pikachu._id, name: 'Pikachu' }],
-    } as unknown as Region;
-    jest
-      .mocked(getCachedServer)
-      .mockResolvedValue({ _id: new Types.ObjectId() } as Server);
-    jest.mocked(getCachedRegion).mockResolvedValue(region);
-    jest.mocked(getAssertedCachedRegion).mockResolvedValue(region);
     jest
       .mocked(getAssertedCachedDexEntry)
       .mockImplementation(async (id) =>
@@ -62,14 +52,9 @@ describe('edit pokedex slot menu', () => {
     jest
       .mocked(searchPokemon)
       .mockResolvedValue({ exactMatch: raichu, potentialMatches: [raichu] });
-    const harness = new MenuHarness({
-      'edit-pokedex-slot': async (session, options) =>
-        EditPokedexSlotCommand.createMenu(session, options),
-    });
-    await harness.start('edit-pokedex-slot', {
-      region_id: 'region1',
-      pokedex_no: 1,
-    });
+    const { harness, region } = await startEditSlotMenu([
+      { id: pikachu._id, name: 'Pikachu' },
+    ]);
 
     harness.clickModal('Swap');
     await submitModalFields(harness, { 'pokemon-name': 'Raichu' });
@@ -81,25 +66,11 @@ describe('edit pokedex slot menu', () => {
   });
 
   it('keeps the original Pokémon when a swap finds no match', async () => {
-    const region = {
-      name: 'Kanto',
-      pokedex: [{ id: pikachu._id, name: 'Pikachu' }],
-    } as unknown as Region;
-    jest
-      .mocked(getCachedServer)
-      .mockResolvedValue({ _id: new Types.ObjectId() } as Server);
-    jest.mocked(getCachedRegion).mockResolvedValue(region);
-    jest.mocked(getAssertedCachedRegion).mockResolvedValue(region);
     jest.mocked(getAssertedCachedDexEntry).mockResolvedValue(pikachu);
     jest.mocked(searchPokemon).mockResolvedValue({ potentialMatches: [] });
-    const harness = new MenuHarness({
-      'edit-pokedex-slot': async (session, options) =>
-        EditPokedexSlotCommand.createMenu(session, options),
-    });
-    await harness.start('edit-pokedex-slot', {
-      region_id: 'region1',
-      pokedex_no: 1,
-    });
+    const { harness, region } = await startEditSlotMenu([
+      { id: pikachu._id, name: 'Pikachu' },
+    ]);
 
     harness.clickModal('Swap');
     await submitModalFields(harness, { 'pokemon-name': 'Missingno' });
@@ -110,24 +81,11 @@ describe('edit pokedex slot menu', () => {
   });
 
   it('opens the name modal from Add Pokémon and fills an empty slot', async () => {
-    const region = { name: 'Kanto', pokedex: [] } as unknown as Region;
-    jest
-      .mocked(getCachedServer)
-      .mockResolvedValue({ _id: new Types.ObjectId() } as Server);
-    jest.mocked(getCachedRegion).mockResolvedValue(region);
-    jest.mocked(getAssertedCachedRegion).mockResolvedValue(region);
     jest.mocked(getAssertedCachedDexEntry).mockResolvedValue(pikachu);
     jest
       .mocked(searchPokemon)
       .mockResolvedValue({ exactMatch: pikachu, potentialMatches: [pikachu] });
-    const harness = new MenuHarness({
-      'edit-pokedex-slot': async (session, options) =>
-        EditPokedexSlotCommand.createMenu(session, options),
-    });
-    await harness.start('edit-pokedex-slot', {
-      region_id: 'region1',
-      pokedex_no: 1,
-    });
+    const { harness, region } = await startEditSlotMenu([]);
     expect(harness.hasText('This slot is currently empty')).toBe(true);
 
     harness.clickModal('Add Pokémon');
@@ -138,3 +96,51 @@ describe('edit pokedex slot menu', () => {
     expect(harness.hasText('#1: Pikachu - The Mouse Pokémon')).toBe(true);
   });
 });
+
+/**
+ * Mocks the server and a region with the given Pokédex, then opens the edit
+ * slot menu on slot 1. Dex entry and search mocks are left to each test.
+ */
+async function startEditSlotMenu(pokedex: Region['pokedex']) {
+  const region = { name: 'Kanto', pokedex } as unknown as Region;
+  jest
+    .mocked(getCachedServer)
+    .mockResolvedValue({ _id: new Types.ObjectId() } as Server);
+  jest.mocked(getCachedRegion).mockResolvedValue(region);
+  jest.mocked(getAssertedCachedRegion).mockResolvedValue(region);
+
+  const harness = new MenuHarness({
+    'edit-pokedex-slot': async (session, options) =>
+      EditPokedexSlotCommand.createMenu(session, options),
+  });
+  await harness.start('edit-pokedex-slot', {
+    region_id: 'region1',
+    pokedex_no: 1,
+  });
+  return { harness, region };
+}
+
+/**
+ * Submits the open modal. `harness.submitModal` only fakes `fields.getField`,
+ * but our handlers read the `ModalSubmitFields` collection, so this enqueues a
+ * submit in that shape (flowcord-dev/flowcord#112, #229).
+ */
+async function submitModalFields(
+  harness: MenuHarness,
+  values: Record<string, string>,
+) {
+  harness.adapter.enqueueModalSubmit({
+    getFieldValue: (id: string) => values[id] ?? '',
+    raw: {
+      deferred: false,
+      replied: false,
+      deferUpdate: async () => undefined,
+      fields: {
+        fields: new Map(
+          Object.entries(values).map(([id, value]) => [id, { value }]),
+        ),
+      },
+    },
+  } as never);
+  await harness.adapter.waitForNextRender();
+}
