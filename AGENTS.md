@@ -38,9 +38,11 @@ Every change, human or agent. ⚙ = enforced by a hook or CI.
 - If a PR outgrows its issue (bigger than the issue's size, or a reviewer couldn't check the acceptance criteria from the PR alone), split the **issue**: narrow the original to what this PR delivers, and move the rest to a new sub-issue of the same epic. Every PR closes exactly one issue, its own:
   - PR 1 (`104-…`): `Closes #104`.
   - PR 2 (`215-…`, #215 being the new sub-issue): `Closes #215` and `Part of #104`.
+  - Agents draft the narrowed scope and the new sub-issue's text for the user, who edits and files them.
   - Never put `Closes #104` on both. The first merge closes #104, the second PR then fails the Linked issue check, and the board shows #104 Done while work remains.
 - ⚙ The PR body closes its issue (`Closes #N`) and follows [the template](.github/pull_request_template.md). Open it as a **draft**; mark it ready only when CI, Linked issue, and SonarCloud pass.
 - Agents leave the template's two AI checkboxes **unchecked**. They are the human's attestation.
+- Agents write artifacts (code, commit messages, PR descriptions) but never conversation: no issue or PR comments, replies, reviews, or questions to maintainers. Those come from the human, in their own words. Bring anything that needs saying to the user instead.
 
 **Commits**
 
@@ -68,9 +70,9 @@ Every change, human or agent. ⚙ = enforced by a hook or CI.
 
 **When it's unclear**
 
-- If the issue leaves a design question open, stop: comment on the issue, add `needs-decision`, and don't decide it in code.
+- If the issue leaves a design question open, stop and put it to the user: the question, what the docs do and don't say, and a suggested answer if you have one. Don't decide it in code. If it needs a maintainer's decision, the user raises it on the issue and adds `needs-decision`.
 - Never edit a concept doc's **Decisions** or `docs/architecture/open-questions.md` unless the issue says to. In a concept doc, Decisions win over the rest of the text.
-- Undecided right now: where the Mongoose repositories behind the engine's ports live (`shared/` or a new lib). Ask on the issue; #153 settles it.
+- Undecided right now: where the Mongoose repositories behind the engine's ports live (`shared/` or a new lib). Ask the user; #153 settles it.
 
 ## Architecture rules
 

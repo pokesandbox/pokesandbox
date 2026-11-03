@@ -11,8 +11,8 @@ The rules are in `AGENTS.md` (Musts); this is the order to apply them.
 
 If the diff has grown past the issue's size, or a reviewer couldn't check the acceptance criteria from this PR alone, split the **issue** before going on:
 
-1. Narrow the original issue to what this PR delivers.
-2. Propose a new sub-issue (same epic) for the rest, and ask the user to create it, or create it if you're allowed to.
+1. Draft, for the user, the original issue narrowed to what this PR delivers.
+2. Draft a new sub-issue (same epic) for the rest. The user edits and files both; don't post them yourself.
 3. This PR closes the original. The follow-up PR, on branch `<new-issue>-…`, says `Closes #<new>` and `Part of #<original>`.
 
 Never write `Closes #N` for the same issue in two PRs.

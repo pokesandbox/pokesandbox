@@ -21,7 +21,7 @@ Stop and tell the user (don't start coding) if any of these hold:
 - The issue is labelled `needs-decision`, or its type is `Decision` or `Spike`.
 - It has an open "blocked by" issue.
 - It isn't labelled `agent-ready` and you're working without a human directing you.
-- Reading the docs leaves a design question the issue doesn't answer. Comment the question on the issue and suggest adding `needs-decision`; don't decide it in code.
+- Reading the docs leaves a design question the issue doesn't answer. Put it to the user briefly: the question, what the docs do and don't say, and a suggested answer if you have one. Don't decide it in code, and don't post it anywhere yourself: if it needs a maintainer's decision, the user raises it on the issue in their own words.
 
 ## 3. Create the branch
 

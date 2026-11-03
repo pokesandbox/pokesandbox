@@ -103,6 +103,8 @@ The repo-wide format commit is listed in `.git-blame-ignore-revs`. GitHub skips 
 
 AI tools are welcome. The bar doesn't change with how the code was written: you must understand everything you submit and be able to explain each design decision in review. Read the whole diff before opening a PR, and check AI-written code against the architecture rules yourself.
 
+AI can write artifacts (code, commit messages, PR descriptions), but never use it to talk to people. Write issue and PR comments, review replies, and questions yourself, briefly and in your own words. Use AI to understand a problem, not to argue it: a short human message is easier to answer than a long generated one. Agents follow the same rule, so they bring questions to you instead of posting them.
+
 The PR template has two checkboxes: one discloses that you used AI tools (no judgement either way), and one attests that you've read every line and can explain it. They are the human contributor's attestation, so an AI agent opening a PR leaves them unchecked for you to fill in.
 
 ### AI context files
