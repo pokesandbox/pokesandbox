@@ -22,3 +22,12 @@ export const zMapHydrator = <T extends z.ZodTypeAny>(valueSchema: T) => {
       return new Map(Object.entries(val));
     }) as z.ZodType<Map<string, z.infer<T>>>;
 };
+
+/** True for MongoDB's duplicate-key error (code 11000), e.g. a unique-index race. */
+export function isDuplicateKeyError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    (error as { code?: unknown }).code === 11000
+  );
+}

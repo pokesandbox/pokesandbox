@@ -99,6 +99,9 @@ export const userDbSchema = new Schema<
   },
 );
 
+// One User per Discord account.
+userDbSchema.index({ userId: 1 }, { unique: true });
+
 export const User =
   (models.User as IUserModel) ||
   (model<IUser, IUserModel>('User', userDbSchema, 'users') as IUserModel);

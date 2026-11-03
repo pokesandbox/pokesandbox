@@ -21,7 +21,7 @@ Reference: [`models/user.model.ts`](src/models/user.model.ts) (top-level model),
 | Registration                          | Export from `models/index.ts` (and the folder's `index.ts`)                                                                                                                                   |
 
 - **Validation lives in Zod.** Mongoose validators beyond `required` / `enum`, and Mongoose middleware (pre/post hooks), are not used; keep side effects explicit.
-- **Indexes** (unique keys, parent lookups) are declared in the schema (`fooDbSchema.index(...)`), see #118.
+- **Indexes** (unique keys, parent lookups) are declared in the schema (`fooDbSchema.index(...)`), see #118. Nothing builds them at startup (`autoIndex` is off everywhere); `npm run db:indexes` does, and `db:seed` runs it ([local development](../docs/local-development.md#indexes)).
 - **Identity** ([02](../docs/architecture/concepts/02-identity-and-references.md#principles)): `z.instanceof(Types.ObjectId)` only for references to _documents_ (users, servers, characters, journeys, Pokémon instances). Authored content (locations, NPCs, scripts, shops…) is referenced by its region-scoped `key`, canon content by Showdown ID. The child stores its parent's ID; parents never keep child arrays. Existing ObjectId content references and bidirectional arrays are legacy (#120, #138, #139); don't add more.
 - **Legacy:** `DexEntry` (`dexentry.model.ts`) has no Zod schema and uses a hand-written interface; the catalog rework (#120, #157) replaces it. Don't copy it.
 

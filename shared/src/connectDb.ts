@@ -6,11 +6,12 @@ export async function connectDb() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = connect(process.env.DATABASE_URI || '').then(
-      (mongoose) => {
-        return mongoose;
-      },
-    );
+    cached.promise = // Indexes are built by `npm run db:indexes`, never implicitly at startup.
+      connect(process.env.DATABASE_URI || '', { autoIndex: false }).then(
+        (mongoose) => {
+          return mongoose;
+        },
+      );
   }
 
   try {

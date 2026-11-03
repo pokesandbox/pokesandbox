@@ -2,9 +2,8 @@
 export default {
   displayName: 'shared',
   preset: '../jest.preset.js',
-  // No unit tests yet; remove once the first spec lands.
-  passWithNoTests: true,
   testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/src/testing/unitSetup.ts'],
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
