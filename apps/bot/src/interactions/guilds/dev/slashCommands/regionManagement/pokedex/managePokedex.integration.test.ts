@@ -1,5 +1,12 @@
 import { MenuHarness } from '@flowcord/testing';
 
+import type { Region, Server } from '@shared/models';
+
+import {
+  getAssertedCachedRegion,
+  getCachedRegion,
+  getCachedServer,
+} from '@bot/cache';
 import { submitModalFields } from '../../../../../../testing/submitModalFields';
 import { EditPokedexSlotCommand } from './editPokedexSlot';
 import { ManagePokedexCommand } from './managePokedex';
@@ -9,38 +16,22 @@ jest.mock('@bot/cache', () => ({
   getCachedServer: jest.fn(),
   getCachedRegion: jest.fn(),
   getAssertedCachedRegion: jest.fn(),
-  saveServer: jest.fn(),
-  saveRegion: jest.fn(),
 }));
 
-const cache = jest.requireMock('@bot/cache') as Record<string, jest.Mock>;
-
-const REGION_ID = 'region1';
-
 describe('manage pokedex menu', () => {
-  let harness: MenuHarness;
-
-  beforeEach(async () => {
-    jest.clearAllMocks();
-    const region = { name: 'Kanto', pokedex: [] as unknown[] };
-    cache.getCachedServer.mockResolvedValue({ name: 'Test Server' });
-    cache.getCachedRegion.mockResolvedValue(region);
-    cache.getAssertedCachedRegion.mockResolvedValue(region);
-
-    harness = new MenuHarness({
+  it('shows the validation prompt for an invalid Pokédex number', async () => {
+    const region = { name: 'Kanto', pokedex: [] } as unknown as Region;
+    jest
+      .mocked(getCachedServer)
+      .mockResolvedValue({ name: 'Test Server' } as Server);
+    jest.mocked(getCachedRegion).mockResolvedValue(region);
+    jest.mocked(getAssertedCachedRegion).mockResolvedValue(region);
+    const harness = new MenuHarness({
       'manage-pokedex': async (session, options) =>
         ManagePokedexCommand.createMenu(session, options),
-      'edit-pokedex-slot': async (session, options) =>
-        EditPokedexSlotCommand.createMenu(session, options),
     });
-    await harness.start('manage-pokedex', { region_id: REGION_ID });
-  });
+    await harness.start('manage-pokedex', { region_id: 'region1' });
 
-  afterEach(async () => {
-    await MenuHarness.endAll();
-  });
-
-  it('shows the validation prompt for an invalid Pokédex number', async () => {
     harness.clickModal('Add / Edit Slot');
     await submitModalFields(harness, { 'pokedex-no': 'abc' });
 
@@ -49,6 +40,20 @@ describe('manage pokedex menu', () => {
   });
 
   it('opens the slot menu when only a number is submitted', async () => {
+    const region = { name: 'Kanto', pokedex: [] } as unknown as Region;
+    jest
+      .mocked(getCachedServer)
+      .mockResolvedValue({ name: 'Test Server' } as Server);
+    jest.mocked(getCachedRegion).mockResolvedValue(region);
+    jest.mocked(getAssertedCachedRegion).mockResolvedValue(region);
+    const harness = new MenuHarness({
+      'manage-pokedex': async (session, options) =>
+        ManagePokedexCommand.createMenu(session, options),
+      'edit-pokedex-slot': async (session, options) =>
+        EditPokedexSlotCommand.createMenu(session, options),
+    });
+    await harness.start('manage-pokedex', { region_id: 'region1' });
+
     harness.clickModal('Add / Edit Slot');
     await submitModalFields(harness, { 'pokedex-no': '25' });
 

@@ -6,5 +6,10 @@
     "target": "es2017",
     "types": ["jest", "node"]
   },
-  "include": ["jest.config.ts", "src/**/*.test.ts", "src/**/*.d.ts"]
+  "include": [
+    "jest.config.ts",
+    "src/**/*.test.ts",
+    "src/**/*.d.ts",
+    "src/testing/**/*.ts"
+  ]
 }

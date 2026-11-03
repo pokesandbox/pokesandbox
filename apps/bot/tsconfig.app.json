@@ -5,6 +5,6 @@
     "module": "commonjs",
     "types": ["node"]
   },
-  "exclude": ["jest.config.ts", "src/**/*.test.ts"],
+  "exclude": ["jest.config.ts", "src/**/*.test.ts", "src/testing/**"],
   "include": ["src/**/*.ts"]
 }
