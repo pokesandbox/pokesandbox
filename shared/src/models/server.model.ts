@@ -95,11 +95,7 @@ export const serverDbSchema = new Schema<
         const newServer = new this(server);
         return newServer.save();
       },
-      /**
-       * Safe under concurrent first use: the unique `serverId` index makes the
-       * losing insert fail with a duplicate-key error, and we return the
-       * winner's document instead.
-       */
+      /** Race-safe: a duplicate-key error returns the concurrent winner. */
       async findOrCreateServer(server: IServerInput) {
         const existing = await this.findOne({ serverId: server.serverId });
         if (existing) return { server: existing, created: false };
@@ -122,7 +118,7 @@ export const serverDbSchema = new Schema<
   },
 );
 
-// One Server per Discord guild (#118).
+// One Server per Discord guild.
 serverDbSchema.index({ serverId: 1 }, { unique: true });
 
 export const Server =

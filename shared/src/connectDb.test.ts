@@ -19,7 +19,6 @@ describe('connectDb', () => {
 
   afterEach(() => {
     process.env = { ...env };
-    jest.restoreAllMocks();
   });
 
   async function load(nodeEnv: string) {

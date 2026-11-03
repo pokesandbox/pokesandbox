@@ -99,7 +99,7 @@ export const userDbSchema = new Schema<
   },
 );
 
-// One User per Discord account (#118).
+// One User per Discord account.
 userDbSchema.index({ userId: 1 }, { unique: true });
 
 export const User =

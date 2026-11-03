@@ -138,7 +138,7 @@ export const locationDbSchema = new Schema<
   },
 );
 
-// Ordinals are unique within a region; also serves `byRegionId` lookups (#118).
+// Ordinals are unique within a region; also serves `byRegionId` lookups.
 locationDbSchema.index({ regionId: 1, ordinal: 1 }, { unique: true });
 
 export const Location =

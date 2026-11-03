@@ -11,8 +11,6 @@ const input = {
 } as unknown as IServerInput;
 
 describe('Server.findOrCreateServer', () => {
-  afterEach(() => jest.restoreAllMocks());
-
   it('creates when none exists', async () => {
     const doc = { serverId: 'guild-1' };
     jest.spyOn(Server, 'findOne').mockResolvedValue(null as never);

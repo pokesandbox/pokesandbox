@@ -1,5 +1,5 @@
 /**
- * Creates the indexes declared in the Mongoose schemas (see #118).
+ * Creates the indexes declared in the Mongoose schemas.
  *
  * Outside production, `connectDb` builds indexes on startup (`autoIndex`).
  * In production `autoIndex` is off, so run this on deploy instead. It only
