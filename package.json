@@ -9,6 +9,7 @@
     "env-setup": "node scripts/env-setup.js",
     "db:up": "docker compose up --wait -d",
     "db:down": "docker compose down",
+    "db:check": "ts-node --project scripts/tsconfig.json scripts/db/check-transactions.ts",
     "db:seed": "ts-node --project scripts/tsconfig.json scripts/seed/import.ts",
     "db:reset": "npm run db:seed",
     "db:export": "ts-node --project scripts/tsconfig.json scripts/seed/export.ts",

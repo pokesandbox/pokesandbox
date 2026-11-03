@@ -3,6 +3,9 @@ services:
     image: mongo:7
     container_name: pokesandbox-mongodb
     restart: unless-stopped
+    # Single-node replica set so multi-document transactions work locally.
+    # The healthcheck below initiates the set on first boot (idempotent).
+    command: ['--replSet', 'rs0', '--bind_ip_all']
     ports:
       - '27017:27017'
     environment:
@@ -10,8 +13,15 @@ services:
     volumes:
       - mongodb_data:/data/db
     healthcheck:
-      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
-      interval: 10s
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - |
+          try { rs.status() } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }) }
+          quit(db.hello().isWritablePrimary ? 0 : 1)
+      interval: 5s
       timeout: 5s
       retries: 5
       start_period: 10s

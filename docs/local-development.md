@@ -52,7 +52,7 @@ npm run setup
 This single command will:
 
 1. Copy `.env.example` → `.env` (skips if `.env` already exists)
-2. Start the MongoDB 7 Docker container and wait until it is healthy
+2. Start the MongoDB 7 Docker container (a single-node replica set, so transactions work) and wait until it is healthy
 3. Seed the database with fictional sample data
 
 > **After running `npm run setup`**, open `.env` and fill in the required values (bot token, Discord OAuth credentials, NextAuth secret, etc.) before starting the bot or web app. See [Environment Variables](#environment-variables) below.
@@ -101,6 +101,7 @@ After running `npm run env-setup` (or `npm run setup`), open `.env` and fill in:
 | ------------------------------------------ | ------------------------------------------------------------- |
 | `npm run db:up`                            | Start the local MongoDB Docker container                      |
 | `npm run db:down`                          | Stop the local MongoDB Docker container                       |
+| `npm run db:check`                         | Prove the local Mongo supports `session.withTransaction`      |
 | `npm run db:seed`                          | Drop all collections and re-seed with sample data             |
 | `npm run db:reset`                         | Alias for `db:seed` — wipe and re-seed                        |
 | `npm run db:export`                        | Export all live local collections back to the JSON seed files |
