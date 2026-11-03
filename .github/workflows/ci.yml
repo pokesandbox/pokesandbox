@@ -86,3 +86,6 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # With new code = "Previous version", develop's gate only judges the latest merge, which its PR already passed.
+          args: ${{ github.event_name == 'push' && format('-Dsonar.projectVersion={0}', github.sha) || '' }}

@@ -120,7 +120,7 @@ An issue already in **Done** is left alone unless the PR is reopened. Turn off t
 | `PROJECTS_TOKEN` | Secret              | A fine-grained PAT owned by the `pokesandbox` org: org **Projects: read and write**; repo `pokesandbox/pokesandbox` **Issues, Pull requests, Metadata: read**. `GITHUB_TOKEN` can't write org projects. Without it, status sync is skipped with a warning; a rejected (expired) token fails the job with a "rotate" message. |
 | `PROJECT_NUMBER` | Variable (optional) | The board's number; defaults to `1`                                                                                                                                                                                                                                                                                          |
 
-**SonarCloud:** one project for the monorepo ([`sonar-project.properties`](../../sonar-project.properties)), with Automatic Analysis turned off because CI does the analysis. A new app or lib adds its `src` to `sonar.sources` and its lcov file to `sonar.javascript.lcov.reportPaths`.
+**SonarCloud:** one project for the monorepo ([`sonar-project.properties`](../../sonar-project.properties)), with Automatic Analysis turned off because CI does the analysis. Keep the new code definition on **Previous version** (Administration → New Code): CI versions each `develop` commit, so `develop`'s gate only judges the latest merge. A new app or lib adds its `src` to `sonar.sources` and its lcov file to `sonar.javascript.lcov.reportPaths`.
 
 **Branch protection on `develop`:** require **CI**, **Linked issue**, and **SonarCloud Code Analysis**.
 
