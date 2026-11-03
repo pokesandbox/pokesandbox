@@ -156,7 +156,7 @@ async function ensureServerInitialized(ctx: AdminMenuContext): Promise<void> {
       throw new Error('Guild not found while initializing server.');
     }
 
-    const newServer = await Server.create({
+    const { server: newServer, created } = await Server.findOrCreateServer({
       adminRoleIds: [],
       discovery: {
         enabled: false,
@@ -168,6 +168,9 @@ async function ensureServerInitialized(ctx: AdminMenuContext): Promise<void> {
       regions: [],
       serverId: interaction.guild.id,
     });
+
+    // A concurrent first use may have created it; only the creator welcomes.
+    if (!created) return;
 
     await saveServer(newServer);
 

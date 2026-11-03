@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { baseEntitySchema, IModelInput } from './base';
 import { Region } from './region/region.model';
 import type { PopulatedQuery } from './types';
+import { isDuplicateKeyError } from './utils';
 
 export const serverSchema = baseEntitySchema.extend({
   serverId: z.string(),
@@ -44,6 +45,9 @@ interface IServerQueryHelpers {
 
 interface IServerModel extends Model<IServer, IServerQueryHelpers> {
   createServer(server: IServerInput): Promise<Server>;
+  findOrCreateServer(
+    server: IServerInput,
+  ): Promise<{ server: Server; created: boolean }>;
   findServerWithRegions(
     filter: QueryFilter<IServer>,
   ): PopulatedQuery<Server | null, IServer, { regions: Region[] }>;
@@ -91,6 +95,23 @@ export const serverDbSchema = new Schema<
         const newServer = new this(server);
         return newServer.save();
       },
+      /**
+       * Safe under concurrent first use: the unique `serverId` index makes the
+       * losing insert fail with a duplicate-key error, and we return the
+       * winner's document instead.
+       */
+      async findOrCreateServer(server: IServerInput) {
+        const existing = await this.findOne({ serverId: server.serverId });
+        if (existing) return { server: existing, created: false };
+        try {
+          return { server: await this.create(server), created: true };
+        } catch (error) {
+          if (!isDuplicateKeyError(error)) throw error;
+          const winner = await this.findOne({ serverId: server.serverId });
+          if (!winner) throw error;
+          return { server: winner, created: false };
+        }
+      },
       findServerWithRegions(filter: QueryFilter<IServer>) {
         return this.findOne(filter).populate('regions');
       },
@@ -100,6 +121,9 @@ export const serverDbSchema = new Schema<
     },
   },
 );
+
+// One Server per Discord guild (#118).
+serverDbSchema.index({ serverId: 1 }, { unique: true });
 
 export const Server =
   (models.Server as IServerModel) ||

@@ -102,10 +102,15 @@ After running `npm run env-setup` (or `npm run setup`), open `.env` and fill in:
 | `npm run db:up`                            | Start the local MongoDB Docker container                      |
 | `npm run db:down`                          | Stop the local MongoDB Docker container                       |
 | `npm run db:check`                         | Prove the local Mongo supports `session.withTransaction`      |
+| `npm run db:indexes`                       | Create any missing indexes (what production uses; see below)  |
 | `npm run db:seed`                          | Drop all collections and re-seed with sample data             |
 | `npm run db:reset`                         | Alias for `db:seed` — wipe and re-seed                        |
 | `npm run db:export`                        | Export all live local collections back to the JSON seed files |
 | `npm run db:export -- --collection=<name>` | Export a single collection (e.g. `regions`)                   |
+
+### Indexes
+
+Unique keys and parent lookups are declared in the Mongoose schemas (`Server.serverId`, `User.userId`, `Location { regionId, ordinal }`). Outside production, `connectDb` builds them on startup (`autoIndex`). In production `autoIndex` is off: run `npm run db:indexes` on deploy. It only adds missing indexes and fails if existing data has duplicates; dedupe, then re-run.
 
 [3]: https://nodejs.org/en/download
 [4]: https://github.com/nvm-sh/nvm

@@ -1,16 +1,24 @@
 import { connect } from 'mongoose';
 
+/**
+ * Indexes are built on startup outside production. In production they are
+ * created by `npm run db:indexes` so a deploy never builds them implicitly.
+ */
+export function shouldAutoIndex(env: string | undefined): boolean {
+  return env !== 'production';
+}
+
 const cached = (global as any).mongoose || { conn: null, promise: null };
 
 export async function connectDb() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = connect(process.env.DATABASE_URI || '').then(
-      (mongoose) => {
-        return mongoose;
-      },
-    );
+    cached.promise = connect(process.env.DATABASE_URI || '', {
+      autoIndex: shouldAutoIndex(process.env.NODE_ENV),
+    }).then((mongoose) => {
+      return mongoose;
+    });
   }
 
   try {
