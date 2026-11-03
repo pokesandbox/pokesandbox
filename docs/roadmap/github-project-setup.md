@@ -31,7 +31,7 @@ Labels are per repo; `bootstrap.sh` holds the list. Add a new label there too, s
 
 ## Milestones
 
-M0a, M0c, M0b, M1, M2, the Kanto checkpoints CP0a–CP8, and MVP Release, as in [`mvp.md`](mvp.md) (see [`mvp-checkpoints.md`](mvp-checkpoints.md)). Milestones are per repo, with the same titles in each so the board groups them together. Phase 3/4 items go into the project without milestones until MVP ships.
+M0a, M0c, M0b, M1, M2, the Kanto checkpoints CP0a–CP8, and MVP Release, as in [`mvp.md`](mvp.md) (see [`mvp-checkpoints.md`](mvp-checkpoints.md)). Milestones are per repo, with the same titles in each so the board groups them together. Phase 3/4 items go into the project without milestones until MVP ships. So does the **Developer tooling** epic (#227): repo tooling and setup work that no milestone needs, ordered by Priority and Status alone. When a milestone comes to need one of its issues, move it to that milestone's epic.
 
 ## Project (Projects v2) fields
 
@@ -79,7 +79,7 @@ Every template adds the issue to the project. Milestone, labels, parent epic, an
 **Rules:**
 
 - Every issue links its concept doc(s) and the Q-numbers it implements, and has acceptance criteria a reviewer can check from the PR alone.
-- Every issue has a milestone and a parent epic (sub-issue). An epic's **Background** gives a newcomer the context for its issues (what it is, what to read, where the code goes, the order), linking to [`docs/start-here.md`](../start-here.md) for everything general.
+- Every issue has a milestone and a parent epic (sub-issue); the exceptions are Phase 3/4 items and the Developer tooling epic, which have no milestone (see [Milestones](#milestones)). An epic's **Background** gives a newcomer the context for its issues (what it is, what to read, where the code goes, the order), linking to [`docs/start-here.md`](../start-here.md) for everything general.
 - Split anything bigger than `L` (`S` ≤ 1 day, `M` 2–4 days, `L` 1–2 weeks). Apply `agent-ready` only when no design judgement is left.
 - Blockers are GitHub "blocked by" relationships. A blocker that isn't an issue yet goes in the issue's **Blocked by** section.
 - When an issue starts ahead of a foundation it will sit on, list the follow-up both under its **Changes later** and on the foundation's issue.

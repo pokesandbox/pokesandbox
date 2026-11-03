@@ -10,7 +10,10 @@ import { AdminMenuBuilder, type AdminMenuContext } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import { onlyAdminRoles } from '@bot/utils';
 import getDiscoveryMenuEmbeds from './discovery.embeds';
-import { DISCOVERY_DESCRIPTION_COMMAND_NAME } from './discoveryDescription';
+import {
+  DISCOVERY_DESCRIPTION_MODAL_ID,
+  getDiscoveryDescriptionModal,
+} from './discoveryDescription.modal';
 
 const COMMAND_NAME = 'discovery';
 export const DISCOVERY_COMMAND_NAME = COMMAND_NAME;
@@ -29,6 +32,11 @@ export const DiscoveryCommand: ISlashCommand = {
     new AdminMenuBuilder(session, COMMAND_NAME)
       .setButtons(getDiscoveryButtons)
       .setEmbeds(getDiscoveryMenuEmbeds)
+      .setModal(async (ctx) =>
+        getDiscoveryDescriptionModal(
+          (await ctx.admin.getServer()).discovery.description,
+        ),
+      )
       .setCancellable()
       .setReturnable()
       .setTrackedInHistory()
@@ -56,8 +64,7 @@ async function getDiscoveryButtons(
     {
       label: 'Set Description',
       style: ButtonStyle.Primary,
-      action: async (ctx: AdminMenuContext) =>
-        ctx.goTo(DISCOVERY_DESCRIPTION_COMMAND_NAME),
+      opensModal: DISCOVERY_DESCRIPTION_MODAL_ID,
     },
   ];
 }

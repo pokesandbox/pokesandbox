@@ -1,4 +1,8 @@
-import { InteractionContextType, SlashCommandBuilder } from 'discord.js';
+import {
+  ButtonStyle,
+  InteractionContextType,
+  SlashCommandBuilder,
+} from 'discord.js';
 import { z } from 'zod';
 
 import { getAssertedCachedRegion } from '@bot/cache';
@@ -9,9 +13,8 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import { EDIT_POKEDEX_SLOT_COMMAND_NAME } from './editPokedexSlot';
 import { getManagePokedexMenuEmbeds } from './pokedex.embeds';
-import { handleAddPokemonToSlot } from './pokedexHelperFunctions';
+import { getPokedexSlotModal, POKEDEX_SLOT_MODAL_ID } from './pokedex.modal';
 import type { PokedexMenuState } from './types';
 
 const COMMAND_NAME = 'manage-pokedex';
@@ -50,6 +53,14 @@ export const ManagePokedexCommand: ISlashCommand = {
       COMMAND_NAME,
       options,
     )
+      .setButtons(() => [
+        {
+          label: 'Add / Edit Slot',
+          fixedPosition: 'start',
+          style: ButtonStyle.Success,
+          opensModal: POKEDEX_SLOT_MODAL_ID,
+        },
+      ])
       .setEmbeds((ctx) => getManagePokedexMenuEmbeds(ctx, region_id))
       .setCancellable()
       .setListPagination({
@@ -59,28 +70,7 @@ export const ManagePokedexCommand: ISlashCommand = {
           return region.pokedex.length;
         },
       })
-      .setMessageHandler(async (ctx, response) => {
-        const messageArgs: string[] = response.split(' ');
-        const pokedex_no: number = +messageArgs[0];
-
-        if (Number.isNaN(pokedex_no) || pokedex_no < 1 || pokedex_no > 1500) {
-          ctx.state.set('prompt', 'Please enter a valid Pokédex number');
-        } else if (messageArgs.length < 2) {
-          await ctx.goTo(EDIT_POKEDEX_SLOT_COMMAND_NAME, {
-            region_id,
-            pokedex_no,
-          });
-        } else {
-          const pokemonName: string = messageArgs.slice(1).join(' ');
-
-          await handleAddPokemonToSlot(
-            ctx,
-            region_id,
-            pokedex_no.toString(),
-            pokemonName,
-          );
-        }
-      })
+      .setModal(() => getPokedexSlotModal(region_id))
       .setReturnable()
       .setTrackedInHistory()
       .build();

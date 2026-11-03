@@ -68,6 +68,7 @@ Every change, human or agent. ⚙ = enforced by a hook or CI.
 - New behavior gets tests, named `*.test.ts(x)` and placed next to the code (⚙ CI rejects `*.spec.*` files). Test the behavior the acceptance criteria describe; a test that only executes lines without asserting anything meaningful doesn't count.
 - ⚙ SonarCloud requires 80% coverage of new and changed lines in `apps/bot`, `apps/webapp`, `shared`, and `libs/core`. It runs only in CI, after you push, so check first: `npx nx test <project> --coverage` prints a summary and writes line detail to `coverage/<project>/index.html`.
 - Libraries are tested headless with in-memory ports. Discord view builders are pure functions: test their output directly.
+- Follow [`docs/testing.md`](docs/testing.md) for test style: which level to test at, inline setup, and bot integration tests.
 
 **When it's unclear**
 
