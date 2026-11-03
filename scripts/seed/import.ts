@@ -23,7 +23,8 @@ import { collectionSeedMap, SUPPORTED_COLLECTIONS } from './collections';
 dotenv.config();
 
 const DATABASE_URI =
-  process.env.DATABASE_URI || 'mongodb://localhost:27017/pokesandbox';
+  process.env.DATABASE_URI ||
+  'mongodb://localhost:27017/pokesandbox?replicaSet=rs0';
 
 // The seeded server points at this guild; DEV_GUILD_ID swaps in your own test server
 const SEED_GUILD_ID = '1010726453974925402';
