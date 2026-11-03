@@ -107,6 +107,8 @@ AI can write artifacts (code, commit messages, PR descriptions), but never use i
 
 The PR template has two checkboxes: one discloses that you used AI tools (no judgement either way), and one attests that you've read every line and can explain it. They are the human contributor's attestation, so an AI agent opening a PR leaves them unchecked for you to fill in.
 
+To have an agent pick up `agent-ready` issues on a schedule, set up a Claude Code cloud scheduled task with the prompt in [`docs/agents/scheduled-pickup.md`](docs/agents/scheduled-pickup.md). Change the prompt there through a PR, not only in your task.
+
 ### AI context files
 
 The repo ships context for coding agents. It describes the same rules as this page, plus the repo layout and commands:
