@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/bot/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["scope:app-bot"],
   "targets": {
     "build": {
       "executor": "@nx/esbuild:esbuild",

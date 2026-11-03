@@ -14,8 +14,92 @@
             "allowCircularSelfDependency": true,
             "depConstraints": [
               {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
+                "sourceTag": "scope:core",
+                "onlyDependOnLibsWithTags": [],
+                "bannedExternalImports": [
+                  "discord.js",
+                  "mongoose",
+                  "react",
+                  "react/*",
+                  "react-dom",
+                  "react-dom/*",
+                  "pokemon-showdown",
+                  "pokemon-showdown/*",
+                  "@smogon/*"
+                ]
+              },
+              {
+                "sourceTag": "scope:engine",
+                "onlyDependOnLibsWithTags": ["scope:core"],
+                "bannedExternalImports": [
+                  "discord.js",
+                  "mongoose",
+                  "pokemon-showdown",
+                  "pokemon-showdown/*",
+                  "@smogon/*"
+                ]
+              },
+              {
+                "sourceTag": "scope:battle",
+                "onlyDependOnLibsWithTags": ["scope:core"],
+                "bannedExternalImports": ["discord.js", "mongoose"]
+              },
+              {
+                "sourceTag": "scope:authoring",
+                "onlyDependOnLibsWithTags": ["scope:core"],
+                "bannedExternalImports": [
+                  "discord.js",
+                  "mongoose",
+                  "pokemon-showdown",
+                  "pokemon-showdown/*",
+                  "@smogon/*"
+                ]
+              },
+              {
+                "sourceTag": "scope:presentation",
+                "onlyDependOnLibsWithTags": ["scope:core"],
+                "bannedExternalImports": [
+                  "discord.js",
+                  "mongoose",
+                  "react",
+                  "react/*",
+                  "react-dom",
+                  "react-dom/*",
+                  "pokemon-showdown",
+                  "pokemon-showdown/*",
+                  "@smogon/*"
+                ]
+              },
+              {
+                "sourceTag": "scope:shared",
+                "onlyDependOnLibsWithTags": ["scope:core"],
+                "bannedExternalImports": [
+                  "discord.js",
+                  "pokemon-showdown",
+                  "pokemon-showdown/*",
+                  "@smogon/*"
+                ]
+              },
+              {
+                "sourceTag": "scope:app-bot",
+                "onlyDependOnLibsWithTags": [
+                  "scope:core",
+                  "scope:engine",
+                  "scope:battle",
+                  "scope:authoring",
+                  "scope:presentation",
+                  "scope:shared"
+                ]
+              },
+              {
+                "sourceTag": "scope:app-webapp",
+                "onlyDependOnLibsWithTags": [
+                  "scope:core",
+                  "scope:engine",
+                  "scope:authoring",
+                  "scope:presentation",
+                  "scope:shared"
+                ]
               }
             ]
           }
