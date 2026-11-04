@@ -26,6 +26,7 @@
       "@shared/cache": ["./shared/src/cache/index.ts"],
       "@shared/connectDb": ["./shared/src/connectDb.ts"],
       "@shared/dtos": ["./shared/src/dtos/index.ts"],
+      "@shared/flags": ["./shared/src/flags.ts"],
       "@shared/models": ["./shared/src/models/index.ts"],
       "@webapp/auth": ["./apps/webapp/src/auth.ts"],
       "@webapp/components/*": ["./apps/webapp/src/app/_components/*"],

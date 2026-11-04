@@ -14,7 +14,7 @@ import { z } from 'zod';
 import { baseEntitySchema, IModelInput } from './base';
 import { Region } from './region/region.model';
 import type { PopulatedQuery } from './types';
-import { isDuplicateKeyError } from './utils';
+import { isDuplicateKeyError, zMapHydrator } from './utils';
 
 export const serverSchema = baseEntitySchema.extend({
   serverId: z.string(),
@@ -29,6 +29,16 @@ export const serverSchema = baseEntitySchema.extend({
   name: z.string(),
   playerList: z.array(z.instanceof(Types.ObjectId)),
   regions: z.array(z.instanceof(Types.ObjectId)),
+  /**
+   * Set by the owner, not server admins. `features` overrides feature flag
+   * defaults for this server (`@core/flags`). Keys are plain strings so a
+   * removed flag left in the data doesn't fail parsing; readers skip them.
+   */
+  settings: z
+    .object({
+      features: zMapHydrator(z.boolean()).optional(),
+    })
+    .optional(),
 });
 
 export type IServer = z.infer<typeof serverSchema>;
@@ -79,6 +89,11 @@ export const serverDbSchema = new Schema<
     name: { type: String, required: true },
     playerList: { type: [Schema.Types.ObjectId], ref: 'User', required: true },
     regions: { type: [Schema.Types.ObjectId], ref: 'Region', required: true },
+    settings: {
+      type: {
+        features: { type: Map, of: Boolean },
+      },
+    },
   },
   {
     timestamps: true,

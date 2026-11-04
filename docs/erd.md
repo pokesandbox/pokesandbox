@@ -26,6 +26,8 @@ erDiagram
         string name
         User[] playerList
         Region[] regions
+        object settings
+        Map settings_features
         date createdAt
         date updatedAt
     }
@@ -148,8 +150,16 @@ erDiagram
 | `name`          | string   | ✓        |                    |
 | `playerList`    | User[]   | ✓        | References: User   |
 | `regions`       | Region[] | ✓        | References: Region |
+| `settings`      | object   |          |                    |
+| `↳ features`    | Map      |          |                    |
 | `createdAt`     | date     |          |                    |
 | `updatedAt`     | date     |          |                    |
+
+#### Map: `settings_features`
+
+**Value Type:** `Mixed`
+
+_No structured fields (primitive values or complex schema)._
 
 ### Region
 
