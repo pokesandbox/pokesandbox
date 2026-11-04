@@ -1,16 +1,20 @@
-import { Schema, Types } from 'mongoose';
+import { Schema } from 'mongoose';
 import { z } from 'zod';
 
+/**
+ * A Pokédex slot refers to its species (and included forms) by `speciesId`,
+ * the Showdown ID, never by DexEntry `_id`.
+ */
 export const pokedexSlotSchema = z
   .object({
-    id: z.instanceof(Types.ObjectId),
+    speciesId: z.string().min(1),
     name: z.string(),
     isBaseFormNotIncluded: z.boolean().optional(),
     baseFormOrdinal: z.number().optional(),
     includedForms: z
       .array(
         z.object({
-          id: z.instanceof(Types.ObjectId),
+          speciesId: z.string().min(1),
           ordinal: z.number(),
         }),
       )
@@ -19,13 +23,13 @@ export const pokedexSlotSchema = z
   .nullable();
 
 export const pokedexSlotDbSchema = new Schema({
-  id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
+  speciesId: { type: String, required: false },
   name: String,
   isBaseFormNotIncluded: Boolean,
   baseFormOrdinal: Number,
   includedForms: [
     {
-      id: { type: Schema.Types.ObjectId, ref: 'DexEntry' },
+      speciesId: String,
       ordinal: Number,
     },
   ],

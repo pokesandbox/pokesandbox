@@ -31,757 +31,757 @@
     "name": "Kanto",
     "pokedex": [
       {
-        "id": "6503c386d5ce71f0a746733e",
+        "speciesId": "bulbasaur",
         "name": "Bulbasaur",
         "_id": "699d314cc021c86f25f761e7"
       },
       {
-        "id": "6503c386d5ce71f0a7467384",
+        "speciesId": "ivysaur",
         "name": "Ivysaur",
         "_id": "699d3155c021c86f25f761f1"
       },
       {
-        "id": "6503c386d5ce71f0a74673bb",
+        "speciesId": "venusaur",
         "name": "Venusaur",
         "_id": "699d315fc021c86f25f761ff"
       },
       {
-        "id": "6503c386d5ce71f0a746749c",
+        "speciesId": "charmander",
         "name": "Charmander",
         "_id": "699d3166c021c86f25f7620d"
       },
       {
-        "id": "6503c386d5ce71f0a74674e6",
+        "speciesId": "charmeleon",
         "name": "Charmeleon",
         "_id": "699d3195c021c86f25f76256"
       },
       {
-        "id": "6503c386d5ce71f0a7467525",
+        "speciesId": "charizard",
         "name": "Charizard",
         "_id": "699d31a0c021c86f25f76269"
       },
       {
-        "id": "6503c386d5ce71f0a74675f9",
+        "speciesId": "squirtle",
         "name": "Squirtle",
         "_id": "699d31aac021c86f25f7627c"
       },
       {
-        "id": "6503c386d5ce71f0a7467638",
+        "speciesId": "wartortle",
         "name": "Wartortle",
         "_id": "699d31b2c021c86f25f7628c"
       },
       {
-        "id": "6503c386d5ce71f0a746767c",
+        "speciesId": "blastoise",
         "name": "Blastoise",
         "_id": "699d31b9c021c86f25f762a0"
       },
       {
-        "id": "6503c389d5ce71f0a74680f7",
+        "speciesId": "caterpie",
         "name": "Caterpie",
         "_id": "699d31ccc021c86f25f762b4"
       },
       {
-        "id": "6503c389d5ce71f0a7468125",
+        "speciesId": "metapod",
         "name": "Metapod",
         "_id": "699d31d5c021c86f25f762c7"
       },
       {
-        "id": "6503c389d5ce71f0a7468163",
+        "speciesId": "butterfree",
         "name": "Butterfree",
         "_id": "699d31e2c021c86f25f762db"
       },
       {
-        "id": "6503c389d5ce71f0a74681ed",
+        "speciesId": "weedle",
         "name": "Weedle",
         "_id": "699d31eac021c86f25f762ef"
       },
       {
-        "id": "6503c389d5ce71f0a7468222",
+        "speciesId": "kakuna",
         "name": "Kakuna",
         "_id": "699d31f6c021c86f25f76305"
       },
       {
-        "id": "6503c389d5ce71f0a7468253",
+        "speciesId": "beedrill",
         "name": "Beedrill",
         "_id": "699d3208c021c86f25f7631f"
       },
       {
-        "id": "6503c389d5ce71f0a74682c3",
+        "speciesId": "pidgey",
         "name": "Pidgey",
         "_id": "699d3219c021c86f25f76347"
       },
       {
-        "id": "6503c389d5ce71f0a74682ed",
+        "speciesId": "pidgeotto",
         "name": "Pidgeotto",
         "_id": "699d3222c021c86f25f7635e"
       },
       {
-        "id": "6503c389d5ce71f0a746832b",
+        "speciesId": "pidgeot",
         "name": "Pidgeot",
         "_id": "699d3228c021c86f25f7637a"
       },
       {
-        "id": "6503c389d5ce71f0a74683b0",
+        "speciesId": "rattata",
         "name": "Rattata",
         "_id": "699d322ec021c86f25f76395"
       },
       {
-        "id": "6503c389d5ce71f0a7468421",
+        "speciesId": "raticate",
         "name": "Raticate",
         "_id": "699d3237c021c86f25f763b6"
       },
       {
-        "id": "6503c389d5ce71f0a74684bc",
+        "speciesId": "spearow",
         "name": "Spearow",
         "_id": "699d323ec021c86f25f763d5"
       },
       {
-        "id": "6503c389d5ce71f0a74684f9",
+        "speciesId": "fearow",
         "name": "Fearow",
         "_id": "699d3245c021c86f25f763f2"
       },
       {
-        "id": "6503c389d5ce71f0a7468531",
+        "speciesId": "ekans",
         "name": "Ekans",
         "_id": "699d3257c021c86f25f76410"
       },
       {
-        "id": "6503c38ad5ce71f0a746857b",
+        "speciesId": "arbok",
         "name": "Arbok",
         "_id": "699d325dc021c86f25f7642f"
       },
       {
-        "id": "6503c38ad5ce71f0a74685dc",
+        "speciesId": "pikachu",
         "name": "Pikachu",
         "_id": "699d3264c021c86f25f76456"
       },
       {
-        "id": "6503c38ad5ce71f0a746874a",
+        "speciesId": "raichu",
         "name": "Raichu",
         "_id": "699d326dc021c86f25f76481"
       },
       {
-        "id": "6503c38ad5ce71f0a74687d2",
+        "speciesId": "sandshrew",
         "name": "Sandshrew",
         "_id": "699d3274c021c86f25f764a9"
       },
       {
-        "id": "6503c38ad5ce71f0a7468830",
+        "speciesId": "sandslash",
         "name": "Sandslash",
         "_id": "699d327bc021c86f25f764d2"
       },
       {
-        "id": "6503c38ad5ce71f0a74688b0",
+        "speciesId": "nidoranf",
         "name": "Nidoran-F",
         "_id": "699d329dc021c86f25f764fb"
       },
       {
-        "id": "6503c38ad5ce71f0a74688f0",
+        "speciesId": "nidorina",
         "name": "Nidorina",
         "_id": "699d32adc021c86f25f76521"
       },
       {
-        "id": "6503c38ad5ce71f0a7468944",
+        "speciesId": "nidoqueen",
         "name": "Nidoqueen",
         "_id": "699d32b6c021c86f25f76548"
       },
       {
-        "id": "6503c38ad5ce71f0a7468987",
+        "speciesId": "nidoranm",
         "name": "Nidoran-M",
         "_id": "699d32bcc021c86f25f7656f"
       },
       {
-        "id": "6503c38ad5ce71f0a74689da",
+        "speciesId": "nidorino",
         "name": "Nidorino",
         "_id": "699d32c3c021c86f25f76598"
       },
       {
-        "id": "6503c38ad5ce71f0a7468a07",
+        "speciesId": "nidoking",
         "name": "Nidoking",
         "_id": "699d32cbc021c86f25f765c2"
       },
       {
-        "id": "6503c38ad5ce71f0a7468a4d",
+        "speciesId": "clefairy",
         "name": "Clefairy",
         "_id": "699d32d4c021c86f25f765ed"
       },
       {
-        "id": "6503c38ad5ce71f0a7468a89",
+        "speciesId": "clefable",
         "name": "Clefable",
         "_id": "699d32e1c021c86f25f76619"
       },
       {
-        "id": "6503c38ad5ce71f0a7468adf",
+        "speciesId": "vulpix",
         "name": "Vulpix",
         "_id": "699d32f8c021c86f25f76648"
       },
       {
-        "id": "6503c38bd5ce71f0a7468b8a",
+        "speciesId": "ninetales",
         "name": "Ninetales",
         "_id": "699d3307c021c86f25f7667b"
       },
       {
-        "id": "6503c38bd5ce71f0a7468c03",
+        "speciesId": "jigglypuff",
         "name": "Jigglypuff",
         "_id": "699d3322c021c86f25f766ad"
       },
       {
-        "id": "6503c38bd5ce71f0a7468c4b",
+        "speciesId": "wigglytuff",
         "name": "Wigglytuff",
         "_id": "699d332cc021c86f25f766dd"
       },
       {
-        "id": "6503c38bd5ce71f0a7468cc1",
+        "speciesId": "zubat",
         "name": "Zubat",
         "_id": "699d3333c021c86f25f7670d"
       },
       {
-        "id": "6503c38bd5ce71f0a7468d12",
+        "speciesId": "golbat",
         "name": "Golbat",
         "_id": "699d334fc021c86f25f7673f"
       },
       {
-        "id": "6503c38bd5ce71f0a7468d4d",
+        "speciesId": "oddish",
         "name": "Oddish",
         "_id": "699d335dc021c86f25f76772"
       },
       {
-        "id": "6503c38bd5ce71f0a7468d90",
+        "speciesId": "gloom",
         "name": "Gloom",
         "_id": "699d3363c021c86f25f767a7"
       },
       {
-        "id": "6503c38bd5ce71f0a7468dc6",
+        "speciesId": "vileplume",
         "name": "Vileplume",
         "_id": "699d336bc021c86f25f767dd"
       },
       {
-        "id": "6503c38bd5ce71f0a7468e01",
+        "speciesId": "paras",
         "name": "Paras",
         "_id": "699d3371c021c86f25f76813"
       },
       {
-        "id": "6503c38bd5ce71f0a7468e3b",
+        "speciesId": "parasect",
         "name": "Parasect",
         "_id": "699d337bc021c86f25f76849"
       },
       {
-        "id": "6503c38bd5ce71f0a7468e90",
+        "speciesId": "venonat",
         "name": "Venonat",
         "_id": "699d3381c021c86f25f76880"
       },
       {
-        "id": "6503c38bd5ce71f0a7468ec4",
+        "speciesId": "venomoth",
         "name": "Venomoth",
         "_id": "699d3387c021c86f25f768b8"
       },
       {
-        "id": "6503c38bd5ce71f0a7468f12",
+        "speciesId": "diglett",
         "name": "Diglett",
         "_id": "699d361dfc6c255faede8793"
       },
       {
-        "id": "6503c38bd5ce71f0a7468f97",
+        "speciesId": "dugtrio",
         "name": "Dugtrio",
         "_id": "699fae7c61ad064b25f89b45"
       },
       {
-        "id": "6503c38bd5ce71f0a7469012",
+        "speciesId": "meowth",
         "name": "Meowth",
         "_id": "699fae9161ad064b25f89b87"
       },
       {
-        "id": "6503c38cd5ce71f0a746919b",
+        "speciesId": "persian",
         "name": "Persian",
         "_id": "699faeb061ad064b25f89bca"
       },
       {
-        "id": "6503c38cd5ce71f0a746922c",
+        "speciesId": "psyduck",
         "name": "Psyduck",
         "_id": "699faec461ad064b25f89c09"
       },
       {
-        "id": "6503c38cd5ce71f0a7469275",
+        "speciesId": "golduck",
         "name": "Golduck",
         "_id": "699faed261ad064b25f89c46"
       },
       {
-        "id": "6503c38cd5ce71f0a74692b8",
+        "speciesId": "mankey",
         "name": "Mankey",
         "_id": "699faed861ad064b25f89c84"
       },
       {
-        "id": "6503c38cd5ce71f0a74692f2",
+        "speciesId": "primeape",
         "name": "Primeape",
         "_id": "699faee261ad064b25f89cc4"
       },
       {
-        "id": "6503c38cd5ce71f0a746932d",
+        "speciesId": "growlithe",
         "name": "Growlithe",
         "_id": "699faf0161ad064b25f89d08"
       },
       {
-        "id": "6503c38cd5ce71f0a7469395",
+        "speciesId": "arcanine",
         "name": "Arcanine",
         "_id": "699faf0e61ad064b25f89d4f"
       },
       {
-        "id": "6503c38cd5ce71f0a7469402",
+        "speciesId": "poliwag",
         "name": "Poliwag",
         "_id": "699faf1861ad064b25f89d94"
       },
       {
-        "id": "6503c38cd5ce71f0a746944c",
+        "speciesId": "poliwhirl",
         "name": "Poliwhirl",
         "_id": "699faf2461ad064b25f89dd9"
       },
       {
-        "id": "6503c38cd5ce71f0a746947a",
+        "speciesId": "poliwrath",
         "name": "Poliwrath",
         "_id": "699faf2d61ad064b25f89e1e"
       },
       {
-        "id": "6503c38cd5ce71f0a74694bb",
+        "speciesId": "abra",
         "name": "Abra",
         "_id": "699faf3761ad064b25f89e65"
       },
       {
-        "id": "6503c38cd5ce71f0a746950b",
+        "speciesId": "kadabra",
         "name": "Kadabra",
         "_id": "699faf4261ad064b25f89eac"
       },
       {
-        "id": "6503c38cd5ce71f0a746954b",
+        "speciesId": "alakazam",
         "name": "Alakazam",
         "_id": "699faf4861ad064b25f89ef6"
       },
       {
-        "id": "6503c38cd5ce71f0a74695b6",
+        "speciesId": "machop",
         "name": "Machop",
         "_id": "699faf5f61ad064b25f89f41"
       },
       {
-        "id": "6503c38cd5ce71f0a74695df",
+        "speciesId": "machoke",
         "name": "Machoke",
         "_id": "699faf6561ad064b25f89f8b"
       },
       {
-        "id": "6503c38cd5ce71f0a7469612",
+        "speciesId": "machamp",
         "name": "Machamp",
         "_id": "699faf7361ad064b25f89fd5"
       },
       {
-        "id": "6503c38dd5ce71f0a74696ae",
+        "speciesId": "bellsprout",
         "name": "Bellsprout",
         "_id": "699faf8a61ad064b25f8a020"
       },
       {
-        "id": "6503c38dd5ce71f0a74696e0",
+        "speciesId": "weepinbell",
         "name": "Weepinbell",
         "_id": "699faf9561ad064b25f8a06d"
       },
       {
-        "id": "6503c38dd5ce71f0a7469709",
+        "speciesId": "victreebel",
         "name": "Victreebel",
         "_id": "699fafa561ad064b25f8a0bb"
       },
       {
-        "id": "6503c38dd5ce71f0a7469750",
+        "speciesId": "tentacool",
         "name": "Tentacool",
         "_id": "699fafad61ad064b25f8a109"
       },
       {
-        "id": "6503c38dd5ce71f0a7469794",
+        "speciesId": "tentacruel",
         "name": "Tentacruel",
         "_id": "699fafc761ad064b25f8a158"
       },
       {
-        "id": "6503c38dd5ce71f0a74697d5",
+        "speciesId": "geodude",
         "name": "Geodude",
         "_id": "699fafd461ad064b25f8a1ab"
       },
       {
-        "id": "6503c38dd5ce71f0a746984a",
+        "speciesId": "graveler",
         "name": "Graveler",
         "_id": "699fafdc61ad064b25f8a203"
       },
       {
-        "id": "6503c38dd5ce71f0a74698c0",
+        "speciesId": "golem",
         "name": "Golem",
         "_id": "699fafe161ad064b25f8a25b"
       },
       {
-        "id": "6503c38dd5ce71f0a7469935",
+        "speciesId": "ponyta",
         "name": "Ponyta",
         "_id": "699fafe861ad064b25f8a2b4"
       },
       {
-        "id": "6503c38dd5ce71f0a74699ab",
+        "speciesId": "rapidash",
         "name": "Rapidash",
         "_id": "699fafee61ad064b25f8a30e"
       },
       {
-        "id": "6503c38dd5ce71f0a7469a0e",
+        "speciesId": "slowpoke",
         "name": "Slowpoke",
         "_id": "699faff561ad064b25f8a36a"
       },
       {
-        "id": "6503c38dd5ce71f0a7469a95",
+        "speciesId": "slowbro",
         "name": "Slowbro",
         "_id": "699faffb61ad064b25f8a3c9"
       },
       {
-        "id": "6503c38ed5ce71f0a7469b6a",
+        "speciesId": "magnemite",
         "name": "Magnemite",
         "_id": "699fb00461ad064b25f8a425"
       },
       {
-        "id": "6503c38ed5ce71f0a7469ba3",
+        "speciesId": "magneton",
         "name": "Magneton",
         "_id": "699fb00b61ad064b25f8a47e"
       },
       {
-        "id": "6503c38ed5ce71f0a7469bd1",
+        "speciesId": "farfetchd",
         "name": "Farfetch’d",
         "_id": "699fb01361ad064b25f8a4de"
       },
       {
-        "id": "6503c38ed5ce71f0a7469c66",
+        "speciesId": "doduo",
         "name": "Doduo",
         "_id": "699fb02261ad064b25f8a537"
       },
       {
-        "id": "6503c38ed5ce71f0a7469cc7",
+        "speciesId": "dodrio",
         "name": "Dodrio",
         "_id": "699fb02861ad064b25f8a592"
       },
       {
-        "id": "6503c38ed5ce71f0a7469d04",
+        "speciesId": "seel",
         "name": "Seel",
         "_id": "699fb02f61ad064b25f8a5ee"
       },
       {
-        "id": "6503c38ed5ce71f0a7469d38",
+        "speciesId": "dewgong",
         "name": "Dewgong",
         "_id": "699fb03661ad064b25f8a64b"
       },
       {
-        "id": "6503c38ed5ce71f0a7469d78",
+        "speciesId": "grimer",
         "name": "Grimer",
         "_id": "699fb03c61ad064b25f8a6ac"
       },
       {
-        "id": "6503c38ed5ce71f0a7469dec",
+        "speciesId": "muk",
         "name": "Muk",
         "_id": "699fb04361ad064b25f8a711"
       },
       {
-        "id": "6503c38ed5ce71f0a7469e72",
+        "speciesId": "shellder",
         "name": "Shellder",
         "_id": "699fb05361ad064b25f8a774"
       },
       {
-        "id": "6503c38ed5ce71f0a7469eb3",
+        "speciesId": "cloyster",
         "name": "Cloyster",
         "_id": "699fb05861ad064b25f8a7d5"
       },
       {
-        "id": "6503c38ed5ce71f0a7469ee0",
+        "speciesId": "gastly",
         "name": "Gastly",
         "_id": "699fb05e61ad064b25f8a837"
       },
       {
-        "id": "6503c38ed5ce71f0a7469f19",
+        "speciesId": "haunter",
         "name": "Haunter",
         "_id": "699fb06461ad064b25f8a89b"
       },
       {
-        "id": "6503c38ed5ce71f0a7469f64",
+        "speciesId": "gengar",
         "name": "Gengar",
         "_id": "699fb07461ad064b25f8a902"
       },
       {
-        "id": "6503c38ed5ce71f0a746a00e",
+        "speciesId": "onix",
         "name": "Onix",
         "_id": "699fb07a61ad064b25f8a96a"
       },
       {
-        "id": "6503c38fd5ce71f0a746a042",
+        "speciesId": "drowzee",
         "name": "Drowzee",
         "_id": "699fb08261ad064b25f8a9d1"
       },
       {
-        "id": "6503c38fd5ce71f0a746a09a",
+        "speciesId": "hypno",
         "name": "Hypno",
         "_id": "699fb08861ad064b25f8aa38"
       },
       {
-        "id": "6503c38fd5ce71f0a746a0d8",
+        "speciesId": "krabby",
         "name": "Krabby",
         "_id": "699fb09061ad064b25f8aaa0"
       },
       {
-        "id": "6503c38fd5ce71f0a746a105",
+        "speciesId": "kingler",
         "name": "Kingler",
         "_id": "699fb09661ad064b25f8ab09"
       },
       {
-        "id": "6503c38fd5ce71f0a746a17b",
+        "speciesId": "voltorb",
         "name": "Voltorb",
         "_id": "699fb09c61ad064b25f8ab76"
       },
       {
-        "id": "6503c38fd5ce71f0a746a20e",
+        "speciesId": "electrode",
         "name": "Electrode",
         "_id": "699fb0a461ad064b25f8abe7"
       },
       {
-        "id": "6503c38fd5ce71f0a746a277",
+        "speciesId": "exeggcute",
         "name": "Exeggcute",
         "_id": "699fb0ad61ad064b25f8ac57"
       },
       {
-        "id": "6503c38fd5ce71f0a746a2b2",
+        "speciesId": "exeggutor",
         "name": "Exeggutor",
         "_id": "699fb0c861ad064b25f8acca"
       },
       {
-        "id": "6503c38fd5ce71f0a746a325",
+        "speciesId": "cubone",
         "name": "Cubone",
         "_id": "699fb0d361ad064b25f8ad3c"
       },
       {
-        "id": "6503c38fd5ce71f0a746a35b",
+        "speciesId": "marowak",
         "name": "Marowak",
         "_id": "699fb0dd61ad064b25f8adaf"
       },
       {
-        "id": "6503c38fd5ce71f0a746a3d8",
+        "speciesId": "hitmonlee",
         "name": "Hitmonlee",
         "_id": "699fb0ed61ad064b25f8ae21"
       },
       {
-        "id": "6503c38fd5ce71f0a746a41c",
+        "speciesId": "hitmonchan",
         "name": "Hitmonchan",
         "_id": "699fb0f461ad064b25f8ae91"
       },
       {
-        "id": "6503c38fd5ce71f0a746a456",
+        "speciesId": "lickitung",
         "name": "Lickitung",
         "_id": "699fb0fc61ad064b25f8af03"
       },
       {
-        "id": "6503c38fd5ce71f0a746a486",
+        "speciesId": "koffing",
         "name": "Koffing",
         "_id": "699fb10461ad064b25f8af78"
       },
       {
-        "id": "6503c38fd5ce71f0a746a4bf",
+        "speciesId": "weezing",
         "name": "Weezing",
         "_id": "699fb10b61ad064b25f8aff0"
       },
       {
-        "id": "6503c390d5ce71f0a746a526",
+        "speciesId": "rhyhorn",
         "name": "Rhyhorn",
         "_id": "699fb11061ad064b25f8b068"
       },
       {
-        "id": "6503c390d5ce71f0a746a56c",
+        "speciesId": "rhydon",
         "name": "Rhydon",
         "_id": "699fb12861ad064b25f8b0df"
       },
       {
-        "id": "6503c390d5ce71f0a746a5b0",
+        "speciesId": "chansey",
         "name": "Chansey",
         "_id": "699fb12f61ad064b25f8b157"
       },
       {
-        "id": "6503c390d5ce71f0a746a5f7",
+        "speciesId": "tangela",
         "name": "Tangela",
         "_id": "699fb13761ad064b25f8b1d0"
       },
       {
-        "id": "6503c390d5ce71f0a746a63d",
+        "speciesId": "kangaskhan",
         "name": "Kangaskhan",
         "_id": "699fb13f61ad064b25f8b24c"
       },
       {
-        "id": "6503c390d5ce71f0a746a6d3",
+        "speciesId": "horsea",
         "name": "Horsea",
         "_id": "699fb14761ad064b25f8b2c9"
       },
       {
-        "id": "6503c390d5ce71f0a746a704",
+        "speciesId": "seadra",
         "name": "Seadra",
         "_id": "699fb14d61ad064b25f8b345"
       },
       {
-        "id": "6503c390d5ce71f0a746a72b",
+        "speciesId": "goldeen",
         "name": "Goldeen",
         "_id": "699fb15861ad064b25f8b3c2"
       },
       {
-        "id": "6503c390d5ce71f0a746a780",
+        "speciesId": "seaking",
         "name": "Seaking",
         "_id": "699fb16161ad064b25f8b43f"
       },
       {
-        "id": "6503c390d5ce71f0a746a7b4",
+        "speciesId": "staryu",
         "name": "Staryu",
         "_id": "699fb16961ad064b25f8b4bd"
       },
       {
-        "id": "6503c390d5ce71f0a746a803",
+        "speciesId": "starmie",
         "name": "Starmie",
         "_id": "699fb17161ad064b25f8b53c"
       },
       {
-        "id": "6503c390d5ce71f0a746a839",
+        "speciesId": "mrmime",
         "name": "Mr. Mime",
         "_id": "699fb17961ad064b25f8b5be"
       },
       {
-        "id": "6503c390d5ce71f0a746a8aa",
+        "speciesId": "scyther",
         "name": "Scyther",
         "_id": "699fb18161ad064b25f8b643"
       },
       {
-        "id": "6503c390d5ce71f0a746a8e4",
+        "speciesId": "jynx",
         "name": "Jynx",
         "_id": "699fb19f61ad064b25f8b6c6"
       },
       {
-        "id": "6503c390d5ce71f0a746a916",
+        "speciesId": "electabuzz",
         "name": "Electabuzz",
         "_id": "699fb1b161ad064b25f8b749"
       },
       {
-        "id": "6503c390d5ce71f0a746a944",
+        "speciesId": "magmar",
         "name": "Magmar",
         "_id": "699fb1b761ad064b25f8b7ce"
       },
       {
-        "id": "6503c390d5ce71f0a746a988",
+        "speciesId": "pinsir",
         "name": "Pinsir",
         "_id": "699fb1be61ad064b25f8b856"
       },
       {
-        "id": "6503c391d5ce71f0a746a9fe",
+        "speciesId": "tauros",
         "name": "Tauros",
         "_id": "699fb1c661ad064b25f8b8e5"
       },
       {
-        "id": "6503c391d5ce71f0a746aafe",
+        "speciesId": "magikarp",
         "name": "Magikarp",
         "_id": "699fb1ce61ad064b25f8b973"
       },
       {
-        "id": "6503c391d5ce71f0a746ab4a",
+        "speciesId": "gyarados",
         "name": "Gyarados",
         "_id": "699fb1da61ad064b25f8b9fe"
       },
       {
-        "id": "6503c391d5ce71f0a746abd3",
+        "speciesId": "lapras",
         "name": "Lapras",
         "_id": "699fb1e061ad064b25f8ba89"
       },
       {
-        "id": "6503c391d5ce71f0a746ac54",
+        "speciesId": "ditto",
         "name": "Ditto",
         "_id": "699fb1e561ad064b25f8bb12"
       },
       {
-        "id": "6503c391d5ce71f0a746aca0",
+        "speciesId": "eevee",
         "name": "Eevee",
         "_id": "699fb1ec61ad064b25f8bba7"
       },
       {
-        "id": "6503c391d5ce71f0a746ad90",
+        "speciesId": "vaporeon",
         "name": "Vaporeon",
         "_id": "699fb21b61ad064b25f8bc3d"
       },
       {
-        "id": "6503c391d5ce71f0a746ade6",
+        "speciesId": "jolteon",
         "name": "Jolteon",
         "_id": "699fb23261ad064b25f8bcc9"
       },
       {
-        "id": "6503c391d5ce71f0a746ae22",
+        "speciesId": "flareon",
         "name": "Flareon",
         "_id": "699fb23861ad064b25f8bd56"
       },
       {
-        "id": "6503c391d5ce71f0a746ae5a",
+        "speciesId": "porygon",
         "name": "Porygon",
         "_id": "699fb24461ad064b25f8bde6"
       },
       {
-        "id": "6503c391d5ce71f0a746ae88",
+        "speciesId": "omanyte",
         "name": "Omanyte",
         "_id": "699fb24c61ad064b25f8be77"
       },
       {
-        "id": "6503c391d5ce71f0a746aec8",
+        "speciesId": "omastar",
         "name": "Omastar",
         "_id": "699fb25161ad064b25f8bf08"
       },
       {
-        "id": "6503c391d5ce71f0a746af10",
+        "speciesId": "kabuto",
         "name": "Kabuto",
         "_id": "699fb25761ad064b25f8bf9a"
       },
       {
-        "id": "6503c392d5ce71f0a746af4f",
+        "speciesId": "kabutops",
         "name": "Kabutops",
         "_id": "699fb27061ad064b25f8c02d"
       },
       {
-        "id": "6503c392d5ce71f0a746afa3",
+        "speciesId": "aerodactyl",
         "name": "Aerodactyl",
         "_id": "699fb27d61ad064b25f8c0c3"
       },
       {
-        "id": "6503c392d5ce71f0a746b024",
+        "speciesId": "snorlax",
         "name": "Snorlax",
         "_id": "699fb28561ad064b25f8c15a"
       },
       {
-        "id": "6503c392d5ce71f0a746b0b7",
+        "speciesId": "articuno",
         "name": "Articuno",
         "_id": "699fb28b61ad064b25f8c1f2"
       },
       {
-        "id": "6503c392d5ce71f0a746b15b",
+        "speciesId": "zapdos",
         "name": "Zapdos",
         "_id": "699fb29861ad064b25f8c28e"
       },
       {
-        "id": "6503c392d5ce71f0a746b1ee",
+        "speciesId": "moltres",
         "name": "Moltres",
         "_id": "699fb29e61ad064b25f8c32b"
       },
       {
-        "id": "6503c392d5ce71f0a746b274",
+        "speciesId": "dratini",
         "name": "Dratini",
         "_id": "699fb2a461ad064b25f8c3c7"
       },
       {
-        "id": "6503c392d5ce71f0a746b2c7",
+        "speciesId": "dragonair",
         "name": "Dragonair",
         "_id": "699fb2b061ad064b25f8c462"
       },
       {
-        "id": "6503c392d5ce71f0a746b302",
+        "speciesId": "dragonite",
         "name": "Dragonite",
         "_id": "699fb2b961ad064b25f8c4fd"
       },
       {
-        "id": "6503c392d5ce71f0a746b342",
+        "speciesId": "mewtwo",
         "name": "Mewtwo",
         "_id": "699fb2be61ad064b25f8c59d"
       },
       {
-        "id": "6503c392d5ce71f0a746b3fe",
+        "speciesId": "mew",
         "name": "Mew",
         "_id": "699d307cc021c86f25f761c7"
       }
