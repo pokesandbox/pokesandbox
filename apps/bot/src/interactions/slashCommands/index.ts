@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ISlashCommand } from '@bot/structures/interfaces';
 import * as RegionManagementCommands from './regionManagement';
 import * as ServerManagementCommands from './serverManagement';

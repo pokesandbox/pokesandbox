@@ -25,6 +25,7 @@ Use only the `.test` suffix. CI rejects `*.spec.*` files.
 
 - **No `beforeEach` / `afterEach` (or `beforeAll` / `afterAll`) in test files.** Hooks hide what a given test runs. Each test sets up its own data and mocks, or calls a helper function that does; a function call can be traced from the test, a hook can't. Housekeeping that applies to every test (resetting mocks, ending sessions) goes in a Jest setup file wired through the Jest config instead.
 - **Keep each test file self-contained.** Shared setup goes in helper functions in the same test file, below the tests. Don't import test helpers from other files, even if that means two test files carry the same small helper. The one exception is a temporary workaround for a bug in an external package, which lives in `apps/bot/src/testing/` with a link to the bug and to the issue that deletes it (today: `submitModalFields`).
+- **One top-level `describe` per file, named after the module under test, with a nested `describe` for each function (or menu) it tests.** Test names then read as a path (`commandRegistration › registrationTarget › …`) and a failure points straight at the function.
 - **Type mocks with `jest.mocked(fn)`** on the real import, rather than casting `jest.requireMock(...)`.
 - **Fixtures** that are plain data (a `DexEntry`, a region) can live at the top of the file. Anything stateful is created inside the test, or in a helper the test calls.
 
