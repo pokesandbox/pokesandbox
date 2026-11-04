@@ -116,6 +116,8 @@ You don't need to format code or order imports by hand. Prettier formats everyth
 3. Other workspace packages (`@shared/*`, `@core/*`)
 4. The current package (`@bot/*` or `@webapp/*`, then relative imports)
 
+Use the Node version in `.nvmrc` (run `nvm use`) before you install. `npm install` and `npm ci` fail with `EBADDEVENGINES` on any other Node or npm major, because a different npm rewrites `package-lock.json` in a way CI rejects. Switch versions and install again; see [Local development](docs/local-development.md#prerequisites).
+
 `npm install` sets up three git hooks ([husky](https://typicode.github.io/husky/)):
 
 - **pre-commit** runs `eslint --fix` and `prettier --write` on your staged files and adds the fixes to the commit. Only ESLint errors that can't be fixed automatically stop the commit.

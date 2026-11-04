@@ -18,6 +18,7 @@ You'll need [Node.js 22](https://nodejs.org/en/download) (run `nvm use` to pick 
 ```bash
 git clone https://github.com/pokesandbox/pokesandbox.git
 cd pokesandbox
+nvm use              # Node and npm versions from .nvmrc; other majors fail to install
 npm install
 npm run setup        # creates .env, starts MongoDB in Docker, seeds sample data
 # fill in .env (bot token, Discord OAuth credentials, auth secret)
