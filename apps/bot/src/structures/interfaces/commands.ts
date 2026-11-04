@@ -61,10 +61,7 @@ export interface IButtonCommand extends IBaseCommand {
 }
 
 export interface IMessageContextCommand extends IBaseCommand {
-  /**
-   * Feature flag that hides this command until it's released. Registration
-   * and the interaction handler both follow it (doc 21 § Feature flags).
-   */
+  /** Hides the command until released (registration + handler gate). */
   flag?: FlagKey;
   command: ContextMenuCommandBuilder;
   execute: (
@@ -86,10 +83,7 @@ export interface IRoleSelectMenu extends IBaseCommand {
 }
 
 export interface ISlashCommand extends IBaseCommand {
-  /**
-   * Feature flag that hides this command until it's released. Registration
-   * and the interaction handler both follow it (doc 21 § Feature flags).
-   */
+  /** Hides the command until released (registration + handler gate). */
   flag?: FlagKey;
   autocomplete?: (
     client: BotClient,
@@ -113,10 +107,7 @@ export interface IStringSelectMenu extends IBaseCommand {
 }
 
 export interface IUserContextCommand extends IBaseCommand {
-  /**
-   * Feature flag that hides this command until it's released. Registration
-   * and the interaction handler both follow it (doc 21 § Feature flags).
-   */
+  /** Hides the command until released (registration + handler gate). */
   flag?: FlagKey;
   /* eslint-disable @typescript-eslint/no-explicit-any */
   command: ContextMenuCommandBuilder | any;

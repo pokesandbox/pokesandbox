@@ -28,10 +28,6 @@ export class BotClient extends Client {
   userSelectMenus = new Collection<string, IUserSelectMenu>();
   /** Set once at startup from `readFlagEnv()`; flagged commands fail closed without it. */
   flagEnv?: FlagEnv;
-  /**
-   * Rewrites one server's guild commands from its flag overrides. Set by
-   * `slashCommandsManager` in production; a no-op in development, where the
-   * dev guild registration covers every command.
-   */
+  /** Rewrites one server's hidden guild commands (prod only; no-op in dev). */
   syncGuildCommands: (guildId: string) => Promise<void> = async () => undefined;
 }
