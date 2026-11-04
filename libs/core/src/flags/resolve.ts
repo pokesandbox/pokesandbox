@@ -8,9 +8,8 @@ import {
 } from './flags';
 
 /**
- * Parses a `FEATURE_FLAGS` value: `*` turns every flag on, `a,b` turns flags
- * on, `-a` turns one off. `*` applies first, then named entries in order, so
- * `*,-a` means "everything except a". Unknown keys are ignored.
+ * Parses `FEATURE_FLAGS`: `*` all on, `a` on, `-a` off.
+ * `*` applies first, so `*,-a` is all but `a`; unknown keys are ignored.
  */
 export function parseFlagOverrides(raw: string | undefined): FlagValues {
   const entries = (raw ?? '')

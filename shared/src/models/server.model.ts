@@ -29,11 +29,7 @@ export const serverSchema = baseEntitySchema.extend({
   name: z.string(),
   playerList: z.array(z.instanceof(Types.ObjectId)),
   regions: z.array(z.instanceof(Types.ObjectId)),
-  /**
-   * Set by the owner, not server admins. `features` overrides feature flag
-   * defaults for this server (`@core/flags`). Keys are plain strings so a
-   * removed flag left in the data doesn't fail parsing; readers skip them.
-   */
+  // Owner-set flag overrides; string keys so a removed flag still parses.
   settings: z
     .object({
       features: zMapHydrator(z.boolean()).optional(),
