@@ -94,6 +94,8 @@ After running `npm run env-setup` (or `npm run setup`), open `.env` and fill in:
 | `AUTH_DISCORD_ID`     | Application ID of your Discord Bot                                                                          |
 | `AUTH_DISCORD_SECRET` | OAuth2 Client Secret                                                                                        |
 | `AUTH_SECRET`         | Random secret for NextAuth session encryption (run `openssl rand -base64 32`)                               |
+| `FEATURE_FLAGS`       | Flag overrides, pre-filled with `*` (all on). See [CONTRIBUTING](../CONTRIBUTING.md#feature-flags)          |
+| `NODE_ENV`            | Leave unset locally. Only `production` switches flags to their production defaults                          |
 
 ## Database Scripts
 
