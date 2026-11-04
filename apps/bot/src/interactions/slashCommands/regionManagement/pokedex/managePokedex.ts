@@ -26,6 +26,7 @@ const managePokedexCommandOptionsSchema = z.object({
 
 export const ManagePokedexCommand: ISlashCommand = {
   name: COMMAND_NAME,
+  flag: 'discord.authoring',
   anyUserPermissions: ['Administrator'],
   onlyRoles: onlyAdminRoles,
   onlyRolesOrAnyUserPermissions: true,

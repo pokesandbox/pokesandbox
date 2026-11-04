@@ -6,6 +6,9 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
+import type { FlagValues } from '@core/flags';
+import type { FlagEnv } from '@shared/flags';
+
 import type {
   IMessageContextCommand,
   ISlashCommand,
@@ -13,6 +16,9 @@ import type {
 } from '../interfaces';
 import {
   collectCommands,
+  guildCommandBody,
+  isCommandEnabled,
+  planRegistration,
   registrationRoute,
   registrationTarget,
 } from './commandRegistration';
@@ -73,7 +79,7 @@ describe('commandRegistration', () => {
       expect(collected.messageContextCommands).toEqual([kept]);
       expect(collected.userContextCommands).toEqual([user]);
       expect(collected.slashCommands).toEqual([slash]);
-      expect(collected.body.map((body) => body.name)).toEqual([
+      expect(collected.registrable.map((c) => c.command.name)).toEqual([
         'Kept',
         'User',
         'server',
@@ -90,7 +96,7 @@ describe('commandRegistration', () => {
       });
 
       expect(collected.slashCommands).toEqual([ignored]);
-      expect(collected.body).toEqual([]);
+      expect(collected.registrable).toEqual([]);
     });
 
     it('drops commands missing their handler', () => {
@@ -108,20 +114,93 @@ describe('commandRegistration', () => {
         messageContextCommands: [],
         userContextCommands: [],
         slashCommands: [],
-        body: [],
+        registrable: [],
+      });
+    });
+  });
+
+  describe('isCommandEnabled', () => {
+    it('always enables a command without a flag', () => {
+      expect(isCommandEnabled(slashCommand('server'), prod())).toBe(true);
+    });
+
+    it("uses the flag's environment default", () => {
+      const builder = slashCommand('region', { flag: 'discord.authoring' });
+      expect(isCommandEnabled(builder, prod())).toBe(false);
+      expect(isCommandEnabled(builder, dev())).toBe(true);
+    });
+
+    it("follows the server's override", () => {
+      const builder = slashCommand('region', { flag: 'discord.authoring' });
+      expect(
+        isCommandEnabled(builder, prod(), { 'discord.authoring': true }),
+      ).toBe(true);
+    });
+
+    it('lets FEATURE_FLAGS win over the server override', () => {
+      const builder = slashCommand('region', { flag: 'discord.authoring' });
+      const flagEnv = prod({ 'discord.authoring': false });
+      expect(
+        isCommandEnabled(builder, flagEnv, { 'discord.authoring': true }),
+      ).toBe(false);
+    });
+  });
+
+  describe('planRegistration', () => {
+    it('keeps hidden commands out of the global set in production', () => {
+      const server = slashCommand('server');
+      const builder = slashCommand('region', { flag: 'discord.authoring' });
+
+      expect(planRegistration([server, builder], prod())).toEqual({
+        global: [server],
+        guildOnly: [builder],
       });
     });
 
-    it('registers the toJSON bodies, not the command objects', () => {
-      const slash = slashCommand('server');
+    it('registers a flag turned on by FEATURE_FLAGS globally', () => {
+      const server = slashCommand('server');
+      const builder = slashCommand('region', { flag: 'discord.authoring' });
 
-      const { body } = collectCommands({
+      expect(
+        planRegistration(
+          [server, builder],
+          prod({ 'discord.authoring': true }),
+        ),
+      ).toEqual({ global: [server, builder], guildOnly: [] });
+    });
+
+    it('never plans an ignored command', () => {
+      const { registrable } = collectCommands({
         messageContextCommands: [],
         userContextCommands: [],
-        slashCommands: [slash],
+        slashCommands: [
+          slashCommand('select-matched-pokemon', {
+            flag: 'discord.authoring',
+            ignore: true,
+          }),
+        ],
       });
 
-      expect(body).toEqual([slash.command.toJSON()]);
+      expect(planRegistration(registrable, prod())).toEqual({
+        global: [],
+        guildOnly: [],
+      });
+    });
+  });
+
+  describe('guildCommandBody', () => {
+    it('returns the toJSON bodies of the commands the server enables', () => {
+      const builder = slashCommand('region', { flag: 'discord.authoring' });
+
+      expect(
+        guildCommandBody([builder], prod(), { 'discord.authoring': true }),
+      ).toEqual([builder.command.toJSON()]);
+    });
+
+    it('is empty for a server without overrides, clearing its commands', () => {
+      const builder = slashCommand('region', { flag: 'discord.authoring' });
+
+      expect(guildCommandBody([builder], prod(), {})).toEqual([]);
     });
   });
 });
@@ -164,4 +243,12 @@ function userContextCommand(
     execute: jest.fn(),
     ...overrides,
   } as IUserContextCommand;
+}
+
+function prod(envOverrides: FlagValues = {}): FlagEnv {
+  return { env: 'prod', envOverrides };
+}
+
+function dev(envOverrides: FlagValues = {}): FlagEnv {
+  return { env: 'dev', envOverrides };
 }

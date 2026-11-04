@@ -1,8 +1,10 @@
 import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord.js';
 
-import type { AppEnv } from '@core/flags';
+import { isEnabled, type AppEnv, type FlagValues } from '@core/flags';
+import type { FlagEnv } from '@shared/flags';
 
 import type {
+  ChatInputCommand,
   IMessageContextCommand,
   ISlashCommand,
   IUserContextCommand,
@@ -46,12 +48,12 @@ export interface CommandSet {
 }
 
 export interface CollectedCommands extends CommandSet {
-  /** The `toJSON()` bodies sent to Discord. */
-  body: RESTPostAPIApplicationCommandsJSONBody[];
+  /** The commands registered with Discord, in registration order. */
+  registrable: ChatInputCommand[];
 }
 
 /**
- * Picks the commands the bot loads and the bodies it registers. Incomplete or
+ * Picks the commands the bot loads and the ones it registers. Incomplete or
  * ignored context commands are skipped. An ignored slash command is still
  * loaded, so FlowCord can open its menu from another menu, but isn't
  * registered with Discord.
@@ -61,27 +63,86 @@ export function collectCommands(commands: CommandSet): CollectedCommands {
     messageContextCommands: [],
     slashCommands: [],
     userContextCommands: [],
-    body: [],
+    registrable: [],
   };
 
   for (const command of commands.messageContextCommands) {
     if (command.ignore || !command.command || !command.execute) continue;
     collected.messageContextCommands.push(command);
-    collected.body.push(command.command.toJSON());
+    collected.registrable.push(command);
   }
 
   for (const command of commands.userContextCommands) {
     if (command.ignore || !command.command || !command.execute) continue;
     collected.userContextCommands.push(command);
-    collected.body.push(command.command.toJSON());
+    collected.registrable.push(command);
   }
 
   for (const command of commands.slashCommands) {
     if (!command.command || !command.createMenu) continue;
     collected.slashCommands.push(command);
     if (command.ignore) continue;
-    collected.body.push(command.command.toJSON());
+    collected.registrable.push(command);
   }
 
   return collected;
+}
+
+/**
+ * Whether a command may be shown and run: always without a flag, otherwise
+ * by `isEnabled` (`FEATURE_FLAGS`, then the server's overrides, then the
+ * environment's default).
+ */
+export function isCommandEnabled(
+  command: Pick<ChatInputCommand, 'flag'>,
+  flagEnv: FlagEnv,
+  serverFeatures: FlagValues = {},
+): boolean {
+  if (!command.flag) return true;
+  return isEnabled(command.flag, { ...flagEnv, serverFeatures });
+}
+
+export interface RegistrationPlan {
+  /** Enabled without any server override: registered globally. */
+  global: ChatInputCommand[];
+  /** Hidden by default: registered per server, only where enabled. */
+  guildOnly: ChatInputCommand[];
+}
+
+/**
+ * Splits the production commands: Discord can't hide a global command from
+ * one server, so a hidden command is registered only on servers that enable it.
+ */
+export function planRegistration(
+  registrable: ChatInputCommand[],
+  flagEnv: FlagEnv,
+): RegistrationPlan {
+  const plan: RegistrationPlan = { global: [], guildOnly: [] };
+  for (const command of registrable) {
+    if (isCommandEnabled(command, flagEnv)) plan.global.push(command);
+    else plan.guildOnly.push(command);
+  }
+  return plan;
+}
+
+/**
+ * The `toJSON()` bodies of the commands one server enables. Empty when it
+ * enables none: putting it clears the server's guild commands.
+ */
+export function guildCommandBody(
+  commands: ChatInputCommand[],
+  flagEnv: FlagEnv,
+  serverFeatures: FlagValues,
+): RESTPostAPIApplicationCommandsJSONBody[] {
+  return toBodies(
+    commands.filter((command) =>
+      isCommandEnabled(command, flagEnv, serverFeatures),
+    ),
+  );
+}
+
+export function toBodies(
+  commands: ChatInputCommand[],
+): RESTPostAPIApplicationCommandsJSONBody[] {
+  return commands.map((command) => command.command.toJSON());
 }

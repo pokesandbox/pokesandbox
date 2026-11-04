@@ -43,6 +43,7 @@ const progressionsCommandOptionsSchema = z.object({
 
 export const ProgressionsCommand: ISlashCommand = {
   name: COMMAND_NAME,
+  flag: 'discord.authoring',
   anyUserPermissions: ['Administrator'],
   onlyRoles: onlyAdminRoles,
   onlyRolesOrAnyUserPermissions: true,

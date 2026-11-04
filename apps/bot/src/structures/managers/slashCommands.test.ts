@@ -1,98 +1,98 @@
 import type { CreateMenuDefinitionFn } from '@flowcord/core';
-import {
-  ApplicationCommandType,
-  ContextMenuCommandBuilder,
-  Routes,
-  SlashCommandBuilder,
-  type REST,
-} from 'discord.js';
+import { Routes, SlashCommandBuilder, type REST } from 'discord.js';
+
+import type { FlagValues } from '@core/flags';
+import type { FlagEnv } from '@shared/flags';
 
 import { BotClient } from '@bot/classes';
-import type {
-  IMessageContextCommand,
-  ISlashCommand,
-  IUserContextCommand,
-} from '../interfaces';
+import type { ISlashCommand } from '../interfaces';
 import type { CommandSet } from './commandRegistration';
-import { slashCommandsManager } from './slashCommands';
+import {
+  slashCommandsManager,
+  type SlashCommandsManagerOptions,
+} from './slashCommands';
 
 describe('slashCommands', () => {
   describe('slashCommandsManager', () => {
-    it('registers every command to the dev guild in development', async () => {
+    it('registers released commands globally and hidden ones per override server in production', async () => {
       const rest = fakeRest();
-      const commands = commandSet();
 
       await slashCommandsManager(new BotClient({ intents: [] }), {
-        env: 'dev',
-        devGuildId: 'guild-1',
-        clientId: 'app',
-        rest,
-        commands,
+        ...options(rest, prod()),
+        loadServerFeatures: async (guildId) =>
+          guildId === 'alpha' ? { 'discord.authoring': true } : {},
+        listServersWithOverrides: async () => ['alpha'],
       });
 
-      expect(rest.put).toHaveBeenCalledTimes(1);
-      expect(rest.put).toHaveBeenCalledWith(
-        Routes.applicationGuildCommands('app', 'guild-1'),
-        { body: expect.any(Array) },
+      expect(putCalls(rest)).toEqual([
+        { route: Routes.applicationCommands('app'), names: ['server'] },
+        {
+          route: Routes.applicationGuildCommands('app', 'alpha'),
+          names: ['region'],
+        },
+      ]);
+    });
+
+    it('skips guild syncs when production has no hidden commands', async () => {
+      const rest = fakeRest();
+      const listServersWithOverrides = jest.fn(async () => ['alpha']);
+
+      await slashCommandsManager(new BotClient({ intents: [] }), {
+        ...options(rest, prod({ 'discord.authoring': true })),
+        listServersWithOverrides,
+      });
+
+      expect(putCalls(rest)).toEqual([
+        {
+          route: Routes.applicationCommands('app'),
+          names: ['server', 'region'],
+        },
+      ]);
+      expect(listServersWithOverrides).not.toHaveBeenCalled();
+    });
+
+    it('registers every enabled command to the dev guild in one put', async () => {
+      const rest = fakeRest();
+
+      await slashCommandsManager(
+        new BotClient({ intents: [] }),
+        options(rest, dev()),
       );
-      expect(registeredNames(rest)).toEqual([
-        'Message ID',
-        'User Tag',
-        'server',
+
+      expect(putCalls(rest)).toEqual([
+        {
+          route: Routes.applicationGuildCommands('app', 'dev-guild'),
+          names: ['server', 'region'],
+        },
       ]);
     });
 
-    it('registers globally in production, with no guild registration', async () => {
+    it('leaves out commands FEATURE_FLAGS turns off in development', async () => {
       const rest = fakeRest();
 
-      await slashCommandsManager(new BotClient({ intents: [] }), {
-        env: 'prod',
-        devGuildId: 'guild-1',
-        clientId: 'app',
-        rest,
-        commands: commandSet(),
-      });
+      await slashCommandsManager(
+        new BotClient({ intents: [] }),
+        options(rest, dev({ 'discord.authoring': false })),
+      );
 
-      expect(rest.put).toHaveBeenCalledTimes(1);
-      expect(rest.put).toHaveBeenCalledWith(Routes.applicationCommands('app'), {
-        body: expect.any(Array),
-      });
-      expect(registeredNames(rest)).toEqual([
-        'Message ID',
-        'User Tag',
-        'server',
+      expect(putCalls(rest)).toEqual([
+        {
+          route: Routes.applicationGuildCommands('app', 'dev-guild'),
+          names: ['server'],
+        },
       ]);
     });
 
-    it('loads the same commands into the client in both modes', async () => {
-      const devClient = new BotClient({ intents: [] });
-      const prodClient = new BotClient({ intents: [] });
-      const commands = commandSet();
+    it('loads every command into the client, whatever its flag', async () => {
+      const client = new BotClient({ intents: [] });
 
-      await slashCommandsManager(devClient, {
-        env: 'dev',
-        devGuildId: 'guild-1',
-        clientId: 'app',
-        rest: fakeRest(),
-        commands,
-      });
-      await slashCommandsManager(prodClient, {
-        env: 'prod',
-        clientId: 'app',
-        rest: fakeRest(),
-        commands,
-      });
+      await slashCommandsManager(client, options(fakeRest(), prod()));
 
-      for (const client of [devClient, prodClient]) {
-        expect([...client.slashCommands.keys()]).toEqual([
-          'server',
-          'select-matched-pokemon',
-        ]);
-        expect([...client.messageContextCommands.keys()]).toEqual([
-          'Message ID',
-        ]);
-        expect([...client.userContextCommands.keys()]).toEqual(['User Tag']);
-      }
+      expect([...client.slashCommands.keys()]).toEqual([
+        'server',
+        'region',
+        'select-matched-pokemon',
+      ]);
     });
 
     it('fails before registering when DEV_GUILD_ID is missing in development', async () => {
@@ -100,86 +100,102 @@ describe('slashCommands', () => {
 
       await expect(
         slashCommandsManager(new BotClient({ intents: [] }), {
-          env: 'dev',
+          ...options(rest, dev()),
           devGuildId: '',
-          clientId: 'app',
-          rest,
-          commands: commandSet(),
         }),
       ).rejects.toThrow('DEV_GUILD_ID must be set');
       expect(rest.put).not.toHaveBeenCalled();
     });
+  });
 
-    it('logs a failed registration instead of crashing startup', async () => {
+  describe('syncGuildCommands', () => {
+    it('clears the hidden commands of a server without overrides', async () => {
+      const rest = fakeRest();
+      const client = new BotClient({ intents: [] });
+      await slashCommandsManager(client, options(rest, prod()));
+      rest.put.mockClear();
+
+      await client.syncGuildCommands('beta');
+
+      expect(putCalls(rest)).toEqual([
+        { route: Routes.applicationGuildCommands('app', 'beta'), names: [] },
+      ]);
+    });
+
+    it('is a no-op in development', async () => {
+      const rest = fakeRest();
+      const client = new BotClient({ intents: [] });
+      await slashCommandsManager(client, options(rest, dev()));
+      rest.put.mockClear();
+
+      await client.syncGuildCommands('beta');
+
+      expect(rest.put).not.toHaveBeenCalled();
+    });
+
+    it('logs a failed put instead of throwing', async () => {
       const error = new Error('Discord is down');
       const rest = fakeRest();
       rest.put.mockRejectedValue(error);
       const log = jest
         .spyOn(console, 'log')
         .mockImplementation(() => undefined);
+      const client = new BotClient({ intents: [] });
 
-      await slashCommandsManager(new BotClient({ intents: [] }), {
-        env: 'prod',
-        clientId: 'app',
-        rest,
-        commands: commandSet(),
-      });
+      await slashCommandsManager(client, options(rest, prod()));
+      await client.syncGuildCommands('beta');
 
       expect(log).toHaveBeenCalledWith(error);
       log.mockRestore();
     });
-
-    it('skips registration when there is nothing to register', async () => {
-      const rest = fakeRest();
-
-      await slashCommandsManager(new BotClient({ intents: [] }), {
-        env: 'prod',
-        clientId: 'app',
-        rest,
-        commands: {
-          messageContextCommands: [],
-          userContextCommands: [],
-          slashCommands: [],
-        },
-      });
-
-      expect(rest.put).not.toHaveBeenCalled();
-    });
   });
 });
+
+function options(
+  rest: ReturnType<typeof fakeRest>,
+  flagEnv: FlagEnv,
+): SlashCommandsManagerOptions {
+  return {
+    flagEnv,
+    devGuildId: 'dev-guild',
+    clientId: 'app',
+    rest,
+    commands: commandSet(),
+    loadServerFeatures: async (): Promise<FlagValues> => ({}),
+    listServersWithOverrides: async () => [],
+  };
+}
+
+function prod(envOverrides: FlagValues = {}): FlagEnv {
+  return { env: 'prod', envOverrides };
+}
+
+function dev(envOverrides: FlagValues = {}): FlagEnv {
+  return { env: 'dev', envOverrides };
+}
 
 function fakeRest() {
   return { put: jest.fn<ReturnType<REST['put']>, Parameters<REST['put']>>() };
 }
 
-function registeredNames(rest: ReturnType<typeof fakeRest>): string[] {
-  const [, options] = rest.put.mock.calls[0];
-  return (options?.body as { name: string }[]).map((body) => body.name);
+function putCalls(rest: ReturnType<typeof fakeRest>) {
+  return rest.put.mock.calls.map(([route, options]) => ({
+    route,
+    names: (options?.body as { name: string }[]).map((body) => body.name),
+  }));
 }
 
 function commandSet(): CommandSet {
   return {
-    messageContextCommands: [
-      {
-        name: 'Message ID',
-        command: new ContextMenuCommandBuilder()
-          .setName('Message ID')
-          .setType(ApplicationCommandType.Message),
-        execute: jest.fn(),
-      } as IMessageContextCommand,
-    ],
-    userContextCommands: [
-      {
-        name: 'User Tag',
-        command: new ContextMenuCommandBuilder()
-          .setName('User Tag')
-          .setType(ApplicationCommandType.User),
-        execute: jest.fn(),
-      } as IUserContextCommand,
-    ],
+    messageContextCommands: [],
+    userContextCommands: [],
     slashCommands: [
       slashCommand('server'),
-      slashCommand('select-matched-pokemon', { ignore: true }),
+      slashCommand('region', { flag: 'discord.authoring' }),
+      slashCommand('select-matched-pokemon', {
+        flag: 'discord.authoring',
+        ignore: true,
+      }),
     ],
   };
 }

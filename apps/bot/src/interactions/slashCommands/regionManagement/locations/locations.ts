@@ -31,6 +31,7 @@ const locationsCommandOptionsSchema = z.object({
 
 export const LocationsCommand: ISlashCommand = {
   name: COMMAND_NAME,
+  flag: 'discord.authoring',
   anyUserPermissions: ['Administrator'],
   onlyRoles: onlyAdminRoles,
   onlyRolesOrAnyUserPermissions: true,

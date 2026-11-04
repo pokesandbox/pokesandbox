@@ -1,6 +1,8 @@
 import type { FlowCord } from '@flowcord/core';
 import { Client, Collection } from 'discord.js';
 
+import type { FlagEnv } from '@shared/flags';
+
 import type {
   IBotEvent,
   IButtonCommand,
@@ -24,4 +26,12 @@ export class BotClient extends Client {
   stringSelectMenus = new Collection<string, IStringSelectMenu>();
   userContextCommands = new Collection<string, IUserContextCommand>();
   userSelectMenus = new Collection<string, IUserSelectMenu>();
+  /** Set once at startup from `readFlagEnv()`; flagged commands fail closed without it. */
+  flagEnv?: FlagEnv;
+  /**
+   * Rewrites one server's guild commands from its flag overrides. Set by
+   * `slashCommandsManager` in production; a no-op in development, where the
+   * dev guild registration covers every command.
+   */
+  syncGuildCommands: (guildId: string) => Promise<void> = async () => undefined;
 }

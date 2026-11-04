@@ -34,6 +34,7 @@ const progressionEditCommandOptionsSchema = z.object({
 
 export const ProgressionEditCommand: ISlashCommand = {
   name: COMMAND_NAME,
+  flag: 'discord.authoring',
   anyUserPermissions: ['Administrator'],
   onlyRoles: onlyAdminRoles,
   onlyRolesOrAnyUserPermissions: true,

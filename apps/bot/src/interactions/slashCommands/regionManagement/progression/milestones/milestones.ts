@@ -32,6 +32,7 @@ const milestonesCommandOptionsSchema = z.object({
 
 export const MilestonesCommand: ISlashCommand = {
   name: COMMAND_NAME,
+  flag: 'discord.authoring',
   anyUserPermissions: ['Administrator'],
   onlyRoles: onlyAdminRoles,
   onlyRolesOrAnyUserPermissions: true,

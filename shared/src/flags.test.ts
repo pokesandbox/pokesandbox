@@ -1,4 +1,9 @@
-import { appEnvFromNodeEnv, getServerFeatures, readFlagEnv } from './flags';
+import {
+  appEnvFromNodeEnv,
+  getServerFeatures,
+  getServerIdsWithFeatureOverrides,
+  readFlagEnv,
+} from './flags';
 import { Server } from './models/server.model';
 
 function mockServerLookup(server: unknown) {
@@ -79,6 +84,35 @@ describe('flags', () => {
         settings: { features: { 'discord.authoring': 'yes' } },
       });
       await expect(getServerFeatures('guild-1')).resolves.toEqual({});
+    });
+  });
+
+  describe('getServerIdsWithFeatureOverrides', () => {
+    it('returns the IDs of servers with non-empty overrides', async () => {
+      const lean = jest
+        .fn()
+        .mockResolvedValue([{ serverId: 'guild-1' }, { serverId: 'guild-2' }]);
+      const query = {
+        where: jest.fn(),
+        exists: jest.fn(),
+        nin: jest.fn(),
+        select: jest.fn(),
+        lean,
+      };
+      query.where.mockReturnValue(query);
+      query.exists.mockReturnValue(query);
+      query.nin.mockReturnValue(query);
+      query.select.mockReturnValue(query);
+      jest.spyOn(Server, 'find').mockReturnValue(query as never);
+
+      await expect(getServerIdsWithFeatureOverrides()).resolves.toEqual([
+        'guild-1',
+        'guild-2',
+      ]);
+      expect(query.where).toHaveBeenCalledWith('settings.features');
+      expect(query.exists).toHaveBeenCalledWith(true);
+      expect(query.nin).toHaveBeenCalledWith([null, {}]);
+      expect(query.select).toHaveBeenCalledWith('serverId');
     });
   });
 });
