@@ -101,6 +101,24 @@ describe('edit pokedex slot menu', () => {
     expect(saveRegion).toHaveBeenCalledWith(region);
     expect(harness.hasText('#1: Pikachu - The Mouse Pokémon')).toBe(true);
   });
+
+  it('rejects a Pokémon whose species is already in the Pokédex', async () => {
+    jest.mocked(getAssertedCachedDexEntry).mockResolvedValue(raichu);
+    jest
+      .mocked(searchPokemon)
+      .mockResolvedValue({ exactMatch: pikachu, potentialMatches: [pikachu] });
+    const { harness, region } = await startEditSlotMenu([
+      null,
+      { speciesId: 'pikachu', name: 'Pikachu' },
+    ]);
+
+    harness.clickModal('Add Pokémon');
+    await submitModalFields(harness, { 'pokemon-name': 'Pikachu' });
+
+    expect(region.pokedex[0]).toBeNull();
+    expect(saveRegion).not.toHaveBeenCalled();
+    expect(harness.hasText('is already in the Pokédex')).toBe(true);
+  });
 });
 
 /**
