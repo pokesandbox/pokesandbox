@@ -28,6 +28,19 @@
   "engines": {
     "node": ">=22"
   },
+  "//devEngines": "runtime.version must match .nvmrc; packageManager matches the npm major that Node version ships. Bump both with .nvmrc.",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^22",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": "^10",
+      "onFail": "error"
+    }
+  },
   "dependencies": {
     "@discordjs/rest": "^2.6.0",
     "@flowcord/core": "0.1.0-alpha.2",

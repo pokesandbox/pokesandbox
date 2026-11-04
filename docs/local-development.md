@@ -9,11 +9,15 @@ Before setting up the project locally, ensure you have the following installed:
 | Prerequisite        | Version      | Notes                                                       |
 | ------------------- | ------------ | ----------------------------------------------------------- |
 | [Node.js][3]        | **22.x LTS** | The project targets Node 22. Using [nvm][4] is recommended. |
-| [npm][5]            | 10+          | Bundled with Node 22                                        |
+| [npm][5]            | **10.x**     | Bundled with Node 22                                        |
 | [Docker Desktop][6] | Latest       | Required to run the local MongoDB instance                  |
 | [Git][7]            | Latest       |                                                             |
 
 The repo pins the Node version in `.nvmrc`: run `nvm use` in the repo root to switch to it.
+
+Run `nvm use` (or switch to the `.nvmrc` version another way) **before** `npm install`. The root `package.json` sets `devEngines`, so `npm install` and `npm ci` refuse to run on any other Node or npm major and fail with `EBADDEVENGINES`. This check runs before npm touches `package-lock.json`. A different npm major rewrites the lockfile in a way CI's `npm ci` rejects. If you see the error, run `nvm use` and install again. `npm run setup` and the other scripts don't check again: they rely on the install having run on the right versions.
+
+`.nvmrc` is the single source for the Node version. When you bump it, update the `devEngines` ranges in `package.json` to match (the `//devEngines` note sits next to them).
 
 ### Discord Bot
 
