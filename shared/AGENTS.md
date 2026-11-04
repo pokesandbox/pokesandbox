@@ -23,7 +23,7 @@ Reference: [`models/user.model.ts`](src/models/user.model.ts) (top-level model),
 - **Validation lives in Zod.** Mongoose validators beyond `required` / `enum`, and Mongoose middleware (pre/post hooks), are not used; keep side effects explicit.
 - **Indexes** (unique keys, parent lookups) are declared in the schema (`fooDbSchema.index(...)`), see #118. Nothing builds them at startup (`autoIndex` is off everywhere); `npm run db:indexes` does, and `db:seed` runs it ([local development](../docs/local-development.md#indexes)).
 - **Identity** ([02](../docs/architecture/concepts/02-identity-and-references.md#principles)): `z.instanceof(Types.ObjectId)` only for references to _documents_ (users, servers, characters, journeys, Pokémon instances). Authored content (locations, NPCs, scripts, shops…) is referenced by its region-scoped `key`, canon content by Showdown ID. The child stores its parent's ID; parents never keep child arrays. Species are referenced by `speciesId` (the Showdown ID) everywhere: pokedex slots, encounter slots, and DexEntry's own `baseSpecies`/`prevo`/`evos`/formes links. Remaining ObjectId content references and bidirectional arrays are legacy (#138, #139); don't add more.
-- **Legacy:** `DexEntry` (`dexentry.model.ts`) has no Zod schema and uses a hand-written interface; the catalog rework (#157) replaces it. Don't copy it. Existing databases get the `showdownName` → `speciesId` rename with `npm run db:migrate-species-id` (run it before `db:indexes`).
+- **Legacy:** `DexEntry` (`dexentry.model.ts`) has no Zod schema and uses a hand-written interface; the catalog rework (#157) replaces it. Don't copy it.
 
 ## DTOs
 

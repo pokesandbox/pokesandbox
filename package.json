@@ -10,7 +10,6 @@
     "db:up": "docker compose up --wait -d",
     "db:down": "docker compose down",
     "db:check": "ts-node --project scripts/tsconfig.json scripts/db/check-transactions.ts",
-    "db:migrate-species-id": "ts-node --project scripts/tsconfig.json scripts/db/migrate-species-id.ts",
     "db:indexes": "ts-node --project scripts/tsconfig.json scripts/db/create-indexes.ts",
     "db:seed": "ts-node --project scripts/tsconfig.json scripts/seed/import.ts && npm run db:indexes",
     "db:reset": "npm run db:seed",
