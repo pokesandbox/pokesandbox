@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 import { serverSchema } from './server.model';
 
 describe('serverSchema', () => {
-  it('parses a full server, hydrating feature overrides into a Map', () => {
+  it('parses a full server', () => {
     const playerId = new Types.ObjectId();
     const regionId = new Types.ObjectId();
     const timestamp = new Date('2026-01-01T00:00:00Z');
