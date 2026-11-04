@@ -1,10 +1,10 @@
 import NextAuth from 'next-auth';
-import Discord from 'next-auth/providers/discord';
 
+import { discordProvider } from './discordProvider';
 import { trpcServer } from './trpc/server';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  providers: [Discord],
+  providers: [discordProvider],
   callbacks: {
     async signIn({ user, profile }) {
       if (profile) {
