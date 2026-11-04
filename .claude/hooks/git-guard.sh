@@ -27,7 +27,13 @@ fi
 # their credentials) get through, so stop them here too. Covers explicit
 # refspecs (develop, HEAD:master, refs/heads/develop), --all / --mirror, and a
 # plain `git push [remote]` while a protected branch is checked out.
+#
+# Pushing a branch not named <issue>-<kebab-description>. The PR gate checks the
+# name too, but only once a PR is open; catching it here saves a rename later.
+# The rule lives in .github/scripts/conventions.js (shared with the PR gate).
+# Deletions and tags are exempt, so a badly named remote branch can be removed.
 PROTECTED='^(develop|master)$'
+CONVENTIONS="$(dirname "$0")/../../.github/scripts/conventions.js"
 current_branch="$(git -C "${CLAUDE_PROJECT_DIR:-.}" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 
 while IFS= read -r segment; do
@@ -35,30 +41,46 @@ while IFS= read -r segment; do
   # Words after "push", dropping options; what's left is [remote [refspec...]].
   read -r -a words <<<"${segment#*push}"
   positional=()
+  deleting=false
+  tags=false
   for word in "${words[@]}"; do
     case "$word" in
     --all | --mirror) block "never push every branch at once; push your <issue>-<description> branch" ;;
+    --delete | -d) deleting=true ;;
+    --tags) tags=true ;;
     -*) ;;
     *) positional+=("$word") ;;
     esac
   done
 
   if [ "${#positional[@]}" -le 1 ]; then
-    targets=("$current_branch")
+    # `git push --tags [remote]` pushes only tags.
+    if [ "$tags" = true ]; then
+      refspecs=()
+    else
+      refspecs=("HEAD")
+    fi
   else
-    targets=()
-    for refspec in "${positional[@]:1}"; do
-      dest="${refspec##*:}" # src:dest pushes to dest; a bare name pushes to itself
-      dest="${dest#+}"
-      dest="${dest#refs/heads/}"
-      [ "$dest" = "HEAD" ] && dest="$current_branch"
-      targets+=("$dest")
-    done
+    refspecs=("${positional[@]:1}")
   fi
 
-  for target in "${targets[@]}"; do
-    if [[ "$target" =~ $PROTECTED ]]; then
-      block "never push to $target; push your <issue>-<description> branch and open a PR"
+  for refspec in "${refspecs[@]}"; do
+    dest="${refspec##*:}" # src:dest pushes to dest; a bare name pushes to itself
+    dest="${dest#+}"
+    [[ "$dest" == refs/tags/* ]] && continue
+    dest="${dest#refs/heads/}"
+    [ "$dest" = "HEAD" ] && dest="$current_branch"
+
+    if [[ "$dest" =~ $PROTECTED ]]; then
+      block "never push to $dest; push your <issue>-<description> branch and open a PR"
+    fi
+
+    # Deleting (`--delete <branch>` or `:<branch>`), or no branch to name (detached HEAD).
+    if [ "$deleting" = true ] || [[ "$refspec" == :* ]] || [ -z "$dest" ] || [ "$dest" = "HEAD" ]; then
+      continue
+    fi
+    if ! node "$CONVENTIONS" branch-name "$dest" >/dev/null 2>&1; then
+      block "branch \"$dest\" isn't named <issue>-<kebab-description>; rename it with 'git branch -m <issue>-<description>' (e.g. 104-encode-architecture-rules), then push that branch"
     fi
   done
 done < <(printf '%s' "$cmd" | grep -oE 'git[[:space:]]+push[^;&|]*')

@@ -2,6 +2,7 @@
 // One source of truth for both checks that apply them:
 //   - .husky/commit-msg:          node .github/scripts/conventions.js commit-msg <file>
 //   - .github/workflows/pr-gate.yml (Conventions step), via require()
+//   - .claude/hooks/git-guard.sh and session-start.sh: node .github/scripts/conventions.js branch-name <branch>
 // Plain CommonJS with no dependencies, so the PR gate can load it from a sparse checkout.
 
 const MAX_SUBJECT_LENGTH = 72;
@@ -95,20 +96,29 @@ module.exports = {
   TYPES,
 };
 
-// CLI: node .github/scripts/conventions.js commit-msg <message-file>
+// CLI:
+//   node .github/scripts/conventions.js commit-msg <message-file>
+//   node .github/scripts/conventions.js branch-name <branch>
 if (require.main === module) {
-  const [mode, file] = process.argv.slice(2);
-  if (mode !== 'commit-msg' || !file) {
+  const [mode, arg] = process.argv.slice(2);
+  if (mode === 'commit-msg' && arg) {
+    const message = require('node:fs').readFileSync(arg, 'utf8');
+    const result = checkCommitSubject(subjectFromMessage(message));
+    if (!result.ok) {
+      console.error(`✖ ${result.reason}`);
+      console.error('  See CONTRIBUTING.md#commit-messages.');
+      process.exit(1);
+    }
+  } else if (mode === 'branch-name' && arg !== undefined) {
+    const result = checkBranchName(arg);
+    if (!result.ok) {
+      console.error(result.reason);
+      process.exit(1);
+    }
+  } else {
     console.error(
-      'Usage: node .github/scripts/conventions.js commit-msg <message-file>',
+      'Usage: node .github/scripts/conventions.js commit-msg <message-file> | branch-name <branch>',
     );
     process.exit(2);
-  }
-  const message = require('node:fs').readFileSync(file, 'utf8');
-  const result = checkCommitSubject(subjectFromMessage(message));
-  if (!result.ok) {
-    console.error(`✖ ${result.reason}`);
-    console.error('  See CONTRIBUTING.md#commit-messages.');
-    process.exit(1);
   }
 }
