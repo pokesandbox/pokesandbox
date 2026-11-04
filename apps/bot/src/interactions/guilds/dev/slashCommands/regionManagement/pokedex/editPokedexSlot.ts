@@ -99,11 +99,8 @@ const getEditPokedexSlotButtons = async (
 ): Promise<ButtonInputConfig<AdminMenuContext<PokedexMenuState>>[]> => {
   const hasOtherFormes = await checkHasOtherFormes(regionId, pokedexNo);
   const pokedex = (await getAssertedCachedRegion(regionId)).pokedex;
-  const previousPokedexNo = await getPreviousFilledPokedexNo(
-    pokedex,
-    pokedexNo
-  );
-  const nextPokedexNo = await getNextFilledPokedexNo(pokedex, pokedexNo);
+  const previousPokedexNo = +pokedexNo === 1 ? pokedex.length : +pokedexNo - 1;
+  const nextPokedexNo = +pokedexNo + 1;
 
   const buttons: ButtonInputConfig<AdminMenuContext<PokedexMenuState>>[] = [
     {
@@ -166,55 +163,4 @@ const getEditPokedexSlotButtons = async (
     }
   );
   return buttons;
-};
-
-const getNextFilledPokedexNo = async (
-  pokedex: Array<unknown | null>,
-  currentPokedexNo: string
-): Promise<number> => {
-  const startIndex = +currentPokedexNo;
-  const nextIndex = findFilledPokedexIndex(pokedex, startIndex, pokedex.length);
-  if (nextIndex !== null) {
-    return nextIndex;
-  }
-
-  const firstIndex = findFilledPokedexIndex(pokedex, 0, startIndex);
-  return firstIndex !== null ? firstIndex : startIndex;
-};
-
-const getPreviousFilledPokedexNo = async (
-  pokedex: Array<unknown | null>,
-  currentPokedexNo: string
-): Promise<number> => {
-  const startIndex = +currentPokedexNo - 2;
-  const previousIndex = findPreviousFilledPokedexIndex(pokedex, startIndex);
-
-  return previousIndex !== null ? previousIndex + 1 : pokedex.length;
-};
-
-const findPreviousFilledPokedexIndex = (
-  pokedex: Array<unknown | null>,
-  start: number
-): number | null => {
-  for (let idx = start; idx >= 0; idx -= 1) {
-    if (pokedex[idx]) {
-      return idx;
-    }
-  }
-
-  return null;
-};
-
-const findFilledPokedexIndex = (
-  pokedex: Array<unknown | null>,
-  start: number,
-  end: number
-): number | null => {
-  for (let idx = start; idx < end; idx += 1) {
-    if (pokedex[idx]) {
-      return idx + 1;
-    }
-  }
-
-  return null;
 };
