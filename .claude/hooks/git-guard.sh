@@ -46,6 +46,7 @@ while IFS= read -r segment; do
   for word in "${words[@]}"; do
     case "$word" in
     --all | --mirror) block "never push every branch at once; push your <issue>-<description> branch" ;;
+    *'>'* | *'<'*) break ;; # a redirection (2>&1, >log) ends git's arguments
     --delete | -d) deleting=true ;;
     --tags) tags=true ;;
     -*) ;;
