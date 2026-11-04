@@ -2,6 +2,7 @@ import { FlowCord } from '@flowcord/core';
 import { GatewayIntentBits, Partials } from 'discord.js';
 
 import { connectDb } from '@shared/connectDb';
+import { readFlagEnv } from '@shared/flags';
 
 import { BotClient } from '@bot/classes';
 import {
@@ -37,7 +38,7 @@ connectDb().then(async () => {
   await buttonsManager(client);
   await modalFormsManager(client);
   await roleSelectMenusManager(client);
-  await slashCommandsManager(client);
+  await slashCommandsManager(client, { env: readFlagEnv().env });
   await stringSelectMenusManager(client);
   await userSelectMenusManager(client);
 

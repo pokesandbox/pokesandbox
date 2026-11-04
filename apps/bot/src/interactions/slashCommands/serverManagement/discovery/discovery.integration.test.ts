@@ -3,7 +3,7 @@ import { MenuHarness } from '@flowcord/testing';
 import type { Server } from '@shared/models';
 
 import { getCachedServer, saveServer } from '@bot/cache';
-import { submitModalFields } from '../../../../../../testing/submitModalFields';
+import { submitModalFields } from '../../../../testing/submitModalFields';
 import { DiscoveryCommand } from './discovery';
 
 jest.mock('@bot/cache', () => ({

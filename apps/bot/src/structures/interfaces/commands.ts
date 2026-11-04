@@ -127,10 +127,3 @@ export type AnyCommand =
 
 export type ChatInputCommand =
   IMessageContextCommand | ISlashCommand | IUserContextCommand;
-
-export type GuildChatInputCommands = {
-  id: string;
-  messageContextCommands: IMessageContextCommand[];
-  slashCommands: ISlashCommand[];
-  userContextCommands: IUserContextCommand[];
-};
