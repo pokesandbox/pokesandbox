@@ -34,7 +34,7 @@ Every change, human or agent. ⚙ = enforced by a hook or CI.
 
 - Work from an issue. One issue → one branch from `develop` → one PR into `develop`. This is a convention; the PR Gate only requires that the PR closes an open issue.
 - ⚙ Never push to `develop` or `master` directly; changes reach them only through PRs.
-- ⚙ Branch name: `<issue>-<kebab-description>`, e.g. `104-encode-architecture-rules`. Use it even when your tool or harness suggests another name.
+- ⚙ Branch name: `<issue>-<kebab-description>`, e.g. `104-encode-architecture-rules`. Use it even when your tool or harness suggests another name: a cloud session that starts on a `claude/…` branch renames it (`git branch -m <issue>-<description>`) before the first commit. The git guard blocks pushing any other name; the PR Gate checks it again.
 - If a PR outgrows its issue (bigger than the issue's size, or a reviewer couldn't check the acceptance criteria from the PR alone), split the **issue**: narrow the original to what this PR delivers, and move the rest to a new sub-issue of the same epic. Every PR closes exactly one issue, its own:
   - PR 1 (`104-…`): `Closes #104`.
   - PR 2 (`215-…`, #215 being the new sub-issue): `Closes #215` and `Part of #104`.
