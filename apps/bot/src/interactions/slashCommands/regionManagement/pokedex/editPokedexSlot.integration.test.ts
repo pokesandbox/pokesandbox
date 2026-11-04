@@ -11,7 +11,7 @@ import {
   saveRegion,
 } from '@bot/cache';
 import { searchPokemon } from '@bot/utils';
-import { submitModalFields } from '../../../../../../testing/submitModalFields';
+import { submitModalFields } from '../../../../testing/submitModalFields';
 import { EditPokedexSlotCommand } from './editPokedexSlot';
 
 jest.mock('@bot/cache', () => ({

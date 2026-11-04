@@ -7,7 +7,7 @@ import {
   getCachedRegion,
   getCachedServer,
 } from '@bot/cache';
-import { submitModalFields } from '../../../../../../testing/submitModalFields';
+import { submitModalFields } from '../../../../testing/submitModalFields';
 import { EditPokedexSlotCommand } from './editPokedexSlot';
 import { ManagePokedexCommand } from './managePokedex';
 import { INVALID_POKEDEX_NO_PROMPT } from './pokedex.modal';

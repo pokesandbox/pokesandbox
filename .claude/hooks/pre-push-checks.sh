@@ -12,6 +12,7 @@ printf '%s' "$cmd" | grep -Eq 'git[[:space:]]+push\b' || exit 0
 printf '%s' "$cmd" | grep -Eq -- '(--dry-run|[[:space:]]-n\b|--delete|[[:space:]]-d\b)' && exit 0
 
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
+use_repo_node || exit 2
 
 if [ ! -d node_modules ]; then
   echo "Blocked: dependencies aren't installed, so the pre-push checks can't run. Run 'npm ci' first." >&2

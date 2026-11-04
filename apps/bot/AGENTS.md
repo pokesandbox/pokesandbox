@@ -4,16 +4,24 @@ The Discord bot: discord.js plus [FlowCord](https://github.com/flowcord-dev/flow
 
 ## Where things are
 
-| Path                                         | Holds                                                                                                                     |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `src/interactions/guilds/dev/slashCommands/` | Slash commands, grouped by domain (`regionManagement/`, `serverManagement/`). Registered through each folder's `index.ts` |
-| `src/classes/`                               | `AdminMenuBuilder` (FlowCord builder for admin menus), `BotClient`                                                        |
-| `src/structures/`                            | Command interfaces (`ISlashCommand`), command options (permissions, cooldowns), managers                                  |
-| `src/utils/`                                 | Autocomplete helpers, option parsing (`parseCommandOptions` + a Zod schema), modal value helpers                          |
-| `src/embeds/`                                | `errorEmbed` and list/pagination helpers                                                                                  |
-| `src/cache/`                                 | **Legacy** cache helpers for hydrated docs (see below)                                                                    |
+| Path                              | Holds                                                                                                                     |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `src/interactions/slashCommands/` | Slash commands, grouped by domain (`regionManagement/`, `serverManagement/`). Registered through each folder's `index.ts` |
+| `src/classes/`                    | `AdminMenuBuilder` (FlowCord builder for admin menus), `BotClient`                                                        |
+| `src/structures/`                 | Command interfaces (`ISlashCommand`), command options (permissions, cooldowns), managers                                  |
+| `src/utils/`                      | Autocomplete helpers, option parsing (`parseCommandOptions` + a Zod schema), modal value helpers                          |
+| `src/embeds/`                     | `errorEmbed` and list/pagination helpers                                                                                  |
+| `src/cache/`                      | **Legacy** cache helpers for hydrated docs (see below)                                                                    |
 
-Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/interactions/guilds/dev/slashCommands/regionManagement/pokedex/): a command file per menu, `*.embeds.ts` for view builders, `types.ts` for menu state, options parsed with a Zod schema.
+Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/interactions/slashCommands/regionManagement/pokedex/): a command file per menu, `*.embeds.ts` for view builders, `types.ts` for menu state, options parsed with a Zod schema.
+
+## Commands and registration
+
+- One command set: `src/interactions/slashCommands/`, `messageContextCommands/`, and `userContextCommands/`. `structures/managers/slashCommands.ts` loads them all and registers them in one `rest.put`; the planning (`commandRegistration.ts`) is pure and tested.
+- The scope follows the environment from `readFlagEnv()` (`@shared/flags`): `NODE_ENV=production` registers globally; anything else, including unset, registers to `DEV_GUILD_ID`, and startup fails if it's missing.
+- A slash command with `ignore: true` is loaded (so FlowCord can open its menu from another menu) but not registered with Discord.
+- `rest.put` only replaces the commands of the scope it targets. A guild that switches from dev to production keeps its old guild commands until they're cleared: `rest.put(Routes.applicationGuildCommands(appId, guildId), { body: [] })`.
+- Don't deploy with `NODE_ENV=production` until #108 hides `/region` behind `discord.authoring`: until then, production registration exposes the admin commands.
 
 ## Rules
 
@@ -31,7 +39,6 @@ Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/inter
 
 - **`src/cache/`** (`getCachedRegion` → mutate → `saveRegion`) caches and shares hydrated mutable Mongoose documents, which concept [15](../../docs/architecture/concepts/15-persistence-concurrency-and-runtime.md#recommendations) rules out. Don't add helpers for new models. Read fresh per action (or `lean()` for cached reads) and write with atomic updates. #119 replaces it.
 - **The `/region` builders** (Pokédex, progressions, locations) keep their logic in handlers; #146–#148 move them onto authoring commands. When editing them for another issue, keep the change minimal and don't add new logic there.
-- **Per-guild registration** under `interactions/guilds/dev` becomes global registration with flags (#108).
 
 ## Checks
 
