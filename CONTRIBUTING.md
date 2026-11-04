@@ -25,7 +25,7 @@ Most of the architecture is already decided and written down, and every PR is re
 
 ## Branches and pull requests
 
-- Branch from `develop` and name the branch `<issue#>-<short-overview>`, e.g. `103-ci-sonar-pr-automation`. The **Linked issue** check fails on other branch names.
+- Branch from `develop` and name the branch `<issue#>-<short-overview>`, e.g. `103-ci-sonar-pr-automation`. The **Linked issue** check fails on other branch names, and Claude Code's git guard blocks agents from pushing them.
 - Open the PR against `develop` and fill in the template. The description must close the issue with a closing keyword (`Closes #123`); linking it from the sidebar doesn't count. The **Linked issue** check enforces this. Opening the PR as a draft moves the issue to **In Progress** on the board; marking it ready moves it to **In Review**. Mark it ready once the checks pass.
 - Every PR needs a maintainer's review. PRs are merged with a merge commit, not squashed.
 
@@ -148,6 +148,6 @@ The repo ships context for coding agents. It describes the same rules as this pa
 | `AGENTS.md` in each package                      | Package conventions (`shared/`, `apps/bot/`, `apps/webapp/`, `libs/core/`). Each package also has a one-line `CLAUDE.md` that imports it, because Claude Code reads only `CLAUDE.md` files once the root one exists |
 | [`CLAUDE.md`](CLAUDE.md)                         | Imports `AGENTS.md` for Claude Code                                                                                                                                                                                 |
 | [`.claude/skills/`](.claude/skills/)             | Step-by-step procedures: picking up an issue, shipping a PR, adding a model                                                                                                                                         |
-| [`.claude/settings.json`](.claude/settings.json) | Claude Code hooks: install dependencies in cloud sessions, run `npm run affected` before a push                                                                                                                     |
+| [`.claude/settings.json`](.claude/settings.json) | Claude Code hooks: install dependencies in cloud sessions (and ask to rename a badly named branch), block the git commands and branch names the rules forbid, run `npm run affected` before a push                  |
 
 If your PR changes a convention, command, or structure these files describe, update them in the same PR.
