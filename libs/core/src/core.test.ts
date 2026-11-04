@@ -1,3 +1,4 @@
+import * as flags from '@core/flags';
 import * as formulas from '@core/formulas';
 import * as ports from '@core/ports';
 import * as registries from '@core/registries';
@@ -6,6 +7,7 @@ import * as validation from '@core/validation';
 
 describe('@core/* alias', () => {
   it.each([
+    ['flags', flags],
     ['formulas', formulas],
     ['ports', ports],
     ['registries', registries],
