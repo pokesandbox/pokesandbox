@@ -47,12 +47,12 @@ erDiagram
         Location[] locations
         string name
         object[] pokedex
-        ObjectId pokedex_id
+        string pokedex_speciesId
         string pokedex_name
         boolean pokedex_isBaseFormNotIncluded
         number pokedex_baseFormOrdinal
         object[] pokedex_includedForms
-        ObjectId pokedex_includedForms_id
+        string pokedex_includedForms_speciesId
         number pokedex_includedForms_ordinal
         Map progressionDefinitions
         object quests
@@ -94,7 +94,7 @@ erDiagram
         object[] wildTables_timeBlocks
         string wildTables_timeBlocks_timeOfDay
         object[] wildTables_timeBlocks_slots
-        ObjectId wildTables_timeBlocks_slots_speciesId
+        string wildTables_timeBlocks_slots_speciesId
         number wildTables_timeBlocks_slots_minLevel
         number wildTables_timeBlocks_slots_maxLevel
         number wildTables_timeBlocks_slots_weight
@@ -108,8 +108,6 @@ erDiagram
     Server ||--o{ Region : "regions"
     Region ||--o{ Character : "characterList"
     Region ||--o{ Location : "locations"
-    Region ||--o{ DexEntry : "pokedex_id"
-    Region ||--o{ DexEntry : "pokedex_includedForms_id"
     Region ||--o{ Quest : "quests_active"
     Region ||--o{ Quest : "quests_passive"
     Region ||--o{ Shop : "shops"
@@ -118,7 +116,6 @@ erDiagram
     Location ||--o{ Location : "connections_toLocationId"
     Location ||--o{ Item : "connections_requirements_items_itemId"
     Location ||--o{ Trainer : "trainerIds"
-    Location ||--o{ DexEntry : "wildTables_timeBlocks_slots_speciesId"
 ```
 
 ## Entities
@@ -179,12 +176,12 @@ _No structured fields (primitive values or complex schema)._
 | `locations`               | Location[]  | ✓        | References: Location  |
 | `name`                    | string      | ✓        |                       |
 | `pokedex`                 | object[]    | ✓        |                       |
-| `↳ id`                    | ObjectId    |          | References: DexEntry  |
+| `↳ speciesId`             | string      |          |                       |
 | `↳ name`                  | string      |          |                       |
 | `↳ isBaseFormNotIncluded` | boolean     |          |                       |
 | `↳ baseFormOrdinal`       | number      |          |                       |
 | `↳ includedForms`         | object[]    |          |                       |
-| `↳ ↳ id`                  | ObjectId    |          | References: DexEntry  |
+| `↳ ↳ speciesId`           | string      |          |                       |
 | `↳ ↳ ordinal`             | number      |          |                       |
 | `progressionDefinitions`  | Map         | ✓        |                       |
 | `quests`                  | object      | ✓        |                       |
@@ -248,7 +245,7 @@ _No structured fields (primitive values or complex schema)._
 | `↳ timeBlocks`      | object[]  | ✓        |                      |
 | `↳ ↳ timeOfDay`     | string    | ✓        |                      |
 | `↳ ↳ slots`         | object[]  | ✓        |                      |
-| `↳ ↳ ↳ speciesId`   | ObjectId  | ✓        | References: DexEntry |
+| `↳ ↳ ↳ speciesId`   | string    | ✓        |                      |
 | `↳ ↳ ↳ minLevel`    | number    | ✓        |                      |
 | `↳ ↳ ↳ maxLevel`    | number    | ✓        |                      |
 | `↳ ↳ ↳ weight`      | number    | ✓        |                      |
@@ -277,8 +274,6 @@ _No structured fields (primitive values or complex schema)._
 | Server   | `regions`                               | Region    |
 | Region   | `characterList`                         | Character |
 | Region   | `locations`                             | Location  |
-| Region   | `pokedex_id`                            | DexEntry  |
-| Region   | `pokedex_includedForms_id`              | DexEntry  |
 | Region   | `quests_active`                         | Quest     |
 | Region   | `quests_passive`                        | Quest     |
 | Region   | `shops`                                 | Shop      |
@@ -287,4 +282,3 @@ _No structured fields (primitive values or complex schema)._
 | Location | `connections_toLocationId`              | Location  |
 | Location | `connections_requirements_items_itemId` | Item      |
 | Location | `trainerIds`                            | Trainer   |
-| Location | `wildTables_timeBlocks_slots_speciesId` | DexEntry  |

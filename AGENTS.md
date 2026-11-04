@@ -102,7 +102,7 @@ The code is mid-migration. Build the **target** shape below; don't copy the lega
 | Bot cache helpers that cache and `save()` hydrated docs (`apps/bot/src/cache`)                         | Fresh reads per action, `lean()` for cached reads, atomic updates | #119       |
 | Logic inside `/region` builder handlers                                                                | `libs/authoring` commands                                         | #146–#148  |
 | Bidirectional arrays (`Region.locations`, `Server.playerList`, `User.servers`, `Region.characterList`) | Child stores the parent ID                                        | #139       |
-| ObjectId content references (`speciesId`, `itemId`, `toLocationId`)                                    | Showdown IDs and content keys                                     | #120, #138 |
+| ObjectId content references (`itemId`, `toLocationId`; species are done, see `speciesId`)              | Showdown IDs and content keys                                     | #138       |
 | AND-only requirement buckets (`shared/src/models/requirement.ts`)                                      | Condition tree + gates                                            | #127       |
 | `baseGeneration`                                                                                       | `RegionRules`                                                     | rules work |
 | antd in the webapp                                                                                     | Tailwind + the chosen headless library                            | #202, #203 |
