@@ -10,6 +10,7 @@ import {
   TextInputStyle,
 } from 'discord.js';
 import {
+  assertNumericInput,
   getModalSelectValue,
   getModalTextValue,
   setValueOnInputBuilderIfExists,
@@ -193,8 +194,14 @@ const getUpdatedProgression = (
   } else if (progression?.kind === 'numeric') {
     updatedProgression = {
       ...updatedProgression,
-      min: getModalTextValue(fields.fields, 'progression-min'),
-      max: getModalTextValue(fields.fields, 'progression-max'),
+      min: assertNumericInput(
+        getModalTextValue(fields.fields, 'progression-min'),
+        'Minimum value'
+      ),
+      max: assertNumericInput(
+        getModalTextValue(fields.fields, 'progression-max'),
+        'Maximum value'
+      ),
     } as Progression;
   }
   return updatedProgression;

@@ -12,7 +12,7 @@ import {
   onlyAdminRoles,
   parseCommandOptions,
 } from '@bot/utils';
-import type { ButtonInputConfig } from '@flowcord/core';
+import { updateOptions, type ButtonInputConfig } from '@flowcord/core';
 
 import {
   getAddPokedexSlotEmbeds,
@@ -109,12 +109,13 @@ const getEditPokedexSlotButtons = async (
     {
       label: `◀ ${previousPokedexNo}`,
       style: ButtonStyle.Secondary,
-      action: async (ctx) => {
-        ctx.goTo(COMMAND_NAME, {
+      action: updateOptions(
+        {
           region_id: regionId,
           pokedex_no: previousPokedexNo,
-        });
-      },
+        },
+        { preserveState: true }
+      ),
     },
   ];
 
@@ -155,12 +156,13 @@ const getEditPokedexSlotButtons = async (
     {
       label: `${nextPokedexNo} ▶`,
       style: ButtonStyle.Secondary,
-      action: async (ctx) => {
-        ctx.goTo(COMMAND_NAME, {
+      action: updateOptions(
+        {
           region_id: regionId,
           pokedex_no: nextPokedexNo,
-        });
-      },
+        },
+        { preserveState: true }
+      ),
     }
   );
   return buttons;

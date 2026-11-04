@@ -17,7 +17,12 @@ export function getModalTextValue(
   required?: boolean
 ): string | undefined {
   const field = fields.get(customId);
-  if (!field || !('value' in field)) return undefined;
+  if (!field || !('value' in field) || typeof field.value !== 'string') {
+    if (required) {
+      throw new Error(`Required modal field '${customId}' is missing.`);
+    }
+    return undefined;
+  }
   return field.value;
 }
 
