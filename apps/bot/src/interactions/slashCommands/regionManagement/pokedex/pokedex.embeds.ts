@@ -105,8 +105,8 @@ export const getEditPokedexSlotEmbeds = async (
   pokedexNo: string,
 ) => {
   const region = await ctx.admin.getRegion(regionId);
-  const dexEntryId = region.pokedex[+pokedexNo - 1]?.id;
-  const dexEntry = await getAssertedCachedDexEntry(dexEntryId);
+  const speciesId = region.pokedex[+pokedexNo - 1]?.speciesId;
+  const dexEntry = await getAssertedCachedDexEntry(speciesId);
 
   const embed = new EmbedBuilder()
     .setColor('Gold')
@@ -200,20 +200,16 @@ export const getPokedexSlotCustomizeEmbeds = async (
 ): Promise<EmbedBuilder[]> => {
   const region = await ctx.admin.getRegion(regionId);
   const slot = region.pokedex[+pokedexSlotNo - 1];
-  const dexEntry = await getAssertedCachedDexEntry(slot?.id);
+  const dexEntry = await getAssertedCachedDexEntry(slot?.speciesId);
 
   const formeOptions: string[] =
     slot?.includedForms?.map(
       (forme, idx) =>
-        `\n${idx + 1}. ${
-          forms.get(forme.id.toString())?.name || 'Unknown Form'
-        }`,
+        `\n${idx + 1}. ${forms.get(forme.speciesId)?.name || 'Unknown Form'}`,
     ) || [];
   !slot?.isBaseFormNotIncluded &&
     formeOptions.unshift(
-      `0. ${
-        forms.get(dexEntry.id.toString())?.name || 'Unknown Form'
-      } (Base Form)`,
+      `0. ${forms.get(dexEntry.speciesId)?.name || 'Unknown Form'} (Base Form)`,
     );
   const fields: EmbedField[] = [];
 

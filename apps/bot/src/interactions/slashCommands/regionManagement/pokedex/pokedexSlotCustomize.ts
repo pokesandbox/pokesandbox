@@ -65,8 +65,8 @@ export const PokedexSlotCustomizeCommand: ISlashCommand = {
     const isSlotFilled = !!region.pokedex[+pokedex_no - 1];
     const hasOtherFormes = await checkHasOtherFormes(region_id, pokedex_no);
     const slot = region.pokedex[+pokedex_no - 1];
-    const dexEntry = await getAssertedCachedDexEntry(slot?.id);
-    const formsMap = createFormsMap(dexEntry);
+    const dexEntry = await getAssertedCachedDexEntry(slot?.speciesId);
+    const formsMap = await createFormsMap(dexEntry);
 
     if (!isSlotFilled) {
       throw new Error(`No Pokémon found in Pokédex slot ${pokedex_no}.`);
@@ -107,14 +107,19 @@ const getPokedexSlotCustomizeButtons = async (
   if (!slot) {
     throw new Error(`Pokédex slot ${pokedexNo} is empty.`);
   }
-  const dexEntry = await getAssertedCachedDexEntry(slot.id);
+  const dexEntry = await getAssertedCachedDexEntry(slot.speciesId);
 
   const buttons: ButtonInputConfig<
     AdminMenuContext<PokedexSlotCustomizeMenuState>
   >[] = [toggleBaseFormButton(slot, region)];
   buttons.push(
-    ...(dexEntry.otherFormes?.map((form) =>
-      getFormeButton(slot, form, region, formsMap),
+    ...(dexEntry.otherFormes?.map((speciesId) =>
+      getFormeButton(
+        slot,
+        { speciesId, name: formsMap.get(speciesId)?.name ?? speciesId },
+        region,
+        formsMap,
+      ),
     ) || []),
   );
 
@@ -127,8 +132,8 @@ const getFormeButton = (
   region: Region,
   formsMap: Map<string, { name: string; ordinal?: number }>,
 ): ButtonInputConfig<AdminMenuContext<PokedexSlotCustomizeMenuState>> => {
-  const isFormAvailable = slot.includedForms?.some((includedForm) =>
-    includedForm.id.equals(form.id),
+  const isFormAvailable = slot.includedForms?.some(
+    (includedForm) => includedForm.speciesId === form.speciesId,
   );
   return {
     label: `${form.name}`,
@@ -142,10 +147,10 @@ const getFormeButton = (
         removeForme(slot, form);
       } else {
         slot?.includedForms?.push({
-          id: form.id,
+          speciesId: form.speciesId,
           // giving a unique ordinal based on the form's position in the dexEntry.otherFormes array
           // ordinals are not used yet but the type was built out and it is a required property so this process of assigning unique ordinals was implemented
-          ordinal: formsMap.get(form.id.toString())?.ordinal || 1,
+          ordinal: formsMap.get(form.speciesId)?.ordinal || 1,
         });
       }
       await saveRegion(region);
@@ -156,8 +161,8 @@ const getFormeButton = (
 
 const removeForme = (slot: Slot, form: Form) => {
   slot.includedForms?.splice(
-    slot.includedForms.findIndex((currentForm) =>
-      currentForm.id.equals(form.id),
+    slot.includedForms.findIndex(
+      (currentForm) => currentForm.speciesId === form.speciesId,
     ),
     1,
   );
@@ -184,13 +189,18 @@ const toggleBaseFormButton = (
   };
 };
 
-const createFormsMap = (
+const createFormsMap = async (
   dexEntry: DexEntry,
-): Map<string, { name: string; ordinal?: number }> => {
+): Promise<Map<string, { name: string; ordinal?: number }>> => {
   const formsMap = new Map<string, { name: string; ordinal?: number }>();
-  formsMap.set(dexEntry.id.toString(), { name: dexEntry.name });
-  dexEntry.otherFormes?.forEach((form, idx) =>
-    formsMap.set(form.id.toString(), { name: form.name, ordinal: idx + 1 }),
+  formsMap.set(dexEntry.speciesId, { name: dexEntry.name });
+  const otherFormes = await Promise.all(
+    (dexEntry.otherFormes ?? []).map((speciesId) =>
+      getAssertedCachedDexEntry(speciesId),
+    ),
+  );
+  otherFormes.forEach((form, idx) =>
+    formsMap.set(form.speciesId, { name: form.name, ordinal: idx + 1 }),
   );
   return formsMap;
 };
