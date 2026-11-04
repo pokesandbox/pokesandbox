@@ -87,6 +87,7 @@ Unreleased features stay in the code but sit behind a flag: on in dev, off in pr
   if (isEnabled('arena.pvai', { ...flagEnv, serverFeatures })) { … }
   ```
 
+- **Hide a command** by declaring the flag on it: `flag: 'arena.pvai'`. In production it then registers only on servers whose override turns it on, and the interaction handler refuses it elsewhere. See [`apps/bot/AGENTS.md`](apps/bot/AGENTS.md#commands-and-registration).
 - **Resolution order:** `FEATURE_FLAGS` (`*` all on, `a,b` on, `-a` off), then the server's `settings.features` (set by the owner for alpha servers), then the default for the environment. `NODE_ENV=production` picks the prod default; anything else picks dev. Nothing selects the staging default until the staging deployment exists, so staging uses `FEATURE_FLAGS` meanwhile.
 - **Turning a feature off in dev** takes more than a `dev: false` default: `FEATURE_FLAGS=*` in `.env` still wins. Change `.env.example` too (e.g. `*,-a`) and tell contributors to update their `.env`.
 - **Remove the flag once its feature is fully released**, along with its checks. The flag list doubles as the list of unreleased features.
