@@ -64,6 +64,33 @@ Never put `Closes #104` on both PRs. The first merge closes #104 and moves it to
 - Model changes: run `npm run erd:generate` and update the seed data in `scripts/seed/data/`.
 - Never commit `.env`, tokens, or real server IDs.
 
+## Feature flags
+
+Unreleased features stay in the code but sit behind a flag: on in dev, off in production ([21 § Feature flags](docs/architecture/concepts/21-hosting-and-environments.md#feature-flags-decided-oct-2026)). The flags live in [`libs/core/src/flags/flags.ts`](libs/core/src/flags/flags.ts).
+
+- **Add a flag** with `defineFlag` in `flagList`, with a description and a default for each environment:
+
+  ```ts
+  defineFlag('arena.pvai', {
+    description: 'Arena battles against the AI',
+    defaults: { dev: true, staging: true, prod: false },
+  }),
+  ```
+
+  The key joins the `FlagKey` union, so a typo anywhere is a compile error.
+
+- **Check a flag** with `isEnabled` from `@core/flags`. The app reads the environment once (`readFlagEnv()` from `@shared/flags`) and loads the server's overrides when there is a server (`getServerFeatures(guildId)`):
+
+  ```ts
+  const flagEnv = readFlagEnv(); // once, at startup
+  const serverFeatures = await getServerFeatures(interaction.guildId);
+  if (isEnabled('arena.pvai', { ...flagEnv, serverFeatures })) { … }
+  ```
+
+- **Resolution order:** `FEATURE_FLAGS` (`*` all on, `a,b` on, `-a` off), then the server's `settings.features` (set by the owner for alpha servers), then the default for the environment. `NODE_ENV=production` picks the prod default; anything else picks dev. Nothing selects the staging default until the staging deployment exists, so staging uses `FEATURE_FLAGS` meanwhile.
+- **Turning a feature off in dev** takes more than a `dev: false` default: `FEATURE_FLAGS=*` in `.env` still wins. Change `.env.example` too (e.g. `*,-a`) and tell contributors to update their `.env`.
+- **Remove the flag once its feature is fully released**, along with its checks. The flag list doubles as the list of unreleased features.
+
 ## Checks
 
 Every PR into `develop` runs [CI](.github/workflows/ci.yml): a Prettier format check on the whole repo, then lint, typecheck, build, and unit tests for the projects the PR affects (`nx affected`), plus a [SonarCloud](https://sonarcloud.io/summary/new_code?id=pokesandbox_pokesandbox) analysis. Pushes to `develop` run everything. Run the same checks locally before pushing:

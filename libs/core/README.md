@@ -8,6 +8,7 @@ Import it through the `@core/*` alias (for example `@core/ports`).
 
 | Folder        | Holds                                                       |
 | ------------- | ----------------------------------------------------------- |
+| `flags/`      | Feature flag list (`defineFlag`) and the pure `isEnabled`   |
 | `schemas/`    | Zod content/catalog schemas, `ContentKey`, shared id types  |
 | `registries/` | Condition, effect, and fact registries                      |
 | `formulas/`   | Per-generation rule formulas (EXP, catch, escape, payout)   |

@@ -1,6 +1,6 @@
 # shared: agent instructions
 
-Mongoose + Zod models, DTOs, the DB connection, and the cache service. Imported as `@shared/models`, `@shared/dtos`, `@shared/connectDb`, `@shared/cache`. Root rules: [`../AGENTS.md`](../AGENTS.md).
+Mongoose + Zod models, DTOs, the DB connection, and the cache service. Imported as `@shared/models`, `@shared/dtos`, `@shared/connectDb`, `@shared/cache`, and `@shared/flags` (reads `FEATURE_FLAGS` / `NODE_ENV` and a server's flag overrides for `@core/flags`). Root rules: [`../AGENTS.md`](../AGENTS.md).
 
 Libraries (`libs/*`) never import this package's Mongoose models. Domain rules belong in `libs/engine` / `libs/authoring`, not in model statics ([03](../docs/architecture/concepts/03-engine-boundary-and-game-loop.md#package-layout--encapsulation-rules-decided-oct-2026)). Statics and query helpers here are for data access only.
 
