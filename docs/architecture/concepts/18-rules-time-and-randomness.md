@@ -50,6 +50,7 @@ RegionRules {
     trading: { access: 'pcLocation' | 'anywhere' };   // Gen 1: 'pcLocation' (Cable Club)
     tradeEvolutions?: …;                      // reserved, post-MVP: configurable alternative to trading (item / level); default: trade only   // Gen 1: 'pcLocation' (locations with services: ['pc']); modern presets: 'anywhere'
     bagCapacity?: number;                     // Gen 1: 20 item slots (optional authentic limit)
+    machines: { tmReusable: boolean };       // Gen 1–4: false (TMs single-use); Gen 5+: true. HMs are always reusable (12)
     nicknames: boolean; time: TimeRules;      // time unused in Gen 1 regions
     levelCap?: …;
     levelScaling?: …;                         // reserved, post-MVP: encounter levels relative to badges/party
@@ -92,7 +93,7 @@ There is no hard lock on rules after publish: real balance fixes must stay possi
 - **Formula reference:** every Gen 1 formula follows the [pret/pokered](https://github.com/pret/pokered) disassembly (e.g. `ItemUseBall` for catching, `TryRunningFromBattle` for escape), with unit tests against values worked from it.
 - **Growth rates:** Gen 1 has four curves, computed from their formulas and floored to integers: Fast `4n³/5`, Medium Fast `n³`, Medium Slow `6n³/5 − 15n² + 100n − 140`, Slow `5n³/4`. Medium Slow is negative at level 1. The cartridge underflows there (the source of the level-1 → level-100 glitch); we clamp level 1 to 0 EXP instead.
 
-**Presets** become saved combinations ("Classic Gen 1", later "RSE", "Modern"). The MVP ships only **Classic Gen 1**. Admins can still change any dimension once more generations are implemented.
+**Presets** become saved combinations ("Classic Gen 1", later "RSE", "Modern"). The MVP ships only **Classic Gen 1**. Admins can still change any dimension once more generations are implemented. **Rules stay changeable after a region is created** (reconfirmed Nov 2026, #250). The builder says only Classic Gen 1 exists for now, and changes are checked at publish as above.
 
 **The Modern preset (decided Nov 2026, post-MVP).** The gate for opening region authoring to every server ([`mvp-checkpoints.md`](../../roadmap/mvp-checkpoints.md#what-the-mvp-release-opens-up-decided-nov-2026)). It's the Gen 6+ ruleset, where modern mechanics settled:
 

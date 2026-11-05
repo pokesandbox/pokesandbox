@@ -76,6 +76,16 @@ Location.explore: {
 - **Asides (post-MVP):** short one-time scripts in place of "nothing happened". A description of the area, a cute or eerie moment, a fleeting NPC. Ordinary scripts with `once`, authored per location. They make the region feel alive without wasting the player's time.
 - Repel suppresses only `wild` outcomes below the lead's level.
 
+### Encounter rate and the Explore tab (decided Nov 2026)
+
+From the authoring mockups ([#250](https://github.com/pokesandbox/pokesandbox/issues/250)).
+
+- **The player picks the method.** Each method is its own Explore button ("Walk in the grass", "Fish (Old Rod)", "Surf"). A button shows only when the location has a table for that method and the method's condition passes.
+- **Rate is the share of presses on a method that give a wild Pokémon**, since a press never finds nothing. The rest goes to the location's trainer and item outcomes, renormalized as they're used up. With no trainer or item outcomes left, every press is wild. `EncounterMethod.rate` (0–100) is the region default. A location can override it per method in `Location.explore` (`{ kind: 'wild'; method; rate? }` replaces the bare `weight` for wild outcomes). This replaces "roll the rate, then roll a slot" in the encounter loop above.
+- **Trainer and item outcomes join land methods only.** `EncounterMethod.otherOutcomes: boolean` is true for grass and cave, and false for surf and the rods. So fishing is wild-only, and Old Rod at 100% is normal.
+- **No default method.** A location has no Explore at all until something gives it one: a method table, an `onExplore` trainer, or a hidden item. So an author never has to remove a default.
+- **Builder:** the location's **Explore** tab lists its wild methods (with rate and tables; "+ Method" adds one), read-only counts of its `onExplore` trainers and hidden items, and its traversal costs. The empty state on a route or dungeon suggests "Add grass encounters" / "Add cave encounters".
+
 ### Traversal requirements (MVP, decided Oct 2026)
 
 Authors can make moving through a location cost something. Explore presses are how players pay it. Two kinds of cost, which can be combined:

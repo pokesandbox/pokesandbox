@@ -41,7 +41,7 @@ Journey {
   bag: Record<ItemId, number>;                   // pockets derived from ItemDefinition
   progress: Record<progressionKey, number | boolean | string | string[]>;   // see 04
   flags: string[];                                                          // see 04
-  dex: { seen: SpeciesId[]; caught: SpeciesId[] };   // or a bitset/map. Small either way.
+  dex: { seen: SpeciesId[]; caught: SpeciesId[] };   // per form (decided Nov 2026): Showdown IDs, which give each form its own ID ('raichualola'). Species counts are derived. A bitset/map is fine.
   partyOrder: ObjectId[];                         // ≤ 6 Pokémon instance ids (order = lead first); see 13
   boxes: { name: string; wallpaper?: string }[];  // metadata only. Membership lives on the Pokémon.
   status: { repelSteps?: number; … };

@@ -64,6 +64,15 @@ The webapp uses antd 6 in a handful of files (headers, the search bar, server ca
 - **Migration ([#203](https://github.com/pokesandbox/pokesandbox/issues/203), after the trial):** replace the antd usages, remove antd and `@ant-design/*`, and add the chosen primitives. The current Tailwind is 3.4; upgrading to Tailwind 4 is part of the migration if the chosen library's current templates expect it.
 - **Shared builder components** (built once, used by every editor): a list/detail shell, a species/move/item search combobox, a sortable list, the condition builder, a passage editor with preview, and a confirm dialog.
 
+## Player pages (decided Nov 2026)
+
+At the MVP Release the webapp also gets player-facing region pages. The first is the **region Pokédex** with in-region species pages ([#261](https://github.com/pokesandbox/pokesandbox/issues/261)): caught, seen, and not seen per form, filtered by the region's `dexVisibility` ([12 § Regional Pokédex](12-content-catalog-species-moves-items.md#regional-pokédex-decided-nov-2026)). The tRPC procedure filters what it returns, not the client. Visitors without a journey get the region's visitor policy.
+
+## Design reference and UI foundations (Nov 2026)
+
+- The HTML mockups from [#250](https://github.com/pokesandbox/pokesandbox/issues/250) in `docs/design/authoring-mockups/` are the design reference for the builder and these pages. Where a mockup and a concept doc disagree, the doc wins.
+- The trial ([#202](https://github.com/pokesandbox/pokesandbox/issues/202)), the antd migration ([#203](https://github.com/pokesandbox/pokesandbox/issues/203)), the design tokens and primitives, and each shared component sit in the **Webapp UI Foundations** epic ([#254](https://github.com/pokesandbox/pokesandbox/issues/254), M0b). Every shared component is its own issue and blocks only the screens that use it, so screens can start before the whole set exists.
+
 ## MVP scope
 
 - The webapp builder for every MVP authoring feature, mobile-first, on `libs/authoring` commands.

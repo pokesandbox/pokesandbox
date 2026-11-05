@@ -142,6 +142,9 @@ Option B was adopted: one Script + Trigger system, **on the condition that build
 3. **Authoring surface (revised Oct 2026, Q36):** scripts are authored in the **webapp**, mobile-first, on top of templates ([28](28-webapp-authoring-and-mobile-first-ux.md)). This replaces the earlier Discord-complete principle. Because the step editor is a client of `libs/authoring` commands, a Discord **step-list editor** (list steps, add/insert/move/delete, edit a step via modal, Components v2 sections with per-step edit accessories) can still be added post-MVP for creators who prefer Discord.
 4. **Guardrails:** confirmed. No script-calls-script in MVP (add `call` later with a depth limit), and a step cap per dispatch so a bad `goto` can't loop forever.
 
+5. **Template provenance (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)):** a script a template generated remembers it, `Script.template?: { id: TemplateId; version: number; inputs: unknown }`. **Edit as form** reopens the template's form with the stored inputs and regenerates the script in place. Keys stay stable, and so do the NPC and trainer the template made. Editing any step by hand in the step editor first asks to confirm ("This script will no longer be editable as a Gym Leader form") and then clears `template`. The version lets a later template change migrate old inputs.
+6. **Name placeholders (decided Nov 2026):** `{name:player}` is always available and resolves to the character's name. Other slots (`{name:rival}`) are journey name slots filled by `askName` ([23](23-players-characters-journeys-and-scopes.md)).
+
 ## Open questions
 
 - ~~Offered triggers vs People here?~~ See Decision 1.

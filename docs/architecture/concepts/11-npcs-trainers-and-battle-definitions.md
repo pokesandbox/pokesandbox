@@ -110,6 +110,13 @@ Npc.afterDefeat?: {
 
 The condition uses a new MVP fact, `location.trainersDefeated` (distinct trainers defeated here), or specific trainer flags. The **Gym Leader template** exposes this as an option ("Require N gym trainers first", off by default) and generates the gate.
 
+**Trainers in the builder (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)).** The builder shows one combined **NPCs** list, but `Npc` and `Trainer` stay separate records.
+
+- **Make battleable** on an NPC creates a Trainer and links it. A trainer can be shared by several NPCs (role trainers) or by none (**battle only**, used from scripts, like the rival's fixed battles).
+- **Make a copy** duplicates a trainer under a new key.
+- **Deleting** uses `references()` ([05](05-requirements.md)), with no stored reference counts. A trainer that scripts reference can't be deleted. NPC links are listed in the confirm dialog and unlinked on delete.
+- The bag stays on each party variant (`parties[].items`), and the held-item field is hidden when the rules have no held items.
+
 ## MVP scope
 
 - Trainer intro and defeat lines (flavor entries `battle.trainerIntro` / `battle.trainerDefeat`, matched on the trainer or its class; MVP, [29](29-flavor-text-and-prose.md#mvp-scope)); post-battle talk stays the `afterDefeat.interact` script.

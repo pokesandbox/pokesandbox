@@ -65,6 +65,9 @@ Admin-authored flags are free-form (`rocket_hideout_cleared`). Conditions can te
 - `visibility` already handles the profile.
 - Add an optional `display` hint: `badgeCase` (grid of milestone images), `meter`, `list`, `hidden`. The profile renderer and the webapp can then make badges look like badges without special-casing the key "badges".
 
+- **Visibility, in the builder's words (decided Nov 2026, #250):** **Public** is shown from the start. **Discoverable** stays hidden until the journey first makes progress on it. **Hidden** is never shown to players and is for gating only.
+- **Badges** are a milestone progression with images and `display: 'badgeCase'`. Kanto Classic's eight badges are template content in its bundle ([16 § Official templates](16-authoring-validation-and-portability.md#official-templates-decided-oct-2026)), not part of the rules preset, so a region without badges simply has none.
+
 ## Decisions (Oct 2026, Q21)
 
 Option B (two layers) adopted: curated **progressions** (displayable) + open **flags** (engine-reserved prefixes `trainer:`, `script:`, `pickup:`, `gift:`, `gate:`, `visited:`, plus author flags created inline). The builder offers a dropdown of every flag used in the region, and a "Promote to progression" action for flags that turn out to matter to players.
