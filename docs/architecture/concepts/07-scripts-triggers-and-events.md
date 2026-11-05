@@ -70,7 +70,7 @@ type Step =
   | { label: Label } | { goto: Label } | { end: {} };
 ```
 
-**Runtime:** the script VM runs steps until a **blocking** step (`passage`/`say`, `choice`, `battle`, `shop`, `npcTrade`, `askName`). Text in passages, `choice`, and trainer display names can include `{name:<slot>}` placeholders, filled from `Journey.names`. It then persists `journey.mode = { type: 'script', script, releaseVersion, pc, locals, startedAt }` and emits events for the bot to render. Player input resumes it. Battles return a result to the VM. Bot restarts are harmless.
+**Runtime:** the script VM runs steps until a **blocking** step (`passage`/`say`, `choice`, `battle`, `shop`, `npcTrade`, `askName`). Text in passages, `choice`, and trainer display names can include `{name:<slot>}` placeholders, filled from `Journey.names`, and `{species:<id>}` references, which the presentation layer renders as the species' name in the viewer's language ([30](30-internationalization-readiness.md)). Templates use these instead of copying names into text (Starter Gift's "So, you want {species:charmander}?", one per option). An `effects` step that fails preflight ([06](06-effects.md), e.g. a Take the player can't cover) ends the script, showing the explanation. An `onFail` label can come with the full editor. It then persists `journey.mode = { type: 'script', script, releaseVersion, pc, locals, startedAt }` and emits events for the bot to render. Player input resumes it. Battles return a result to the VM. Bot restarts are harmless.
 
 ### Passages: prose and dialogue (decided Oct 2026)
 
@@ -158,9 +158,10 @@ Option B was adopted: one Script + Trigger system, **on the condition that build
 8. **Basic step editor first (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)):** CP1 ships a **linear** step editor, and the full editor follows in CP2.
    - **Basic (CP1):** a flat list of steps (add, edit in a sheet, move up/down, delete). Step types: Text (`passage`), Ask for a name (`askName`), Give an item, a Pokémon or money and Take an item or money (`effects`; money is the `currency` effect, so New game sets starting money with a Give step), Set a flag, progression or badge (`effects`), Heal, Battle a trainer (`canLose`), and Move the player (`travel`). Any script containing `choice`, `if`, `label` or `goto` opens read-only. The `Step` union is unchanged; the editor shows a subset.
    - **Full (CP2):** choices, branches, labels and gotos, with the Gauntlet and In-game Trade templates.
-   - **Conditions stay on triggers.** Branching by state ("Oak, once you have the parcel") is a second trigger with a condition and a higher priority, so linear scripts cover CP1's content. An NPC's Talk row lists several scripts, each with an optional condition ("Talks differently when…"); underneath, these are separate `interact` triggers.
+   - **Conditions stay on triggers.** Branching by state ("Oak, once you have the parcel") is a second trigger with a condition and a higher priority, so linear scripts cover CP1's content. An NPC's Talk row lists several scripts, each with an optional condition ("Talks differently when…"); underneath, these are separate `interact` triggers. The list is ordered and the first match wins: the builder writes each trigger's `priority` from its position. The last row usually has no condition ("Otherwise", or "Always" when it's the only one). If none match, the NPC shows no Talk button.
    - **New game:** the `journeyStarted` script is opened from Region Settings → New game and edited in the basic editor. The Kanto Classic bundle seeds it (Oak's welcome, naming the rival, the move to the starting location).
-   - Templates stay for what's fiddly by hand: Starter Gift (pick 1 of N, the rival's counter-pick, the `choice` progression), Gym Leader, Forced Encounter, Gift NPC.
+   - Templates stay for what's fiddly by hand: Starter Gift, Gym Leader, Forced Encounter, Gift NPC.
+   - **Starter Gift** offers 2–6 options and sets the player's choice progression (`Starter`). With the rival's counter-pick on, it also sets a second choice progression, `Rival's starter`, from the template's mapping (Charmander → Squirtle). The rival's party variants key off `Rival's starter`, so the mapping lives in one place. Its Talk script runs only while `Starter` is unset.
 
 ## Open questions
 

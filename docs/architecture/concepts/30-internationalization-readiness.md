@@ -125,6 +125,7 @@ If a region's design does want names in the image (e.g. a Game Boy-style HUD), i
 - Stable `id`s on script steps, passage blocks, choice options, and description variants (and flavor variants when flavor ships).
 - System text in the bot and engine through `t(key, params)` with an English message catalog; no hard-coded player-facing strings in renderers, and no sentence concatenation.
 - Events carry references and structured placeholder values.
+- Authored text names canon content by reference (`{species:<id>}`, [07](07-scripts-triggers-and-events.md)), never by a copied English name.
 - Not MVP: `Translation` records, translation tools in the builder, localized catalog names, translated battle text, other locales' message catalogs, Discord command localizations, player locale preference.
 
 ## Open questions
