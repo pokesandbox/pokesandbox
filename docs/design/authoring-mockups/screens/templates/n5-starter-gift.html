@@ -77,8 +77,8 @@
                 they hand out the choice (Oak's Lab), or a new NPC.
               </li>
               <li>
-                <b>Options:</b> 2 to 6 Pokémon, each a card with species and
-                level. Remove a card, or "+ Option" up to six.
+                <b>Options:</b> 2 to 6 Pokémon, one row each with species and
+                level. Remove a row, or "+ Option" up to six.
               </li>
               <li>
                 <b>The rival's pick:</b> Off, or "The rival takes the one strong
@@ -232,17 +232,17 @@
         };
         var card = function (o) {
           return (
-            '<div class="ps-starter-card"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
-            o[0] +
-            '"><span data-i="x" data-s="18"></span></button><span class="ps-thumb" style="width:56px;height:56px"></span><b>' +
+            '<div class="ps-starter-card"><span class="ps-thumb" style="width:44px;height:44px"></span><div><b>' +
             o[0] +
             '</b><span class="t-mono ps-subtle" style="font-size:12px">' +
             o[1] +
             ' · ' +
             o[2] +
-            '</span><label class="ps-starter-lv">Lv <input class="ps-input" type="number" inputmode="numeric" value="5" aria-label="' +
+            '</span></div><label class="ps-starter-lv">Lv <input class="ps-input" type="number" inputmode="numeric" value="5" aria-label="' +
             o[0] +
-            ' level"></label></div>'
+            ' level"></label><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
+            o[0] +
+            '"><span data-i="x" data-s="18"></span></button></div>'
           );
         };
         var S = {
