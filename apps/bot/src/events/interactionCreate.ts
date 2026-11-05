@@ -68,7 +68,10 @@ const handleAutocompleteInteraction = async (
   try {
     await slashCommand.autocomplete(client, interaction);
   } catch (error) {
-    console.error(`Autocomplete error for /${interaction.commandName}:`, error);
+    client.logger.error('Autocomplete failed', {
+      command: interaction.commandName,
+      err: error,
+    });
   }
 };
 

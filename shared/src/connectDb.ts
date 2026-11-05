@@ -1,8 +1,10 @@
 import { connect } from 'mongoose';
 
+import type { Logger } from '@core/logging';
+
 const cached = (global as any).mongoose || { conn: null, promise: null };
 
-export async function connectDb() {
+export async function connectDb(logger: Logger) {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
@@ -17,11 +19,11 @@ export async function connectDb() {
   try {
     cached.conn = await cached.promise;
     (global as any).mongoose = cached;
-    console.info('Connected to MongoDB with Mongoose');
+    logger.info('Connected to MongoDB');
   } catch (error) {
     cached.promise = null;
     // Only exit if we are NOT in a Next.js/Browser environment
-    console.error('Mongoose connection error:', error);
+    logger.error('MongoDB connection failed', { err: error });
     if (process.env.APP_TYPE === 'bot') {
       process.exit(1);
     }

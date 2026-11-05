@@ -12,39 +12,20 @@ export const ClientReady: IBotEvent = {
         type: ActivityType.Watching,
       });
 
-      console.log('----------------------------------------------------');
-      console.log(`[Client] Logged into ${client?.user?.tag}`);
-      if (client.events.size > 0)
-        console.log(`[Events] Loaded ${client.events.size} Events.`);
-      if (client.buttons.size > 0)
-        console.log(`[ButtonCommands] Loaded ${client.buttons.size} Buttons.`);
-      if (client.messageContextCommands.size > 0)
-        console.log(
-          `[MessageContextCommands] Loaded ${client.messageContextCommands.size} MessageContextCommands.`,
-        );
-      if (client.modalForms.size > 0)
-        console.log(`[ModalForms] Loaded ${client.modalForms.size} Modals.`);
-      if (client.roleSelectMenus.size > 0)
-        console.log(
-          `[RoleSelectMenus] Loaded ${client.roleSelectMenus.size} RoleSelectMenus.`,
-        );
-      if (client.slashCommands.size > 0)
-        console.log(
-          `[SlashCommands] Loaded ${client.slashCommands.size} SlashCommands.`,
-        );
-      if (client.stringSelectMenus.size > 0)
-        console.log(
-          `[StringSelectMenus] Loaded ${client.stringSelectMenus.size} StringSelectMenus.`,
-        );
-      if (client.userContextCommands.size > 0)
-        console.log(
-          `[UserContextCommands] Loaded ${client.userContextCommands.size} UserContextCommands.`,
-        );
-      if (client.userSelectMenus.size > 0)
-        console.log(
-          `[UserSelectMenus] Loaded ${client.userSelectMenus.size} UserSelectMenus.`,
-        );
-      console.log('----------------------------------------------------');
+      client.logger.info('Client ready', {
+        tag: client.user?.tag,
+        loaded: {
+          events: client.events.size,
+          buttons: client.buttons.size,
+          messageContextCommands: client.messageContextCommands.size,
+          modalForms: client.modalForms.size,
+          roleSelectMenus: client.roleSelectMenus.size,
+          slashCommands: client.slashCommands.size,
+          stringSelectMenus: client.stringSelectMenus.size,
+          userContextCommands: client.userContextCommands.size,
+          userSelectMenus: client.userSelectMenus.size,
+        },
+      });
     });
   },
 };

@@ -3,6 +3,7 @@ import { GatewayIntentBits, Partials } from 'discord.js';
 
 import { connectDb } from '@shared/connectDb';
 import { readFlagEnv } from '@shared/flags';
+import { createLoggerFromEnv } from '@shared/logger';
 
 import { BotClient } from '@bot/classes';
 import {
@@ -15,9 +16,11 @@ import {
   userSelectMenusManager,
 } from './structures/managers';
 
-connectDb().then(async () => {
+const logger = createLoggerFromEnv();
+
+connectDb(logger).then(async () => {
   const TOKEN = process.env.DISCORD_BOT_TOKEN as string;
-  console.log('SandBot is initializing...');
+  logger.info('SandBot is initializing');
 
   const client = new BotClient({
     intents: [
@@ -34,6 +37,7 @@ connectDb().then(async () => {
     ],
     partials: [Partials.Channel],
   });
+  client.logger = logger;
 
   await buttonsManager(client);
   await modalFormsManager(client);

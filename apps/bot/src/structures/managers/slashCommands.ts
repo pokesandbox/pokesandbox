@@ -64,7 +64,10 @@ export const slashCommandsManager = async (
     try {
       await rest.put(route, { body });
     } catch (error) {
-      console.log(error);
+      client.logger.error('Command registration failed', {
+        route,
+        err: error,
+      });
     }
   };
 
@@ -75,9 +78,10 @@ export const slashCommandsManager = async (
       flagEnv,
       await loadServerFeatures(target.guildId),
     );
-    console.log(
-      `Registering ${body.length} commands to guild ${target.guildId}`,
-    );
+    client.logger.info('Registering guild commands', {
+      count: body.length,
+      guildId: target.guildId,
+    });
     await put(registrationRoute(target, clientId), body);
     return;
   }
@@ -93,14 +97,16 @@ export const slashCommandsManager = async (
     await put(Routes.applicationGuildCommands(clientId, guildId), body);
   };
 
-  console.log(`Registering ${plan.global.length} commands globally`);
+  client.logger.info('Registering global commands', {
+    count: plan.global.length,
+  });
   await put(registrationRoute(target, clientId), toBodies(plan.global));
 
   if (plan.guildOnly.length === 0) return;
   const guildIds = await listServersWithOverrides();
-  console.log(
-    `Syncing hidden commands for ${guildIds.length} servers with overrides`,
-  );
+  client.logger.info('Syncing hidden commands for servers with overrides', {
+    count: guildIds.length,
+  });
   for (const guildId of guildIds) {
     await client.syncGuildCommands(guildId);
   }

@@ -1,14 +1,16 @@
+import type { BotClient } from '@bot/classes';
 import type { IBotEvent } from '@bot/structures/interfaces';
 
 export const ErrorManager: IBotEvent = {
   name: 'errorManager',
   customEvent: true,
-  execute: async () => {
+  execute: (_name: string, client?: BotClient) => {
+    if (!client) return;
     process.on('unhandledRejection', (error) => {
-      console.log(error);
+      client.logger.error('Unhandled rejection', { err: error });
     });
     process.on('uncaughtException', (error) => {
-      console.log(error);
+      client.logger.error('Uncaught exception', { err: error });
     });
   },
 };

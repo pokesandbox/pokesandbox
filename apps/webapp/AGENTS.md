@@ -22,6 +22,7 @@ Reference router: [`src/trpc/routers/servers.ts`](src/trpc/routers/servers.ts). 
 - **Authoring goes through `libs/authoring` commands** (#145) once it exists; procedures stay thin wrappers. The webapp never imports `libs/battle` and never runs battles or timers.
 - **Respect privacy** for profiles and characters ([23 § Privacy](../../docs/architecture/concepts/23-players-characters-journeys-and-scopes.md#privacy-decided-oct-2026)).
 - **Feature flags**: read the same `isEnabled(flag)` registry as the bot (#109).
+- **Logging**: server code uses `logger` from `src/logger.ts`, never `console`. Pass errors as `err`.
 
 ## UI
 

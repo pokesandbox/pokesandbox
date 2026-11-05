@@ -50,6 +50,31 @@ describe('interactionCreate', () => {
       expect(autocomplete).not.toHaveBeenCalled();
     });
   });
+
+  it('logs an autocomplete handler that throws', async () => {
+    jest.mocked(getServerFeatures).mockResolvedValue({});
+    const error = new Error('lookup failed');
+    const client = clientWith(
+      slashCommand('dex', { autocomplete: jest.fn().mockRejectedValue(error) }),
+    );
+    client.flagEnv = {
+      env: 'prod',
+      envOverrides: { 'discord.authoring': true },
+    };
+    const logError = jest.spyOn(client.logger, 'error');
+
+    await emit(client, {
+      type: InteractionType.ApplicationCommandAutocomplete,
+      commandName: 'dex',
+      guildId: 'guild-1',
+      respond: jest.fn(),
+    });
+
+    expect(logError).toHaveBeenCalledWith('Autocomplete failed', {
+      command: 'dex',
+      err: error,
+    });
+  });
 });
 
 function clientWith(command: ISlashCommand): BotClient {
