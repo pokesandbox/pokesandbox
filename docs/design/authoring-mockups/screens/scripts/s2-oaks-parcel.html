@@ -16,12 +16,12 @@
         >S2 · Worked example: Oak’s Parcel
         <small
           >S2 · Worked example: Oak&#x27;s Parcel · the Mart event, Oak&#x27;s
-          Talk scripts and the Route 2 guard, each with its script
-          (phone)</small
+          Talk scripts, the Route 2 guard and the gate on Viridian City&#x27;s
+          north exit, each with its script (phone)</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 1760px">
+    <main class="mk-stage" style="min-width: 2140px">
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
@@ -35,6 +35,12 @@
           <div>
             <p class="ps-frame-label">3 · Route 2 guard · Talk</p>
             <div class="ps-phone ps-phone--tall slot" data-v="guard"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              4 · Viridian City · north exit to Route 2
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="gate"></div>
           </div>
           <div style="width: 340px" class="ps-stack">
             <p class="ps-frame-label">How it plays</p>
@@ -55,9 +61,15 @@
                 <span class="t-mono">oak_parcel_delivered</span>.
               </li>
               <li>
-                <b>Route 2:</b> until then, the guard turns them back. His only
-                Talk script has the same condition, so once the parcel is
-                delivered he has nothing to say and players walk past.
+                <b>Viridian City's north exit:</b> the connection to Route 2
+                requires <span class="t-mono">oak_parcel_delivered</span>.
+                Players still see "North" and can press it; until the parcel is
+                delivered they're turned back with the guard's line.
+              </li>
+              <li>
+                <b>The guard</b> only talks. His Talk script has the same
+                condition, so once the parcel is delivered he has nothing more
+                to say. A Talk script can't stop anyone; the gate does.
               </li>
               <li>
                 <b>Oak's Lab:</b> talking to Oak runs the first Talk script
@@ -67,8 +79,8 @@
               </li>
               <li>
                 <b>No branches needed:</b> each "Oak, once you have the parcel"
-                moment is its own Talk script or event with a condition, so
-                every script here is a straight list of steps.
+                moment is its own Talk script, event or gate with a condition,
+                so every script here is a straight list of steps.
               </li>
             </ol>
             <p class="ps-frame-label" style="margin-top: 12px">Talk section</p>
@@ -123,6 +135,13 @@
               data-v="guardScript"
             ></div>
           </div>
+          <div>
+            <p class="ps-frame-label">4 · When blocked</p>
+            <div
+              class="ps-phone ps-phone--tall slot"
+              data-v="blockedScript"
+            ></div>
+          </div>
         </div>
       </div>
       <script>
@@ -170,6 +189,57 @@
             '</article>'
           );
         };
+        function gate() {
+          var edges = [
+            ['South', 'Route 1', 'route', ''],
+            [
+              'North',
+              'Route 2',
+              'route',
+              '<span class="ps-badge ps-badge--outline" style="align-self:flex-start"><span data-i="lock" data-s="14"></span>Only after the parcel</span>',
+            ],
+          ];
+          var list =
+            '<div class="ps-form"><p class="t-body-sm ps-muted">Where players can travel from Viridian City.</p><div class="ps-edges">' +
+            edges
+              .map(function (e) {
+                return (
+                  '<div class="ps-edge" style="padding-left:0"><button class="ps-handle" aria-label="Reorder ' +
+                  e[1] +
+                  '"><span data-i="grip"></span></button><span class="ps-kind" data-i="' +
+                  e[2] +
+                  '"></span><div><span class="ps-edge-dir">' +
+                  e[0] +
+                  '</span><b class="t-title-3" style="font-size:15px">' +
+                  e[1] +
+                  '</b>' +
+                  e[3] +
+                  '</div>' +
+                  PS.moreBtn +
+                  '</div>'
+                );
+              })
+              .join('') +
+            '</div></div>';
+          var sheet =
+            '<div class="ps-scrim"></div><div class="ps-sheet" role="dialog" aria-label="Edit connection"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">North to Route 2<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Viridian City · connection</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            '<div class="ps-field"><span class="ps-label">Requirement</span>' +
+            PS.condSummary('Only after flag ' + mono('oak_parcel_delivered')) +
+            '</div>' +
+            '<div class="ps-field"><span class="ps-label">Until then, the exit is</span><div class="ps-seg" role="group"><button aria-pressed="false">Hidden</button><button aria-pressed="false">Shown locked</button><button aria-pressed="true">Let them try</button></div><p class="ps-help">Players see “North” and can press it. They stay in Viridian City and the script below runs.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">When blocked, run…</span>' +
+            PS.scriptRow('r2-gate-blocked') +
+            '</div>' +
+            '<div class="ps-actions"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
+          return (
+            PS.phoneBar('Viridian City', 'Town', PS.saved + PS.moreBtn) +
+            PS.locTabs('connections') +
+            '<div class="ps-scroll">' +
+            list +
+            '</div>' +
+            sheet
+          );
+        }
         document.querySelectorAll('.slot').forEach(function (el) {
           var v = el.getAttribute('data-v');
           if (v === 'mart')
@@ -206,7 +276,13 @@
               '<div class="ps-scroll" data-scroll-end><div class="ps-form">' +
               npcHead('Guard', 'Route 2, north gate', 'route') +
               PS.talkSection(
-                [{ name: 'Turns them back', cond: BEFORE, script: 'r2-guard' }],
+                [
+                  {
+                    name: 'Talks about the road',
+                    cond: BEFORE,
+                    script: 'r2-guard',
+                  },
+                ],
                 { note: 'With none matching, there’s no Talk button.' },
               ) +
               '</div></div>';
@@ -272,7 +348,7 @@
             );
           if (v === 'guardScript')
             el.innerHTML = scriptPage(
-              'Turns them back',
+              'Talks about the road',
               'r2-guard',
               [
                 [
@@ -284,7 +360,7 @@
               [
                 {
                   t: 'text',
-                  sum: 'Text · Guard: “The road ahead is closed. …”',
+                  sum: 'Text · Guard: “They’re fixing the road to Pewter. …”',
                 },
                 {
                   t: 'text',
@@ -292,6 +368,19 @@
                 },
               ],
             );
+          if (v === 'blockedScript')
+            el.innerHTML = scriptPage(
+              'The road is closed',
+              'r2-gate-blocked',
+              [['town', 'Viridian City · North exit', 'When blocked']],
+              [
+                {
+                  t: 'text',
+                  sum: 'Text · Guard: “Sorry, the road ahead is closed.”',
+                },
+              ],
+            );
+          if (v === 'gate') el.innerHTML = gate();
         });
         document.querySelectorAll('[data-scroll-end]').forEach(function (el) {
           setTimeout(function () {
