@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>L2 · Party and Lines tabs ★ · PokeSandbox mockups</title>
+    <title>L2 · NPC editor for a trainer ★ · PokeSandbox mockups</title>
     <link rel="stylesheet" href="../../assets/tokens.css" />
     <link rel="stylesheet" href="../../assets/mockups.css" />
     <link rel="stylesheet" href="../../assets/page.css" />
@@ -13,15 +13,14 @@
     <header class="mk-bar">
       <a href="../../index.html">All mockups</a
       ><span
-        >L2 · Party and Lines tabs ★
+        >L2 · NPC editor for a trainer ★
         <small
-          >L2 · Party and Lines tabs ★ (used as-is in the NPC editor; Details
-          moved to Person and Battle) · phone (Party in light and dark), Pokémon
-          sheet, desktop 1440</small
+          >L2 · NPC editor for a trainer ★ · Person · Battle · Party · Lines ·
+          phone (Party in light and dark), Pokémon sheet, desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 1500px">
+    <main class="mk-stage" style="min-width: 1720px">
       <div
         class="ps-root ps-pad"
         data-theme="light"
@@ -29,9 +28,9 @@
       >
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
-            <p class="ps-frame-label">Details</p>
+            <p class="ps-frame-label">Person</p>
             <div data-theme="light">
-              <div class="ps-phone ps-phone--tall slot" data-v="details"></div>
+              <div class="ps-phone ps-phone--tall slot" data-v="person"></div>
             </div>
           </div>
           <div>
@@ -46,21 +45,7 @@
               <div class="ps-phone ps-phone--tall slot" data-v="party"></div>
             </div>
           </div>
-        </div>
-        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
-          <div>
-            <p class="ps-frame-label">Edit Pokémon (sheet)</p>
-            <div data-theme="light">
-              <div class="ps-phone ps-phone--tall slot" data-v="mon"></div>
-            </div>
-          </div>
-          <div>
-            <p class="ps-frame-label">Lines</p>
-            <div data-theme="light">
-              <div class="ps-phone ps-phone--tall slot" data-v="lines"></div>
-            </div>
-          </div>
-          <div style="width: 420px" class="ps-stack">
+          <div style="width: 380px" class="ps-stack">
             <p class="ps-frame-label">Notes</p>
             <ul
               class="t-body-sm ps-muted"
@@ -73,13 +58,16 @@
               "
             >
               <li>
-                <b>Name placeholders:</b> the hint chip inserts
-                <span class="t-mono">{name:rival}</span>, which becomes the name
-                the player gave their rival.
+                <b>One editor for an NPC who battles:</b> Person (name, sprite,
+                where they are, talk) · Battle (class, how the battle starts,
+                AI, payout, format, after defeat) · Party · Lines. An NPC who
+                doesn't battle has only Person and Battle, and Battle offers
+                "Make battleable".
               </li>
               <li>
-                <b>Payout:</b> Formula is the default and shows its result for
-                the current party; Fixed swaps in a number field.
+                <b>Name placeholders</b> live on Person: the hint chip inserts
+                <span class="t-mono">{name:rival}</span>, the name the player
+                gave their rival. The trainer uses the NPC's name and sprite.
               </li>
               <li>
                 <b>Party variants</b> are ordered cards, each with a condition
@@ -96,10 +84,48 @@
                 <b>Warning:</b> no variant is unconditioned, so if none match
                 the battle can't start. Region Health shows the same.
               </li>
+            </ul>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">Battle</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="battle"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Edit Pokémon (sheet, from Party)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="mon"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Lines</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="lines"></div>
+            </div>
+          </div>
+          <div style="width: 380px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Payout:</b> Formula is the default and shows its result for
+                the first variant; Fixed swaps in a number field.
+              </li>
               <li>
                 <b>Moves:</b> empty slots show what the engine will pick ("Auto:
-                Scratch", the last four level-up moves). Override sets a move;
-                Reset returns to auto.
+                Growl", from the last four level-up moves). Override sets a
+                move; Reset returns to auto.
               </li>
               <li>
                 <b>Held item</b> is shown but off: Classic Gen 1 rules have no
@@ -107,14 +133,15 @@
               </li>
               <li>
                 <b>Lines:</b> intro and defeat are passages with a Discord
-                preview that fills placeholders with a sample name. Post-battle
-                talk is the NPC's job.
+                preview that fills placeholders with a sample name. What they
+                say if you talk to them afterwards is the after-defeat script on
+                Battle.
               </li>
             </ul>
           </div>
         </div>
         <p class="ps-frame-label" style="margin-top: 32px">
-          Desktop 1440 · Party tab
+          Desktop 1440 · Party tab, NPCs list filtered to Trainers
         </p>
         <div data-theme="light">
           <div
@@ -128,18 +155,7 @@
         var title =
           '<span class="t-mono" style="font-size:15px">{name:rival}</span>';
         function bar() {
-          return PS.phoneBar(title, 'Rival', PS.saved + PS.moreBtn);
-        }
-        function details() {
-          return (
-            '<div class="ps-field"><label class="ps-label" for="tn">Name</label><input class="ps-input" id="tn" value="{name:rival}" style="font-family:var(--font-mono);font-size:15px">' +
-            '<div class="ps-hint-chips"><span class="t-body-sm ps-subtle">Insert:</span><button class="ps-chip">{name:rival}</button><button class="ps-chip">{name:player}</button></div><p class="ps-help">Placeholders become names the player chose.</p></div>' +
-            '<div class="ps-field"><span class="ps-label">Class</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="swap"></span>Rival</span><span data-i="chevD"></span></button></div>' +
-            '<div class="ps-field"><span class="ps-label">Sprite</span><div class="ps-sprite-row"><span class="ps-sprite">Sprite<br>placeholder</span><div class="ps-stack" style="gap:8px"><button class="ps-btn ps-btn--secondary">Choose image</button><span class="t-body-sm ps-subtle">Uses the class sprite if empty.</span></div></div></div>' +
-            '<div class="ps-field"><span class="ps-label">AI</span><div class="ps-seg" role="group"><button aria-pressed="false">Random</button><button aria-pressed="false">Basic</button><button aria-pressed="true">Smart</button></div><p class="ps-help">Picks strong moves, switches out of bad matchups, and uses bag items.</p></div>' +
-            '<div class="ps-field"><span class="ps-label">Payout</span><div class="ps-seg" role="group"><button aria-pressed="true">Formula</button><button aria-pressed="false">Fixed amount</button></div><p class="ps-help">Class base ₽35 × level of the last Pokémon = <b style="color:var(--ink)">₽630</b> for the first variant.</p></div>' +
-            '<div class="ps-field"><span class="ps-label">Battle format</span><div class="ps-seg" role="group"><button aria-pressed="true">Singles</button><button aria-pressed="false" disabled style="opacity:.5">Doubles · later</button></div></div>'
-          );
+          return PS.phoneBar(title, 'NPC · Trainer', PS.saved + PS.moreBtn);
         }
         function party() {
           return PS.partyEditor(PS.RIVAL, {
@@ -204,31 +220,38 @@
         }
         document.querySelectorAll('.slot').forEach(function (el) {
           var v = el.getAttribute('data-v');
-          if (v === 'details')
+          if (v === 'person')
             el.innerHTML =
               bar() +
-              PS.trainerTabs('details') +
+              PS.npcTabs('person', true) +
               '<div class="ps-scroll"><div class="ps-form">' +
-              details() +
+              PS.npcPerson() +
+              '</div></div>';
+          if (v === 'battle')
+            el.innerHTML =
+              bar() +
+              PS.npcTabs('battle', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              PS.npcBattle() +
               '</div></div>';
           if (v === 'party')
             el.innerHTML =
               bar() +
-              PS.trainerTabs('party') +
+              PS.npcTabs('party', true) +
               '<div class="ps-scroll"><div class="ps-form">' +
               party() +
               '</div></div>';
           if (v === 'lines')
             el.innerHTML =
               bar() +
-              PS.trainerTabs('lines') +
+              PS.npcTabs('lines', true) +
               '<div class="ps-scroll"><div class="ps-form">' +
               lines() +
               '</div></div>';
           if (v === 'mon')
             el.innerHTML =
               bar() +
-              PS.trainerTabs('party') +
+              PS.npcTabs('party', true) +
               '<div class="ps-scroll"></div><div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit Pokémon" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Charmander<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Variant 1 · slot 4 of 4</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
               mon() +
               '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Done</button></div></div>';
@@ -239,19 +262,19 @@
               PS.topbar() +
               '<div class="ps-split">' +
               PS.listPane(
-                'Trainers',
-                28,
+                'NPCs',
+                '28 trainers',
                 PS.trainerRows('rival'),
-                '<div class="ps-toolbar"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search trainers" aria-label="Search trainers"></div>' +
+                '<div class="ps-toolbar"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search NPCs" aria-label="Search NPCs"></div><div class="ps-chips"><button class="ps-chip" aria-pressed="false">All</button><button class="ps-chip" aria-pressed="true">Trainers</button><button class="ps-chip" aria-pressed="false">Non-battle</button><button class="ps-chip" aria-pressed="false">Battle only</button></div>' +
                   PS.classChips() +
                   '</div>',
               ) +
               '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">' +
               title +
-              '</h2><span class="ps-badge">Rival</span>' +
+              '</h2><span class="ps-badge ps-badge--brand">Trainer</span>' +
               PS.moreBtn +
               '</div>' +
-              PS.trainerTabs('party').replace(
+              PS.npcTabs('party', true).replace(
                 'ps-tabs"',
                 'ps-tabs" style="padding-left:16px"',
               ) +

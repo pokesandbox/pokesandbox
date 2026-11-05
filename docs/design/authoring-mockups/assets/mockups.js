@@ -654,3 +654,83 @@ window.PS = (function () {
     },
   ];
 })(window.PS);
+
+/* NPC editor tabs (Person, Battle), shared by the NPCs screen and L2. */
+(function (PS) {
+  var choice = function (on, t, d) {
+    return (
+      '<button class="ps-choice" role="radio" aria-checked="' +
+      on +
+      '"><span class="ps-radio"></span><span class="ps-choice-text"><b>' +
+      t +
+      '</b><span>' +
+      d +
+      '</span></span></button>'
+    );
+  };
+  PS.npcPerson = function () {
+    var place = function (n, kind, loc, cond) {
+      return (
+        '<article class="ps-placement"><div class="ps-variant-head"><button class="ps-handle" aria-label="Reorder place ' +
+        n +
+        '"><span data-i="grip"></span></button><span class="ps-priority">' +
+        n +
+        '</span><span class="ps-kind" data-i="' +
+        kind +
+        '"></span><b>' +
+        loc +
+        '</b>' +
+        PS.moreBtn +
+        '</div>' +
+        PS.condSummary(cond) +
+        '</article>'
+      );
+    };
+    return (
+      '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="{name:rival}" style="font-family:var(--font-mono);font-size:15px"><div class="ps-hint-chips"><span class="t-body-sm ps-subtle">Insert:</span><button class="ps-chip">{name:rival}</button><button class="ps-chip">{name:player}</button></div></div>' +
+      '<div class="ps-field"><span class="ps-label">Sprite</span><div class="ps-sprite-row"><span class="ps-sprite">Sprite<br>placeholder</span><button class="ps-btn ps-btn--secondary">Choose image</button></div></div>' +
+      '<h2 class="t-title-2" style="margin-top:8px">Where they are</h2><div class="ps-seg" role="group"><button aria-pressed="true">Single</button><button aria-pressed="false">Everywhere</button></div><p class="ps-help">In one place at a time: the first that matches.</p>' +
+      place(
+        1,
+        'building',
+        'Oak’s Lab, Pallet Town',
+        'Only before <span class="t-mono">oak_parcel_delivered</span>',
+      ) +
+      place(2, 'town', 'Viridian City', 'Requires the Boulder Badge') +
+      '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Show all 3</button>' +
+      '<h2 class="t-title-2" style="margin-top:8px">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>rival-smalltalk<small>When the player talks to them</small></span><button class="ps-btn ps-btn--ghost">Change</button></div>'
+    );
+  };
+  PS.npcBattle = function () {
+    return (
+      '<div class="ps-callout ps-callout--info"><span data-i="swap" data-s="18"></span><span>This NPC battles. Their team is on the Party tab.</span></div>' +
+      '<div class="ps-field"><span class="ps-label">Class</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="swap"></span>Rival</span><span data-i="chevD"></span></button></div>' +
+      '<div class="ps-field"><span class="ps-label">How the battle starts</span><div role="radiogroup" class="ps-stack" style="gap:8px">' +
+      choice(
+        false,
+        'On explore',
+        'Each Explore may turn them up instead of a wild Pokémon.',
+      ) +
+      choice(false, 'On entering', 'As soon as the player arrives.') +
+      choice(true, 'On talk', 'Only when the player talks to them.') +
+      '</div></div>' +
+      '<div class="ps-field"><span class="ps-label">AI</span><div class="ps-seg" role="group"><button aria-pressed="false">Random</button><button aria-pressed="false">Basic</button><button aria-pressed="true">Smart</button></div></div>' +
+      '<div class="ps-field"><span class="ps-label">Payout</span><div class="ps-seg" role="group"><button aria-pressed="true">Formula</button><button aria-pressed="false">Fixed amount</button></div><p class="ps-help">₽35 × level of the last Pokémon = <b style="color:var(--ink)">₽630</b>.</p></div>' +
+      '<div class="ps-field"><span class="ps-label">Battle format</span><div class="ps-seg" role="group"><button aria-pressed="true">Singles</button><button aria-pressed="false" disabled style="opacity:.5">Doubles · later</button></div></div>' +
+      '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Stays after defeat</b><span>Off: they leave once beaten.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Stays after defeat"></button></label>' +
+      '<div class="ps-link-row"><span data-i="code"></span><span>None<small>What they say after you win</small></span><button class="ps-btn ps-btn--ghost">Add</button></div>'
+    );
+  };
+  PS.npcTabs = function (active, battles) {
+    var t = [
+      ['person', 'Person'],
+      ['battle', 'Battle'],
+    ];
+    if (battles)
+      t.push(
+        ['party', 'Party <span class="ps-tab-meta">3</span>'],
+        ['lines', 'Lines'],
+      );
+    return PS.tabs(t, active);
+  };
+})(window.PS);
