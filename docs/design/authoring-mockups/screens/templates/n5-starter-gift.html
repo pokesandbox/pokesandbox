@@ -87,18 +87,23 @@
               </li>
               <li>
                 <b>Remembers the choice</b> in a choice progression, new
-                ("Starter") or existing. Its values are the options. The rival's
-                party variants key off it, so their team matches.
+                ("Starter") or existing. Its values are the options. With the
+                rival's pick on, the rival's pick is remembered too, in "Rival's
+                starter" by default, and the rival's party variants key off
+                that.
               </li>
               <li>
-                <b>Text:</b> before the choice, the confirmation ("So, you want
-                Charmander?", where <span class="t-mono">{pokemon}</span> is the
-                one they picked), and after the choice.
+                <b>Text:</b> before the choice, one confirmation line per option
+                ("So, you want
+                <span class="t-mono">{species:charmander}</span>?", shown as
+                "Charmander"), and after the choice. The name comes from the
+                species, so it's right in every language.
               </li>
               <li>
                 <b>It creates</b> one script and one Talk script on Oak, and
-                sets the progression. The Talk script runs only until a starter
-                is chosen, so Oak's other Talk scripts take over afterwards.
+                sets the Starter and Rival's starter progressions. The Talk
+                script runs only until a starter is chosen, so Oak's other Talk
+                scripts take over afterwards.
               </li>
             </ul>
           </div>
@@ -160,21 +165,41 @@
         var LINES = {
           before:
             'Oak: Now, {name:player}, which Pokémon do you want? Take your pick!',
-          confirm:
-            'Oak: So, you want {pokemon}? This Pokémon is really energetic!',
           after: '{name:rival}: Then I’ll take this one, Gramps!',
         };
         var fill = function (t) {
           return t
             .replace(/\{name:player\}/g, 'Ash')
             .replace(/\{name:rival\}/g, 'Kai')
-            .replace(/\{pokemon\}/g, 'Charmander');
+            .replace(/\{species:(\w+)\}/g, function (m, k) {
+              return k.charAt(0).toUpperCase() + k.slice(1);
+            });
         };
-        var hints = function (extra) {
+        var CONFIRM = {
+          Bulbasaur: 'So, you want {species:bulbasaur}? The Grass Pokémon!',
+          Charmander: 'So, you want {species:charmander}? The Fire Pokémon!',
+          Squirtle: 'So, you want {species:squirtle}? The Water Pokémon!',
+        };
+        var hints = function () {
+          return '<div class="ps-hint-chips"><span class="t-body-sm ps-subtle">Insert:</span><button class="ps-chip">{name:player}</button><button class="ps-chip">{name:rival}</button></div>';
+        };
+        var confirmLines = function () {
           return (
-            '<div class="ps-hint-chips"><span class="t-body-sm ps-subtle">Insert:</span><button class="ps-chip">{name:player}</button><button class="ps-chip">{name:rival}</button>' +
-            (extra ? '<button class="ps-chip">{pokemon}</button>' : '') +
-            '</div>'
+            '<div class="ps-field"><span class="ps-label">Confirming</span><p class="ps-help" style="margin-top:0">Each option gets its own line. The Pokémon’s name fills in automatically.</p>' +
+            OPTS.map(function (o) {
+              return (
+                '<div class="ps-confirm-line"><span class="ps-thumb" style="width:32px;height:32px"></span><div><b>' +
+                o[0] +
+                '</b><textarea class="ps-textarea" style="min-height:56px">' +
+                CONFIRM[o[0]]
+                  .replace(/\{species:\w+\}/, '<span class="t-mono">$&</span>')
+                  .replace(/<[^>]+>/g, '') +
+                '</textarea></div></div>'
+              );
+            }).join('') +
+            '</div><div class="ps-embed"><b>Professor Oak</b><span>' +
+            fill(CONFIRM.Charmander) +
+            '</span><div class="ps-embed-buttons"><span>Yes</span><span>No</span></div></div>'
           );
         };
         var passage = function (label, key, extra, preview, buttons) {
@@ -276,7 +301,8 @@
                 return '<span class="ps-badge">' + o[0] + '</span>';
               }).join('') +
               '</div>' +
-              '<div class="ps-callout ps-callout--info"><span data-i="swap" data-s="18"></span><span>The rival’s party variants key off this: “Only when Starter is Charmander” gives them Squirtle.</span></div>'
+              '<div class="ps-field" style="margin-top:8px"><label class="ps-label" for="rp">The rival’s pick is remembered as</label><div class="ps-seg" role="group"><button aria-pressed="true">New progression</button><button aria-pressed="false">Existing</button></div><input class="ps-input" id="rp" value="Rival’s starter"><p class="ps-help">Because the rival picks too. Also a choice progression with the same values.</p></div>' +
+              '<div class="ps-callout ps-callout--info"><span data-i="swap" data-s="18"></span><span>The rival’s party variants key off Rival’s starter: “When Rival’s starter is Squirtle” gives them Squirtle.</span></div>'
             );
           },
           5: function () {
@@ -291,11 +317,8 @@
                   return o[0];
                 }),
               ) +
-              passage('Confirming', 'confirm', true, 'Professor Oak', [
-                'Yes',
-                'No',
-              ]) +
-              passage('After the choice', 'after', true)
+              confirmLines() +
+              passage('After the choice', 'after', false)
             );
           },
           6: function () {
@@ -306,7 +329,7 @@
                 ['Who and where', 'Professor Oak, in Oak’s Lab'],
                 ['Options', 'Bulbasaur, Charmander, Squirtle · Lv 5'],
                 ['The rival’s pick', 'Strong against yours'],
-                ['Remembers', 'New progression Starter'],
+                ['Remembers', 'New progressions Starter and Rival’s starter'],
                 ['Text', 'Before, confirming, after'],
               ]
                 .map(function (r) {
@@ -320,7 +343,7 @@
                 })
                 .join('') +
               '</dl>' +
-              '<div class="ps-callout ps-callout--info"><span data-i="check" data-s="18"></span><span>Creates 1 script and 1 Talk script on Oak, and sets the Starter progression.</span></div>'
+              '<div class="ps-callout ps-callout--info"><span data-i="check" data-s="18"></span><span>Creates 1 script and 1 Talk script on Oak, and sets the Starter and Rival’s starter progressions.</span></div>'
             );
           },
         };
@@ -391,7 +414,7 @@
             [
               '1 script · oak-starter',
               'A Talk script on Professor Oak',
-              'Progression Starter',
+              'Progressions Starter and Rival’s starter',
             ]
               .map(function (t) {
                 return (

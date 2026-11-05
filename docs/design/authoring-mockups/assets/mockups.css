@@ -2831,3 +2831,19 @@
   padding: 0 8px;
   text-align: right;
 }
+
+.ps-confirm-line {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+.ps-confirm-line > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ps-confirm-line b {
+  font: 600 14px/18px var(--font-sans);
+}
