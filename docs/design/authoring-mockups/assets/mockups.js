@@ -1209,7 +1209,7 @@ window.PS = (function () {
 })(window.PS);
 
 /* RuleGroupEditor: an All/Any list of rows and groups (any number of groups, one level deep).
-   Rows and groups have drag handles plus a Move menu, so nothing needs to be removed to move it.
+   Rows and groups have drag handles; each row's More menu also moves it (for touch and keyboard), so nothing needs removing to move it.
    Configurations: conditions (facts, Not allowed) and traversal requirements (each type once, no Not). */
 (function (PS) {
   PS.RULE_TYPES = {
@@ -1330,6 +1330,7 @@ window.PS = (function () {
         return phrase(st, it);
       })
       .filter(Boolean);
+    if (parts.length === 1) parts[0] = parts[0].replace(/^\((.*)\)$/, '$1');
     var s = join(parts, st.mode);
     return s ? cap(s) + '.' : 'Nothing required yet.';
   };
@@ -1367,24 +1368,25 @@ window.PS = (function () {
       '<div class="ps-cond-join">' + (m === 'all' ? 'and' : 'or') + '</div>'
     );
   };
-  function groupNames(st) {
-    var n = 0,
-      out = [];
-    st.items.forEach(function (it, i) {
-      if (it.group) out.push([i, 'Group ' + ++n]);
-    });
-    return out;
+  function groupNo(st, i) {
+    var n = 0;
+    for (var k = 0; k <= i; k++) if (st.items[k].group) n++;
+    return n;
+  }
+  function groupLabel(st, i) {
+    return 'Move to Group ' + groupNo(st, i);
   }
   function menuHTML(st, path) {
     var opts = [
         ['up', 'Move up'],
         ['down', 'Move down'],
       ],
-      inGroup = path.indexOf('.') > -1;
-    if (inGroup) opts.push(['top', 'Move to top level']);
-    groupNames(st).forEach(function (g) {
-      if (!inGroup || String(g[0]) !== path.split('.')[0])
-        opts.push(['g' + g[0], 'Move to ' + g[1]]);
+      p = path.split('.'),
+      inGroup = p.length > 1;
+    if (inGroup) opts.push(['top', 'Move out of group']);
+    st.items.forEach(function (it, i) {
+      if (it.group && (!inGroup || String(i) !== p[0]))
+        opts.push(['g' + i, groupLabel(st, i)]);
     });
     opts.push(['new', 'Move to a new group']);
     return (
@@ -1402,7 +1404,9 @@ window.PS = (function () {
           );
         })
         .join('') +
-      '</ul>'
+      '<li class="ps-option ps-option--danger" role="menuitem" data-re-rm="' +
+      path +
+      '"><span data-i="trash" data-s="18"></span>Remove</li></ul>'
     );
   }
   function rowHTML(st, r, path) {
@@ -1444,15 +1448,13 @@ window.PS = (function () {
           path +
           '">Not</button>'
         : '') +
-      '<button class="ps-btn ps-btn--ghost" style="padding:0 8px" aria-haspopup="menu" aria-expanded="' +
+      '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="More for ' +
+      ty.label +
+      '" aria-haspopup="menu" aria-expanded="' +
       open +
       '" data-re-menu="' +
       path +
-      '">Move</button><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
-      ty.label +
-      '" data-re-rm="' +
-      path +
-      '"><span data-i="x"></span></button></div>' +
+      '"><span data-i="more"></span></button></div>' +
       '<div class="ps-cond-row-body" style="padding-left:44px">' +
       body +
       '</div>' +
@@ -1461,13 +1463,7 @@ window.PS = (function () {
     );
   }
   PS.ruleEditorHTML = function (key) {
-    var st = PS.RULES[key],
-      names = groupNames(st),
-      nameOf = function (i) {
-        return (names.filter(function (g) {
-          return g[0] === i;
-        })[0] || [0, 'Group'])[1];
-      };
+    var st = PS.RULES[key];
     var parts = st.items.map(function (it, i) {
       if (!it.group)
         return (
@@ -1479,14 +1475,16 @@ window.PS = (function () {
         return rowHTML(st, r, i + '.' + j);
       });
       return (
-        '<div class="ps-cond-group ps-re-item"><div class="ps-cond-group-head"><button class="ps-handle" aria-label="Drag ' +
-        nameOf(i) +
-        '"><span data-i="grip"></span></button><span class="ps-re-group-title">' +
-        nameOf(i) +
+        '<div class="ps-cond-group ps-re-item"><div class="ps-cond-group-head"><button class="ps-handle" aria-label="Drag group ' +
+        groupNo(st, i) +
+        '"><span data-i="grip"></span></button><span class="ps-priority" aria-label="Group ' +
+        groupNo(st, i) +
+        '">' +
+        groupNo(st, i) +
         '</span>' +
         segH(it.mode, String(i)) +
-        '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
-        nameOf(i) +
+        '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove group ' +
+        groupNo(st, i) +
         '" data-re-rmgroup="' +
         i +
         '"><span data-i="trash"></span></button></div>' +
@@ -1496,9 +1494,7 @@ window.PS = (function () {
         (free(st).length
           ? '<button class="ps-btn ps-btn--ghost" data-re-add="' +
             i +
-            '" style="align-self:flex-start"><span data-i="plus" data-s="18"></span>Add to ' +
-            nameOf(i) +
-            '</button>'
+            '" style="align-self:flex-start"><span data-i="plus" data-s="18"></span>Add to group</button>'
           : '') +
         '</div>'
       );

@@ -2593,3 +2593,20 @@
   text-transform: uppercase;
   color: var(--ink-subtle);
 }
+.ps-cond-group-head .ps-seg {
+  min-width: 0;
+}
+.ps-cond-group-head .ps-seg > button {
+  padding: 0 6px;
+}
+.ps-re-row-head > b {
+  overflow: hidden;
+}
+.ps-re-row-head .ps-chip {
+  padding: 0 10px;
+}
+.ps-cond-group-head .ps-priority {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+}

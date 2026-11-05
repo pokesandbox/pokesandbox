@@ -82,9 +82,10 @@
               <li>
                 <b>Requirements use the rule-group editor:</b> an All/Any list
                 of requirements and groups, any number of groups, each with its
-                own All/Any. Every row has a drag handle and a Move menu (up,
-                down, top level, another group, a new group), so nothing needs
-                removing to move it. "Reads as" spells out the result. It all
+                own All/Any. Drag a row into a group, out of it, or between
+                groups; each row's ⋯ menu does the same without dragging (Move
+                to Group 2, Move out of group…), and holds Remove. Groups carry
+                a small number badge. "Reads as" spells out the result. It all
                 works in the sheets here.
               </li>
               <li>
@@ -186,7 +187,9 @@
                   .join('');
           return (
             '<article class="ps-placement" style="gap:8px' +
-            (menuOn ? ';position:relative;z-index:4' : '') +
+            (menuOn && c.exits !== 'all' && c.exits.indexOf(menuOn) > -1
+              ? ';position:relative;z-index:4'
+              : '') +
             '"><div class="ps-variant-head"><span class="ps-kind" data-i="steps"></span><b>' +
             c.name +
             '</b><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
