@@ -69,6 +69,13 @@
             you say otherwise. The summary says exactly what will happen.
           </li>
           <li>
+            <b>Species info:</b> "View species info" under the species, and an
+            info button on every form row, open the shared Species info view
+            (stats, evolutions, forms, moves, where it's used) without leaving
+            the slot. Alolan Meowth's row would also show a warning here,
+            because its Dark type isn't in Classic Gen 1 rules.
+          </li>
+          <li>
             Species use the round 1 SearchCombobox; fuzzy matches ("pikahcu")
             show "Did you mean Pikachu?", like the Discord builder's match
             picker.
@@ -133,7 +140,9 @@
               name +
               '</b><span>' +
               note +
-              '</span></div><button class="ps-switch" role="switch" aria-checked="' +
+              '</span></div>' +
+              PS.infoBtn(name) +
+              '<button class="ps-switch" role="switch" aria-checked="' +
               on +
               '" aria-label="Include ' +
               name +
@@ -142,7 +151,7 @@
           };
           return (
             '<div class="ps-pair" style="grid-template-columns:120px 1fr"><div class="ps-field"><label class="ps-label">Slot</label><input class="ps-input" type="number" inputmode="numeric" value="52"></div>' +
-            '<div class="ps-field"><span class="ps-label">Species</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span class="ps-thumb" style="width:28px;height:28px"></span>Meowth</span><span data-i="search"></span></button></div></div>' +
+            '<div class="ps-field"><span class="ps-label">Species</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span class="ps-thumb" style="width:28px;height:28px"></span>Meowth</span><span data-i="search"></span></button><button class="ps-btn ps-btn--ghost" style="align-self:flex-start;padding:0 8px"><span data-i="info" data-s="18"></span>View species info</button></div></div>' +
             '<div class="ps-field"><span class="ps-label">Forms in this slot</span><p class="ps-help">Turn on the forms players can find. Drag to set their order in the Pokédex entry.</p><div class="ps-mons">' +
             form(true, 'Meowth', 'Base form') +
             form(true, 'Alolan Meowth', 'Form') +

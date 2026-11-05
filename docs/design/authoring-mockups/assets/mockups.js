@@ -810,3 +810,105 @@ window.PS = (function () {
     },
   ];
 })(window.PS);
+
+/* Species info (read-only, rules-aware), opened from pickers, Pokédex slots, form rows, encounters and parties. */
+(function (PS) {
+  PS.icons.info =
+    '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>';
+  PS.infoBtn = function (name) {
+    return (
+      '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Species info: ' +
+      name +
+      '"><span data-i="info"></span></button>'
+    );
+  };
+  var stat = function (label, v) {
+    return (
+      '<div class="ps-stat"><span>' +
+      label +
+      '</span><b>' +
+      v +
+      '</b><i><i style="width:' +
+      Math.round((v / 255) * 100) +
+      '%"></i></i></div>'
+    );
+  };
+  PS.speciesInfo = function () {
+    var form = function (name, type, diff, on, warn) {
+      return (
+        '<div class="ps-placement' +
+        (warn ? ' is-warn' : '') +
+        '" style="gap:6px"><div class="ps-variant-head"><span class="ps-thumb"></span><b>' +
+        name +
+        '</b><span class="ps-type">' +
+        type +
+        '</span></div>' +
+        '<p class="t-body-sm ps-muted">' +
+        diff +
+        '</p><p class="t-body-sm" style="color:var(--' +
+        (on ? 'success' : 'ink-subtle') +
+        ')">' +
+        (on ? 'Included in slot #052' : 'Not included') +
+        '</p>' +
+        (warn
+          ? '<p class="ps-error" style="color:var(--warning)"><span data-i="alert" data-s="18"></span>' +
+            warn +
+            '</p>'
+          : '') +
+        '</div>'
+      );
+    };
+    return (
+      '<div class="ps-species-head"><span class="ps-thumb"></span><div class="ps-stack" style="gap:4px"><h2 class="t-title-1">Meowth</h2><span class="t-body-sm ps-subtle"><span class="t-mono">#052</span> National · slot #052 in Kanto Classic</span><div class="ps-row" style="gap:6px"><span class="ps-type">Normal</span></div></div></div>' +
+      '<div class="ps-callout ps-callout--info"><span data-i="book" data-s="18"></span><span>Shown with Classic Gen 1 rules: one Special stat, no abilities, gender or held items.</span></div>' +
+      '<section class="ps-info-section"><h3 class="t-title-3">Base stats</h3>' +
+      stat('HP', 40) +
+      stat('Attack', 45) +
+      stat('Defense', 35) +
+      stat('Special', 40) +
+      stat('Speed', 90) +
+      '<p class="t-body-sm ps-subtle">Total 250</p></section>' +
+      '<section class="ps-info-section"><h3 class="t-title-3">Details</h3><div class="ps-facts"><div><span>Catch rate</span><b>255</b></div><div><span>Growth</span><b>Medium Fast</b></div><div><span>Height</span><b>0.4 m</b></div><div><span>Weight</span><b>4.2 kg</b></div></div></section>' +
+      '<section class="ps-info-section"><h3 class="t-title-3">Evolution</h3><div class="ps-evo"><div class="ps-evo-step"><span class="ps-thumb" style="width:32px;height:32px"></span><span><b>Meowth</b><small>Slot #052</small></span></div><span class="t-body-sm ps-subtle">Lv 28 →</span><div class="ps-evo-step" style="border-color:var(--warning)"><span class="ps-thumb" style="width:32px;height:32px"></span><span><b>Persian</b><small style="color:var(--warning)">Not in this Pokédex</small></span></div></div>' +
+      '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start;padding:0 8px"><span data-i="plus" data-s="18"></span>Add Persian to slot #053</button></section>' +
+      '<section class="ps-info-section"><h3 class="t-title-3">Forms</h3>' +
+      form('Meowth', 'Normal', 'Base form.', true) +
+      form(
+        'Alolan Meowth',
+        'Dark',
+        'Attack 35 (−10). Otherwise the same.',
+        true,
+        'Dark isn’t a type in Classic Gen 1 rules. Region Health will flag it.',
+      ) +
+      form(
+        'Galarian Meowth',
+        'Steel',
+        'HP 50 (+10), Attack 65 (+20), Defense 55 (+20), Speed 40 (−50).',
+        false,
+        'Steel isn’t a type in Classic Gen 1 rules.',
+      ) +
+      '</section>' +
+      '<section class="ps-info-section"><h3 class="t-title-3">Moves by level</h3><div class="ps-moves"><span>Lv 1</span><span>Scratch</span><span>Lv 1</span><span>Growl</span><span>Lv 12</span><span>Bite</span><span>Lv 17</span><span>Pay Day</span><span>Lv 24</span><span>Screech</span><span>Lv 33</span><span>Fury Swipes</span><span>Lv 44</span><span>Slash</span></div><p class="t-body-sm ps-subtle">Trainer Pokémon with no moves set use the last four learned by their level.</p></section>' +
+      '<section class="ps-info-section"><h3 class="t-title-3">TMs & HMs it can learn</h3><div class="ps-tags"><span class="ps-badge">TM06 Toxic</span><span class="ps-badge">TM08 Body Slam</span><span class="ps-badge">TM09 Take Down</span><span class="ps-badge">TM10 Double-Edge</span><span class="ps-badge ps-badge--outline">+12 more</span></div><p class="t-body-sm ps-subtle">From this region’s TM case.</p></section>' +
+      '<section class="ps-info-section"><h3 class="t-title-3">Used in this region · 3</h3><div class="ps-review">' +
+      [
+        ['leaf', 'Route 5 · Walk in grass', '10%, Lv 10–14'],
+        ['user', 'Rocket Grunt', 'Party, Lv 12'],
+        ['book', 'Pokédex slot #052', 'With Alolan Meowth'],
+      ]
+        .map(function (u) {
+          return (
+            '<div class="ps-review-row"><span class="ps-kind" data-i="' +
+            u[0] +
+            '"></span><div><dd>' +
+            u[1] +
+            '</dd><dt style="font-weight:400">' +
+            u[2] +
+            '</dt></div><button class="ps-btn ps-btn--ghost">Open</button></div>'
+          );
+        })
+        .join('') +
+      '</div></section>'
+    );
+  };
+})(window.PS);

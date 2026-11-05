@@ -314,7 +314,9 @@
                   label +
                   '</span><span class="ps-meta">#' +
                   String(num).padStart(3, '0') +
-                  '</span></li>'
+                  '</span>' +
+                  PS.infoBtn(n) +
+                  '</li>'
                 );
               })
               .join('') +
@@ -333,6 +335,7 @@
           }, 350);
         });
         lb.addEventListener('click', function (e) {
+          if (e.target.closest('[aria-label^="Species info"]')) return;
           var o = e.target.closest('.ps-option');
           if (!o) return;
           q.value = o.querySelector(
