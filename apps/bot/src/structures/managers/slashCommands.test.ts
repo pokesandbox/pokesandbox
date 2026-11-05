@@ -137,16 +137,16 @@ describe('slashCommands', () => {
       const error = new Error('Discord is down');
       const rest = fakeRest();
       rest.put.mockRejectedValue(error);
-      const log = jest
-        .spyOn(console, 'log')
-        .mockImplementation(() => undefined);
       const client = new BotClient({ intents: [] });
+      const logError = jest.spyOn(client.logger, 'error');
 
       await slashCommandsManager(client, options(rest, prod()));
       await client.syncGuildCommands('beta');
 
-      expect(log).toHaveBeenCalledWith(error);
-      log.mockRestore();
+      expect(logError).toHaveBeenCalledWith('Command registration failed', {
+        route: Routes.applicationGuildCommands('app', 'beta'),
+        err: error,
+      });
     });
   });
 });

@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 
 import { discordProvider } from './discordProvider';
+import { logger } from './logger';
 import { trpcServer } from './trpc/server';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -18,8 +19,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             username: profile.username as string,
           });
         } catch (error) {
-          // Log error but allow sign in to proceed
-          console.error('Error creating/updating user:', error);
+          // Sign-in still succeeds when the user record can't be written.
+          logger.error('Creating or updating user failed', { err: error });
         }
       }
       return true;

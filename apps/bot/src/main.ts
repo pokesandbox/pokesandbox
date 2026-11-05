@@ -3,6 +3,7 @@ import { GatewayIntentBits, Partials } from 'discord.js';
 
 import { connectDb } from '@shared/connectDb';
 import { readFlagEnv } from '@shared/flags';
+import { createLoggerFromEnv } from '@shared/logger';
 
 import { BotClient } from '@bot/classes';
 import {
@@ -15,9 +16,13 @@ import {
   userSelectMenusManager,
 } from './structures/managers';
 
-connectDb().then(async () => {
-  const TOKEN = process.env.DISCORD_BOT_TOKEN as string;
-  console.log('SandBot is initializing...');
+const logger = createLoggerFromEnv();
+
+async function start() {
+  await connectDb(logger);
+  const token = process.env.DISCORD_BOT_TOKEN;
+  if (!token) throw new Error('DISCORD_BOT_TOKEN is not set');
+  logger.info('SandBot is initializing');
 
   const client = new BotClient({
     intents: [
@@ -34,6 +39,7 @@ connectDb().then(async () => {
     ],
     partials: [Partials.Channel],
   });
+  client.logger = logger;
 
   await buttonsManager(client);
   await modalFormsManager(client);
@@ -51,5 +57,10 @@ connectDb().then(async () => {
   client.flowcord = flowcord;
 
   await eventsManager(client);
-  client.login(TOKEN);
+  await client.login(token);
+}
+
+start().catch((error: unknown) => {
+  logger.error('SandBot failed to start', { err: error });
+  process.exit(1);
 });

@@ -38,6 +38,7 @@ Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/inter
 - **Player-facing text** goes through `t(key, params)` once #115 lands; never build sentences by concatenation. Until then, keep new strings in one place per feature so the migration is mechanical.
 - **Feature flags**: the Discord authoring commands sit behind `discord.authoring` (on in dev, off in prod). New unreleased commands declare a flag (#109, #108).
 - **Errors**: user-facing errors use `buildErrorEmbed` (`src/embeds/errorEmbed.ts`).
+- **Logging**: use `client.logger` (`@core/logging` port, set in `main.ts`), never `console`. `interactionCreate` makes a child logger per interaction tagged with `interactionId`, `guildId`, and `userId`; pass it to what handles the interaction. Pass correlation fields (`journeyId`, `battleId`, …) and errors as `err`.
 
 ## Legacy: don't extend
 

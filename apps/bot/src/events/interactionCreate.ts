@@ -9,6 +9,8 @@ import {
   type ModalSubmitInteraction,
 } from 'discord.js';
 
+import type { Logger } from '@core/logging';
+
 import type { BotClient } from '@bot/classes';
 import { commandOptionsProcessor } from '@bot/structures/commandOptions/processor';
 import type {
@@ -33,11 +35,16 @@ export const InteractionCreate: IBotEvent = {
   execute: (name: string, client?: BotClient) => {
     if (!client) return;
     client.on(name, async (interaction: Interaction) => {
+      const logger = client.logger.child({
+        interactionId: interaction.id,
+        guildId: interaction.guildId,
+        userId: interaction.user.id,
+      });
       if (interaction.type === InteractionType.ApplicationCommand) {
         await handleApplicationCommandInteraction(client, interaction);
       }
       if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
-        await handleAutocompleteInteraction(client, interaction);
+        await handleAutocompleteInteraction(client, interaction, logger);
       }
       if (interaction.type === InteractionType.MessageComponent) {
         await handleMessageComponentInteraction(client, interaction);
@@ -52,6 +59,7 @@ export const InteractionCreate: IBotEvent = {
 const handleAutocompleteInteraction = async (
   client: BotClient,
   interaction: AutocompleteInteraction,
+  logger: Logger,
 ): Promise<void> => {
   const slashCommand: ISlashCommand | undefined = client.slashCommands.get(
     interaction.commandName,
@@ -68,7 +76,10 @@ const handleAutocompleteInteraction = async (
   try {
     await slashCommand.autocomplete(client, interaction);
   } catch (error) {
-    console.error(`Autocomplete error for /${interaction.commandName}:`, error);
+    logger.error('Autocomplete failed', {
+      command: interaction.commandName,
+      err: error,
+    });
   }
 };
 
