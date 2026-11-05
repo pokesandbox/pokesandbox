@@ -6,10 +6,7 @@ import { DexEntry } from '@shared/models';
 import { CachePrefix, CacheTTL } from './constants';
 import { toIdString, toIdStrings } from './utils';
 
-/**
- * Fetch a dex entry by its species ID (the Showdown ID, e.g. `pikachu`),
- * hitting the cache first. Canon entries win when a custom entry shares the ID.
- */
+/** Canon entries win when a custom entry shares the species ID. */
 export async function getCachedDexEntry(
   speciesId?: string,
 ): Promise<DexEntry | null> {

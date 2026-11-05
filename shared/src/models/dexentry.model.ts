@@ -190,10 +190,7 @@ export interface IShowdownDexEntry {
   natDexTier?: SinglesTier | OtherTier;
 }
 
-/**
- * A species' Showdown ID (`toID` of its name, e.g. `pikachu`). The only way
- * content refers to a species ([02](docs/architecture/concepts/02-identity-and-references.md)).
- */
+/** Showdown ID (`toID` of the name, e.g. `pikachu`); the only way content refers to a species. */
 export type SpeciesId = string;
 
 export interface IDexEntry extends Omit<IShowdownDexEntry, 'evoRegion'> {

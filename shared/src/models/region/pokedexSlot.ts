@@ -1,10 +1,6 @@
 import { Schema } from 'mongoose';
 import { z } from 'zod';
 
-/**
- * A Pokédex slot refers to its species (and included forms) by `speciesId`,
- * the Showdown ID, never by DexEntry `_id`.
- */
 export const pokedexSlotSchema = z
   .object({
     speciesId: z.string().min(1),
