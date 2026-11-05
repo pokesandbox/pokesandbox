@@ -22,7 +22,7 @@
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 1720px">
+    <main class="mk-stage" style="min-width: 2140px">
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
@@ -42,6 +42,12 @@
               Nurse Joy · Battle tab (doesn't battle)
             </p>
             <div class="ps-phone ps-phone--tall slot" data-v="nobattle"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Rocket Grunt · Person (battle only, not placed)
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="unplaced"></div>
           </div>
         </div>
         <ul
@@ -82,9 +88,14 @@
           </li>
           <li style="margin-left: 16px">
             <b>Battle only</b> (a trainer used only by a script, like a forced
-            ambush): listed with a "Battle only" badge. Its Person tab says "Not
-            placed anywhere. Used by script mt-moon-ambush." with "Give them a
-            presence".
+            ambush): listed with a "Battle only" badge. Its Person tab shows
+            "Not placed anywhere yet" under Where they appear, with Add a place.
+          </li>
+          <li>
+            <b>Presence wording</b> (doc 11): "One place at a time" and "Every
+            listed place", each with a one-line explanation. Only listed places
+            count; the overlap warning reads "Two places can match at once; the
+            first one wins."
           </li>
           <li>
             Sprite lives on Person; Battle uses it unless the trainer class
@@ -216,6 +227,19 @@
               '<div class="ps-scroll">' +
               noBattle() +
               '</div>';
+          if (v === 'unplaced')
+            el.innerHTML =
+              PS.phoneBar(
+                'Rocket Grunt',
+                'Battle only',
+                PS.saved + PS.moreBtn,
+              ) +
+              tabs('person', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Rocket Grunt"></div>' +
+              '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="true">One place at a time</button><button aria-pressed="false">Every listed place</button></div><p class="ps-help">Shows up at the first listed place whose condition matches. Good for story characters who move.</p>' +
+              '<h2 class="t-title-2" style="margin-top:8px">Where they appear</h2><div class="ps-empty" style="border:1px dashed var(--border-strong);border-radius:16px;padding:24px 16px"><span data-i="pin" data-s="28"></span><b class="t-title-3" style="color:var(--ink)">Not placed anywhere yet</b><span class="t-body-sm">Players only meet this trainer through script <span class="t-mono">mt-moon-ambush</span>.</span><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Add a place</button></div>' +
+              '</div></div>';
           if (v === 'desktop')
             el.innerHTML =
               PS.sidebar('npcs') +

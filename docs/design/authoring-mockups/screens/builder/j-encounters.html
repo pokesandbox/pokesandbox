@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>J · Encounters · PokeSandbox mockups</title>
+    <title>J · Explore · PokeSandbox mockups</title>
     <link rel="stylesheet" href="../../assets/tokens.css" />
     <link rel="stylesheet" href="../../assets/mockups.css" />
     <link rel="stylesheet" href="../../assets/page.css" />
@@ -13,10 +13,10 @@
     <header class="mk-bar">
       <a href="../../index.html">All mockups</a
       ><span
-        >J · Encounters
+        >J · Explore
         <small
-          >J · Encounters tab · methods, slots, live %, validation, totals ·
-          phone, desktop 1440 (edit levels and weights)</small
+          >J · Explore tab · methods with rates, slots with live %, other
+          Explore outcomes, empty states · phone, desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
@@ -24,10 +24,33 @@
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
-            <p class="ps-frame-label">Phone · Walk in grass</p>
+            <p class="ps-frame-label">
+              Route 1 · Walk in the grass (live: edit levels and weights)
+            </p>
             <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
           </div>
-          <div style="width: 560px" class="ps-stack">
+          <div>
+            <p class="ps-frame-label">Route 1 · Old Rod (wild only)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="rod"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Route 1 · below the methods</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="summary"></div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">New route · no Explore yet</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="emptyRoute"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">New building · no Explore yet</p>
+            <div
+              class="ps-phone ps-phone--tall slot"
+              data-v="emptyBuilding"
+            ></div>
+          </div>
+          <div style="width: 400px" class="ps-stack">
             <p class="ps-frame-label">Notes</p>
             <ul
               class="t-body-sm ps-muted"
@@ -40,35 +63,45 @@
               "
             >
               <li>
-                Method tabs come from the region's method registry; each shows
-                its encounter rate. "+ Method" adds one this location supports
-                (Surf only appears in the list when the region has it).
+                <b>Explore, not Encounters</b> (doc 10). The tab covers
+                everything pressing Explore can find here: wild Pokémon by
+                method, trainers on Explore, and hidden items.
               </li>
               <li>
-                The rate is the chance that one Explore finds a Pokémon. It's
-                per method, per location.
+                <b>Players choose the method.</b> Each method is its own button
+                in Discord ("Walk in the grass", "Fish (Old Rod)", "Surf"),
+                shown only when this location has a table for it and its
+                requirement passes.
               </li>
               <li>
-                Each slot: species (SearchCombobox), min and max level, weight.
-                The % is weight ÷ total weight, rounded to whole numbers, and
-                updates as you type. Both views here are live.
+                <b
+                  >The rate is the share of presses that give a wild Pokémon.</b
+                >
+                The rest find this location's trainers and items while any are
+                left; with none left, every press is wild. It defaults to the
+                region's value for the method ("Region default · 70%"), and
+                Override sets this location's own.
               </li>
               <li>
-                Validation sits on the row: a red tint plus the sentence under
-                the fields ("Min level is above max."). Errors also appear in
-                Region Health and block publish.
+                <b>Surf and the rods are wild only</b>, so 100% is normal:
+                "Fishing only finds Pokémon".
               </li>
               <li>
-                Reorder with the handle or More → Move up/down. Order only
-                affects display; weights decide odds.
+                <b>No default method.</b> A new location has no Explore until
+                you add one. Routes and dungeons suggest a starting point ("Add
+                grass encounters", "Add cave encounters"); other kinds get a
+                plain "+ Method".
               </li>
               <li>
-                The totals footer stays pinned: slot count, total weight, and a
-                warning when the table has no slots or a zero total.
+                <b>Below the methods,</b> read-only counts of the other outcomes
+                (trainers on Explore, hidden items) and the traversal cost, each
+                linking to where it's edited.
               </li>
               <li>
-                Conditional tables (night, swarms) need the condition builder,
-                so "Add conditional table" is shown as coming soon.
+                <b>Slots:</b> species, min and max level, weight; % is weight ÷
+                total, live. Validation sits on the row ("Min level is above
+                max."). Conditional tables (night, swarms) use the condition
+                builder (K3).
               </li>
             </ul>
           </div>
@@ -77,7 +110,7 @@
         <div
           class="ps-desktop slot"
           data-v="desktop"
-          style="height: 900px"
+          style="height: 1100px"
         ></div>
       </div>
       <script>
@@ -88,13 +121,115 @@
           { s: 'Nidoran♀', n: 29, min: 12, max: 5, w: 5 },
           { s: 'Pikachu', n: 25, min: 3, max: 5, w: 2 },
         ];
-        var METHODS =
-          '<div class="ps-tabs" role="tablist"><button class="ps-tab" role="tab" aria-selected="true"><span data-i="leaf" data-s="16"></span>Walk in grass <span class="ps-tab-meta">20%</span></button><button class="ps-tab" role="tab"><span data-i="water" data-s="16"></span>Surf <span class="ps-tab-meta">5%</span></button><button class="ps-tab" role="tab">Old Rod <span class="ps-tab-meta">100%</span></button><button class="ps-tab" role="tab"><span data-i="plus" data-s="16"></span>Method</button></div>';
-        function rateRow() {
+        function methods(active) {
+          var M = [
+            ['grass', 'leaf', 'Walk in the grass', '70%'],
+            ['surf', 'water', 'Surf', '100%'],
+            ['rod', 'water', 'Old Rod', '100%'],
+          ];
           return (
-            '<div class="ps-pair" style="grid-template-columns:120px 1fr;align-items:start"><div class="ps-field"><label class="ps-label">Encounter rate</label><div class="ps-input-wrap"><input class="ps-input" type="number" inputmode="numeric" value="20" style="padding-right:32px"><span class="ps-trail ps-subtle" style="padding-right:12px">%</span></div></div>' +
-            '<p class="ps-help" style="margin-top:28px">Chance that one Explore in the grass finds a Pokémon.</p></div>' +
-            '<div class="ps-section-head"><h3 class="t-title-3">Default table</h3><button class="ps-btn ps-btn--ghost" aria-disabled="true" style="opacity:.6">Add conditional table <span class="ps-badge ps-badge--outline">Soon</span></button></div>'
+            '<div class="ps-tabs" role="tablist">' +
+            M.map(function (m) {
+              return (
+                '<button class="ps-tab" role="tab" aria-selected="' +
+                (m[0] === active) +
+                '"><span data-i="' +
+                m[1] +
+                '" data-s="16"></span>' +
+                m[2] +
+                ' <span class="ps-tab-meta">' +
+                m[3] +
+                '</span></button>'
+              );
+            }).join('') +
+            '<button class="ps-tab" role="tab"><span data-i="plus" data-s="16"></span>Method</button></div>'
+          );
+        }
+        var discordButtons =
+          '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">In Discord, players pick the method</span></div><div class="ps-embed"><b>Route 1</b><span class="ps-embed-muted">Each method is its own button, shown only when its requirement passes.</span><div class="ps-embed-buttons"><span>Walk in the grass</span><span>Fish (Old Rod)</span><span>Surf</span></div></div></div>';
+        function rateRow(kind) {
+          var rate =
+            kind === 'rod'
+              ? '<div class="ps-readonly"><span data-i="water" data-s="18"></span><div><b>Wild Pokémon: 100% of fishes</b><p class="t-body-sm ps-muted">Fishing only finds Pokémon. Region default · 100%.</p></div></div>'
+              : '<div class="ps-field"><span class="ps-label">Rate</span><div class="ps-readonly" style="align-items:center"><span data-i="leaf" data-s="18"></span><div style="flex:1"><b>Wild Pokémon: 70% of explores</b><p class="t-body-sm ps-muted">The rest find trainers and items here while any are left.</p></div></div>' +
+                '<div class="ps-row" style="justify-content:space-between"><span class="t-body-sm ps-subtle">Region default · 70%</span><button class="ps-btn ps-btn--ghost">Override</button></div></div>';
+          var req =
+            '<div class="ps-field"><span class="ps-label">Requirement</span>' +
+            (kind === 'rod'
+              ? PS.condSummary('Requires an Old Rod', { icon: 'bag' })
+              : PS.condSummary('', {
+                  emptyHint: 'Anyone can walk in the grass here.',
+                })) +
+            '</div>';
+          return (
+            rate +
+            req +
+            '<div class="ps-section-head"><h3 class="t-title-3">Default table</h3><button class="ps-btn ps-btn--ghost"><span data-i="plus" data-s="18"></span>Add conditional table</button></div>'
+          );
+        }
+        function exploreSummary() {
+          var row = function (icon, t, d, link) {
+            return (
+              '<div class="ps-review-row"><span class="ps-kind" data-i="' +
+              icon +
+              '"></span><div><dd>' +
+              t +
+              '</dd><dt style="font-weight:400">' +
+              d +
+              '</dt></div><button class="ps-btn ps-btn--ghost">' +
+              link +
+              '</button></div>'
+            );
+          };
+          return (
+            '<div class="ps-field"><span class="ps-label">Also found by exploring here</span><div class="ps-review">' +
+            row(
+              'user',
+              'Trainers on Explore: 3',
+              '2 left to beat · Bug Catcher Rick, Lass Janice',
+              'NPCs',
+            ) +
+            row('bag', 'Hidden items: 1', 'Potion · found once', 'Items') +
+            row(
+              'steps',
+              'Explore 3 times to get through',
+              'Traversal cost before the north exit opens',
+              'Details',
+            ) +
+            '</div><p class="ps-help">Counts only. Each is edited where it lives.</p></div>'
+          );
+        }
+        var rodSlots =
+          '<div class="ps-mons">' +
+          [['Magikarp', 129, '5–10', 100]]
+            .map(function (r) {
+              return (
+                '<div class="ps-mon"><button class="ps-handle" aria-label="Reorder ' +
+                r[0] +
+                '"><span data-i="grip"></span></button><span class="ps-thumb"></span><div><b>' +
+                r[0] +
+                ' <span class="t-mono ps-subtle" style="font-weight:500">#' +
+                r[1] +
+                '</span></b><span>Lv ' +
+                r[2] +
+                ' · 100%</span></div>' +
+                PS.moreBtn +
+                '</div>'
+              );
+            })
+            .join('') +
+          '</div>';
+        function emptyExplore(kind) {
+          var route = kind === 'route';
+          return (
+            '<div class="ps-center" style="align-items:center;text-align:center"><div class="ps-center-icon"><span data-i="leaf" data-s="28"></span></div><h2 class="t-title-2">No Explore here yet</h2>' +
+            '<p class="t-body ps-muted">Players won\u2019t see an Explore button until this ' +
+            (route ? 'route' : 'building') +
+            ' has a method, a trainer on Explore, or a hidden item.</p>' +
+            (route
+              ? '<button class="ps-btn ps-btn--primary ps-btn--block"><span data-i="leaf" data-s="18"></span>Add grass encounters</button><button class="ps-btn ps-btn--ghost ps-btn--block"><span data-i="plus" data-s="18"></span>Method</button>'
+              : '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus" data-s="18"></span>Method</button>') +
+            '</div>'
           );
         }
         function err(r) {
@@ -266,17 +401,46 @@
           });
         }
         document.querySelectorAll('.slot').forEach(function (el) {
-          if (el.getAttribute('data-v') === 'phone')
+          var v = el.getAttribute('data-v'),
+            bar = PS.phoneBar('Route 1', 'Route', PS.saved + PS.moreBtn);
+          if (v === 'phone')
             el.innerHTML =
-              PS.phoneBar('Route 1', 'Route', PS.saved + PS.moreBtn) +
+              bar +
               PS.locTabs('encounters') +
-              METHODS +
+              methods('grass') +
               '<div class="ps-scroll"><div class="ps-form">' +
-              rateRow() +
+              rateRow('grass') +
               phoneSlots() +
               '</div></div>' +
               totals();
-          else
+          if (v === 'rod')
+            el.innerHTML =
+              bar +
+              PS.locTabs('encounters') +
+              methods('rod') +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              rateRow('rod') +
+              rodSlots +
+              '</div></div>';
+          if (v === 'summary')
+            el.innerHTML =
+              bar +
+              PS.locTabs('encounters') +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              exploreSummary() +
+              discordButtons +
+              '</div></div>';
+          if (v === 'emptyRoute')
+            el.innerHTML =
+              PS.phoneBar('Route 3', 'Route', PS.saved + PS.moreBtn) +
+              PS.locTabs('encounters') +
+              emptyExplore('route');
+          if (v === 'emptyBuilding')
+            el.innerHTML =
+              PS.phoneBar('Pewter Museum', 'Building', PS.saved + PS.moreBtn) +
+              PS.locTabs('encounters') +
+              emptyExplore('building');
+          if (v === 'desktop')
             el.innerHTML =
               PS.sidebar('locations') +
               '<div class="ps-main">' +
@@ -289,10 +453,14 @@
               PS.moreBtn +
               '</div>' +
               PS.locTabs('encounters') +
-              METHODS +
-              '<div class="ps-scroll"><div class="ps-form" style="max-width:none">' +
-              rateRow() +
+              methods('grass') +
+              '<div class="ps-scroll"><div class="ps-form" style="max-width:none"><div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start"><div class="ps-stack">' +
+              rateRow('grass') +
+              '</div><div class="ps-stack">' +
+              exploreSummary() +
+              '</div></div>' +
               table() +
+              discordButtons +
               '</div></div>' +
               totals() +
               '</section></div></div>';

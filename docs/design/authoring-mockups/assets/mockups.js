@@ -136,7 +136,7 @@ window.PS = (function () {
   };
   PS.topbar = function (saved) {
     return (
-      '<header class="ps-topbar"><h1 class="t-title-3">Kanto Classic</h1><span class="ps-badge ps-badge--draft">Draft</span><span class="t-body-sm ps-subtle" style="flex:1">Published v7 · 8 unpublished changes</span>' +
+      '<header class="ps-topbar"><h1 class="t-title-3">Kanto Classic</h1><span class="ps-badge ps-badge--draft">Draft</span><span class="t-body-sm ps-subtle" style="flex:1">Published v7 · 9 unpublished changes</span>' +
       (saved === false
         ? ''
         : '<span class="ps-save ps-save--ok"><span data-i="check" data-s="16"></span>Saved</span>') +
@@ -269,7 +269,7 @@ window.PS = (function () {
       [
         ['details', 'Details'],
         ['connections', 'Connections <span class="ps-tab-meta">3</span>'],
-        ['encounters', 'Encounters'],
+        ['encounters', 'Explore'],
       ]
         .map(function (t) {
           return (
@@ -688,7 +688,8 @@ window.PS = (function () {
     return (
       '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="{name:rival}" style="font-family:var(--font-mono);font-size:15px"><div class="ps-hint-chips"><span class="t-body-sm ps-subtle">Insert:</span><button class="ps-chip">{name:rival}</button><button class="ps-chip">{name:player}</button></div></div>' +
       '<div class="ps-field"><span class="ps-label">Sprite</span><div class="ps-sprite-row"><span class="ps-sprite">Sprite<br>placeholder</span><button class="ps-btn ps-btn--secondary">Choose image</button></div></div>' +
-      '<h2 class="t-title-2" style="margin-top:8px">Where they are</h2><div class="ps-seg" role="group"><button aria-pressed="true">Single</button><button aria-pressed="false">Everywhere</button></div><p class="ps-help">In one place at a time: the first that matches.</p>' +
+      '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="true">One place at a time</button><button aria-pressed="false">Every listed place</button></div><p class="ps-help">Shows up at the first listed place whose condition matches. Good for story characters who move.</p>' +
+      '<h2 class="t-title-2" style="margin-top:8px">Where they appear</h2><p class="t-body-sm ps-muted">Only these listed places count, checked in order.</p>' +
       place(
         1,
         'building',
@@ -696,6 +697,7 @@ window.PS = (function () {
         'Only before <span class="t-mono">oak_parcel_delivered</span>',
       ) +
       place(2, 'town', 'Viridian City', 'Requires the Boulder Badge') +
+      '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>Two places can match at once; the first one wins. With One place at a time, places 1 and 2 can both match, so 2 may never be used.</span></div>' +
       '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Show all 3</button>' +
       '<h2 class="t-title-2" style="margin-top:8px">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>rival-smalltalk<small>When the player talks to them</small></span><button class="ps-btn ps-btn--ghost">Change</button></div>'
     );
@@ -766,28 +768,28 @@ window.PS = (function () {
       area: 'Locations',
       title: 'Route 2 has no connections',
       why: 'Players can’t reach it or leave it. Add a connection to Viridian City or Pewter City.',
-      path: 'Locations › Route 2 › Connections',
+      path: 'Locations › Route 2 › Connections › Add connection',
     },
     {
       sev: 'error',
       area: 'Encounters',
       title: 'Mt. Moon B1F has a slot with no species',
       why: 'An empty slot can’t be rolled. Pick a species or remove the slot.',
-      path: 'Locations › Mt. Moon B1F › Encounters › Walk in cave',
+      path: 'Locations › Mt. Moon B1F › Explore › Walk in the cave › Slot 3 › Species',
     },
     {
       sev: 'error',
       area: 'NPCs',
       title: 'Youngster Ben has no Pokémon',
       why: 'A trainer with an empty party can’t battle. Add at least one Pokémon.',
-      path: 'NPCs › Youngster Ben › Party',
+      path: 'NPCs › Youngster Ben › Party › Variant 1 › Add Pokémon',
     },
     {
       sev: 'warning',
       area: 'Locations',
       title: 'Route 22 has only one connection',
       why: 'That’s fine for a dead end, but check players aren’t meant to pass through.',
-      path: 'Locations › Route 22 › Connections',
+      path: 'Locations › Route 22 › Connections › Add connection',
       dismissed: {
         by: 'Misty',
         when: 'Nov 3',
@@ -799,14 +801,21 @@ window.PS = (function () {
       area: 'NPCs',
       title: 'The rival has no fallback party',
       why: 'If no variant matches, the battle can’t start. Add a variant with no condition at the end.',
-      path: 'NPCs › {name:rival} › Party',
+      path: 'NPCs › {name:rival} › Party › Add variant',
     },
     {
       sev: 'warning',
       area: 'NPCs',
       title: 'Two of the rival’s places can match at once',
-      why: 'Placements 1 and 2 can both be true; the first wins, so 2 may never be used.',
-      path: 'NPCs › {name:rival} › Person',
+      why: 'With One place at a time, places 1 and 2 can both match; the first one wins, so 2 may never be used.',
+      path: 'NPCs › {name:rival} › Person › Where they appear › Place 2 › Condition',
+    },
+    {
+      sev: 'info',
+      area: 'TMs & HMs',
+      title: 'TM25 is empty',
+      why: 'Players who have TM25 won\u2019t see it until a move is assigned. Fine if that\u2019s on purpose.',
+      path: 'TMs & HMs › TM25 › Move',
     },
   ];
 })(window.PS);
@@ -892,7 +901,7 @@ window.PS = (function () {
       '<section class="ps-info-section"><h3 class="t-title-3">TMs & HMs it can learn</h3><div class="ps-tags"><span class="ps-badge">TM06 Toxic</span><span class="ps-badge">TM08 Body Slam</span><span class="ps-badge">TM09 Take Down</span><span class="ps-badge">TM10 Double-Edge</span><span class="ps-badge ps-badge--outline">+12 more</span></div><p class="t-body-sm ps-subtle">From this region’s TM case.</p></section>' +
       '<section class="ps-info-section"><h3 class="t-title-3">Used in this region · 3</h3><div class="ps-review">' +
       [
-        ['leaf', 'Route 5 · Walk in grass', '10%, Lv 10–14'],
+        ['leaf', 'Route 5 · Walk in the grass', '10%, Lv 10–14'],
         ['user', 'Rocket Grunt', 'Party, Lv 12'],
         ['book', 'Pokédex slot #052', 'With Alolan Meowth'],
       ]
@@ -1181,7 +1190,7 @@ window.PS = (function () {
       sp.moves('gen1') +
       sp.tms('From this region’s TM case.') +
       sp.links('Used in this region · 3', [
-        ['leaf', 'Route 5 · Walk in grass', '10%, Lv 10–14'],
+        ['leaf', 'Route 5 · Walk in the grass', '10%, Lv 10–14'],
         ['user', 'Rocket Grunt', 'Party, Lv 12'],
         ['book', 'Pokédex slot #052', 'With Alolan Meowth'],
       ])

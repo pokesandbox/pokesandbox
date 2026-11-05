@@ -69,8 +69,15 @@
               </li>
               <li>
                 <b>Each item:</b> what's wrong, why it matters and what to do,
-                the path to the field, and Fix (the same deep link as Discord's
-                "Open in builder").
+                the path to the exact field, and Fix, which opens that field
+                (the same deep link as Discord's "Open in builder"; the
+                validator's <span class="t-mono">subject</span> is precise
+                enough, doc 16).
+              </li>
+              <li>
+                <b>Info</b> items (an empty TM slot) come after warnings, aren't
+                counted as warnings, and can't be dismissed. They never block
+                publishing.
               </li>
               <li>
                 <b>Only warnings can be dismissed.</b> Dismiss asks for an
@@ -116,20 +123,23 @@
           return PS.HEALTH.indexOf(h);
         }
         function item(h, mode) {
-          var err = h.sev === 'error';
+          var err = h.sev === 'error',
+            info = h.sev === 'info';
           var actions =
             mode === 'dismissed'
               ? '<button class="ps-btn ps-btn--secondary" data-restore="' +
                 idx(h) +
                 '">Restore</button>'
-              : (err
+              : (err || info
                   ? ''
                   : '<button class="ps-btn ps-btn--ghost" data-dismiss="' +
                     idx(h) +
                     '">Dismiss</button>') +
                 '<button class="ps-btn ps-btn--' +
                 (err ? 'primary' : 'secondary') +
-                '">Fix<span data-i="chevR" data-s="18"></span></button>';
+                '">' +
+                (info ? 'Open' : 'Fix') +
+                '<span data-i="chevR" data-s="18"></span></button>';
           var meta =
             mode === 'dismissed'
               ? '<p class="t-body-sm ps-subtle" style="margin-top:6px">Dismissed by ' +
@@ -143,9 +153,15 @@
             '<article class="ps-card" style="gap:8px;padding:12px 12px 8px 16px' +
             (mode === 'dismissed' ? ';background:var(--bg)' : '') +
             '"><div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--' +
-            (mode === 'dismissed' ? 'ink-subtle' : err ? 'danger' : 'warning') +
+            (mode === 'dismissed'
+              ? 'ink-subtle'
+              : err
+                ? 'danger'
+                : info
+                  ? 'accent-ink'
+                  : 'warning') +
             ');margin-top:1px" data-i="' +
-            (err ? 'error' : 'alert') +
+            (err ? 'error' : info ? 'info' : 'alert') +
             '"></span>' +
             '<div style="flex:1;min-width:0"><b class="t-title-3" style="font-size:15px;display:block">' +
             rival(h.title) +
@@ -191,10 +207,14 @@
           var o = open(),
             e = o.filter(function (h) {
               return h.sev === 'error';
+            }).length,
+            i = o.filter(function (h) {
+              return h.sev === 'info';
             }).length;
           return {
             e: e,
-            w: o.length - e,
+            w: o.length - e - i,
+            i: i,
             d: dismissed().length,
             open: o.length,
           };
@@ -211,6 +231,11 @@
           return (
             '<div class="ps-region-head"><div class="ps-row" style="gap:8px">' +
             badges +
+            (c.i
+              ? '<span class="ps-badge ps-badge--accent"><span data-i="info" data-s="14"></span>' +
+                c.i +
+                ' info</span>'
+              : '') +
             (c.d
               ? '<span class="t-body-sm ps-subtle">' + c.d + ' dismissed</span>'
               : '') +
@@ -257,11 +282,18 @@
               o.filter(function (h) {
                 return h.sev === 'warning';
               }),
+            ) +
+            group(
+              'Info · ' + counts().i,
+              'For your awareness. Nothing to fix unless it’s a mistake.',
+              o.filter(function (h) {
+                return h.sev === 'info';
+              }),
             )
           );
         }
         function byArea() {
-          return ['Locations', 'Encounters', 'NPCs']
+          return ['Locations', 'Encounters', 'NPCs', 'TMs & HMs']
             .map(function (a) {
               var list = open().filter(function (h) {
                 return h.area === a;
@@ -269,12 +301,16 @@
               var e = list.filter(function (h) {
                   return h.sev === 'error';
                 }).length,
-                w = list.length - e;
+                i = list.filter(function (h) {
+                  return h.sev === 'info';
+                }).length,
+                w = list.length - e - i;
               return group(
                 a + ' · ' + list.length,
                 [
                   e ? e + ' error' + (e > 1 ? 's' : '') : '',
                   w ? w + ' warning' + (w > 1 ? 's' : '') : '',
+                  i ? i + ' info' : '',
                 ]
                   .filter(Boolean)
                   .join(', '),
@@ -415,6 +451,13 @@
               'Worth a look. They don’t block publishing.',
               o.filter(function (h) {
                 return h.sev === 'warning';
+              }),
+            ) +
+            group(
+              'Info · ' + counts().i,
+              'For your awareness.',
+              o.filter(function (h) {
+                return h.sev === 'info';
               }),
             ) +
             '<p class="t-body-sm ps-subtle">' +

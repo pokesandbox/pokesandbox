@@ -63,6 +63,12 @@
                 (Locations, Trainers, Encounters, NPCs…).
               </li>
               <li>
+                <b>Removed TMs:</b> when this release empties a slot the last
+                release had, the TMs & HMs card says so, and "Add to release
+                notes" inserts a suggested line for players. Removed machines
+                are hidden from players, never shown as unusable (doc 12).
+              </li>
+              <li>
                 <b>One area, mixed changes:</b> the card's summary shows each
                 kind as a count (+2 added, ~1 changed, −1 removed). Expanded, it
                 lists Added, then Changed, then Removed, each item with what
@@ -151,12 +157,24 @@
           {
             name: 'Encounters',
             icon: 'leaf',
-            change: [['Route 1 · Walk in grass', 'Pikachu added at 2%']],
+            change: [['Route 1 · Walk in the grass', 'Pikachu added at 2%']],
           },
           {
             name: 'NPCs',
             icon: 'chat',
             add: [['Brock', 'From the Gym Leader template']],
+          },
+          {
+            name: 'TMs & HMs',
+            icon: 'disc',
+            open: true,
+            remove: [
+              [
+                'TM25 · Thunder',
+                'TM25 was removed. Players who have it won\u2019t see it.',
+                '<button class="ps-btn ps-btn--ghost" data-note style="padding:0 8px;margin-top:2px"><span data-i="plus" data-s="18"></span>Add to release notes</button>',
+              ],
+            ],
           },
         ];
         var SIGNS = {
@@ -204,6 +222,7 @@
                           '</span><span>' +
                           it[0] +
                           (it[1] ? '<small>' + it[1] + '</small>' : '') +
+                          (it[2] || '') +
                           '</span></div>'
                         );
                       })
@@ -319,6 +338,18 @@
                     : v === 'done'
                       ? done
                       : desktop();
+        });
+        document.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-note]');
+          if (!b) return;
+          var ta = b.closest('.slot').querySelector('textarea');
+          if (!ta) return;
+          var line =
+            'TM25 (Thunder) is gone for now. If you have it, it won\u2019t show up until it\u2019s back.';
+          if (ta.value.indexOf(line) === -1)
+            ta.value = ta.value + (ta.value ? '\n' : '') + line;
+          b.textContent = 'Added to release notes';
+          b.disabled = true;
         });
         PS.mount(document);
       </script>

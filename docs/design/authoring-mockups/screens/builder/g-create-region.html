@@ -53,8 +53,9 @@
             the keyboard.
           </li>
           <li>
-            The rules preset is the only choice that can't change later, so step
-            2 says so before you pick, and step 3 repeats it.
+            The rules preset is chosen here but can be changed later in
+            Settings; changes are checked when you publish. Only Classic Gen 1
+            exists for now, so the other presets show as "Coming later".
           </li>
           <li>
             "Create region" creates an empty draft and lands on its builder home
@@ -122,7 +123,7 @@
             return (
               stepper(2, 'Rules') +
               '<h2 class="t-title-1">Choose a rules preset</h2>' +
-              '<p class="t-body ps-muted">Rules set which species, moves and mechanics exist. You can’t change them after the region is created.</p>' +
+              '<p class="t-body ps-muted">Rules set which species, moves and mechanics exist. Only Classic Gen 1 is available for now. You can change rules later; changes are checked when you publish.</p>' +
               presets()
             );
           return (
@@ -131,7 +132,7 @@
             '<dl class="ps-review" style="margin:0">' +
             '<div class="ps-review-row"><div><dt>Name</dt><dd>Kanto Classic</dd></div><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
             '<div class="ps-review-row"><div><dt>Description</dt><dd>A faithful first-generation journey with a few new routes.</dd></div><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
-            '<div class="ps-review-row"><div><dt>Rules preset</dt><dd>Classic Gen 1</dd><span class="t-body-sm ps-subtle">Can’t be changed later</span></div><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
+            '<div class="ps-review-row"><div><dt>Rules preset</dt><dd>Classic Gen 1</dd><span class="t-body-sm ps-subtle">You can change rules later in Settings</span></div><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
             '<div class="ps-review-row"><div><dt>Server</dt><dd>Pallet Town League</dd></div></div></dl>' +
             '<div class="ps-callout ps-callout--info"><span data-i="book" data-s="18"></span><span>The region starts as an empty draft. Players won’t see it until you publish.</span></div>'
           );

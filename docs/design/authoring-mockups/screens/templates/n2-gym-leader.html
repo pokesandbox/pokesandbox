@@ -63,7 +63,14 @@
             <p class="ps-frame-label">Done · the created NPC</p>
             <div class="ps-phone ps-phone--tall slot" data-v="done"></div>
           </div>
-          <div style="width: 720px" class="ps-stack">
+          <div>
+            <p class="ps-frame-label">Edit steps (confirm)</p>
+            <div
+              class="ps-phone ps-phone--tall slot"
+              data-v="stepsConfirm"
+            ></div>
+          </div>
+          <div style="width: 420px" class="ps-stack">
             <p class="ps-frame-label">Notes</p>
             <ul
               class="t-body-sm ps-muted"
@@ -112,8 +119,19 @@
               </li>
               <li>
                 Review lists exactly what will be created. Create opens the new
-                NPC with a banner: it came from a template, the script can be
-                re-opened in the template form, and the step editor comes later.
+                NPC.
+              </li>
+              <li>
+                <b>Templates stay linked until a hand edit</b> (doc 07). The NPC
+                and its script show "Made with the Gym Leader template" with
+                <b>Edit as form</b>, which reopens the filled-in form; saving
+                regenerates the script in place, keeping its key and the NPC and
+                trainer it made.
+              </li>
+              <li>
+                <b>Edit steps</b> (the step editor, which comes later) confirms
+                first: "This script will no longer be editable as a Gym Leader
+                form." After that the link is gone.
               </li>
             </ul>
           </div>
@@ -356,6 +374,22 @@
             '<div class="ps-actions"><button class="ps-btn ps-btn--primary ps-btn--block">Create and use</button></div></div>'
           );
         }
+        var linked =
+          '<div class="ps-callout ps-callout--info" style="flex-direction:column;gap:8px;align-items:stretch"><span style="display:flex;gap:10px;align-items:center"><span data-i="check" data-s="18"></span><span class="ps-badge ps-badge--accent" style="background:var(--surface)">Made with the Gym Leader template</span></span>' +
+          '<span>Brock, his trainer and his script stay linked to the form. Edit as form reopens it filled in, and saving updates the script in place.</span>' +
+          '<span class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary">Edit as form</button><button class="ps-btn ps-btn--ghost">Edit steps</button></span></div>';
+        function stepsConfirm() {
+          return (
+            done().replace(
+              '<div class="ps-toast-dock">',
+              '<div class="ps-toast-dock" style="display:none">',
+            ) +
+            '<div class="ps-scrim"></div><div class="ps-sheet" role="alertdialog" aria-labelledby="es"><div class="ps-grabber"></div><h2 class="t-title-2" id="es">Edit steps by hand?</h2>' +
+            '<p class="t-body">This script will no longer be editable as a Gym Leader form.</p>' +
+            '<p class="t-body-sm ps-muted">Brock and his trainer keep working. You\u2019d edit the script in the step editor from then on.</p>' +
+            '<div class="ps-actions"><button class="ps-btn ps-btn--danger ps-btn--block">Edit steps</button><button class="ps-btn ps-btn--ghost ps-btn--block">Keep the form</button></div></div>'
+          );
+        }
         function done() {
           return (
             PS.phoneBar('Brock', 'NPC · Trainer', PS.saved + PS.moreBtn) +
@@ -368,9 +402,10 @@
               ],
               'person',
             ) +
-            '<div class="ps-scroll"><div class="ps-form"><div class="ps-callout ps-callout--info" style="flex-direction:column;gap:8px"><span style="display:flex;gap:10px"><span data-i="check" data-s="18"></span><b>Made from the Gym Leader template</b></span><span>The script was generated for you. Open it in the template form to change it; the step-by-step editor comes later.</span><a class="ps-link" href="#">Edit generated script</a></div>' +
+            '<div class="ps-scroll"><div class="ps-form">' +
+            linked +
             '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Brock"></div>' +
-            '<h2 class="t-title-2">Where they are</h2><article class="ps-placement"><div class="ps-variant-head"><span class="ps-priority">1</span><span class="ps-kind" data-i="gym"></span><b>Pewter Gym</b>' +
+            '<h2 class="t-title-2">Where they appear</h2><article class="ps-placement"><div class="ps-variant-head"><span class="ps-priority">1</span><span class="ps-kind" data-i="gym"></span><b>Pewter Gym</b>' +
             PS.moreBtn +
             '</div>' +
             PS.condSummary('', {
@@ -382,7 +417,8 @@
             PS.condSummary('Requires defeating Camper Liam', {
               note: 'Gate on talking to Brock · shown locked until then',
             }) +
-            '<h2 class="t-title-2">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>brock-gym<small>Generated · Gym Leader template</small></span><button class="ps-btn ps-btn--ghost">Edit</button></div></div></div>' +
+            '<h2 class="t-title-2">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>brock-gym<small><span class="ps-badge ps-badge--accent" style="margin-top:2px">Made with the Gym Leader template</span></small></span><button class="ps-btn ps-btn--secondary">Edit as form</button></div>' +
+            '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start"><span data-i="code" data-s="18"></span>Edit steps</button></div></div>' +
             '<div class="ps-toast-dock"><div class="ps-toast" role="status">' +
             PS.icon('check') +
             '<span>Brock created</span></div></div>'
@@ -460,11 +496,13 @@
               ? desktop()
               : v === 'done'
                 ? done()
-                : v === '3create'
-                  ? quickCreate()
-                  : v === '3empty'
-                    ? phone('3empty')
-                    : phone(+v);
+                : v === 'stepsConfirm'
+                  ? stepsConfirm()
+                  : v === '3create'
+                    ? quickCreate()
+                    : v === '3empty'
+                      ? phone('3empty')
+                      : phone(+v);
         });
         PS.mount(document);
       </script>

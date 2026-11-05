@@ -59,16 +59,17 @@
             one is linked.
           </li>
           <li>
-            <b>Presence:</b> Single uses the first placement whose condition
-            matches (story characters who move). Everywhere uses every matching
-            placement (Nurse Joy in every Center). The explanation under the
-            control changes with the choice.
+            <b>Presence:</b> "One place at a time" shows up at the first listed
+            place whose condition matches (story characters who move). "Every
+            listed place" shows up at every listed place whose condition matches
+            (Nurse Joy in every Center). Only listed places ever count. The
+            explanation under the control changes with the choice.
           </li>
           <li>
             <b>Placements</b> are ordered, each with a location, a condition
-            (K1), and an optional talk-script override for that spot. With
-            Single presence, two placements that can both match get the warning
-            "Two single placements can match at the same time; the first wins."
+            (K1), and an optional talk-script override for that spot. With One
+            place at a time, two places that can both match get the warning "Two
+            places can match at once; the first one wins."
           </li>
           <li>
             <b>Talk script:</b> link an existing script, or "Create from
@@ -174,7 +175,7 @@
               'Only battles when the player talks to them. Good for optional trainers.',
             ) +
             '</div>' +
-            '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="true">Single</button><button aria-pressed="false">Everywhere</button></div><p class="ps-help">In one place at a time: the first placement that matches.</p>'
+            '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="true">One place at a time</button><button aria-pressed="false">Every listed place</button></div><p class="ps-help">Shows up at the first listed place whose condition matches. Good for story characters who move.</p>'
           );
         }
         function placement(n, kind, loc, cond, script, warn) {
@@ -207,7 +208,7 @@
         }
         function bottom() {
           return (
-            '<h2 class="t-title-2">Placements</h2><p class="t-body-sm ps-muted">Checked in order. With Single presence, the first match is where they are.</p>' +
+            '<h2 class="t-title-2">Where they appear</h2><p class="t-body-sm ps-muted">Only these listed places count, checked in order. With One place at a time, the first match is where they are.</p>' +
             placement(
               1,
               'building',
@@ -225,7 +226,7 @@
               true,
             ) +
             placement(3, 'route', 'Route 22', 'Requires the Earth Badge', '') +
-            '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>Two single placements can match at the same time; the first wins. Placements 1 and 2 can both be true.</span></div>' +
+            '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>Two places can match at once; the first one wins. With One place at a time, places 1 and 2 can both match.</span></div>' +
             '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add placement</button>' +
             '<h2 class="t-title-2" style="margin-top:8px">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>rival-smalltalk<small>Default when talking to them</small></span><button class="ps-btn ps-btn--ghost">Change</button></div>' +
             '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary">Link a script</button><button class="ps-btn ps-btn--ghost">Create from template</button></div>' +
@@ -254,8 +255,8 @@
             '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Nurse Joy"></div>' +
             '<div class="ps-field"><span class="ps-label">Sprite</span><div class="ps-sprite-row"><span class="ps-sprite">Sprite<br>placeholder</span><button class="ps-btn ps-btn--secondary">Choose image</button></div></div>' +
             '<div class="ps-field"><span class="ps-label">Trainer <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span class="ps-placeholder">None, doesn\u2019t battle</span><span data-i="search"></span></button><p class="ps-help">Link one to make this NPC battleable.</p></div>' +
-            '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="false">Single</button><button aria-pressed="true">Everywhere</button></div><p class="ps-help">Appears at every placement that matches, like staff in each Pok\u00e9mon Center.</p>' +
-            '<h2 class="t-title-2" style="margin-top:8px">Placements <span class="ps-subtle" style="font-weight:400;font-size:15px">· 9</span></h2>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="false">One place at a time</button><button aria-pressed="true">Every listed place</button></div><p class="ps-help">Shows up at every listed place whose condition matches. Good for Nurse Joy, mart clerks, and tutors in several towns.</p>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Where they appear <span class="ps-subtle" style="font-weight:400;font-size:15px">· 9</span></h2>' +
             spot(
               1,
               'Pok\u00e9mon Center, Viridian City',

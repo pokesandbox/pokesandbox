@@ -63,6 +63,12 @@
                 saw it; catching shows the rest.
               </li>
               <li>
+                <b>Seen and caught are per form</b> (doc 23): each form in an
+                entry reveals by its own state, so Meowth can be caught while
+                Alolan Meowth is only seen or still "???". The header counts
+                stay per species (Caught 34 · Seen 61 of 151).
+              </li>
+              <li>
                 <b>Locked sections say how to unlock them</b> ("Catch Meowth to
                 see its base stats"), never just disappear.
               </li>
@@ -168,7 +174,7 @@
           );
         };
         var where = sp.links('Where you’ve seen it', [
-          ['leaf', 'Route 5 · Walk in grass', 'Seen Nov 2', 'Map'],
+          ['leaf', 'Route 5 · Walk in the grass', 'Seen Nov 2', 'Map'],
         ]);
         function seen() {
           return (
@@ -179,9 +185,20 @@
             sp.locked('Base stats', 'Catch Meowth to see its base stats.') +
             sp.locked('Evolution', 'Catch Meowth to see how it evolves.') +
             sp.forms([
-              { name: 'Meowth', type: 'Normal', diff: 'The form you’ve seen.' },
+              {
+                name: 'Meowth',
+                type: 'Normal',
+                diff: 'Base form.',
+                note: 'Seen',
+                noteColor: 'ink-muted',
+              },
+              {
+                name: '???',
+                type: '?',
+                diff: 'Another form of Meowth in this Pokédex.',
+                note: 'Not seen yet',
+              },
             ]) +
-            '<p class="t-body-sm ps-subtle" style="margin-top:-8px">1 more form in this Pokédex you haven’t seen yet.</p>' +
             sp.locked('Moves', 'Catch Meowth to see the moves it learns.') +
             '</main></div>'
           );
@@ -210,14 +227,15 @@
                 name: 'Alolan Meowth',
                 type: 'Dark',
                 diff: 'Attack 35 (−10).',
-                note: 'Seen',
+                note: 'Seen, not caught',
+                noteColor: 'ink-muted',
               },
             ]) +
             sp.moves('gen1') +
             sp.tms('From Kanto Classic’s TM case.') +
             sp.links('Where to find it', [
-              ['leaf', 'Route 5 · Walk in grass', '10%, Lv 10–14', 'Map'],
-              ['leaf', 'Route 6 · Walk in grass', '10%, Lv 10–14', 'Map'],
+              ['leaf', 'Route 5 · Walk in the grass', '10%, Lv 10–14', 'Map'],
+              ['leaf', 'Route 6 · Walk in the grass', '10%, Lv 10–14', 'Map'],
             ]) +
             '</main></div>'
           );
