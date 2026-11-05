@@ -18,7 +18,8 @@ import {
 
 const logger = createLoggerFromEnv();
 
-connectDb(logger).then(async () => {
+async function start() {
+  await connectDb(logger);
   const TOKEN = process.env.DISCORD_BOT_TOKEN as string;
   logger.info('SandBot is initializing');
 
@@ -55,5 +56,10 @@ connectDb(logger).then(async () => {
   client.flowcord = flowcord;
 
   await eventsManager(client);
-  client.login(TOKEN);
+  await client.login(TOKEN);
+}
+
+start().catch((error: unknown) => {
+  logger.error('SandBot failed to start', { err: error });
+  process.exit(1);
 });
