@@ -15,8 +15,8 @@
       ><span
         >N2 · Gym Leader template
         <small
-          >N2 · Gym Leader template · 6 phone steps and the created NPC, one
-          long form on desktop</small
+          >N2 · Gym Leader template · 6 phone steps, a region with no badges,
+          and the created NPC; one long form on desktop</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
@@ -36,11 +36,19 @@
             <div class="ps-phone ps-phone--tall slot" data-v="3"></div>
           </div>
           <div>
-            <p class="ps-frame-label">4 · What they say</p>
-            <div class="ps-phone ps-phone--tall slot" data-v="4"></div>
+            <p class="ps-frame-label">3 · Rewards, region with no badges yet</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="3empty"></div>
           </div>
         </div>
         <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">3 · Create Badges (quick-create sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="3create"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">4 · What they say</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="4"></div>
+          </div>
           <div>
             <p class="ps-frame-label">5 · Gym trainers (optional)</p>
             <div class="ps-phone ps-phone--tall slot" data-v="5"></div>
@@ -49,11 +57,13 @@
             <p class="ps-frame-label">6 · Review</p>
             <div class="ps-phone ps-phone--tall slot" data-v="6"></div>
           </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
           <div>
             <p class="ps-frame-label">Done · the created NPC</p>
             <div class="ps-phone ps-phone--tall slot" data-v="done"></div>
           </div>
-          <div style="width: 360px" class="ps-stack">
+          <div style="width: 720px" class="ps-stack">
             <p class="ps-frame-label">Notes</p>
             <ul
               class="t-body-sm ps-muted"
@@ -76,8 +86,16 @@
                 can be added later on the NPC.
               </li>
               <li>
-                The badge is picked from the region's badges, or created here
-                ("New badge" makes a badge progression).
+                <b>Milestone awarded</b> is a progression plus one of its
+                milestones, so a region with trials instead of badges uses the
+                same template (pick "Trials" and "Ocean Trial").
+              </li>
+              <li>
+                <b>No badges yet:</b> step 3 says so and offers Create Badges (a
+                quick-create sheet: name, kind, first badge, all prefilled), Use
+                another progression, or No milestone. You never leave the form.
+                Full editing is on the Progressions screen, which lists it as
+                used by this leader.
               </li>
               <li>
                 Intro, defeat and after-defeat text are passages with the
@@ -87,6 +105,11 @@
                 "Require gym trainers first" is off by default (doc 11). On, it
                 adds a gate to the leader: hidden, shown locked, or "Not so
                 fast!".
+              </li>
+              <li>
+                <b>Items given</b> is a list of any items with quantities. TMs
+                are items here, found by number or move name, so a leader can
+                give a TM, a Bike Voucher, both, or nothing.
               </li>
               <li>
                 Review lists exactly what will be created. Create opens the new
@@ -165,6 +188,35 @@
           after:
             'Brock: Keep going east. Cerulean’s leader won’t go easy on you.',
         };
+        function milestone(has) {
+          var plus = function (t) {
+            return (
+              '<button class="ps-btn ps-btn--ghost" style="padding:0 8px;align-self:flex-start"><span data-i="plus" data-s="18"></span>' +
+              t +
+              '</button>'
+            );
+          };
+          if (!has)
+            return (
+              '<div class="ps-field"><span class="ps-label">Milestone awarded</span>' +
+              '<div class="ps-callout ps-callout--info"><span data-i="gym" data-s="18"></span><span><b>This region doesn\u2019t have badges yet.</b><br>Gym leaders usually award one. Pick how this leader marks a win.</span></div>' +
+              '<div role="radiogroup" class="ps-stack" style="gap:8px">' +
+              '<button class="ps-choice" role="radio" aria-checked="true"><span class="ps-radio"></span><span class="ps-choice-text"><b>Create Badges</b><span>Adds a Badges progression with Boulder Badge as its first badge.</span></span></button>' +
+              '<button class="ps-choice" role="radio" aria-checked="false"><span class="ps-radio"></span><span class="ps-choice-text"><b>Use another progression</b><span>For regions with trials, stamps or ranks: 2 progressions available.</span></span></button>' +
+              '<button class="ps-choice" role="radio" aria-checked="false"><span class="ps-radio"></span><span class="ps-choice-text"><b>No milestone</b><span>The leader only gives the TM and prize money.</span></span></button></div></div>'
+            );
+          return (
+            '<div class="ps-field"><span class="ps-label">Milestone awarded</span>' +
+            '<div class="ps-field" style="gap:4px"><span class="t-body-sm ps-subtle">Progression</span>' +
+            trig('steps', 'Badges') +
+            '</div>' +
+            '<div class="ps-field" style="gap:4px"><span class="t-body-sm ps-subtle">Milestone</span>' +
+            trig('gym', 'Boulder Badge') +
+            plus('New badge') +
+            '</div>' +
+            '<p class="ps-help">Set on the player\u2019s journey when they win. Regions with trials pick their own progression here.</p></div>'
+          );
+        }
         var S = {
           1: function () {
             return (
@@ -188,12 +240,10 @@
           3: function () {
             return (
               '<h2 class="t-title-2">What winning gives</h2>' +
-              '<div class="ps-field"><span class="ps-label">Badge</span>' +
-              trig('gym', 'Boulder Badge') +
-              '<div class="ps-row" style="gap:8px"><span class="t-body-sm ps-subtle">Not made yet?</span><button class="ps-btn ps-btn--ghost" style="padding:0 8px"><span data-i="plus" data-s="18"></span>New badge</button></div></div>' +
-              '<div class="ps-field"><span class="ps-label">TM <span class="ps-opt">(optional)</span></span>' +
-              trig('book', 'TM34 · Bide') +
-              '<p class="ps-help">From the region’s TM case.</p></div>' +
+              milestone(true) +
+              '<div class="ps-field"><span class="ps-label">Items given <span class="ps-opt">(optional)</span></span>' +
+              '<div class="ps-mons"><div class="ps-mon" style="padding-left:12px"><span class="ps-kind" data-i="book"></span><div><b>TM34 · Bide</b><span>TM · single use</span></div><input class="ps-input" type="number" inputmode="numeric" value="1" aria-label="Quantity" style="width:64px"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove TM34"><span data-i="x"></span></button></div></div>' +
+              '<button class="ps-btn ps-btn--secondary" style="align-self:flex-start"><span data-i="search" data-s="18"></span>Add item</button><p class="ps-help">Search any item. TMs and HMs show their number, like "TM34 Bide".</p></div>' +
               '<div class="ps-field"><span class="ps-label">Prize money</span><div class="ps-seg" role="group"><button aria-pressed="true">Formula</button><button aria-pressed="false">Fixed amount</button></div><p class="ps-help">Gym Leader base ₽99 × Lv 14 = <b style="color:var(--ink)">₽1,386</b>.</p></div>'
             );
           },
@@ -236,6 +286,9 @@
               '<div class="ps-field"><span class="ps-label">Until then, the leader is</span><div class="ps-seg" role="group"><button aria-pressed="false">Hidden</button><button aria-pressed="true">Shown locked</button><button aria-pressed="false">Not so fast!</button></div><p class="ps-help">Players see "Brock" with a lock: "Defeat 1 more trainer to challenge Brock."</p></div>'
             );
           },
+          '3empty': function () {
+            return S[3]().replace(milestone(true), milestone(false));
+          },
           6: function () {
             return (
               '<h2 class="t-title-2">Review</h2>' +
@@ -243,7 +296,11 @@
               [
                 ['Leader', 'Brock · Pewter Gym', 1],
                 ['Team', 'Geodude Lv 12, Onix Lv 14', 2],
-                ['Rewards', 'Boulder Badge · TM34 Bide · ₽1,386', 3],
+                [
+                  'Rewards',
+                  'Boulder Badge (Badges) · 1× TM34 Bide · ₽1,386',
+                  3,
+                ],
                 ['Text', 'Intro, defeat and after-battle lines', 4],
                 ['Gym trainers', 'Camper Liam, required first', 5],
               ]
@@ -258,7 +315,7 @@
                 })
                 .join('') +
               '</dl>' +
-              '<div class="ps-field"><span class="ps-label">This creates</span><div class="ps-review">' +
+              '<div class="ps-field"><span class="ps-label">This creates</span><p class="ps-help">If you created Badges in step 3, it\u2019s listed here too: 1 progression.</p><div class="ps-review">' +
               [
                 ['user', '1 NPC', 'Brock, placed in Pewter Gym'],
                 ['swap', '1 trainer', 'Gym Leader class, Smart AI'],
@@ -288,18 +345,33 @@
         function phone(n) {
           var close =
             '<div class="ps-appbar"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="' +
-            (n > 1 ? 'Back' : 'Close') +
+            (n === '3empty' || n > 1 ? 'Back' : 'Close') +
             '"><span data-i="' +
-            (n > 1 ? 'back' : 'x') +
+            (n === '3empty' || n > 1 ? 'back' : 'x') +
             '"></span></button><h1 class="ps-appbar-title">Gym Leader<small>New from template</small></h1></div>';
           return (
             close +
             '<div class="ps-scroll"><div class="ps-page" style="gap:16px">' +
-            stepper(n) +
+            stepper(n === '3empty' ? 3 : n) +
             S[n]() +
             '</div></div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">' +
             (n === 6 ? 'Create gym leader' : 'Continue') +
             '</button></div>'
+          );
+        }
+        function quickCreate() {
+          var body =
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Badges"><p class="ps-help">Players see this on their journey.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">Kind</span><div class="ps-readonly"><span data-i="gym" data-s="18"></span><div><b>Milestones, shown as badges</b><p class="t-body-sm ps-muted">Each badge is earned once. Conditions can check one badge or how many.</p></div></div></div>' +
+            '<div class="ps-field"><label class="ps-label">First badge</label><input class="ps-input" value="Boulder Badge"><p class="ps-help">Add the rest as you make each gym, or on the Progressions screen.</p></div>';
+          return (
+            phone('3empty').replace(
+              '<div class="ps-bottom-bar">',
+              '<div class="ps-bottom-bar" style="display:none">',
+            ) +
+            '<div class="ps-scrim"></div><div class="ps-sheet" role="dialog" aria-label="Create Badges"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">Create Badges</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            body +
+            '<div class="ps-actions"><button class="ps-btn ps-btn--primary ps-btn--block">Create and use</button></div></div>'
           );
         }
         function done() {
@@ -402,7 +474,15 @@
         document.querySelectorAll('.slot').forEach(function (el) {
           var v = el.getAttribute('data-v');
           el.innerHTML =
-            v === 'desktop' ? desktop() : v === 'done' ? done() : phone(+v);
+            v === 'desktop'
+              ? desktop()
+              : v === 'done'
+                ? done()
+                : v === '3create'
+                  ? quickCreate()
+                  : v === '3empty'
+                    ? phone('3empty')
+                    : phone(+v);
         });
         PS.mount(document);
       </script>
