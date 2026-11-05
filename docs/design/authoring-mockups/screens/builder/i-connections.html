@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>I · Connections · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >I · Connections
+        <small
+          >I · Location detail, Connections tab · list, Add connection sheet,
+          delete confirm, desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Connections</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Add connection (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="sheet"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Delete location (confirm)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="delete"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1200px;
+          "
+        >
+          <li>
+            Each connection shows its label (North, Through the gate), the
+            destination with its kind tile, and a "Requires…" badge if it's
+            gated. Rows reorder like any SortableList; the order is the order of
+            travel buttons in Discord.
+          </li>
+          <li>
+            "Two-way" adds the matching connection on the destination; the line
+            under the switch names it. Turning it off later doesn't delete the
+            other side.
+          </li>
+          <li>
+            "Requirement" is the condition summary row (K1): empty for a new
+            connection, and Add opens the condition editor (K2). Once a
+            requirement is set, the gate options appear under it, as in K3.
+          </li>
+          <li>
+            Delete lives in the location's More menu. The confirm counts inbound
+            connections ("3 connections lead here and will be removed") and
+            names them.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · Connections tab with the Add connection dialog
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 860px; position: relative"
+        ></div>
+      </div>
+      <script>
+        var EDGES = [
+          { dir: 'North', to: 'Viridian City', kind: 'town' },
+          { dir: 'South', to: 'Pallet Town', kind: 'town' },
+          {
+            dir: 'Ledge, one way',
+            to: 'Route 1 south ledge',
+            kind: 'route',
+            gate: true,
+          },
+        ];
+        function edges() {
+          return (
+            '<div class="ps-edges">' +
+            EDGES.map(function (e) {
+              return (
+                '<div class="ps-edge" style="padding-left:0"><button class="ps-handle" aria-label="Reorder ' +
+                e.to +
+                '"><span data-i="grip"></span></button><span class="ps-kind" data-i="' +
+                e.kind +
+                '"></span><div><span class="ps-edge-dir">' +
+                e.dir +
+                '</span><b class="t-title-3" style="font-size:15px">' +
+                e.to +
+                '</b>' +
+                (e.gate
+                  ? '<span class="ps-badge ps-badge--outline" style="align-self:flex-start"><span data-i="lock" data-s="14"></span>Requires Surf</span>'
+                  : '') +
+                '</div>' +
+                PS.moreBtn +
+                '</div>'
+              );
+            }).join('') +
+            '</div>'
+          );
+        }
+        function connections() {
+          return (
+            '<div class="ps-form"><div class="ps-section-head"><p class="t-body-sm ps-muted">Where players can travel from Route 1.</p></div>' +
+            edges() +
+            '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add connection</button></div>'
+          );
+        }
+        function sheetBody() {
+          return (
+            '<div class="ps-field"><span class="ps-label">Destination</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="town"></span>Viridian City</span><span data-i="search"></span></button></div>' +
+            '<div class="ps-field"><label class="ps-label">Label <span class="ps-opt">(optional)</span></label><input class="ps-input" value="North"><p class="ps-help">Shown on the travel button in Discord.</p></div>' +
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Two-way</b><span>Also add Viridian City → Route 1 (South)</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Two-way"></button></label>' +
+            '<div class="ps-field"><span class="ps-label">Requirement</span>' +
+            PS.condSummary('', { emptyHint: 'Anyone can travel this way.' }) +
+            '<p class="ps-help">Add one to show the gate options (hide, show locked, let them try).</p></div>'
+          );
+        }
+        var detailBar = PS.phoneBar('Route 1', 'Route', PS.saved + PS.moreBtn);
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'list')
+            el.innerHTML =
+              detailBar +
+              PS.locTabs('connections') +
+              '<div class="ps-scroll">' +
+              connections() +
+              '</div>';
+          if (v === 'sheet')
+            el.innerHTML =
+              detailBar +
+              PS.locTabs('connections') +
+              '<div class="ps-scroll">' +
+              connections() +
+              '</div><div class="ps-scrim"></div>' +
+              '<div class="ps-sheet" role="dialog" aria-label="Add connection"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">Add connection</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+              sheetBody() +
+              '<div class="ps-actions"><button class="ps-btn ps-btn--primary ps-btn--block">Add connection</button></div></div>';
+          if (v === 'delete')
+            el.innerHTML =
+              PS.phoneBar('Route 2', 'Route', PS.moreBtn) +
+              PS.locTabs('details') +
+              '<div class="ps-scroll"><div class="ps-form"><div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Route 2"></div></div></div><div class="ps-scrim"></div>' +
+              '<div class="ps-sheet" role="alertdialog" aria-labelledby="dl"><div class="ps-grabber"></div><h2 class="t-title-2" id="dl">Delete Route 2?</h2>' +
+              '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>3 connections lead here and will be removed: from Viridian City, Pewter City and Viridian Forest.</span></div>' +
+              '<p class="t-body-sm ps-muted">Its encounter tables go too. Players aren’t affected until you publish.</p>' +
+              '<div class="ps-actions"><button class="ps-btn ps-btn--danger ps-btn--block">Delete location</button><button class="ps-btn ps-btn--ghost ps-btn--block">Cancel</button></div></div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('locations') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              '<section class="ps-pane-list"><div class="ps-appbar" style="padding:0 8px 0 16px"><h2 class="ps-appbar-title">Locations</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus"></span>Add</button></div><div class="ps-scroll">' +
+              PS.locRows('route-1') +
+              '</div></section>' +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">Route 1</h2>' +
+              PS.moreBtn +
+              '</div>' +
+              PS.locTabs('connections') +
+              '<div class="ps-scroll">' +
+              connections() +
+              '</div></section></div></div>' +
+              '<div class="ps-scrim"></div><div class="ps-dialog" role="dialog" style="position:absolute;left:50%;top:120px;transform:translateX(-30%)"><div class="ps-sheet-head"><h2 class="t-title-2">Add connection</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+              sheetBody() +
+              '<div class="ps-actions"><button class="ps-btn ps-btn--primary">Add connection</button><button class="ps-btn ps-btn--ghost">Cancel</button></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

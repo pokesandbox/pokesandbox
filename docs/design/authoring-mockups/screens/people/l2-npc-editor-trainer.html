@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>L2 · NPC editor for a trainer ★ · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >L2 · NPC editor for a trainer ★
+        <small
+          >L2 · NPC editor for a trainer ★ · Person · Battle · Party · Lines ·
+          phone (Party in light and dark), Pokémon sheet, desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div
+        class="ps-root ps-pad"
+        data-theme="light"
+        style="background: transparent"
+      >
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Person</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="person"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Party · light</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="party"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Party · dark</p>
+            <div data-theme="dark">
+              <div class="ps-phone ps-phone--tall slot" data-v="party"></div>
+            </div>
+          </div>
+          <div style="width: 380px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>One editor for an NPC who battles:</b> Person (name, sprite,
+                where they are, talk) · Battle (class, how the battle starts,
+                AI, payout, format, after defeat) · Party · Lines. An NPC who
+                doesn't battle has only Person and Battle, and Battle offers
+                "Make battleable".
+              </li>
+              <li>
+                <b>Name placeholders</b> live on Person: the hint chip inserts
+                <span class="t-mono">{name:rival}</span>, the name the player
+                gave their rival. The trainer uses the NPC's name and sprite.
+              </li>
+              <li>
+                <b>Party variants</b> are ordered cards, each with a condition
+                (K1). First match wins. Collapse the ones you're not editing.
+                Add, Duplicate, reorder by handle or More → Move up/down.
+              </li>
+              <li>
+                <b>The bag is per variant</b>, following doc 11 (<span
+                  class="t-mono"
+                  >parties[].items</span
+                >), so a later team can carry better items.
+              </li>
+              <li>
+                <b>Warning:</b> no variant is unconditioned, so if none match
+                the battle can't start. Region Health shows the same.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">Battle</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="battle"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Edit Pokémon (sheet, from Party)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="mon"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Lines</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="lines"></div>
+            </div>
+          </div>
+          <div style="width: 380px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Payout:</b> Formula is the default and shows its result for
+                the first variant; Fixed swaps in a number field.
+              </li>
+              <li>
+                <b>Moves:</b> empty slots show what the engine will pick ("Auto:
+                Growl", from the last four level-up moves). Override sets a
+                move; Reset returns to auto.
+              </li>
+              <li>
+                <b>Held item</b> is shown but off: Classic Gen 1 rules have no
+                held items. Rules presets with them turn it on.
+              </li>
+              <li>
+                <b>Lines:</b> intro and defeat are passages with a Discord
+                preview that fills placeholders with a sample name. What they
+                say if you talk to them afterwards is the after-defeat script on
+                Battle.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · Party tab, NPCs list filtered to Trainers
+        </p>
+        <div data-theme="light">
+          <div
+            class="ps-desktop slot"
+            data-v="desktop"
+            style="height: 1000px"
+          ></div>
+        </div>
+      </div>
+      <script>
+        var title =
+          '<span class="t-mono" style="font-size:15px">{name:rival}</span>';
+        function bar() {
+          return PS.phoneBar(title, 'NPC · Trainer', PS.saved + PS.moreBtn);
+        }
+        function party() {
+          return PS.partyEditor(PS.RIVAL, {
+            warn: 'No variant works as a fallback. If none of the conditions match, this battle can’t start. Add a variant with no condition at the end.',
+          });
+        }
+        function lines() {
+          var pv = function (label, text) {
+            return (
+              '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">How it looks in Discord</span><span class="t-body-sm ps-subtle">Sample name: Kai</span></div><div class="ps-embed"><b>' +
+              label +
+              '</b><span>' +
+              text.replace('{name:rival}', 'Kai') +
+              '</span></div></div>'
+            );
+          };
+          var intro =
+            '{name:rival}: Oh, it’s you. Still dragging that team around? Let’s see if it’s grown at all.';
+          var defeat = '{name:rival}: Huh. Lucky break. Don’t get used to it.';
+          return (
+            '<div class="ps-field"><label class="ps-label">Intro line</label><textarea class="ps-textarea" style="min-height:96px">' +
+            intro +
+            '</textarea><p class="ps-help">Shown when the battle starts.</p></div>' +
+            pv('Kai wants to battle!', intro) +
+            '<div class="ps-field"><label class="ps-label">Defeat line</label><textarea class="ps-textarea" style="min-height:80px">' +
+            defeat +
+            '</textarea><p class="ps-help">Shown when the player wins.</p></div>' +
+            pv('You defeated Kai!', defeat) +
+            '<div class="ps-callout ps-callout--info"><span data-i="chat" data-s="18"></span><span>What the rival says if you talk to them after the battle lives on the NPC’s talk script. <a class="ps-link" href="#">Open NPC</a></span></div>'
+          );
+        }
+        function mon() {
+          var slot = function (n, txt, auto) {
+            return (
+              '<div class="ps-move-slot' +
+              (auto ? ' is-auto' : '') +
+              '"><span class="ps-priority">' +
+              n +
+              '</span><span>' +
+              txt +
+              '</span>' +
+              (auto
+                ? '<button class="ps-btn ps-btn--ghost">Override</button>'
+                : '<button class="ps-btn ps-btn--ghost">Reset</button>') +
+              '</div>'
+            );
+          };
+          return (
+            '<div class="ps-field"><span class="ps-label">Species</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span class="ps-thumb" style="width:28px;height:28px"></span>Charmander <span class="t-mono ps-subtle">#004</span></span><span data-i="search"></span></button></div>' +
+            '<div class="ps-field" style="max-width:140px"><label class="ps-label">Level</label><input class="ps-input" type="number" inputmode="numeric" value="18"></div>' +
+            '<div class="ps-field"><span class="ps-label">Moves</span>' +
+            slot(1, 'Ember') +
+            slot(
+              2,
+              'Mega Punch <span class="t-body-sm ps-subtle">TM01</span>',
+            ) +
+            slot(3, 'Auto: Growl', true) +
+            slot(4, 'Auto: Leer', true) +
+            '<p class="ps-help">Empty slots use the last four moves Charmander learns by level 18.</p></div>' +
+            '<div class="ps-field ps-disabled-field"><span class="ps-label">Held item</span><button class="ps-trigger" disabled><span class="ps-placeholder">None</span><span data-i="lock"></span></button><p class="ps-help">Classic Gen 1 rules have no held items.</p></div>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'person')
+            el.innerHTML =
+              bar() +
+              PS.npcTabs('person', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              PS.npcPerson() +
+              '</div></div>';
+          if (v === 'battle')
+            el.innerHTML =
+              bar() +
+              PS.npcTabs('battle', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              PS.npcBattle() +
+              '</div></div>';
+          if (v === 'party')
+            el.innerHTML =
+              bar() +
+              PS.npcTabs('party', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              party() +
+              '</div></div>';
+          if (v === 'lines')
+            el.innerHTML =
+              bar() +
+              PS.npcTabs('lines', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              lines() +
+              '</div></div>';
+          if (v === 'mon')
+            el.innerHTML =
+              bar() +
+              PS.npcTabs('party', true) +
+              '<div class="ps-scroll"></div><div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit Pokémon" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Charmander<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Variant 1 · slot 4 of 4</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+              mon() +
+              '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Done</button></div></div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('npcs') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              PS.listPane(
+                'NPCs',
+                '28 trainers',
+                PS.trainerRows('rival'),
+                '<div class="ps-toolbar"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search NPCs" aria-label="Search NPCs"></div><div class="ps-chips"><button class="ps-chip" aria-pressed="false">All</button><button class="ps-chip" aria-pressed="true">Trainers</button><button class="ps-chip" aria-pressed="false">Non-battle</button><button class="ps-chip" aria-pressed="false">Battle only</button></div>' +
+                  PS.classChips() +
+                  '</div>',
+              ) +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">' +
+              title +
+              '</h2><span class="ps-badge ps-badge--brand">Trainer</span>' +
+              PS.moreBtn +
+              '</div>' +
+              PS.npcTabs('party', true).replace(
+                'ps-tabs"',
+                'ps-tabs" style="padding-left:16px"',
+              ) +
+              '<div class="ps-scroll"><div class="ps-form" style="max-width:760px">' +
+              party() +
+              '</div></div></section></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

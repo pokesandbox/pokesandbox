@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>B · Your servers · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >B · Your servers
+        <small
+          >B · Home, signed in: Your servers · phone, empty state, desktop
+          1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Phone</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Phone · empty</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="empty"></div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                Servers with builder access sort first. Their card shows the
+                Builder access badge, your role, and "Open builder" as the
+                primary action.
+              </li>
+              <li>
+                "Open builder" goes to the server page's region list when the
+                server has several regions, or straight to the builder when it
+                has one.
+              </li>
+              <li>Other servers show only "View".</li>
+              <li>
+                The role badge is a hint; the server checks the role again on
+                every builder action.
+              </li>
+              <li>
+                Empty state: one sentence, the Discord action, and a way to look
+                around.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">Desktop 1440</p>
+        <div class="ps-browser slot" data-v="desktop"></div>
+      </div>
+      <script>
+        var SERVERS = [
+          {
+            i: 'PT',
+            n: 'Pallet Town League',
+            m: '2 regions · 148 players',
+            role: 'Admin',
+          },
+          {
+            i: 'VG',
+            n: 'Viridian Gym Night',
+            m: '1 region · 52 players',
+            role: 'Mod',
+          },
+          { i: 'CC', n: 'Cerulean Cape Club', m: '1 region · 37 players' },
+          { i: 'SS', n: 'Saffron Speedrunners', m: '3 regions · 410 players' },
+        ];
+        function card(s) {
+          var head =
+            '<div class="ps-card-head"><div class="ps-avatar">' +
+            s.i +
+            '</div><div><h3 class="t-title-3">' +
+            s.n +
+            '</h3><p class="t-body-sm ps-subtle">' +
+            s.m +
+            '</p></div></div>';
+          if (s.role)
+            return (
+              '<article class="ps-card">' +
+              head +
+              '<div class="ps-row" style="gap:8px"><span class="ps-badge ps-badge--brand">Builder access</span><span class="ps-badge">' +
+              s.role +
+              '</span></div><div class="ps-card-actions"><button class="ps-btn ps-btn--secondary">View</button><button class="ps-btn ps-btn--primary">Open builder</button></div></article>'
+            );
+          return (
+            '<article class="ps-card">' +
+            head +
+            '<div class="ps-card-actions"><button class="ps-btn ps-btn--secondary">View</button></div></article>'
+          );
+        }
+        function header(desk) {
+          return (
+            '<header class="ps-header"><a class="ps-wordmark" href="#">PokeSandbox</a><span class="ps-header-spacer"></span>' +
+            (desk
+              ? '<nav class="ps-header-nav"><a class="ps-btn ps-btn--ghost" href="#">Browse servers</a></nav>'
+              : '') +
+            '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Account: ash"><span class="ps-me">A</span></button></header>'
+          );
+        }
+        var foot =
+          '<footer class="ps-footer"><span>PokeSandbox is a non-commercial fan project, not affiliated with Nintendo, Game Freak, Creatures or The Pokémon Company.</span></footer>';
+        function list(desk) {
+          return (
+            '<div class="ps-section-head"><h1 class="t-title-1">Your servers</h1>' +
+            (desk
+              ? '<button class="ps-btn ps-btn--discord"><span data-i="plus"></span>Add bot to a server</button>'
+              : '') +
+            '</div>' +
+            '<section class="ps-grid">' +
+            SERVERS.map(card).join('') +
+            '</section>' +
+            (desk
+              ? ''
+              : '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add bot to a server</button>')
+          );
+        }
+        function empty() {
+          return (
+            '<h1 class="t-title-1">Your servers</h1><div class="ps-card" style="align-items:center;text-align:center;padding:32px 16px;gap:16px">' +
+            '<div class="ps-hero-art" style="height:96px;width:160px" aria-hidden="true"><i class="sea"></i><i class="sand"></i><i class="tower" style="left:18%;height:22px;width:24px"></i><i class="tower" style="left:38%;height:32px;width:28px"></i></div>' +
+            '<h2 class="t-title-3">You’re not in any servers with PokeSandbox yet</h2><p class="t-body-sm ps-muted">Add the bot to a server you manage, or browse servers that already have a region.</p>' +
+            '<div class="ps-actions" style="width:100%"><button class="ps-btn ps-btn--discord ps-btn--block"><span data-i="chat"></span>Add bot to Discord</button><button class="ps-btn ps-btn--ghost ps-btn--block">Browse servers</button></div></div>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'desktop')
+            el.innerHTML =
+              header(true) +
+              '<main class="ps-page">' +
+              list(true) +
+              '</main>' +
+              foot;
+          else
+            el.innerHTML =
+              header(false) +
+              '<div class="ps-scroll"><main class="ps-page">' +
+              (v === 'empty' ? empty() : list(false)) +
+              '</main>' +
+              foot +
+              '</div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

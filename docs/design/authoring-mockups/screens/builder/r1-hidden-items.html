@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>R1 · Hidden items · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >R1 · Hidden items
+        <small
+          >R1 · Hidden items · where they sit in the Explore tab, the list,
+          add/edit sheet (once or renewable), adding one where nothing can find
+          it, remove confirm (phone)</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 2140px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div
+          class="ps-demos"
+          style="flex-wrap: nowrap; align-items: flex-start"
+        >
+          <div>
+            <p class="ps-frame-label">The whole Explore tab, top to bottom</p>
+            <div
+              class="ps-phone slot"
+              data-v="whole"
+              style="height: 1760px"
+            ></div>
+          </div>
+          <div class="ps-stack" style="gap: 32px">
+            <div class="ps-demos" style="flex-wrap: nowrap">
+              <div>
+                <p class="ps-frame-label">Edit hidden item (sheet)</p>
+                <div class="ps-phone ps-phone--tall slot" data-v="sheet"></div>
+              </div>
+              <div>
+                <p class="ps-frame-label">
+                  Adding one in a town with no Item row
+                </p>
+                <div class="ps-phone ps-phone--tall slot" data-v="town"></div>
+              </div>
+              <div>
+                <p class="ps-frame-label">Remove (confirm)</p>
+                <div class="ps-phone ps-phone--tall slot" data-v="remove"></div>
+              </div>
+            </div>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                max-width: 860px;
+              "
+            >
+              <li>
+                <b>Where it lives:</b> one Explore tab, in this order: the
+                method tabs and the selected method's outcomes, requirement and
+                tables; then "Also found by exploring here" (counts that jump to
+                their section); then Hidden items; then Traversal costs. The
+                "Hidden items: 3" count scrolls to the section.
+              </li>
+              <li>
+                <b>Found by Explore:</b> while available, a hidden item can turn
+                up on any method here whose outcomes include a hidden item.
+              </li>
+              <li>
+                <b>Nothing to find it with:</b> if no method at this location
+                has an Item row (a town with no methods yet), the sheet says so
+                and offers Add Look around.
+              </li>
+              <li>
+                <b>In Discord,</b> a method with nothing left to find hides its
+                button; a renewing item coming back brings it back.
+              </li>
+              <li>
+                <b>Each item:</b> the item (TMs included), a quantity, an
+                optional condition, and Can be found: Once per journey
+                (default), or Again after a while, every N hours or days, for
+                berries and gems. Each player has their own timer.
+              </li>
+              <li>
+                Remove confirms first; players who already found it keep it.
+              </li>
+              <li>
+                Desktop: the same sections in the detail pane; the sheet becomes
+                the side panel.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <script>
+        var ITEMS = [
+          { item: 'Potion', icon: 'bag', qty: 1, cond: '', again: '' },
+          {
+            item: 'Ether',
+            icon: 'bag',
+            qty: 1,
+            cond: 'Only after the Cut gate opens',
+            again: '',
+          },
+          {
+            item: 'Oran Berry',
+            icon: 'leaf',
+            qty: 2,
+            cond: '',
+            again: 'Again every 2 hours',
+          },
+        ];
+        function row(h) {
+          return (
+            '<article class="ps-placement" style="gap:8px"><div class="ps-variant-head"><span class="ps-kind" data-i="' +
+            h.icon +
+            '"></span><b>' +
+            h.item +
+            ' <span class="ps-subtle" style="font-weight:500">×' +
+            h.qty +
+            '</span></b>' +
+            PS.moreBtn +
+            '</div>' +
+            '<div class="ps-trigger-meta"><span class="ps-badge ps-badge--accent">Found by Explore</span><span class="ps-badge' +
+            (h.again ? ' ps-badge--brand' : '') +
+            '">' +
+            (h.again || 'Once per journey') +
+            '</span></div>' +
+            (h.cond ? PS.condSummary(h.cond) : '') +
+            '</article>'
+          );
+        }
+        var hidden =
+          '<section class="ps-stack" id="hidden" style="gap:12px"><div class="ps-section-head"><h2 class="t-title-3">Hidden items · ' +
+          ITEMS.length +
+          '</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Hidden item</button></div>' +
+          '<p class="t-body-sm ps-muted">Walking in the grass here can turn these up. Most are found once per journey; renewable ones come back after a while.</p>' +
+          ITEMS.map(row).join('') +
+          '</section>';
+        var head =
+          PS.phoneBar('Route 2', 'Route', PS.saved + PS.moreBtn) +
+          PS.locTabs('encounters');
+        var methods =
+          '<div class="ps-tabs" role="tablist"><button class="ps-tab" role="tab" aria-selected="true"><span data-i="leaf" data-s="16"></span>Walk in the grass</button><button class="ps-tab" role="tab"><span data-i="plus" data-s="16"></span>Method</button></div>';
+        var band = function (n, t) {
+          return (
+            '<div class="ps-row" style="gap:8px"><span class="ps-priority">' +
+            n +
+            '</span><span class="ps-demo-label" style="margin:0 !important">' +
+            t +
+            '</span></div>'
+          );
+        };
+        function whole() {
+          var r = function (icon, t, d, link) {
+            return (
+              '<div class="ps-review-row"><span class="ps-kind" data-i="' +
+              icon +
+              '"></span><div><dd>' +
+              t +
+              '</dd><dt style="font-weight:400">' +
+              d +
+              '</dt></div><button class="ps-btn ps-btn--ghost">' +
+              link +
+              '</button></div>'
+            );
+          };
+          return (
+            head +
+            methods +
+            '<div class="ps-scroll" style="overflow:visible"><div class="ps-form" style="gap:20px">' +
+            band(1, 'Method: outcomes, requirement, tables') +
+            PS.locOutcomes('Walk in the grass', [
+              { k: 'wild', pct: 70 },
+              { k: 'trainer', pct: 20 },
+              { k: 'item', pct: 10 },
+            ]) +
+            PS.condSummary('', {
+              emptyHint: 'Anyone can walk in the grass here.',
+            }) +
+            '<div class="ps-mons">' +
+            [
+              ['Pidgey', '43%'],
+              ['Rattata', '43%'],
+              ['Caterpie', '8%'],
+            ]
+              .map(function (m) {
+                return (
+                  '<div class="ps-mon" style="padding-left:12px"><span class="ps-thumb"></span><div><b>' +
+                  m[0] +
+                  '</b><span>' +
+                  m[1] +
+                  '</span></div></div>'
+                );
+              })
+              .join('') +
+            '</div>' +
+            '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Open the table</button>' +
+            band(2, 'Also found by exploring here') +
+            '<div class="ps-review">' +
+            r('user', 'Trainers on Explore: 1', '1 left to beat', 'NPCs') +
+            r('bag', 'Hidden items: 3', '1 renewable', 'Jump to') +
+            r(
+              'bolt',
+              'Events on Explore: 0',
+              'Add one on the Events tab',
+              'Events',
+            ) +
+            r(
+              'steps',
+              'Traversal costs: 1',
+              'First time through on 1 exit',
+              'Jump to',
+            ) +
+            '</div>' +
+            band(3, 'Hidden items') +
+            hidden +
+            band(4, 'Traversal costs') +
+            '<div class="ps-link-row"><span data-i="steps"></span><span>First time through: 1 cost<small>North to Pewter City · beat 2 trainers</small></span><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
+            '</div></div>'
+          );
+        }
+        var sheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Hidden item" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Hidden item</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+          '<div class="ps-pair" style="grid-template-columns:1fr 96px"><div class="ps-field"><span class="ps-label">Item</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="leaf"></span>Oran Berry</span><span data-i="search"></span></button></div>' +
+          '<div class="ps-field"><label class="ps-label" for="q">Quantity</label><input class="ps-input" id="q" type="number" inputmode="numeric" value="2"></div></div>' +
+          '<div class="ps-field"><span class="ps-label">Can be found</span><div class="ps-seg" role="group"><button aria-pressed="false">Once per journey</button><button aria-pressed="true">Again after a while</button></div>' +
+          '<div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><span class="t-body-sm" style="white-space:nowrap">Comes back every</span><input class="ps-input" type="number" inputmode="numeric" min="1" value="2" style="width:72px" aria-label="How often"><button class="ps-trigger" style="width:auto;min-width:112px"><span>hours</span><span data-i="chevD"></span></button></div>' +
+          '<p class="ps-help">Hours or days, whatever suits your server. Each player has their own timer.</p></div>' +
+          '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+          PS.condSummary('') +
+          '</div>' +
+          '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start;color:var(--danger)"><span data-i="trash" data-s="18"></span>Remove hidden item</button>' +
+          '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
+        var townSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="New hidden item" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">New hidden item</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+          '<div class="ps-callout ps-callout--warning" style="flex-direction:column;align-items:stretch;gap:8px"><span style="display:flex;gap:10px"><span data-i="alert" data-s="18"></span><span>Nothing here can find this yet.</span></span><button class="ps-btn ps-btn--secondary" style="align-self:flex-start"><span data-i="search" data-s="18"></span>Add Look around</button></div>' +
+          '<div class="ps-pair" style="grid-template-columns:1fr 96px"><div class="ps-field"><span class="ps-label">Item</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="bag"></span>Great Ball</span><span data-i="search"></span></button></div>' +
+          '<div class="ps-field"><label class="ps-label" for="q2">Quantity</label><input class="ps-input" id="q2" type="number" inputmode="numeric" value="1"></div></div>' +
+          '<div class="ps-field"><span class="ps-label">Can be found</span><div class="ps-seg" role="group"><button aria-pressed="true">Once per journey</button><button aria-pressed="false">Again after a while</button></div></div>' +
+          '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+          PS.condSummary('') +
+          '</div>' +
+          '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Add hidden item</button></div></div>';
+        var townBody =
+          '<div class="ps-form"><section class="ps-stack" style="gap:12px"><div class="ps-section-head"><h2 class="t-title-3">Hidden items · 0</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Hidden item</button></div></section></div>';
+        var removeSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet" role="alertdialog" aria-labelledby="rm"><div class="ps-grabber"></div><h2 class="t-title-2" id="rm">Remove the hidden Ether?</h2>' +
+          '<p class="t-body">Players won’t find it on Route 2 any more. Anyone who already found it keeps it.</p>' +
+          '<div class="ps-actions"><button class="ps-btn ps-btn--danger ps-btn--block">Remove</button><button class="ps-btn ps-btn--ghost ps-btn--block">Cancel</button></div></div>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'whole') {
+            el.innerHTML = whole();
+            return;
+          }
+          if (v === 'town') {
+            el.innerHTML =
+              PS.phoneBar('Pewter City', 'Town', PS.saved + PS.moreBtn) +
+              PS.locTabs('encounters') +
+              '<div class="ps-scroll">' +
+              townBody +
+              '</div>' +
+              townSheet;
+            return;
+          }
+          el.innerHTML =
+            head +
+            '<div class="ps-scroll"><div class="ps-form">' +
+            hidden +
+            '</div></div>' +
+            (v === 'sheet' ? sheet : removeSheet);
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

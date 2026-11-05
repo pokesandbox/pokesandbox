@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>F · Builder home ★ · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >F · Builder home ★
+        <small
+          >F · Builder home /regions/:id/build ★ · phone light, phone dark,
+          desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div
+        class="ps-root ps-pad"
+        data-theme="light"
+        style="background: transparent"
+      >
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Phone · light</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Phone · dark</p>
+            <div data-theme="dark">
+              <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
+            </div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                The header states the draft in words: which version players are
+                on, and how many changes are waiting. Publish is the one primary
+                action. It opens the publish review (out of scope this round).
+              </li>
+              <li>
+                Region Health shows counts plus the top three items, errors
+                first. Each item links straight to the thing to fix ("Open"),
+                and the same links power Discord's "Open in builder" buttons.
+              </li>
+              <li>
+                Errors block publishing; warnings don't. The Publish button
+                stays enabled and the review explains what's blocking.
+              </li>
+              <li>
+                Phones: the section nav is a list with counts. Desktop: the same
+                list becomes the persistent sidebar on every builder screen, and
+                the home shows section cards.
+              </li>
+              <li>
+                Scripts, Shops and Transport sit at the end, muted, with "Coming
+                soon". They aren't tappable.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · light
+        </p>
+        <div data-theme="light">
+          <div
+            class="ps-desktop slot"
+            data-v="desktop"
+            style="height: 860px"
+          ></div>
+        </div>
+      </div>
+      <script>
+        var HEALTH = [
+          ['error', 'Route 2 has no connections', 'Locations'],
+          ['error', 'Mt. Moon B1F has a slot with no species', 'Encounters'],
+          ['warning', 'The rival has no fallback party', 'NPCs'],
+        ];
+        function health() {
+          return (
+            '<section class="ps-card ps-health" aria-label="Region Health"><div class="ps-health-head"><h2 class="t-title-2" style="flex:1">Region Health</h2><span class="ps-badge ps-badge--danger"><span data-i="error" data-s="14"></span>3 errors</span><span class="ps-badge ps-badge--warning"><span data-i="alert" data-s="14"></span>2 warnings</span></div>' +
+            HEALTH.map(function (h) {
+              return (
+                '<div class="ps-health-item"><span class="is-' +
+                h[0] +
+                '" data-i="' +
+                (h[0] === 'error' ? 'error' : 'alert') +
+                '"></span><span>' +
+                h[1] +
+                '<br><span class="t-body-sm ps-subtle">' +
+                h[2] +
+                '</span></span><button class="ps-btn ps-btn--ghost">Open</button></div>'
+              );
+            }).join('') +
+            '<div class="ps-health-foot"><button class="ps-btn ps-btn--ghost" style="padding:0 8px">Open Region Health</button></div></section>'
+          );
+        }
+        function sectionNav() {
+          return (
+            '<nav class="ps-section-nav" aria-label="Builder sections">' +
+            PS.NAV.filter(function (n) {
+              return n[2] !== 'home' && n[2] !== 'health';
+            })
+              .map(function (n) {
+                var dot =
+                  n[2] === 'locations' || n[2] === 'encounters'
+                    ? '<span class="ps-dot ps-dot--danger" aria-label="Has errors"></span>'
+                    : '';
+                return (
+                  '<button class="ps-list-row"><span class="ps-kind" data-i="' +
+                  n[1] +
+                  '"></span><span class="ps-row-text"><b>' +
+                  n[0] +
+                  '</b></span>' +
+                  (n[3] ? '<span class="ps-count">' + n[3] + '</span>' : '') +
+                  dot +
+                  '<span data-i="chevR"></span></button>'
+                );
+              })
+              .join('') +
+            PS.SOON.map(function (n) {
+              return (
+                '<div class="ps-list-row is-soon" aria-disabled="true"><span class="ps-kind" data-i="' +
+                n[1] +
+                '"></span><span class="ps-row-text"><b>' +
+                n[0] +
+                '</b></span><span class="ps-badge ps-badge--outline">Coming soon</span></div>'
+              );
+            }).join('') +
+            '</nav>'
+          );
+        }
+        function phone() {
+          return (
+            PS.phoneBar('Builder', 'Pallet Town League', PS.moreBtn) +
+            '<div class="ps-scroll"><div class="ps-region-head"><div class="ps-row" style="gap:8px"><h1 class="t-title-1">Kanto Classic</h1><span class="ps-badge ps-badge--draft">Draft</span></div>' +
+            '<p class="t-body-sm ps-subtle">Published v7 · 9 unpublished changes</p><button class="ps-btn ps-btn--primary ps-btn--block">Publish</button></div>' +
+            '<div class="ps-page" style="gap:16px">' +
+            health() +
+            '<h2 class="ps-list-group" style="padding:8px 0 0">Sections</h2>' +
+            sectionNav() +
+            '</div></div>'
+          );
+        }
+        function desktop() {
+          var cards = PS.NAV.filter(function (n) {
+            return n[2] !== 'home' && n[2] !== 'health';
+          })
+            .map(function (n) {
+              var err = n[2] === 'locations' || n[2] === 'encounters';
+              return (
+                '<article class="ps-card"><div class="ps-card-head"><span class="ps-kind" data-i="' +
+                n[1] +
+                '"></span><div><h3 class="t-title-3">' +
+                n[0] +
+                '</h3><p class="t-body-sm ps-subtle">' +
+                (n[3] ? n[3] + ' items' : 'Currency, start, respawn, rules') +
+                '</p></div>' +
+                (err
+                  ? '<span class="ps-badge ps-badge--danger">1 error</span>'
+                  : '') +
+                '</div><div class="ps-card-actions"><button class="ps-btn ps-btn--secondary">Open ' +
+                n[0].toLowerCase() +
+                '</button></div></article>'
+              );
+            })
+            .join('');
+          return (
+            PS.sidebar('home') +
+            '<div class="ps-main">' +
+            PS.topbar(false) +
+            '<div class="ps-main-body"><div style="display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:start">' +
+            health() +
+            '<div class="ps-overview-grid" style="grid-template-columns:1fr 1fr">' +
+            cards +
+            '</div></div></div></div>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          el.innerHTML =
+            el.getAttribute('data-v') === 'phone' ? phone() : desktop();
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>States: conflict, errors, saving, toast · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >States: conflict, errors, saving, toast
+        <small
+          >Step 4 · States · save conflict, inline error, saving and saved,
+          toast (phone, try the buttons)</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1100px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Phone · Route 1, Details</p>
+            <div class="ps-phone ps-phone--tall" id="ph">
+              <div class="ps-appbar">
+                <button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Back"
+                >
+                  <span data-i="back"></span>
+                </button>
+                <h1 class="ps-appbar-title">Route 1<small>Route</small></h1>
+                <span id="save" role="status" aria-live="polite"></span
+                ><button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="More actions"
+                >
+                  <span data-i="more"></span>
+                </button>
+              </div>
+              <div class="ps-banner" id="banner" role="alert">
+                <div class="ps-banner-text">
+                  <span data-i="alert"></span
+                  ><span
+                    >This was changed by Ash. Reload to see their version; your
+                    unsaved edit to the description is kept below.</span
+                  >
+                </div>
+                <div class="ps-banner-actions">
+                  <button class="ps-btn ps-btn--secondary" id="reload">
+                    Reload</button
+                  ><button class="ps-btn ps-btn--ghost" id="copy">
+                    Copy my text
+                  </button>
+                </div>
+              </div>
+              <div class="ps-tabs" role="tablist">
+                <button class="ps-tab" role="tab" aria-selected="true">
+                  Details</button
+                ><button class="ps-tab" role="tab">
+                  Connections <span class="ps-tab-meta">3</span></button
+                ><button class="ps-tab" role="tab">Explore</button>
+              </div>
+              <div class="ps-scroll">
+                <div class="ps-form">
+                  <div class="ps-field">
+                    <label class="ps-label" for="nm">Name</label
+                    ><input
+                      class="ps-input"
+                      id="nm"
+                      value=""
+                      aria-invalid="true"
+                      aria-describedby="nm-e"
+                    />
+                    <p class="ps-error" id="nm-e">
+                      <span data-i="error" data-s="18"></span>Give this location
+                      a name.
+                    </p>
+                  </div>
+                  <div class="ps-field">
+                    <span class="ps-label">Kind</span
+                    ><button class="ps-trigger">
+                      <span
+                        style="display: flex; gap: 10px; align-items: center"
+                        ><span data-i="route"></span>Route</span
+                      ><span data-i="chevD"></span>
+                    </button>
+                  </div>
+                  <div class="ps-field">
+                    <label class="ps-label" for="ds">Description</label
+                    ><textarea class="ps-textarea" id="ds">
+A quiet path north of Pallet Town. Tall grass lines both sides, and a ledge drops to the south.</textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="ps-toast-dock" id="dock"></div>
+            </div>
+          </div>
+          <div style="width: 560px" class="ps-stack">
+            <p class="ps-frame-label">Save indicator (app bar)</p>
+            <div class="ps-state-strip">
+              <div>
+                <span>Idle, saved</span
+                ><span class="ps-save ps-save--ok"
+                  ><span data-i="check" data-s="16"></span>Saved</span
+                >
+              </div>
+              <div>
+                <span>Saving</span
+                ><span class="ps-save ps-save--busy"
+                  ><span class="ps-spinner"></span>Saving…</span
+                >
+              </div>
+              <div>
+                <span>Failed</span
+                ><span class="ps-save ps-save--error"
+                  ><span data-i="error" data-s="16"></span>Not saved</span
+                ><span class="t-body-sm ps-subtle"
+                  >plus the error toast with Retry</span
+                >
+              </div>
+              <div>
+                <span>Invalid field</span
+                ><span class="ps-save ps-save--error"
+                  ><span data-i="error" data-s="16"></span>1 field to fix</span
+                >
+              </div>
+            </div>
+            <p class="ps-frame-label" style="margin-top: 8px">Try it</p>
+            <div class="ps-row">
+              <button class="ps-btn ps-btn--secondary" id="t-save">
+                Simulate a save</button
+              ><button class="ps-btn ps-btn--secondary" id="t-fail">
+                Simulate a failed save</button
+              ><button class="ps-btn ps-btn--secondary" id="t-conflict">
+                Show conflict
+              </button>
+            </div>
+            <p class="ps-frame-label" style="margin-top: 8px">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Conflict:</b> each edit is a command with the entity's
+                version. If someone else saved first, the command is refused and
+                the banner appears under the app bar, naming who. Nothing is
+                overwritten. Reload fetches their version; the field you were
+                typing in keeps your text until you leave it, and "Copy my text"
+                puts it on the clipboard.
+              </li>
+              <li>
+                <b>Inline error:</b> the field gets a red border and a sentence
+                under it. The field doesn't save while it's invalid; the app bar
+                says "1 field to fix" instead of "Saved".
+              </li>
+              <li>
+                <b>Save indicator:</b> Saving… appears only after 300ms so quick
+                saves don't flicker, then Saved. A failed save keeps the edit
+                locally and offers Retry.
+              </li>
+              <li>
+                <b>Toast:</b> bottom of the screen, above the safe area. Success
+                clears after 4s; errors stay until Retry or dismiss.
+              </li>
+              <li>
+                Screen readers: the save indicator is a polite live region; the
+                conflict banner is an alert.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <script>
+        var save = document.getElementById('save'),
+          dock = document.getElementById('dock'),
+          banner = document.getElementById('banner'),
+          timer;
+        function setSave(state) {
+          save.className =
+            'ps-save ' +
+            {
+              ok: 'ps-save--ok',
+              busy: 'ps-save--busy',
+              err: 'ps-save--error',
+              invalid: 'ps-save--error',
+            }[state];
+          save.innerHTML =
+            state === 'busy'
+              ? '<span class="ps-spinner"></span>Saving…'
+              : state === 'ok'
+                ? PS.icon('check', 16) + 'Saved'
+                : state === 'err'
+                  ? PS.icon('error', 16) + 'Not saved'
+                  : PS.icon('error', 16) + '1 field to fix';
+        }
+        function toast(icon, text, action, sticky) {
+          clearTimeout(timer);
+          dock.innerHTML =
+            '<div class="ps-toast" role="' +
+            (sticky ? 'alert' : 'status') +
+            '">' +
+            PS.icon(icon) +
+            '<span>' +
+            text +
+            '</span>' +
+            (action ? '<button class="ps-btn">' + action + '</button>' : '') +
+            '</div>';
+          if (!sticky)
+            timer = setTimeout(function () {
+              dock.innerHTML = '';
+            }, 4000);
+        }
+        document.getElementById('reload').onclick = function () {
+          banner.hidden = true;
+          setSave('ok');
+          toast('check', 'Loaded Ash’s latest version');
+        };
+        document.getElementById('copy').onclick = function () {
+          toast('check', 'Your text is copied');
+        };
+        document.getElementById('t-save').onclick = function () {
+          setSave('busy');
+          setTimeout(function () {
+            setSave('ok');
+          }, 900);
+        };
+        document.getElementById('t-fail').onclick = function () {
+          setSave('busy');
+          setTimeout(function () {
+            setSave('err');
+            toast(
+              'error',
+              'Couldn’t save. Check your connection.',
+              'Retry',
+              true,
+            );
+          }, 900);
+        };
+        document.getElementById('t-conflict').onclick = function () {
+          banner.hidden = false;
+        };
+        document.getElementById('nm').addEventListener('input', function (e) {
+          var bad = !e.target.value.trim();
+          e.target.setAttribute('aria-invalid', bad ? 'true' : 'false');
+          document.getElementById('nm-e').hidden = !bad;
+          setSave(bad ? 'invalid' : 'ok');
+        });
+        setSave('invalid');
+        toast('check', 'Connection added', 'Undo', true);
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

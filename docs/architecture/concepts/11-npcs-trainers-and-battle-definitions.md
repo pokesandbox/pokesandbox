@@ -52,6 +52,7 @@ Npc {
 - **Per-placement `interact`** lets a shared NPC say something local ("Welcome to Cerulean's Pokémon Center") without a separate NPC and without a "current location" condition.
 - **Flags are shared across placements**, since they're keyed by the NPC's, script's, or trainer's key: "talked to Joy" is one flag wherever it happened. Per-location state, if wanted, is a flag the placement's own script sets.
 - **Validation:** a `single` NPC whose placements can match at the same time gets a warning (the first one wins, which may not be what the author meant).
+- **Builder wording (decided Nov 2026, #250):** `everywhere` never means every location in the region, only every _listed_ placement whose condition matches. The builder labels the two modes **"One place at a time"** (`single`) and **"Every listed place"** (`everywhere`), each with a one-line explanation. The stored values don't change. "Some of these places at once" is just `everywhere` with a short list and per-placement conditions.
 
 ### Party variants
 
@@ -84,7 +85,7 @@ In the games, line of sight forces battles. Options:
 
 **Engagement modes** are set per trainer NPC: `onExplore` (default for route trainers), `onEnter`, `onTalk`.
 
-**Every trainer battle in a location counts toward its traversal costs**, however it started (explore, entry, talk, or a script). Location progress counters are fed by "trainer defeated _here_" events, not by engagement mode. Named trainers in `traversal.firstPass.trainers` count whenever they're beaten.
+**Every trainer battle in a location counts toward its traversal costs**, however it started (explore, entry, talk, or a script). Location progress counters are fed by "trainer defeated _here_" events, not by engagement mode. Named trainers in a first-time traversal cost (`trainers.defeated`) count whenever they're beaten.
 
 **Several `onEnter` trainers = back-to-back battles, i.e. a gauntlet.** Entering a location with undefeated `onEnter` trainers runs them **in sequence** (by NPC ordinal), with no healing between. A loss whites you out as usual, and trainers already beaten stay beaten. Under the hood this is the same thing as an authored gauntlet: the engine generates an entry-trigger script of consecutive `battle` steps. Authors who want more control (dialogue between battles, different loss rules) write the gauntlet explicitly as a script.
 
@@ -110,6 +111,13 @@ Npc.afterDefeat?: {
 
 The condition uses a new MVP fact, `location.trainersDefeated` (distinct trainers defeated here), or specific trainer flags. The **Gym Leader template** exposes this as an option ("Require N gym trainers first", off by default) and generates the gate.
 
+**Trainers in the builder (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)).** The builder shows one combined **NPCs** list, but `Npc` and `Trainer` stay separate records.
+
+- **Make battleable** on an NPC creates a Trainer and links it. A trainer can be shared by several NPCs (role trainers) or by none (**battle only**, used from scripts, like the rival's fixed battles).
+- **Make a copy** duplicates a trainer under a new key.
+- **Deleting** uses `references()` ([05](05-requirements.md)), with no stored reference counts. A trainer that scripts reference can't be deleted. NPC links are listed in the confirm dialog and unlinked on delete.
+- The bag stays on each party variant (`parties[].items`), and the held-item field is hidden when the rules have no held items.
+
 ## MVP scope
 
 - Trainer intro and defeat lines (flavor entries `battle.trainerIntro` / `battle.trainerDefeat`, matched on the trainer or its class; MVP, [29](29-flavor-text-and-prose.md#mvp-scope)); post-battle talk stays the `afterDefeat.interact` script.
@@ -120,3 +128,4 @@ The condition uses a new MVP fact, `location.trainersDefeated` (distinct trainer
 
 - ~~Default trainer movesets?~~ **Decided (Oct 2026):** yes. A trainer Pokémon with no moves set gets the last 4 moves it would know at its level from the region's learnsets (Gen 1 for Kanto Classic), as RBY does. Moves the author sets always win.
 - ~~Trainer bag items in MVP AI?~~ **Decided (Oct 2026):** yes, kept minimal. A trainer party's `items` list is used by every AI profile except `random`: heal when the active Pokémon's HP is low, or cure a status the item cures. It goes through the same external choice hook as the player's bag (see [14](14-battle-system-and-showdown.md#ai-trainers)). Gen 1 gym leaders and the Elite Four use items, so Kanto Classic needs it.
+- **Exactly _k_ of _n_ places at random (post-MVP, recorded Nov 2026):** e.g. a traveling merchant who appears in 2 of 5 towns each day. `everywhere` with a random-chance condition on each placement gives _about_ _k_ (some days 0, some days 4), not exactly _k_. To guarantee exactly _k_, something must choose the places: a daily-seeded pick written to region state ([24](24-shared-state-region-and-server.md)), or a script that sets flags the placements check. If it's needed, the preferred shape is a new condition fact (a seeded daily pick from a named set) rather than a third presence mode.

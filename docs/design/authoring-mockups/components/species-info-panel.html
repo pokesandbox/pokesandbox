@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Species info panel · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Species info panel
+        <small
+          >Species info · read-only, rules-aware · phone sheet, opened from the
+          species picker, desktop side panel</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Species info (full-screen sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="sheet"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Species picker with info buttons</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="picker"></div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>One view, many doors:</b> the info button on species picker
+                rows (opens it without selecting), the image in a Pokédex slot,
+                each form row in a slot, encounter slots and party Pokémon.
+              </li>
+              <li>
+                <b>Rules-aware:</b> stats, types, moves and fields follow the
+                region's rules preset. Classic Gen 1 shows one Special stat and
+                hides abilities, gender and held items; a form whose type the
+                rules don't have says so.
+              </li>
+              <li>
+                <b>Sections:</b> header (image placeholder, name, National
+                number, region slot, types) · base stats as bars · details ·
+                evolution line (with a shortcut to add a missing evolution) ·
+                forms side by side with what differs · level-up moves · TMs/HMs
+                from this region's case · where it's used in this region.
+              </li>
+              <li>
+                <b>Read-only.</b> Edits happen where you came from; Close
+                returns there with nothing lost. "Select Meowth" appears only
+                when opened from a picker.
+              </li>
+              <li>
+                Phones: a full-screen sheet with the name pinned at the top.
+                Desktop: a 480px side panel, so the list or slot stays visible.
+              </li>
+              <li>
+                Needs the catalog rework (#120, #157): today's DexEntry has no
+                Zod schema, and rules-aware stats and learnsets come from there.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · side panel over the Pokédex
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 1000px; position: relative"
+        ></div>
+      </div>
+      <script>
+        var head =
+          '<div class="ps-appbar"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button><h1 class="ps-appbar-title">Meowth<small>Species info</small></h1></div>';
+        var pick =
+          '<div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Select Meowth</button></div>';
+        var ROWS = [
+          ['Mankey', 56],
+          ['Meowth', 52],
+          ['Persian', 53],
+          ['Mew', 151],
+          ['Mewtwo', 150],
+        ];
+        var picker =
+          '<div class="ps-appbar"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Back"><span data-i="back"></span></button><div class="ps-input-wrap" style="flex:1;margin-right:8px"><span class="ps-lead" data-i="search"></span><input class="ps-input" value="me" aria-label="Search species"></div></div>' +
+          '<ul class="ps-listbox ps-listbox--flat" role="listbox">' +
+          ROWS.map(function (r, i) {
+            var at = r[0].toLowerCase().indexOf('me');
+            var label =
+              r[0].slice(0, at) +
+              '<mark>' +
+              r[0].slice(at, at + 2) +
+              '</mark>' +
+              r[0].slice(at + 2);
+            return (
+              '<li class="ps-option' +
+              (i === 1 ? ' is-active' : '') +
+              '" role="option" style="padding-right:0"><span class="ps-thumb"></span><span style="flex:1">' +
+              label +
+              '<span class="ps-sub t-mono">#' +
+              String(r[1]).padStart(3, '0') +
+              '</span></span>' +
+              PS.infoBtn(r[0]) +
+              '</li>'
+            );
+          }).join('') +
+          '</ul><p class="t-body-sm ps-subtle" style="padding:8px 16px">Tap a name to select it, or ⓘ to look first.</p>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'sheet')
+            el.innerHTML =
+              head +
+              '<div class="ps-scroll"><div class="ps-page" style="gap:16px">' +
+              PS.speciesInfo() +
+              '</div></div>' +
+              pick;
+          if (v === 'picker') el.innerHTML = picker;
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('pokedex') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split"><section class="ps-pane-list"><div class="ps-appbar" style="padding:0 8px 0 16px"><h2 class="ps-appbar-title">Pokédex</h2></div></section><section class="ps-pane-detail"></section></div></div>' +
+              '<div class="ps-scrim" style="z-index:2"></div><aside class="ps-sidepanel" role="dialog" aria-label="Species info: Meowth"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title">Meowth<small>Species info</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sidepanel-body">' +
+              PS.speciesInfo() +
+              '</div></aside>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

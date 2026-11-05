@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dialog / bottom sheet · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Dialog / bottom sheet
+        <small>Bottom sheet on phones, centred dialog from md up</small></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 900px">
+      <div class="ps-root ps-pad">
+        <div class="ps-demos">
+          <div>
+            <p class="ps-demo-label">Phone: bottom sheet</p>
+            <div class="ps-phone" style="height: 520px">
+              <div class="ps-appbar">
+                <span
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  data-i="back"
+                ></span
+                ><span class="ps-appbar-title">Route 1</span>
+              </div>
+              <div class="ps-scrim"></div>
+              <div class="ps-sheet" role="dialog" aria-label="Add connection">
+                <div class="ps-grabber"></div>
+                <div class="ps-sheet-head">
+                  <h2 class="t-title-3">Add connection</h2>
+                  <button
+                    class="ps-btn ps-btn--ghost ps-btn--icon"
+                    aria-label="Close"
+                  >
+                    <span data-i="x"></span>
+                  </button>
+                </div>
+                <div class="ps-field">
+                  <span class="ps-label">Destination</span
+                  ><button class="ps-trigger">
+                    <span style="display: flex; gap: 10px; align-items: center"
+                      ><span data-i="town"></span>Viridian City</span
+                    ><span data-i="search"></span>
+                  </button>
+                </div>
+                <div class="ps-field">
+                  <label class="ps-label" for="lb"
+                    >Label <span class="ps-opt">(optional)</span></label
+                  ><input class="ps-input" id="lb" value="North" />
+                </div>
+                <label class="ps-switch-row" style="padding: 0"
+                  ><span class="ps-switch-text"
+                    ><b>Two-way</b
+                    ><span>Also add Viridian City → Route 1</span></span
+                  ><button
+                    class="ps-switch"
+                    role="switch"
+                    aria-checked="true"
+                    aria-label="Two-way"
+                  ></button
+                ></label>
+                <div class="ps-actions">
+                  <button class="ps-btn ps-btn--primary ps-btn--block">
+                    Add connection
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-demo-label">md and up: dialog</p>
+            <div
+              style="
+                position: relative;
+                width: 420px;
+                height: 300px;
+                border-radius: 16px;
+                overflow: hidden;
+                display: grid;
+                place-items: center;
+                border: 1px solid var(--border);
+              "
+            >
+              <div class="ps-scrim"></div>
+              <div
+                class="ps-dialog"
+                role="alertdialog"
+                aria-labelledby="dt"
+                style="position: relative; width: 380px"
+              >
+                <h2 class="t-title-2" id="dt">Delete Route 2?</h2>
+                <div class="ps-callout ps-callout--warning">
+                  <span data-i="alert" data-s="18"></span
+                  ><span>3 connections lead here and will be removed.</span>
+                </div>
+                <p class="t-body-sm ps-muted">
+                  Players keep their progress. This can't be undone after you
+                  publish.
+                </p>
+                <div class="ps-actions">
+                  <button class="ps-btn ps-btn--danger">Delete location</button
+                  ><button class="ps-btn ps-btn--ghost">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

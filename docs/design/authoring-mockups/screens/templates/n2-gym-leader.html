@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>N2 · Gym Leader template · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >N2 · Gym Leader template
+        <small
+          >N2 · Gym Leader template · 6 phone steps, a region with no badges,
+          and the created NPC; one long form on desktop</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">1 · Leader</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="1"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">2 · Party</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="2"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">3 · Rewards</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="3"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">3 · Rewards, region with no badges yet</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="3empty"></div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">3 · Create Badges (quick-create sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="3create"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">4 · Text</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="4"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">5 · Gym trainers (optional)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="5"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">6 · Review</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="6"></div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">Done · the created NPC</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="done"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Edit steps (confirm)</p>
+            <div
+              class="ps-phone ps-phone--tall slot"
+              data-v="stepsConfirm"
+            ></div>
+          </div>
+          <div style="width: 420px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                Six short steps on phones, each with Continue pinned above the
+                keyboard. Back keeps what you typed. Steps you've finished can
+                be jumped to from Review.
+              </li>
+              <li>
+                The location picker only offers Gym locations. The party step is
+                the L2 party editor with a single team (no variants); variants
+                can be added later on the NPC.
+              </li>
+              <li>
+                <b>Badge awarded</b> picks a badge, which is a milestone in the
+                region’s Badges progression. The template stays gym-focused;
+                regions with trials get a Trial Captain template later.
+              </li>
+              <li>
+                <b>No badges yet:</b> step 3 says so and offers Create Badges (a
+                quick-create sheet: name, kind, first badge, all prefilled) or
+                No badge. You never leave the form. Full editing is on the
+                Progressions screen, which lists it as used by this leader.
+              </li>
+              <li>
+                Intro, defeat and after-defeat text are passages with the
+                Discord preview.
+              </li>
+              <li>
+                "Require gym trainers first" is off by default (doc 11). On, it
+                adds a gate to the leader: hidden, shown locked, or "Not so
+                fast!".
+              </li>
+              <li>
+                <b>Items given</b> is a list of any items with quantities. TMs
+                are items here, found by number or move name, so a leader can
+                give a TM, a Bike Voucher, both, or nothing.
+              </li>
+              <li>
+                Review lists exactly what will be created. Create opens the new
+                NPC.
+              </li>
+              <li>
+                <b>Templates stay linked until a hand edit</b> (doc 07). The NPC
+                and its script show "Made with the Gym Leader template" with
+                <b>Edit as form</b>, which reopens the filled-in form; saving
+                regenerates the script in place, keeping its key and the NPC and
+                trainer it made.
+              </li>
+              <li>
+                <b>Edit steps</b> (the step editor, which comes later) confirms
+                first: "This script will no longer be editable as a Gym Leader
+                form." After that the link is gone.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · one long form with a running summary
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 1260px"
+        ></div>
+      </div>
+      <script>
+        var STEPS = [
+          'Leader',
+          'Party',
+          'Rewards',
+          'Text',
+          'Gym trainers',
+          'Review',
+        ];
+        var BROCK = [
+          {
+            name: 'Team',
+            mons: [
+              { s: 'Geodude', lv: 12 },
+              { s: 'Onix', lv: 14, moves: 1 },
+            ],
+            bag: [],
+          },
+        ];
+        function stepper(n) {
+          return (
+            '<div class="ps-stepper"><span class="t-body-sm ps-subtle">Step ' +
+            n +
+            ' of 6 · ' +
+            STEPS[n - 1] +
+            '</span><div class="ps-stepper-bar" style="grid-template-columns:repeat(6,1fr)">' +
+            STEPS.map(function (s, i) {
+              return '<i' + (i < n ? ' class="is-done"' : '') + '></i>';
+            }).join('') +
+            '</div></div>'
+          );
+        }
+        var trig = function (icon, txt, end) {
+          return (
+            '<button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="' +
+            icon +
+            '"></span>' +
+            txt +
+            '</span><span data-i="' +
+            (end || 'search') +
+            '"></span></button>'
+          );
+        };
+        var preview = function (label, text) {
+          return (
+            '<div class="ps-embed"><b>' +
+            label +
+            '</b><span>' +
+            text +
+            '</span></div>'
+          );
+        };
+        var LINES = {
+          intro:
+            'Brock: So you made it through the forest. My rock-hard willpower is waiting. Show me what you’ve learned.',
+          defeat:
+            'Brock: I underestimated you. Take the Boulder Badge, you’ve earned it.',
+          after:
+            'Brock: Keep going east. Cerulean’s leader won’t go easy on you.',
+        };
+        function milestone(has) {
+          if (!has)
+            return (
+              '<div class="ps-field"><span class="ps-label">Badge awarded</span>' +
+              '<div class="ps-callout ps-callout--info"><span data-i="gym" data-s="18"></span><span><b>This region doesn\u2019t have badges yet.</b><br>Badges are milestones in a Badges progression. Create it here, or skip the badge.</span></div>' +
+              '<div role="radiogroup" class="ps-stack" style="gap:8px">' +
+              '<button class="ps-choice" role="radio" aria-checked="true"><span class="ps-radio"></span><span class="ps-choice-text"><b>Create Badges</b><span>Adds a Badges progression with Boulder Badge as its first badge.</span></span></button>' +
+              '<button class="ps-choice" role="radio" aria-checked="false"><span class="ps-radio"></span><span class="ps-choice-text"><b>No badge</b><span>The leader only gives items and prize money.</span></span></button></div></div>'
+            );
+          return (
+            '<div class="ps-field"><span class="ps-label">Badge awarded</span>' +
+            trig('gym', 'Boulder Badge') +
+            '<button class="ps-btn ps-btn--ghost" style="padding:0 8px;align-self:flex-start"><span data-i="plus" data-s="18"></span>New badge</button>' +
+            '<p class="ps-help">Badges are milestones in the region\u2019s Badges progression. Winning sets this one on the player\u2019s journey.</p></div>'
+          );
+        }
+        var S = {
+          1: function () {
+            return (
+              '<h2 class="t-title-2">Who leads this gym?</h2>' +
+              '<div class="ps-field"><label class="ps-label">Leader name</label><input class="ps-input" value="Brock"></div>' +
+              '<div class="ps-field"><span class="ps-label">Sprite</span><div class="ps-sprite-row"><span class="ps-sprite">Sprite<br>placeholder</span><button class="ps-btn ps-btn--secondary">Choose image</button></div></div>' +
+              '<div class="ps-field"><span class="ps-label">Gym</span>' +
+              trig(
+                'gym',
+                'Pewter Gym <span class="t-body-sm ps-subtle">in Pewter City</span>',
+              ) +
+              '<p class="ps-help">Only Gym locations are listed. <a class="ps-link" href="#">Create a gym</a></p></div>'
+            );
+          },
+          2: function () {
+            return (
+              '<h2 class="t-title-2">Their team</h2><p class="t-body-sm ps-muted">Up to 6 Pokémon. Tap one to set level, moves and item.</p>' +
+              PS.partyEditor(BROCK, { single: true })
+            );
+          },
+          3: function () {
+            return (
+              '<h2 class="t-title-2">What winning gives</h2>' +
+              milestone(true) +
+              '<div class="ps-field"><span class="ps-label">Items given <span class="ps-opt">(optional)</span></span>' +
+              '<div class="ps-mons"><div class="ps-mon" style="padding-left:12px"><span class="ps-kind" data-i="book"></span><div><b>TM34 · Bide</b><span>TM · single use</span></div><input class="ps-input" type="number" inputmode="numeric" value="1" aria-label="Quantity" style="width:64px"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove TM34"><span data-i="x"></span></button></div></div>' +
+              '<button class="ps-btn ps-btn--secondary" style="align-self:flex-start"><span data-i="search" data-s="18"></span>Add item</button><p class="ps-help">Search any item. TMs and HMs show their number, like "TM34 Bide".</p></div>' +
+              '<div class="ps-field"><span class="ps-label">Prize money</span><div class="ps-seg" role="group"><button aria-pressed="true">Formula</button><button aria-pressed="false">Fixed amount</button></div><p class="ps-help">Gym Leader base ₽99 × Lv 14 = <b style="color:var(--ink)">₽1,386</b>.</p></div>'
+            );
+          },
+          4: function () {
+            return (
+              '<h2 class="t-title-2">Text</h2><p class="t-body-sm ps-muted">Dialogue, narration, or both.</p>' +
+              '<div class="ps-field"><label class="ps-label">When the battle starts</label><textarea class="ps-textarea" style="min-height:88px">' +
+              LINES.intro +
+              '</textarea></div>' +
+              preview(
+                'Brock wants to battle!',
+                LINES.intro.replace('Brock: ', ''),
+              ) +
+              '<div class="ps-field"><label class="ps-label">When the player wins</label><textarea class="ps-textarea" style="min-height:72px">' +
+              LINES.defeat +
+              '</textarea></div>' +
+              '<div class="ps-field"><label class="ps-label">Talking to them afterwards</label><textarea class="ps-textarea" style="min-height:72px">' +
+              LINES.after +
+              '</textarea></div>'
+            );
+          },
+          5: function () {
+            return (
+              '<h2 class="t-title-2">Gym trainers <span class="ps-opt t-body-sm">(optional)</span></h2><p class="t-body-sm ps-muted">Trainers who battle in the gym before the leader. Pick existing ones or add new.</p>' +
+              '<div class="ps-mons">' +
+              ['Camper Liam · 2 Pokémon · Lv 10–11']
+                .map(function (t) {
+                  return (
+                    '<div class="ps-mon" style="padding-left:12px"><span class="ps-sprite ps-sprite--sm"></span><div><b>' +
+                    t.split(' · ')[0] +
+                    '</b><span>' +
+                    t.split(' · ').slice(1).join(' · ') +
+                    '</span></div><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove"><span data-i="x"></span></button></div>'
+                  );
+                })
+                .join('') +
+              '</div>' +
+              '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary"><span data-i="search" data-s="18"></span>Pick a trainer</button><button class="ps-btn ps-btn--ghost"><span data-i="plus" data-s="18"></span>New trainer</button></div>' +
+              '<label class="ps-switch-row" style="padding:0;margin-top:8px"><span class="ps-switch-text"><b>Require gym trainers first</b><span>The leader only battles after all of them are beaten.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Require gym trainers first"></button></label>' +
+              '<div class="ps-field"><span class="ps-label">Until then, the leader is</span><div class="ps-seg" role="group"><button aria-pressed="false">Hidden</button><button aria-pressed="true">Shown locked</button><button aria-pressed="false">Not so fast!</button></div><p class="ps-help">Players see "Brock" with a lock: "Defeat 1 more trainer to challenge Brock."</p></div>'
+            );
+          },
+          '3empty': function () {
+            return S[3]().replace(milestone(true), milestone(false));
+          },
+          6: function () {
+            return (
+              '<h2 class="t-title-2">Review</h2>' +
+              '<dl class="ps-review" style="margin:0">' +
+              [
+                ['Leader', 'Brock · Pewter Gym', 1],
+                ['Team', 'Geodude Lv 12, Onix Lv 14', 2],
+                ['Rewards', 'Boulder Badge · 1× TM34 Bide · ₽1,386', 3],
+                ['Text', 'Intro, defeat and after-battle lines', 4],
+                ['Gym trainers', 'Camper Liam, required first', 5],
+              ]
+                .map(function (r) {
+                  return (
+                    '<div class="ps-review-row"><div><dt>' +
+                    r[0] +
+                    '</dt><dd>' +
+                    r[1] +
+                    '</dd></div><button class="ps-btn ps-btn--ghost">Edit</button></div>'
+                  );
+                })
+                .join('') +
+              '</dl>' +
+              '<div class="ps-field"><span class="ps-label">This creates</span><p class="ps-help">If you created Badges in step 3, it\u2019s listed here too: 1 progression.</p><div class="ps-review">' +
+              [
+                ['user', '1 NPC', 'Brock, placed in Pewter Gym'],
+                ['swap', '1 trainer', 'Gym Leader class, Smart AI'],
+                [
+                  'code',
+                  '1 script',
+                  'brock-gym: talk, battle, rewards, after-battle line',
+                ],
+                ['gym', '1 badge reward', 'Sets Boulder Badge on a win'],
+              ]
+                .map(function (r) {
+                  return (
+                    '<div class="ps-review-row"><span class="ps-kind" data-i="' +
+                    r[0] +
+                    '"></span><div><dd><b>' +
+                    r[1] +
+                    '</b></dd><dt style="font-weight:400">' +
+                    r[2] +
+                    '</dt></div></div>'
+                  );
+                })
+                .join('') +
+              '</div></div>'
+            );
+          },
+        };
+        function phone(n) {
+          var close =
+            '<div class="ps-appbar"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="' +
+            (n === '3empty' || n > 1 ? 'Back' : 'Close') +
+            '"><span data-i="' +
+            (n === '3empty' || n > 1 ? 'back' : 'x') +
+            '"></span></button><h1 class="ps-appbar-title">Gym Leader<small>New from template</small></h1></div>';
+          return (
+            close +
+            '<div class="ps-scroll"><div class="ps-page" style="gap:16px">' +
+            stepper(n === '3empty' ? 3 : n) +
+            S[n]() +
+            '</div></div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">' +
+            (n === 6 ? 'Create gym leader' : 'Continue') +
+            '</button></div>'
+          );
+        }
+        function quickCreate() {
+          var body =
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Badges"><p class="ps-help">Players see this on their journey.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">Kind</span><div class="ps-readonly"><span data-i="gym" data-s="18"></span><div><b>Milestones, shown as badges</b><p class="t-body-sm ps-muted">Each badge is earned once. Conditions can check one badge or how many.</p></div></div></div>' +
+            '<div class="ps-field"><label class="ps-label">First badge</label><input class="ps-input" value="Boulder Badge"><p class="ps-help">Add the rest as you make each gym, or on the Progressions screen.</p></div>';
+          return (
+            phone('3empty').replace(
+              '<div class="ps-bottom-bar">',
+              '<div class="ps-bottom-bar" style="display:none">',
+            ) +
+            '<div class="ps-scrim"></div><div class="ps-sheet" role="dialog" aria-label="Create Badges"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">Create Badges</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            body +
+            '<div class="ps-actions"><button class="ps-btn ps-btn--primary ps-btn--block">Create and use</button></div></div>'
+          );
+        }
+        var linked =
+          '<div class="ps-callout ps-callout--info" style="flex-direction:column;gap:8px;align-items:stretch"><span style="display:flex;gap:10px;align-items:center"><span data-i="check" data-s="18"></span><span class="ps-badge ps-badge--accent" style="background:var(--surface)">Made with the Gym Leader template</span></span>' +
+          '<span>Brock, his trainer and his script stay linked to the form. Edit as form reopens it filled in, and saving updates the script in place.</span>' +
+          '<span class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary">Edit as form</button><button class="ps-btn ps-btn--ghost">Edit steps</button></span></div>';
+        function stepsConfirm() {
+          return (
+            done().replace(
+              '<div class="ps-toast-dock">',
+              '<div class="ps-toast-dock" style="display:none">',
+            ) +
+            '<div class="ps-scrim"></div><div class="ps-sheet" role="alertdialog" aria-labelledby="es"><div class="ps-grabber"></div><h2 class="t-title-2" id="es">Edit steps by hand?</h2>' +
+            '<p class="t-body">This script will no longer be editable as a Gym Leader form.</p>' +
+            '<p class="t-body-sm ps-muted">Brock and his trainer keep working. You\u2019d edit the script in the step editor from then on.</p>' +
+            '<div class="ps-actions"><button class="ps-btn ps-btn--danger ps-btn--block">Edit steps</button><button class="ps-btn ps-btn--ghost ps-btn--block">Keep the form</button></div></div>'
+          );
+        }
+        function done() {
+          return (
+            PS.phoneBar('Brock', 'NPC · Trainer', PS.saved + PS.moreBtn) +
+            PS.tabs(
+              [
+                ['person', 'Person'],
+                ['battle', 'Battle'],
+                ['party', 'Party <span class="ps-tab-meta">1</span>'],
+                ['lines', 'Lines'],
+              ],
+              'person',
+            ) +
+            '<div class="ps-scroll"><div class="ps-form">' +
+            linked +
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Brock"></div>' +
+            '<h2 class="t-title-2">Where they appear</h2><article class="ps-placement"><div class="ps-variant-head"><span class="ps-priority">1</span><span class="ps-kind" data-i="gym"></span><b>Pewter Gym</b>' +
+            PS.moreBtn +
+            '</div>' +
+            PS.condSummary('', {
+              empty: 'No condition',
+              emptyHint: 'Always in Pewter Gym.',
+            }) +
+            '</article>' +
+            '<h2 class="t-title-2">Who can challenge</h2>' +
+            PS.condSummary('Requires defeating Camper Liam', {
+              note: 'Gate on talking to Brock · shown locked until then',
+            }) +
+            PS.talkSection([
+              { name: 'Gym challenge', script: 'brock-gym', tpl: 'Gym Leader' },
+            ]) +
+            '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start"><span data-i="code" data-s="18"></span>Edit steps</button></div></div>' +
+            '<div class="ps-toast-dock"><div class="ps-toast" role="status">' +
+            PS.icon('check') +
+            '<span>Brock created</span></div></div>'
+          );
+        }
+        function desktop() {
+          var sec = function (n, inner) {
+            return (
+              '<section class="ps-form-section" id="s' +
+              n +
+              '"><span class="t-caption ps-subtle">' +
+              n +
+              ' · ' +
+              STEPS[n - 1].toUpperCase() +
+              '</span>' +
+              inner +
+              '</section>'
+            );
+          };
+          var summary =
+            '<aside class="ps-card" style="position:sticky;top:24px;gap:8px"><h2 class="t-title-3">Will create</h2>' +
+            [
+              '1 NPC · Brock',
+              '1 trainer · Gym Leader',
+              '1 script · brock-gym',
+              '1 badge reward · Boulder Badge',
+            ]
+              .map(function (t) {
+                return (
+                  '<span class="t-body-sm" style="display:flex;gap:8px;align-items:center">' +
+                  PS.icon('check', 16) +
+                  t +
+                  '</span>'
+                );
+              })
+              .join('') +
+            '<div class="ps-nav-sep"></div>' +
+            STEPS.slice(0, 5)
+              .map(function (s, i) {
+                return (
+                  '<a class="ps-nav-item" href="#s' +
+                  (i + 1) +
+                  '" style="min-height:36px">' +
+                  (i + 1) +
+                  ' · ' +
+                  s +
+                  '</a>'
+                );
+              })
+              .join('') +
+            '<button class="ps-btn ps-btn--primary ps-btn--block" style="margin-top:8px">Create gym leader</button></aside>';
+          return (
+            PS.sidebar('npcs') +
+            '<div class="ps-main">' +
+            PS.topbar() +
+            '<div class="ps-main-body"><div class="ps-section-head"><h1 class="t-title-1">New gym leader</h1><button class="ps-btn ps-btn--ghost">Cancel</button></div>' +
+            '<div style="display:grid;grid-template-columns:minmax(0,640px) 280px;gap:32px;align-items:start"><div class="ps-stack" style="gap:24px">' +
+            [1, 2, 3, 4, 5]
+              .map(function (n) {
+                return sec(
+                  n,
+                  S[n]().replace(/<h2 class="t-title-2">[\s\S]*?<\/h2>/, ''),
+                );
+              })
+              .join('') +
+            '</div>' +
+            summary +
+            '</div></div></div>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          el.innerHTML =
+            v === 'desktop'
+              ? desktop()
+              : v === 'done'
+                ? done()
+                : v === 'stepsConfirm'
+                  ? stepsConfirm()
+                  : v === '3create'
+                    ? quickCreate()
+                    : v === '3empty'
+                      ? phone('3empty')
+                      : phone(+v);
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>R3 · Events: When a player… ★ · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >R3 · Events: When a player… ★
+        <small
+          >R3 · Events tab: When a player… ★ · lists (light, dark), trigger
+          sheet, event dropdown, priority clash, empty, read-only script,
+          leaving, exploring with a chance, desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 2560px">
+      <div
+        class="ps-root ps-pad"
+        data-theme="light"
+        style="background: transparent"
+      >
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Route 22 · Events · light</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="r22"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Route 12 · Events · dark</p>
+            <div data-theme="dark">
+              <div class="ps-phone ps-phone--tall slot" data-v="r12"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Edit trigger (sheet)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="sheet"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Two can run at once: priority</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="clash"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">Empty</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="empty"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Script not from a template (read-only)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="script"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Choosing the event (dropdown)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="picker"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Leaves this location (sheet)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="leave"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Explores here, with a chance (sheet)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="explore"></div>
+            </div>
+          </div>
+          <div style="width: 340px" class="ps-stack" data-notes>
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>When a player…</b> lists what happens at this location: the
+                event, Automatic or the button label, Once, the condition, and
+                the script it runs.
+              </li>
+              <li>
+                <b>Events</b> are picked from a dropdown: enters this location
+                (optionally only from chosen places or by a way of travel),
+                leaves this location (optionally only toward chosen exits),
+                explores here, uses an item here. Uses a move here is listed but
+                disabled until later.
+              </li>
+              <li>
+                <b>Leaving</b> runs after the exit's requirement passes and
+                before the player moves, so its script can stop them: a riddle
+                they get wrong, an urgent story beat. If it does, they stay here
+                and the next location isn't marked visited.
+              </li>
+              <li>
+                <b>Explores here</b> picks the methods it runs on and how often.
+                Always: it runs first, before the roll, whenever its condition
+                passes (Snorlax in the way). A chance: it becomes a row in that
+                method’s outcomes at this location, which is customized if it
+                wasn’t. Nothing else changes, so the sheet warns when that
+                method’s total is no longer 100%.
+              </li>
+              <li>
+                <b>Uses a move here</b> is coming later, shown disabled.
+                Obstacles that block a path stay requirements on the connection,
+                and Headbutt and Rock Smash stay encounter methods.
+              </li>
+              <li>
+                <b>Runs:</b> Automatically (as soon as the event happens) or As
+                a button (players see the label, e.g. "Talk to the old man").
+              </li>
+              <li>
+                <b>Only once</b> means it never runs again for that player, so
+                it doesn't need a condition for that.
+              </li>
+              <li>
+                <b>Priority</b> stays hidden until two events can happen at the
+                same moment; then the sheet shows it with a warning naming the
+                other one.
+              </li>
+              <li>
+                <b>Script:</b> pick one, or Create from template. A
+                template-made script opens its form; others open in the step
+                editor.
+              </li>
+              <li>
+                <b>From an NPC:</b> each row in an NPC's Talk section opens this
+                same sheet, with the event fixed to talking to them.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · Events tab with the trigger in the side panel
+        </p>
+        <div data-theme="light">
+          <div
+            class="ps-desktop slot"
+            data-v="desktop"
+            style="height: 960px; position: relative"
+          ></div>
+        </div>
+      </div>
+      <script>
+        var mono = function (s) {
+          return '<span class="t-mono">' + s + '</span>';
+        };
+        var TRIG = {
+          r22: [
+            {
+              ev: 'Enters Route 22',
+              icon: 'door',
+              filter: 'Arriving from Viridian City',
+              name: 'Rival battle',
+              mode: 'Automatic',
+              once: true,
+              cond: 'Only after ' + mono('oak_parcel_delivered'),
+              script: 'rival-r22',
+              tpl: 'Forced Encounter',
+            },
+            {
+              ev: 'Enters Route 22',
+              icon: 'door',
+              name: 'Old man’s tip',
+              mode: 'Button: Talk to the old man',
+              once: false,
+              cond: '',
+              script: 'r22-old-man',
+            },
+            {
+              ev: 'Leaves toward Victory Road',
+              icon: 'route',
+              name: 'The guard’s riddle',
+              mode: 'Automatic',
+              once: false,
+              cond: 'Only before ' + mono('riddle_solved'),
+              script: 'r22-riddle',
+              isNew: true,
+            },
+          ],
+          r12: [
+            {
+              ev: 'Explores here',
+              icon: 'leaf',
+              name: 'Snorlax blocks the path',
+              mode: 'Automatic',
+              filter: 'Always · any method',
+              once: false,
+              cond: 'Only before ' + mono('snorlax_awake'),
+              script: 'snorlax-blocks',
+            },
+            {
+              ev: 'Explores here',
+              icon: 'leaf',
+              name: 'A wandering trader',
+              mode: 'Automatic',
+              filter: 'Walk in the grass · 5%',
+              once: true,
+              cond: '',
+              script: 'r12-trader',
+              isNew: true,
+            },
+            {
+              ev: 'Uses the Poké Flute here',
+              icon: 'bag',
+              name: 'Wake Snorlax',
+              mode: 'Automatic',
+              once: true,
+              cond: '',
+              script: 'snorlax-battle',
+            },
+          ],
+        };
+        function row(t) {
+          return (
+            '<article class="ps-trigger-row"><div class="ps-variant-head"><span class="ps-kind" data-i="' +
+            t.icon +
+            '"></span><b>' +
+            t.ev +
+            ' → ' +
+            t.name +
+            '</b>' +
+            PS.moreBtn +
+            '</div>' +
+            '<div class="ps-trigger-meta"><span class="ps-badge">' +
+            t.mode +
+            '</span>' +
+            (t.once ? '<span class="ps-badge">Once</span>' : '') +
+            (t.filter
+              ? '<span class="ps-badge ps-badge--outline">' +
+                t.filter +
+                '</span>'
+              : '') +
+            '</div>' +
+            (t.cond ? PS.condSummary(t.cond) : '') +
+            PS.scriptRow(t.script, t.tpl) +
+            '</article>'
+          );
+        }
+        function list(key, place) {
+          return (
+            '<div class="ps-form"><div class="ps-section-head"><h2 class="t-title-3">When a player…</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Event</button></div>' +
+            '<p class="t-body-sm ps-muted">Things that happen at ' +
+            place +
+            ', and what runs when they do.</p>' +
+            TRIG[key].map(row).join('') +
+            '</div>'
+          );
+        }
+        var choice = function (on, t, d) {
+          return (
+            '<button class="ps-choice" role="radio" aria-checked="' +
+            on +
+            '" style="padding:12px"><span class="ps-radio"></span><span class="ps-choice-text"><b>' +
+            t +
+            '</b>' +
+            (d ? '<span>' + d + '</span>' : '') +
+            '</span></button>'
+          );
+        };
+        function sheetBody(clash) {
+          return (
+            '<div class="ps-field"><span class="ps-label">When a player…</span><button class="ps-trigger" aria-haspopup="listbox"><span style="display:flex;gap:10px;align-items:center"><span data-i="door"></span>Enters this location</span><span data-i="chevD"></span></button></div>' +
+            '<div class="ps-field"><span class="ps-label">Only when arriving from <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Viridian City<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Viridian City"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Place</button></div></div>' +
+            '<div class="ps-field"><span class="ps-label">Only when arriving by <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span>Any way</span><span data-i="chevD"></span></button><p class="ps-help">Walking, or a way of travel like a ferry once transport exists.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">Runs</span><div class="ps-seg" role="group"><button aria-pressed="true">Automatically</button><button aria-pressed="false">As a button</button></div><p class="ps-help">Starts as soon as they arrive.</p></div>' +
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Only once</b><span>Runs once per journey, then never again.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Only once"></button></label>' +
+            '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+            PS.condSummary('Only after ' + mono('oak_parcel_delivered')) +
+            '</div>' +
+            (clash
+              ? '<div class="ps-field"><label class="ps-label" for="pr">Priority</label><input class="ps-input" id="pr" type="number" inputmode="numeric" value="10" style="max-width:120px"><div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>"Old man’s tip" can also run when a player enters Route 22. Only the higher priority runs; it has 0.</span></div></div>'
+              : '') +
+            '<div class="ps-field"><span class="ps-label">Script</span>' +
+            PS.scriptRow('rival-r22', 'Forced Encounter') +
+            '' +
+            '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--ghost">Pick another script</button><button class="ps-btn ps-btn--ghost">Create from template</button></div></div>'
+          );
+        }
+        function exploreBody() {
+          return (
+            '<div class="ps-field"><span class="ps-label">When a player…</span><button class="ps-trigger" aria-haspopup="listbox"><span style="display:flex;gap:10px;align-items:center"><span data-i="leaf"></span>Explores here</span><span data-i="chevD"></span></button></div>' +
+            '<div class="ps-field"><span class="ps-label">With</span><div class="ps-tags"><span class="ps-tag">Walk in the grass<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Walk in the grass"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Method</button></div><p class="ps-help">Leave empty for any method here.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">How often</span><div class="ps-seg" role="group"><button aria-pressed="false">Always</button><button aria-pressed="true">A chance</button></div>' +
+            '<div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><input class="ps-input" type="number" inputmode="numeric" min="1" max="100" value="5" aria-label="Chance percent" style="width:80px"><span class="t-body-sm ps-muted">% of explores with Walk in the grass</span></div>' +
+            '<p class="ps-help">Added to Walk in the grass’s outcomes on Route 12.</p>' +
+            '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>Walk in the grass on Route 12 now adds up to 105%. Lower another outcome there before saving.</span></div>' +
+            '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Open the outcomes</button></div>' +
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Only once</b><span>Once it runs, it leaves the outcomes and its share goes to the rest.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Only once"></button></label>' +
+            '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+            PS.condSummary('') +
+            '</div>' +
+            '<div class="ps-field"><span class="ps-label">Script</span><div class="ps-link-row"><span data-i="code"></span><span>r12-trader<small>Offers a Moon Stone for ₽3,000</small></span><button class="ps-btn ps-btn--ghost">View</button></div></div>'
+          );
+        }
+        function leaveBody() {
+          return (
+            '<div class="ps-field"><span class="ps-label">When a player…</span><button class="ps-trigger" aria-haspopup="listbox"><span style="display:flex;gap:10px;align-items:center"><span data-i="door"></span>Leaves this location</span><span data-i="chevD"></span></button></div>' +
+            '<div class="ps-field"><span class="ps-label">Only when leaving toward <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Victory Road<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Victory Road"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Exit</button></div></div>' +
+            '<div class="ps-callout ps-callout--info"><span data-i="book" data-s="18"></span><span>The player hasn’t left yet. If the script stops them (a wrong answer, an urgent story beat), they stay on Route 22 and Victory Road isn’t marked visited.</span></div>' +
+            '<div class="ps-field"><span class="ps-label">Runs</span><div class="ps-seg" role="group"><button aria-pressed="true">Automatically</button><button aria-pressed="false">As a button</button></div></div>' +
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Only once</b><span>Off: asks again every time until solved.</span></span><button class="ps-switch" role="switch" aria-checked="false" aria-label="Only once"></button></label>' +
+            '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+            PS.condSummary('Only before ' + mono('riddle_solved')) +
+            '</div>' +
+            '<div class="ps-field"><span class="ps-label">Script</span><div class="ps-link-row"><span data-i="code"></span><span>r22-riddle<small>Asks the riddle; a right answer sets ' +
+            mono('riddle_solved') +
+            ' and lets them go</small></span><button class="ps-btn ps-btn--ghost">View</button></div></div>'
+          );
+        }
+        var EVENTS = [
+          [
+            'door',
+            'Enters this location',
+            'When they arrive, optionally only from chosen places',
+          ],
+          [
+            'route',
+            'Leaves this location',
+            'Before they move on; the script can stop them',
+          ],
+          ['leaf', 'Explores here', 'When they press Explore'],
+          [
+            'bag',
+            'Uses an item here',
+            'Like the Poké Flute on a sleeping Snorlax',
+          ],
+          ['gym', 'Uses a move here', 'Field moves on a spot', 'Coming later'],
+        ];
+        var eventPicker =
+          '<div class="ps-scrim" style="z-index:6"></div><div class="ps-sheet" role="dialog" aria-label="When a player…" style="z-index:7"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">When a player…</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+          '<ul class="ps-listbox ps-listbox--flat" role="listbox" style="margin:-8px -8px 0">' +
+          EVENTS.map(function (e, i) {
+            return (
+              '<li class="ps-option' +
+              (i === 0 ? ' is-active' : '') +
+              '" role="option"' +
+              (i === 0 ? ' aria-selected="true"' : '') +
+              (e[3]
+                ? ' aria-disabled="true" style="opacity:.55;cursor:not-allowed"'
+                : '') +
+              '><span class="ps-kind" data-i="' +
+              e[0] +
+              '"></span><span>' +
+              e[1] +
+              '<span class="ps-sub">' +
+              e[2] +
+              '</span></span>' +
+              (i === 0 ? '<span class="ps-check" data-i="check"></span>' : '') +
+              (e[3] ? '<span class="ps-badge">' + e[3] + '</span>' : '') +
+              '</li>'
+            );
+          }).join('') +
+          '</ul></div>';
+        function sheet(clash) {
+          return (
+            '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit trigger" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Rival battle<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Route 22 · When a player…</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            '<div class="ps-sheet-scroll"' +
+            (clash ? ' data-scroll-end' : '') +
+            '>' +
+            sheetBody(clash) +
+            '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>'
+          );
+        }
+        var empty =
+          '<div class="ps-center" style="align-items:center;text-align:center"><div class="ps-center-icon"><span data-i="bolt" data-s="28"></span></div><h2 class="t-title-2">Nothing happens here yet</h2>' +
+          '<p class="t-body ps-muted">Events make something run when a player arrives, explores, or uses an item here: a rival who stops them, a sign to read, a Snorlax in the way.</p>' +
+          '<button class="ps-btn ps-btn--primary ps-btn--block"><span data-i="plus" data-s="18"></span>Add an event</button><button class="ps-btn ps-btn--ghost ps-btn--block">Create from template</button></div>';
+        var script =
+          PS.phoneBar('snorlax-battle', 'Script · Route 12', PS.moreBtn) +
+          '<div class="ps-scroll"><div class="ps-form">' +
+          '<div class="ps-callout ps-callout--info"><span data-i="lock" data-s="18"></span><span>Read-only. This script wasn’t made with a template, and the step editor comes later.</span></div>' +
+          '<div class="ps-field"><span class="ps-label">Runs when</span><div class="ps-context"><span class="ps-kind" data-i="bag"></span><div style="flex:1"><b class="t-title-3" style="font-size:15px">Uses the Poké Flute on Route 12</b><p class="t-body-sm ps-subtle">Automatic · Once</p></div></div></div>' +
+          '<div class="ps-field"><span class="ps-label">Steps</span><ol class="ps-steps">' +
+          '<li><span><b>Say</b>The Poké Flute’s tune drifts over Snorlax. It wakes up, grumpy!</span></li>' +
+          '<li><span><b>Wild battle</b>Snorlax, Lv 30 · can’t run</span></li>' +
+          '<li><span><b>Set flag</b>' +
+          mono('snorlax_awake') +
+          '</span></li></ol></div>' +
+          '<div class="ps-field"><span class="ps-label">Used by</span><div class="ps-review"><div class="ps-review-row"><span class="ps-kind" data-i="bolt"></span><div><dd>Route 12 · Uses the Poké Flute here</dd><dt style="font-weight:400">Wake Snorlax</dt></div><button class="ps-btn ps-btn--ghost">Open</button></div></div></div></div></div>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          var r22 =
+            PS.phoneBar('Route 22', 'Route', PS.saved + PS.moreBtn) +
+            PS.locTabs('events');
+          if (v === 'r22')
+            el.innerHTML =
+              r22 +
+              '<div class="ps-scroll">' +
+              list('r22', 'Route 22') +
+              '</div>';
+          if (v === 'r12')
+            el.innerHTML =
+              PS.phoneBar('Route 12', 'Route', PS.saved + PS.moreBtn) +
+              PS.locTabs('events') +
+              '<div class="ps-scroll">' +
+              list('r12', 'Route 12') +
+              '</div>';
+          if (v === 'sheet')
+            el.innerHTML =
+              r22 +
+              '<div class="ps-scroll">' +
+              list('r22', 'Route 22') +
+              '</div>' +
+              sheet(false);
+          if (v === 'clash')
+            el.innerHTML =
+              r22 +
+              '<div class="ps-scroll">' +
+              list('r22', 'Route 22') +
+              '</div>' +
+              sheet(true);
+          if (v === 'empty')
+            el.innerHTML =
+              PS.phoneBar('Pewter Museum', 'Building', PS.saved + PS.moreBtn) +
+              PS.locTabs('events') +
+              empty;
+          if (v === 'script') el.innerHTML = script;
+          if (v === 'picker')
+            el.innerHTML =
+              r22 +
+              '<div class="ps-scroll">' +
+              list('r22', 'Route 22') +
+              '</div>' +
+              sheet(false) +
+              eventPicker;
+          if (v === 'leave')
+            el.innerHTML =
+              r22 +
+              '<div class="ps-scroll">' +
+              list('r22', 'Route 22') +
+              '</div><div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit trigger" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">The guard’s riddle<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Route 22 · When a player…</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+              leaveBody() +
+              '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
+          if (v === 'explore')
+            el.innerHTML =
+              PS.phoneBar('Route 12', 'Route', PS.saved + PS.moreBtn) +
+              PS.locTabs('events') +
+              '<div class="ps-scroll">' +
+              list('r12', 'Route 12') +
+              '</div><div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit trigger" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">A wandering trader<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Route 12 · When a player…</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+              exploreBody() +
+              '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('locations') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              '<section class="ps-pane-list"><div class="ps-appbar" style="padding:0 8px 0 16px"><h2 class="ps-appbar-title">Locations</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus"></span>Add</button></div><div class="ps-scroll">' +
+              PS.locRows('route-22') +
+              '</div></section>' +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">Route 22</h2>' +
+              PS.moreBtn +
+              '</div>' +
+              PS.locTabs('events') +
+              '<div class="ps-scroll"><div style="max-width:640px">' +
+              list('r22', 'Route 22') +
+              '</div></div></section></div></div>' +
+              '<div class="ps-scrim" style="z-index:2"></div><aside class="ps-sidepanel" role="dialog" aria-label="Edit trigger"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title">Rival battle<small>Route 22 · When a player…</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sidepanel-body">' +
+              sheetBody(false) +
+              '</div><div class="ps-sidepanel-foot"><button class="ps-btn ps-btn--primary">Save</button><button class="ps-btn ps-btn--ghost">Cancel</button></div></aside>';
+        });
+        document.querySelectorAll('[data-scroll-end]').forEach(function (el) {
+          setTimeout(function () {
+            el.scrollTop = el.scrollHeight;
+          }, 0);
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

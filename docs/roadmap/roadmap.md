@@ -78,7 +78,7 @@ Hosting and production operations are **not** Phase 0. They're the launch-readin
 - Progression definitions (exists) + `choice` kind. Engine-managed flags.
 - Explore and encounters: method registry, conditioned tables, the explore outcome table (wild / trainer / hidden item), traversal requirements (one-time and permanent route costs). No day/night for Kanto.
 - NPCs and Trainers: trainer classes, conditioned party variants (rival keyed off `starterChoice`), default movesets (last 4 level-up moves), trainer items, AI profiles, rewards, engagement modes, generated gauntlets for multiple `onEnter` trainers.
-- **Scripts & Triggers** (one system): dialogue, choices, battles, effects, branches. Templates for Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet (Elite 4), Simple Talker.
+- **Scripts & Triggers** (one system): dialogue, choices, battles, effects, branches. Templates for Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet (Elite 4). A basic linear step editor first, then the full one.
 - Effects (primitive): items, money (never below 0), Pokémon gifts (PC + swap offer when the party is full), progression/milestone/choice/flag, heal, respawn.
 - Transportation networks: Fly and Ferry templates.
 - Shops: conditioned entries, buy/sell, entries priced in a numeric progression (e.g. Game Corner coins).

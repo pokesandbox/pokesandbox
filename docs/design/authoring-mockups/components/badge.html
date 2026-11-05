@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Badge · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span>Badge <small>Status, access, health counts, gates</small></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <p class="ps-demo-label">Region status</p>
+        <div class="ps-row">
+          <span class="ps-badge ps-badge--draft">Draft</span>
+          <span class="ps-badge ps-badge--success">Published v7</span>
+          <span class="ps-badge">Not published</span>
+        </div>
+        <p class="ps-demo-label">Access, health, gates</p>
+        <div class="ps-row">
+          <span class="ps-badge ps-badge--brand">Builder access</span>
+          <span class="ps-badge ps-badge--accent">Featured</span>
+          <span class="ps-badge ps-badge--danger"
+            ><span data-i="error" data-s="14"></span>2 errors</span
+          >
+          <span class="ps-badge ps-badge--warning"
+            ><span data-i="alert" data-s="14"></span>3 warnings</span
+          >
+          <span class="ps-badge ps-badge--outline"
+            ><span data-i="lock" data-s="14"></span>Requires…</span
+          >
+          <span class="ps-badge ps-badge--outline">Coming soon</span>
+          <span class="ps-row" style="gap: 6px"
+            ><span class="ps-dot"></span
+            ><span class="t-body-sm ps-muted">warning dot</span></span
+          >
+          <span class="ps-row" style="gap: 6px"
+            ><span class="ps-dot ps-dot--danger"></span
+            ><span class="t-body-sm ps-muted">error dot</span></span
+          >
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

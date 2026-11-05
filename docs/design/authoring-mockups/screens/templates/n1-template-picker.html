@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>N1 · New from template · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >N1 · New from template
+        <small
+          >N1 · New from template · phone (Add NPC sheet, then the picker),
+          desktop dialog</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">NPCs → Add</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="add"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">New from template</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="pick"></div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                "Add" on the NPCs list asks one question: start blank, or from a
+                template. Templates are forms that create the NPC, its trainer,
+                its script and any rewards in one go, so most authors never see
+                a raw step list.
+              </li>
+              <li>
+                Each card says what it's for and what it creates. Starter Gift,
+                Gym Leader, Gift NPC and Forced Encounter are designed; Route
+                Trainer opens a "not designed yet" note in this mockup. Starter
+                Gift is the one being opened here.
+              </li>
+              <li>
+                Gauntlet and In-game Trade come with the full step editor, and
+                regions with trials instead of gyms will want a Trial Captain
+                template; they're shown as "Also planned" so the list doesn't
+                look final.
+              </li>
+              <li>
+                There's no talker template: someone who just talks is a Talk
+                script of Text steps.
+              </li>
+              <li>
+                Templates can also start from other places later (a location's
+                More menu, Region Health fixes), opening with the location
+                filled in.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · picker as a dialog over the NPCs list
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 900px; position: relative"
+        ></div>
+      </div>
+      <script>
+        var T = [
+          [
+            'bag',
+            'Starter Gift',
+            'Let the player pick one of a few Pokémon, with the rival picking the one strong against theirs.',
+            'Creates a script, a Talk script and a choice progression',
+            true,
+          ],
+          [
+            'gym',
+            'Gym Leader',
+            'A leader in their gym who battles and awards a badge and a TM.',
+            'Creates an NPC, a trainer, a script and a badge reward',
+            false,
+          ],
+          [
+            'heart',
+            'Gift NPC',
+            'Someone who hands over items or a Pokémon once.',
+            'Creates an NPC and a script',
+            false,
+          ],
+          [
+            'swap',
+            'Forced Encounter',
+            'A trainer steps in and battles when the player arrives, leaves or explores.',
+            'Creates an event and a script on a location',
+            false,
+          ],
+          [
+            'route',
+            'Route Trainer',
+            'A trainer who battles players exploring a route.',
+            'Creates an NPC and a trainer',
+          ],
+        ];
+        function cards(cols) {
+          return (
+            '<div style="display:grid;grid-template-columns:repeat(' +
+            cols +
+            ',1fr);gap:12px">' +
+            T.map(function (t) {
+              return (
+                '<button class="ps-choice"' +
+                (t[4]
+                  ? ' style="border-color:var(--brand-ink);border-width:2px;padding:15px"'
+                  : '') +
+                '><span class="ps-feature-tile' +
+                (t[4] ? ' ps-feature-tile--solid' : '') +
+                '" data-i="' +
+                t[0] +
+                '" data-s="24"></span><span class="ps-choice-text"><b>' +
+                t[1] +
+                '</b><span>' +
+                t[2] +
+                '</span><span class="t-body-sm ps-subtle">' +
+                t[3] +
+                '</span>' +
+                (t[4] === undefined
+                  ? '<span class="ps-badge ps-badge--outline" style="align-self:flex-start;margin-top:4px">Not designed yet</span>'
+                  : '') +
+                '</span></button>'
+              );
+            }).join('') +
+            '</div>' +
+            '<div class="ps-field"><span class="ps-label ps-muted">Also planned</span><div class="ps-tags"><span class="ps-badge">Gauntlet</span><span class="ps-badge">In-game Trade</span><span class="ps-badge">Trial Captain</span></div></div>'
+          );
+        }
+        var addSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet" role="dialog" aria-label="Add NPC"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">Add NPC</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+          '<button class="ps-choice"><span class="ps-feature-tile ps-feature-tile--solid" data-i="code" data-s="24"></span><span class="ps-choice-text"><b>From a template</b><span>Starter Gift, Gym Leader, Gift NPC and more. Fills in the script for you.</span></span></button>' +
+          '<button class="ps-choice"><span class="ps-feature-tile" data-i="user" data-s="24"></span><span class="ps-choice-text"><b>Blank NPC</b><span>Just a name and a place. Add talk or battles later.</span></span></button></div>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'add')
+            el.innerHTML =
+              PS.phoneBar('NPCs', 'Kanto Classic · 41') +
+              '<div class="ps-scroll"></div>' +
+              addSheet;
+          if (v === 'pick')
+            el.innerHTML =
+              '<div class="ps-appbar"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button><h1 class="ps-appbar-title">New from template<small>Kanto Classic</small></h1></div><div class="ps-scroll"><div class="ps-form">' +
+              cards(1) +
+              '</div></div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('npcs') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              PS.listPane('NPCs', 41, PS.trainerRows()) +
+              '<section class="ps-pane-detail"></section></div></div>' +
+              '<div class="ps-scrim" style="z-index:2"></div><div class="ps-dialog" role="dialog" style="position:absolute;left:50%;top:80px;transform:translateX(-40%);width:820px;z-index:3"><div class="ps-sheet-head"><h2 class="t-title-2">New from template</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+              cards(2) +
+              '</div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

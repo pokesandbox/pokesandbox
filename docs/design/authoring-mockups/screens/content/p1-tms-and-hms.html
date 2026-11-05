@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>P1 · TMs &amp; HMs · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >P1 · TMs &amp; HMs
+        <small
+          >P1 · TMs &amp; HMs · stored numbers with an empty slot, remove
+          confirm, add, empty state, desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">TM case, sorted by number</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Remove TM25 (confirm)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="remove"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Add a machine (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="add"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Empty</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="empty"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1500px;
+          "
+        >
+          <li>
+            <b>Numbers are stored, gaps are fine, nothing renumbers</b> (doc
+            12). The list is always sorted by number, TMs then HMs. There's no
+            reordering, so a player's TM24 always means the same move.
+          </li>
+          <li>
+            <b>Removing a machine leaves an empty slot</b> ("TM25 · empty", with
+            Assign a move). It confirms first: players who have it won't see it
+            until a move is assigned again. Region Health lists empty slots as
+            <b>info</b>, not warnings, and the publish review lists slots this
+            release empties.
+          </li>
+          <li>
+            <b>Add</b> picks the next free number for TM or HM; the number can
+            be changed to any free number, and a taken number shows an error
+            next to the field. Each row's More menu has Change number and
+            Remove.
+          </li>
+          <li>
+            <b>Single use or reusable is a region rule</b> (<span class="t-mono"
+              >tmReusable</span
+            >, doc 18): TMs follow it, HMs are always reusable. The badge is
+            read-only and says "Set by your region's rules", linking to Settings
+            → Rules.
+          </li>
+          <li>
+            <b>Fill from Gen 1 defaults</b> adds TM01–TM50 and HM01–HM05 with
+            their usual moves. In a case that already has machines it's in the
+            More menu and only fills empty numbers.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · table
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 960px"
+        ></div>
+      </div>
+      <script>
+        var CASE = [
+          [1, 'Mega Punch'],
+          [2, 'Razor Wind'],
+          [3, 'Swords Dance'],
+          [4, 'Whirlwind'],
+          [5, 'Mega Kick'],
+          [6, 'Toxic'],
+          [7, 'Horn Drill'],
+          [8, 'Body Slam'],
+          [9, 'Take Down'],
+          [10, 'Double-Edge'],
+          [24, 'Thunderbolt'],
+          [25, ''],
+          [34, 'Bide'],
+        ];
+        var HMS = [
+          [1, 'Cut'],
+          [2, 'Fly'],
+          [3, 'Surf'],
+          [4, 'Strength'],
+          [5, 'Flash'],
+        ];
+        function pad(n) {
+          return (n < 10 ? '0' : '') + n;
+        }
+        var ruleLink =
+          '<a class="ps-link" href="#" style="font-weight:500">Set by your region’s rules</a>';
+        function row(kind, m, table) {
+          var label = kind + pad(m[0]),
+            emptySlot = !m[1];
+          var use =
+            kind === 'HM'
+              ? '<span class="ps-badge ps-badge--success">Reusable</span>'
+              : '<span class="ps-badge">Single use</span>';
+          if (table)
+            return (
+              '<tr' +
+              (emptySlot ? ' style="background:var(--bg)"' : '') +
+              '><td><b class="t-mono" style="font-size:14px">' +
+              label +
+              '</b></td><td>' +
+              (emptySlot
+                ? '<span class="ps-subtle">Empty</span>'
+                : '<button class="ps-trigger"><span>' +
+                  m[1] +
+                  '</span><span data-i="search"></span></button>') +
+              '</td><td>' +
+              (emptySlot
+                ? '<button class="ps-btn ps-btn--secondary">Assign a move</button>'
+                : use) +
+              '</td><td>' +
+              PS.moreBtn +
+              '</td></tr>'
+            );
+          if (emptySlot)
+            return (
+              '<div class="ps-mon" style="padding-left:12px;background:var(--bg)"><span class="ps-kind" data-i="disc" style="background:transparent;border:1px dashed var(--border-strong)"></span><div><b><span class="t-mono" style="font-size:14px">' +
+              label +
+              '</span> · <span class="ps-subtle">empty</span></b><span>Hidden from players until a move is assigned</span></div><button class="ps-btn ps-btn--secondary">Assign a move</button></div>'
+            );
+          return (
+            '<div class="ps-mon" style="padding-left:12px"><span class="ps-kind" data-i="disc"></span><div><b><span class="t-mono" style="font-size:14px">' +
+            label +
+            '</span> · ' +
+            m[1] +
+            '</b><span>' +
+            (kind === 'HM' ? 'Reusable' : 'Single use') +
+            '</span></div>' +
+            PS.moreBtn +
+            '</div>'
+          );
+        }
+        function phoneBody() {
+          return (
+            '<div class="ps-form"><div class="ps-readonly"><span data-i="book" data-s="18"></span><div><b>TMs are single use · HMs are reusable</b><p class="t-body-sm">' +
+            ruleLink +
+            '</p></div></div>' +
+            '<div class="ps-section-head"><h2 class="t-title-3">TMs · 12 assigned, 1 empty</h2></div><div class="ps-mons">' +
+            CASE.map(function (m) {
+              return row('TM', m);
+            }).join('') +
+            '</div>' +
+            '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Show all</button>' +
+            '<h2 class="t-title-3">HMs · 5</h2><div class="ps-mons">' +
+            HMS.map(function (m) {
+              return row('HM', m);
+            }).join('') +
+            '</div>' +
+            '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add TM or HM</button></div>'
+          );
+        }
+        var bar = PS.phoneBar(
+          'TMs & HMs',
+          'Kanto Classic · Classic Gen 1',
+          PS.moreBtn,
+        );
+        var removeSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet" role="alertdialog" aria-labelledby="rt"><div class="ps-grabber"></div><h2 class="t-title-2" id="rt">Remove Thunder from TM25?</h2>' +
+          '<p class="t-body">TM25 will be empty. Players who have it won’t see it until you assign a move again.</p>' +
+          '<p class="t-body-sm ps-muted">Nothing renumbers. The publish review will remind you to tell players.</p>' +
+          '<div class="ps-actions"><button class="ps-btn ps-btn--danger ps-btn--block">Remove</button><button class="ps-btn ps-btn--ghost ps-btn--block">Cancel</button></div></div>';
+        var addSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet" role="dialog" aria-label="Add a machine"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">Add a machine</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+          '<div class="ps-field"><span class="ps-label">Kind</span><div class="ps-seg" role="group"><button aria-pressed="true">TM</button><button aria-pressed="false">HM</button></div></div>' +
+          '<div class="ps-field"><label class="ps-label" for="num">Number</label><input class="ps-input" id="num" type="number" inputmode="numeric" value="24" aria-invalid="true" aria-describedby="num-e" style="max-width:140px"><p class="ps-error" id="num-e"><span data-i="error" data-s="18"></span>TM24 is taken (Thunderbolt). Next free: TM11.</p></div>' +
+          '<div class="ps-field"><span class="ps-label">Move</span><button class="ps-trigger"><span class="ps-placeholder">Search moves</span><span data-i="search"></span></button></div>' +
+          '<div class="ps-actions"><button class="ps-btn ps-btn--primary ps-btn--block">Add TM</button></div></div>';
+        var empty =
+          '<div class="ps-center" style="align-items:center;text-align:center"><div class="ps-center-icon"><span data-i="disc" data-s="28"></span></div><h2 class="t-title-2">No TMs or HMs yet</h2><p class="t-body ps-muted">Start from the Gen 1 case (50 TMs, 5 HMs) and change what you like, or add them one by one.</p><button class="ps-btn ps-btn--primary ps-btn--block">Fill from Gen 1 defaults</button><button class="ps-btn ps-btn--ghost ps-btn--block"><span data-i="plus"></span>Add one</button></div>';
+        function tableBody() {
+          var th =
+            '<thead><tr><th style="width:96px">No.</th><th>Move</th><th style="width:180px">Use</th><th style="width:52px"></th></tr></thead>';
+          return (
+            '<div class="ps-section-head"><div><h1 class="t-title-1">TMs & HMs</h1><p class="t-body-sm ps-subtle">TMs are single use, HMs are reusable. ' +
+            ruleLink +
+            '</p></div><div class="ps-row"><button class="ps-btn ps-btn--ghost">Fill from Gen 1 defaults</button><button class="ps-btn ps-btn--secondary"><span data-i="plus"></span>Add</button></div></div>' +
+            '<div class="ps-stack" style="max-width:820px"><h2 class="t-title-3">TMs</h2><table class="ps-slot-table">' +
+            th +
+            '<tbody>' +
+            CASE.map(function (m) {
+              return row('TM', m, true);
+            }).join('') +
+            '</tbody></table><h2 class="t-title-3">HMs</h2><table class="ps-slot-table">' +
+            th +
+            '<tbody>' +
+            HMS.map(function (m) {
+              return row('HM', m, true);
+            }).join('') +
+            '</tbody></table></div>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'list')
+            el.innerHTML =
+              bar + '<div class="ps-scroll">' + phoneBody() + '</div>';
+          if (v === 'remove')
+            el.innerHTML =
+              bar +
+              '<div class="ps-scroll">' +
+              phoneBody().replace(
+                'TM25</span> · <span class="ps-subtle">empty</span>',
+                'TM25</span> · Thunder',
+              ) +
+              '</div>' +
+              removeSheet;
+          if (v === 'add')
+            el.innerHTML =
+              bar +
+              '<div class="ps-scroll">' +
+              phoneBody() +
+              '</div>' +
+              addSheet;
+          if (v === 'empty')
+            el.innerHTML = PS.phoneBar('TMs & HMs', 'Sevii Story') + empty;
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('tms') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-main-body">' +
+              tableBody() +
+              '</div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

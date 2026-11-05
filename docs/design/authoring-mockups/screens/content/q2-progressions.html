@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Q2 · Progressions and badges · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >Q2 · Progressions and badges
+        <small
+          >Q2 · Progressions and badges · phone list, Badges detail, numeric
+          detail, new progression, desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">List</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Badges (milestones)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="badges"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Rocket hideout (numeric)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="numeric"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">New progression (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="new"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1500px;
+          "
+        >
+          <li>
+            <b>Matches today's Discord builder and the shared model:</b> three
+            kinds, set when created. <b>Milestones</b> (an ordered list,
+            optionally sequential; badges are milestones with an image),
+            <b>Numeric</b> (a number with optional min and max), and
+            <b>Flag</b> (on or off, <span class="t-mono">boolean</span> in the
+            model). Every progression has a name, description and visibility.
+          </li>
+          <li>
+            <b>Visibility</b> (Public / Discoverable / Hidden) has a one-line
+            explanation under the control. The wording here is a proposal; the
+            bot doesn't describe these yet.
+          </li>
+          <li>
+            <b>Milestones</b> are a sortable list: image placeholder, name,
+            description. Order is the position number from Discord. Sequential
+            means they must be earned in that order.
+          </li>
+          <li>
+            <b>Used by</b> lists every condition, reward and template that
+            references this progression, each linking to it, so deleting or
+            renaming is safe. Delete is blocked while anything uses it.
+          </li>
+          <li>
+            <b>Choice</b> (for example "starter chosen", used by the rival's
+            party variants) isn't a kind in the model yet; it's shown greyed in
+            New progression as an open question.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · list + Badges
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 1000px"
+        ></div>
+      </div>
+      <script>
+        var PROGS = [
+          {
+            k: 'badges',
+            n: 'Badges',
+            icon: 'gym',
+            meta: 'Milestones · 8 · sequential',
+            vis: 'Public',
+          },
+          {
+            k: 'hideout',
+            n: 'Rocket hideout',
+            icon: 'steps',
+            meta: 'Numeric · 0–5',
+            vis: 'Hidden',
+          },
+          {
+            k: 'pokedex',
+            n: 'Has a Pokédex',
+            icon: 'landmark',
+            meta: 'Flag',
+            vis: 'Public',
+          },
+          {
+            k: 'stamps',
+            n: 'Ferry stamps',
+            icon: 'steps',
+            meta: 'Milestones · 3',
+            vis: 'Discoverable',
+          },
+        ];
+        function rows(cur) {
+          return PROGS.map(function (p) {
+            return (
+              '<button class="ps-list-row"' +
+              (cur === p.k ? ' aria-current="true"' : '') +
+              '><span class="ps-kind" data-i="' +
+              p.icon +
+              '"></span><span class="ps-row-text"><b>' +
+              p.n +
+              '</b><span>' +
+              p.meta +
+              ' · ' +
+              p.vis +
+              '</span></span><span data-i="chevR"></span></button>'
+            );
+          }).join('');
+        }
+        function vis(which) {
+          var help = {
+            Public: 'Players see it on their journey from the start.',
+            Discoverable: 'Hidden until the player makes their first progress.',
+            Hidden:
+              'Never shown to players. For behind-the-scenes story state.',
+          };
+          return (
+            '<div class="ps-field"><span class="ps-label">Visibility</span><div class="ps-seg" role="group">' +
+            ['Public', 'Discoverable', 'Hidden']
+              .map(function (v) {
+                return (
+                  '<button aria-pressed="' +
+                  (v === which) +
+                  '">' +
+                  v +
+                  '</button>'
+                );
+              })
+              .join('') +
+            '</div><p class="ps-help">' +
+            help[which] +
+            '</p></div>'
+          );
+        }
+        function kindRow(t, d) {
+          return (
+            '<div class="ps-field"><span class="ps-label">Kind</span><div class="ps-readonly"><span data-i="lock" data-s="18"></span><div><b>' +
+            t +
+            '</b><p class="t-body-sm ps-muted">' +
+            d +
+            '</p></div></div></div>'
+          );
+        }
+        function usedBy(items) {
+          return (
+            '<div class="ps-field"><span class="ps-label">Used by · ' +
+            items.length +
+            '</span><div class="ps-review">' +
+            items
+              .map(function (u) {
+                return (
+                  '<div class="ps-review-row"><span class="ps-kind" data-i="' +
+                  u[0] +
+                  '"></span><div><dd>' +
+                  u[1] +
+                  '</dd><dt style="font-weight:400">' +
+                  u[2] +
+                  '</dt></div><button class="ps-btn ps-btn--ghost">Open</button></div>'
+                );
+              })
+              .join('') +
+            '</div></div>'
+          );
+        }
+        function badges() {
+          var ms = [
+            ['Boulder Badge', 'Pewter Gym'],
+            ['Cascade Badge', 'Cerulean Gym'],
+            ['Thunder Badge', 'Vermilion Gym'],
+            ['Rainbow Badge', 'Celadon Gym'],
+          ];
+          return (
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Badges"></div>' +
+            '<div class="ps-field"><label class="ps-label">Description <span class="ps-opt">(optional)</span></label><textarea class="ps-textarea" style="min-height:72px">Earned by beating each Gym Leader.</textarea></div>' +
+            kindRow(
+              'Milestones',
+              'An ordered list of things to earn. Set when the progression was created.',
+            ) +
+            vis('Public') +
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Sequential</b><span>Must be earned in this order.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Sequential"></button></label>' +
+            '<div class="ps-field"><span class="ps-label">Badges · 8</span><div class="ps-mons">' +
+            ms
+              .map(function (m, i) {
+                return (
+                  '<div class="ps-mon"><button class="ps-handle" aria-label="Reorder ' +
+                  m[0] +
+                  '"><span data-i="grip"></span></button><span class="ps-priority">' +
+                  (i + 1) +
+                  '</span><span class="ps-thumb" style="border-radius:50%"></span><div><b>' +
+                  m[0] +
+                  '</b><span>' +
+                  m[1] +
+                  '</span></div>' +
+                  PS.moreBtn +
+                  '</div>'
+                );
+              })
+              .join('') +
+            '</div><button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Show all 8</button><button class="ps-btn ps-btn--secondary" style="align-self:flex-start"><span data-i="plus" data-s="18"></span>Add badge</button></div>' +
+            usedBy([
+              ['gym', 'Brock', 'Awards Boulder Badge · Gym Leader template'],
+              ['route', 'Route 22 → Victory Road', 'Requires 8 badges'],
+              [
+                'town',
+                '<span class="t-mono">{name:rival}</span> in Viridian City',
+                'Placement: requires the Boulder Badge',
+              ],
+              [
+                'user',
+                '<span class="t-mono">{name:rival}</span> party variant 3',
+                'Requires 3 or more badges',
+              ],
+            ])
+          );
+        }
+        function numeric() {
+          return (
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Rocket hideout"></div>' +
+            '<div class="ps-field"><label class="ps-label">Description <span class="ps-opt">(optional)</span></label><textarea class="ps-textarea" style="min-height:72px">How far the player is through the Celadon hideout story.</textarea></div>' +
+            kindRow('Numeric', 'A number that scripts raise or lower.') +
+            vis('Hidden') +
+            '<div class="ps-pair"><div class="ps-field"><label class="ps-label">Min <span class="ps-opt">(optional)</span></label><input class="ps-input" type="number" value="0"></div><div class="ps-field"><label class="ps-label">Max <span class="ps-opt">(optional)</span></label><input class="ps-input" type="number" value="5"></div></div>' +
+            usedBy([
+              [
+                'code',
+                'Script giovanni-hideout',
+                'Raises it by 1 at each floor',
+              ],
+              ['dungeon', 'Rocket Hideout B4F', 'Requires Rocket hideout ≥ 3'],
+            ]) +
+            '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start;color:var(--danger)" aria-disabled="true"><span data-i="trash" data-s="18"></span>Delete</button><p class="ps-help" style="margin-top:-8px">Can’t delete while 2 things use it.</p>'
+          );
+        }
+        function newSheet() {
+          var k = function (on, t, d, off) {
+            return (
+              '<button class="ps-choice" role="radio" aria-checked="' +
+              on +
+              '"' +
+              (off ? ' aria-disabled="true"' : '') +
+              '><span class="ps-radio"></span><span class="ps-choice-text"><b>' +
+              t +
+              '</b><span>' +
+              d +
+              '</span>' +
+              (off
+                ? '<span class="ps-badge ps-badge--outline" style="align-self:flex-start;margin-top:4px">Not in the model yet</span>'
+                : '') +
+              '</span></button>'
+            );
+          };
+          return (
+            '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="New progression" style="top:96px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">New progression</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" placeholder="e.g. Badges, Z-Crystals, Battle Points"></div>' +
+            '<div class="ps-field"><span class="ps-label">Kind</span><p class="ps-help">Can’t be changed later.</p><div role="radiogroup" class="ps-stack" style="gap:8px">' +
+            k(
+              true,
+              'Milestones',
+              'Things to earn, in order: badges, stamps, ranks.',
+            ) +
+            k(false, 'Numeric', 'A number: story stage, reputation, points.') +
+            k(false, 'Flag', 'On or off: has a Pokédex, met Bill.') +
+            k(
+              false,
+              'Choice',
+              'One of several options: which starter, which fossil.',
+              true,
+            ) +
+            '</div></div></div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Create</button></div></div>'
+          );
+        }
+        var addBtn =
+          '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="New progression"><span data-i="plus"></span></button>';
+        var search =
+          '<div class="ps-toolbar"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search progressions" aria-label="Search progressions"></div></div>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'list')
+            el.innerHTML =
+              PS.phoneBar('Progressions', 'Kanto Classic · 4', addBtn) +
+              search +
+              '<div class="ps-scroll">' +
+              rows() +
+              '</div>';
+          if (v === 'badges')
+            el.innerHTML =
+              PS.phoneBar('Badges', 'Milestones', PS.saved + PS.moreBtn) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              badges() +
+              '</div></div>';
+          if (v === 'numeric')
+            el.innerHTML =
+              PS.phoneBar('Rocket hideout', 'Numeric', PS.saved + PS.moreBtn) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              numeric() +
+              '</div></div>';
+          if (v === 'new')
+            el.innerHTML =
+              PS.phoneBar('Progressions', 'Kanto Classic · 4', addBtn) +
+              search +
+              '<div class="ps-scroll">' +
+              rows() +
+              '</div>' +
+              newSheet();
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('progressions') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              PS.listPane('Progressions', 4, rows('badges'), search) +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">Badges</h2><span class="ps-badge">Milestones</span>' +
+              PS.moreBtn +
+              '</div><div class="ps-scroll"><div class="ps-form">' +
+              badges() +
+              '</div></div></section></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>R2 · Traversal costs · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >R2 · Traversal costs
+        <small
+          >R2 · Traversal costs · first-time and every-time costs per exit,
+          grouped requirements, split one exit off, preview (live), Connections
+          (phone)</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 2140px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Off (default)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="off"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Costs on this location's exits</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Edit a first-time cost (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="first"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Edit an every-time cost (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="every"></div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">
+              Two groups: (trainers and explores) or (wild battles)
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="regroup"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">One exit's menu</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="menu"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">What players see (try the switch)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="preview"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Connections tab · each exit's costs</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="edges"></div>
+          </div>
+          <div style="width: 340px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Two kinds of cost, each its own card:</b> First time through
+                (paid once per exit, the first time a player uses it) and Every
+                time through (paid on each visit). Each card applies to one or
+                more exits, with an All exits shortcut. An exit has at most one
+                of each kind, and can have none.
+              </li>
+              <li>
+                <b>Requirements use the rule-group editor:</b> an All/Any list
+                of requirements and groups, any number of groups, each with its
+                own All/Any. Drag a row into a group, out of it, or between
+                groups; each row's ⋯ menu does the same without dragging (Move
+                to Group 2, Move out of group…), and holds Remove. Groups carry
+                a small number badge. "Reads as" spells out the result. It all
+                works in the sheets here.
+              </li>
+              <li>
+                <b>First time</b> can ask for: trainers who must be beaten, wild
+                battles won, explores. <b>Every time</b> can ask for: explores,
+                wild encounters (ones a Repel avoids count too).
+              </li>
+              <li>
+                <b>Split one exit off:</b> an exit's menu has "Edit just this
+                exit", which makes a new cost for that exit with the same
+                requirements and opens it. Ticking an exit that has another cost
+                of the same kind moves it there.
+              </li>
+              <li>
+                <b>Preview</b> builds the locked message for an exit and a
+                visit.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <script>
+        var EX = {
+          North: ['North', 'Pewter City', 'town'],
+          South: ['South', 'Route 2', 'route'],
+          West: ['West', 'Hidden grove', 'landmark'],
+          East: ['East', 'Ranger’s hut', 'building'],
+        };
+        var FIRST = [
+          {
+            name: 'Forest trainers',
+            exits: ['North', 'South'],
+            reads:
+              'Beat Bug Catcher Rick and Bug Catcher Doug and win 3 wild battles, or explore 10 times',
+          },
+          { name: 'Grove path', exits: ['West'], reads: 'Explore 5 times' },
+        ];
+        var EVERY = [
+          {
+            name: 'Forest walk',
+            exits: 'all',
+            reads: 'Explore 3 times or have 2 wild encounters',
+          },
+        ];
+        var head = PS.phoneBar(
+          'Viridian Forest',
+          'Dungeon',
+          PS.saved + PS.moreBtn,
+        );
+        var sw = function (on, t, d) {
+          return (
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>' +
+            t +
+            '</b><span>' +
+            d +
+            '</span></span><button class="ps-switch" role="switch" aria-checked="' +
+            on +
+            '" aria-label="' +
+            t +
+            '"></button></label>'
+          );
+        };
+        var check = function (on, t, d) {
+          return (
+            '<div class="ps-check-row" role="checkbox" aria-checked="' +
+            on +
+            '"><span class="ps-check" aria-checked="' +
+            on +
+            '">' +
+            (on ? PS.icon('check', 16) : '') +
+            '</span><span>' +
+            t +
+            (d ? '<small>' + d + '</small>' : '') +
+            '</span></div>'
+          );
+        };
+        var exitChip = function (k, menu) {
+          var e = EX[k];
+          return (
+            '<span style="position:relative;display:inline-flex"><button class="ps-chip" style="height:32px;font-size:13px" aria-haspopup="menu">' +
+            e[0] +
+            ' to ' +
+            e[1] +
+            '<span data-i="chevD" data-s="14"></span></button>' +
+            (menu
+              ? '<ul class="ps-listbox ps-menu" role="menu" style="top:40px;left:0;min-width:220px"><li class="ps-option" role="menuitem"><span data-i="steps" data-s="18"></span>Edit just this exit</li><li class="ps-option" role="menuitem"><span data-i="x" data-s="18"></span>Remove from this cost</li></ul>'
+              : '') +
+            '</span>'
+          );
+        };
+        function card(c, menuOn) {
+          var to =
+            c.exits === 'all'
+              ? '<span class="ps-badge">All exits</span>'
+              : c.exits
+                  .map(function (k) {
+                    return exitChip(k, menuOn === k);
+                  })
+                  .join('');
+          return (
+            '<article class="ps-placement" style="gap:8px' +
+            (menuOn && c.exits !== 'all' && c.exits.indexOf(menuOn) > -1
+              ? ';position:relative;z-index:4'
+              : '') +
+            '"><div class="ps-variant-head"><span class="ps-kind" data-i="steps"></span><b>' +
+            c.name +
+            '</b><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
+            '<div class="ps-trigger-meta" style="align-items:center"><span class="t-body-sm ps-subtle">Applies to</span>' +
+            to +
+            '</div><p class="t-body-sm">' +
+            c.reads +
+            '.</p></article>'
+          );
+        }
+        function list(menuOn) {
+          return (
+            '<div class="ps-form"><h2 class="t-title-3">Traversal costs</h2><p class="t-body-sm ps-muted" style="margin-top:-8px">Locked exits open once their costs are paid.</p>' +
+            '<div class="ps-section-head"><h3 class="t-title-3" style="font-size:15px">First time through</h3><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Cost</button></div><p class="t-body-sm ps-subtle" style="margin-top:-8px">Paid once per exit, the first time a player uses it.</p>' +
+            FIRST.map(function (c) {
+              return card(c, menuOn);
+            }).join('') +
+            '<p class="t-body-sm ps-subtle">East to Ranger’s hut has no first-time cost.</p>' +
+            '<div class="ps-section-head" style="margin-top:8px"><h3 class="t-title-3" style="font-size:15px">Every time through</h3><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Cost</button></div><p class="t-body-sm ps-subtle" style="margin-top:-8px">Paid on every visit.</p>' +
+            EVERY.map(function (c) {
+              return card(c);
+            }).join('') +
+            '</div>'
+          );
+        }
+        var trainers =
+          '<div class="ps-tags"><span class="ps-tag">Bug Catcher Rick<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Rick"><span data-i="x" data-s="16"></span></button></span><span class="ps-tag">Bug Catcher Doug<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Doug"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Trainer</button></div>';
+        function applies(rows, allOn) {
+          return (
+            '<div class="ps-field"><div class="ps-section-head"><span class="ps-label">Applies to</span><button class="ps-btn ps-btn--ghost" style="padding:0 8px"' +
+            (allOn ? ' aria-pressed="true"' : '') +
+            '>All exits</button></div><div>' +
+            rows +
+            '</div></div>'
+          );
+        }
+        /* Requirements use the shared RuleGroupEditor (see Builder components). */
+        PS.RULES.first = {
+          kind: 'traversalFirst',
+          mode: 'any',
+          items: [
+            {
+              group: true,
+              mode: 'all',
+              rows: [{ t: 'trainers' }, { t: 'wild', n: 3 }],
+            },
+            { t: 'explores', n: 10 },
+          ],
+        };
+        PS.RULES.every = {
+          kind: 'traversalEvery',
+          mode: 'any',
+          items: [
+            { t: 'explores', n: 3 },
+            { t: 'encounters', n: 2 },
+          ],
+        };
+        PS.RULES.regroup = {
+          kind: 'traversalFirst',
+          mode: 'any',
+          items: [
+            {
+              group: true,
+              mode: 'all',
+              rows: [{ t: 'trainers' }, { t: 'explores', n: 5 }],
+            },
+            { group: true, mode: 'all', rows: [{ t: 'wild', n: 3 }] },
+          ],
+        };
+        function firstBody() {
+          return (
+            '<div class="ps-field"><label class="ps-label" for="cn">Name <span class="ps-opt">(optional)</span></label><input class="ps-input" id="cn" value="Forest trainers"></div>' +
+            applies(
+              check(true, 'North to Pewter City') +
+                check(true, 'South to Route 2') +
+                check(
+                  false,
+                  'West to Hidden grove',
+                  'Has Grove path. Ticking it moves it here.',
+                ) +
+                check(false, 'East to Ranger\u2019s hut'),
+            ) +
+            PS.ruleEditor('first')
+          );
+        }
+        function everyBody() {
+          return (
+            '<div class="ps-field"><label class="ps-label" for="en">Name <span class="ps-opt">(optional)</span></label><input class="ps-input" id="en" value="Forest walk"></div>' +
+            applies(
+              check(true, 'North to Pewter City') +
+                check(true, 'South to Route 2') +
+                check(true, 'West to Hidden grove') +
+                check(true, 'East to Ranger\u2019s hut'),
+              true,
+            ) +
+            PS.ruleEditor('every')
+          );
+        }
+        function regroupBody() {
+          return PS.ruleEditor('regroup');
+        }
+        function sheet(title, body) {
+          return (
+            '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="' +
+            title +
+            '" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">' +
+            title +
+            '</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+            body +
+            '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save cost</button></div></div>'
+          );
+        }
+        var visit = 'first';
+        function preview() {
+          var msg =
+            visit === 'first'
+              ? 'To continue: beat 2 trainers and win 3 wild battles, or explore 8 more times.'
+              : 'Keep exploring: 2 more steps, or 1 more wild encounter, to get through Viridian Forest.';
+          var sub =
+            visit === 'first'
+              ? 'First visit, after 2 explores'
+              : 'A later visit, after 1 explore and 1 wild encounter';
+          return (
+            '<div class="ps-form"><div class="ps-field"><span class="ps-label">Exit</span><button class="ps-trigger"><span>North to Pewter City</span><span data-i="chevD"></span></button></div>' +
+            '<div class="ps-seg" role="group" aria-label="Visit"><button data-visit="first" aria-pressed="' +
+            (visit === 'first') +
+            '">First visit</button><button data-visit="later" aria-pressed="' +
+            (visit === 'later') +
+            '">Later visits</button></div>' +
+            '<div class="ps-embed"><span class="ps-embed-muted">' +
+            sub +
+            '</span><span>' +
+            msg +
+            '</span><div class="ps-embed-buttons"><span class="is-locked">\u{1F512} North to Pewter City</span><span>South to Route 2</span><span>Explore</span></div></div>' +
+            '<p class="ps-help">' +
+            (visit === 'first'
+              ? 'On a first visit, the first-time cost and the every-time cost both apply.'
+              : 'After the first time, only Forest walk applies.') +
+            '</p></div>'
+          );
+        }
+        function edges() {
+          var e = function (k, badges) {
+            var x = EX[k];
+            return (
+              '<div class="ps-edge" style="padding-left:0"><button class="ps-handle" aria-label="Reorder ' +
+              x[1] +
+              '"><span data-i="grip"></span></button><span class="ps-kind" data-i="' +
+              x[2] +
+              '"></span><div><span class="ps-edge-dir">' +
+              x[0] +
+              '</span><b class="t-title-3" style="font-size:15px">' +
+              x[1] +
+              '</b><div class="ps-trigger-meta">' +
+              badges
+                .map(function (b) {
+                  return (
+                    '<a class="ps-badge ps-badge--warning" href="#" style="text-decoration:none"><span data-i="steps" data-s="14"></span>' +
+                    b +
+                    '</a>'
+                  );
+                })
+                .join('') +
+              '</div></div>' +
+              PS.moreBtn +
+              '</div>'
+            );
+          };
+          return (
+            '<div class="ps-form"><p class="t-body-sm ps-muted">Where players can travel from Viridian Forest.</p><div class="ps-edges">' +
+            e('North', [
+              'First time: Forest trainers',
+              'Every time: Forest walk',
+            ]) +
+            e('South', [
+              'First time: Forest trainers',
+              'Every time: Forest walk',
+            ]) +
+            e('West', ['First time: Grove path', 'Every time: Forest walk']) +
+            e('East', ['Every time: Forest walk']) +
+            '</div><p class="ps-help">Each badge opens that cost on the Explore tab.</p></div>'
+          );
+        }
+        function draw() {
+          document.querySelectorAll('.slot').forEach(function (el) {
+            var v = el.getAttribute('data-v'),
+              tabs = PS.locTabs('encounters'),
+              sc = function (x) {
+                return '<div class="ps-scroll">' + x + '</div>';
+              };
+            if (v === 'off')
+              el.innerHTML =
+                head +
+                tabs +
+                sc(
+                  '<div class="ps-form"><h2 class="t-title-3">Traversal costs</h2>' +
+                    sw(
+                      false,
+                      'Traversal costs',
+                      'Players can pass through freely.',
+                    ) +
+                    '<p class="t-body-sm ps-muted">Turn it on to lock exits until players beat trainers, win wild battles or keep exploring.</p></div>',
+                );
+            if (v === 'list') el.innerHTML = head + tabs + sc(list());
+            if (v === 'first')
+              el.innerHTML =
+                head +
+                tabs +
+                sc(list()) +
+                sheet('First-time cost', firstBody());
+            if (v === 'every')
+              el.innerHTML =
+                head +
+                tabs +
+                sc(list()) +
+                sheet('Every-time cost', everyBody());
+            if (v === 'regroup')
+              el.innerHTML =
+                head +
+                tabs +
+                sc(list()) +
+                sheet('First-time cost', regroupBody());
+            if (v === 'menu') el.innerHTML = head + tabs + sc(list('South'));
+            if (v === 'preview') el.innerHTML = head + tabs + sc(preview());
+            if (v === 'edges')
+              el.innerHTML = head + PS.locTabs('connections') + sc(edges());
+          });
+          PS.mount(document);
+        }
+        document.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-visit]');
+          if (!b) return;
+          visit = b.getAttribute('data-visit');
+          draw();
+        });
+        draw();
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

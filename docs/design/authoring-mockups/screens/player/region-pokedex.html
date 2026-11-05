@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Region Pokédex and entries · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >Region Pokédex and entries
+        <small
+          >Region Pokédex /regions/:id/pokedex · a player&#x27;s seen and caught
+          · species in region context (seen, caught) · desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Pokédex · signed-in player</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="grid"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Meowth · seen, not caught</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="seen"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Meowth · caught</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="caught"></div>
+          </div>
+          <div style="width: 340px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Published release only.</b> The region's Pokédex as players
+                get it, with its slot numbers, rules and forms.
+              </li>
+              <li>
+                <b>Your progress:</b> signed in, entries reflect your journey in
+                this region: caught, seen (dimmed), or not seen ("???").
+                Filters: All · Caught · Seen · Not seen.
+              </li>
+              <li>
+                <b>What each state reveals is the region's choice</b> (the
+                Player Pokédex setting in the builder). This example uses "Like
+                the games": seeing shows the name, image, types and where you
+                saw it; catching shows the rest.
+              </li>
+              <li>
+                <b>Seen and caught are per form</b> (doc 23): each form in an
+                entry reveals by its own state, so Meowth can be caught while
+                Alolan Meowth is only seen or still "???". The header counts
+                stay per species (Caught 34 · Seen 61 of 151).
+              </li>
+              <li>
+                <b>Locked sections say how to unlock them</b> ("Catch Meowth to
+                see its base stats"), never just disappear.
+              </li>
+              <li>
+                <b>Visitors who aren't playing</b> see what the region allows
+                them: everything, or the same as a brand-new player. The page
+                says which.
+              </li>
+              <li>
+                The entry links to the canon page ("About Meowth in general")
+                only if the region allows full info for visitors, so it can't be
+                used to skip spoilers.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · Pokédex grid
+        </p>
+        <div
+          class="ps-browser slot"
+          data-v="desktop"
+          style="height: 900px; overflow: hidden"
+        ></div>
+      </div>
+      <script>
+        var sp = PS.sp;
+        var DEX = [
+          [1, 'Bulbasaur', 'c'],
+          [2, 'Ivysaur', 's'],
+          [3, '', 'u'],
+          [4, 'Charmander', 'c'],
+          [5, '', 'u'],
+          [6, '', 'u'],
+          [7, 'Squirtle', 's'],
+          [8, '', 'u'],
+          [9, '', 'u'],
+          [10, 'Caterpie', 'c'],
+          [11, 'Metapod', 'c'],
+          [12, '', 'u'],
+          [16, 'Pidgey', 'c'],
+          [19, 'Rattata', 'c'],
+          [25, 'Pikachu', 's'],
+          [52, 'Meowth', 's'],
+          [53, '', 'u'],
+          [133, 'Eevee', 's'],
+        ];
+        function card(d) {
+          var st =
+            d[2] === 'c'
+              ? '<span class="ps-dex-state is-caught">' +
+                PS.icon('check', 12) +
+                'Caught</span>'
+              : d[2] === 's'
+                ? '<span class="ps-dex-state">Seen</span>'
+                : '';
+          return (
+            '<button class="ps-dex-card ' +
+            (d[2] === 'u' ? 'is-unseen' : d[2] === 's' ? 'is-seen' : '') +
+            '"><span class="ps-thumb">' +
+            (d[2] === 'u' ? '?' : '') +
+            '</span><small>#' +
+            String(d[0]).padStart(3, '0') +
+            '</small><b>' +
+            (d[1] || '???') +
+            '</b>' +
+            st +
+            '</button>'
+          );
+        }
+        var header =
+          '<header class="ps-header"><a class="ps-wordmark" href="#">PokeSandbox</a><span class="ps-header-spacer"></span><span class="ps-me">M</span></header>';
+        var context =
+          '<div class="ps-context"><span class="ps-kind" data-i="town"></span><div style="flex:1"><b class="t-title-3" style="font-size:15px">Kanto Classic</b><p class="t-body-sm ps-subtle">Pallet Town League · your journey</p></div></div>';
+        var progress =
+          '<div class="ps-facts"><div><span>Caught</span><b>34</b></div><div><span>Seen</span><b>61</b></div></div><p class="t-body-sm ps-subtle">of 151 in this Pokédex</p>';
+        var filters =
+          '<div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search seen and caught" aria-label="Search this Pokédex"></div><div class="ps-chips"><button class="ps-chip" aria-pressed="true">All</button><button class="ps-chip" aria-pressed="false">Caught</button><button class="ps-chip" aria-pressed="false">Seen</button><button class="ps-chip" aria-pressed="false">Not seen</button></div>';
+        function grid() {
+          return (
+            header +
+            '<div class="ps-scroll"><main class="ps-page" style="gap:12px"><h1 class="t-title-1">Pokédex</h1>' +
+            context +
+            progress +
+            filters +
+            '<div class="ps-dex-grid">' +
+            DEX.map(card).join('') +
+            '</div></main></div>'
+          );
+        }
+        var entryHead = function (state) {
+          return (
+            '<p class="t-body-sm ps-subtle"><a class="ps-link" href="#">Kanto Classic Pokédex</a> › #052</p>' +
+            sp.header({
+              slot: 'slot #052 in Kanto Classic',
+              extra:
+                state === 'c'
+                  ? '<span class="ps-dex-state is-caught">' +
+                    PS.icon('check', 12) +
+                    'Caught</span>'
+                  : '<span class="ps-dex-state">Seen</span>',
+            })
+          );
+        };
+        var where = sp.links('Where you’ve seen it', [
+          ['leaf', 'Route 5 · Walk in the grass', 'Seen Nov 2', 'Map'],
+        ]);
+        function seen() {
+          return (
+            header +
+            '<div class="ps-scroll"><main class="ps-page" style="gap:16px">' +
+            entryHead('s') +
+            where +
+            sp.locked('Base stats', 'Catch Meowth to see its base stats.') +
+            sp.locked('Evolution', 'Catch Meowth to see how it evolves.') +
+            sp.forms([
+              {
+                name: 'Meowth',
+                type: 'Normal',
+                diff: 'Base form.',
+                note: 'Seen',
+                noteColor: 'ink-muted',
+              },
+              {
+                name: '???',
+                type: '?',
+                diff: 'Another form of Meowth in this Pokédex.',
+                note: 'Not seen yet',
+              },
+            ]) +
+            sp.locked('Moves', 'Catch Meowth to see the moves it learns.') +
+            '</main></div>'
+          );
+        }
+        function caught() {
+          return (
+            header +
+            '<div class="ps-scroll"><main class="ps-page" style="gap:16px">' +
+            entryHead('c') +
+            sp.stats('gen1') +
+            sp.details('gen1') +
+            sp.evo({
+              meowthNote: '#052',
+              persianHidden: true,
+              persianNote: 'Not seen yet',
+            }) +
+            sp.forms([
+              {
+                name: 'Meowth',
+                type: 'Normal',
+                diff: 'Base form.',
+                note: 'Caught',
+                noteColor: 'success',
+              },
+              {
+                name: 'Alolan Meowth',
+                type: 'Dark',
+                diff: 'Attack 35 (−10).',
+                note: 'Seen, not caught',
+                noteColor: 'ink-muted',
+              },
+            ]) +
+            sp.moves('gen1') +
+            sp.tms('From Kanto Classic’s TM case.') +
+            sp.links('Where to find it', [
+              ['leaf', 'Route 5 · Walk in the grass', '10%, Lv 10–14', 'Map'],
+              ['leaf', 'Route 6 · Walk in the grass', '10%, Lv 10–14', 'Map'],
+            ]) +
+            '</main></div>'
+          );
+        }
+        function desktop() {
+          return (
+            header +
+            '<main class="ps-page" style="padding:32px 120px"><div class="ps-section-head"><div><h1 class="t-title-1">Kanto Classic Pokédex</h1><p class="t-body-sm ps-subtle">Pallet Town League · your journey: 34 caught, 61 seen of 151</p></div><div class="ps-row" style="width:640px">' +
+            filters.replace('ps-input-wrap"', 'ps-input-wrap" style="flex:1"') +
+            '</div></div>' +
+            '<div class="ps-dex-grid" style="grid-template-columns:repeat(9,1fr)">' +
+            DEX.map(card).join('') +
+            '</div></main>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          el.innerHTML =
+            v === 'grid'
+              ? grid()
+              : v === 'seen'
+                ? seen()
+                : v === 'caught'
+                  ? caught()
+                  : desktop();
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

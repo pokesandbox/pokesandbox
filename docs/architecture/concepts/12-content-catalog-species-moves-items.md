@@ -183,13 +183,36 @@ Machine numbering is per generation (Gen 1 TM01 is Mega Punch; Gen 2 TM01 is Dyn
 ```ts
 Region.moveMachines: { label: string;               // 'TM01', 'HM02'; unique within the region
                        kind: 'tm' | 'hm';
-                       move: MoveId;
-                       reusable: boolean }[]        // Gen 1: TMs single-use, HMs reusable
+                       move: MoveId }[]             // single-use vs reusable is a region rule (18): RegionRules.systems.machines
 ```
 
 - **Bag items** for machines use a reserved item namespace, `machine:<label>` (e.g. `machine:tm24`), resolved through the region's list for display ("TM24 Thunderbolt") and use. One generic machine `ItemDefinition` (pocket `tms`, field use "teach") covers them all, so there are no per-region item documents.
 - **Compatibility** ("can this Pokémon learn TM24?") comes from the region's learnset generation: Showdown's machine sources (`1M` = a TM/HM in Gen 1), plus additions in custom learnsets. The Kanto Classic list (numbering) comes from the template generator, since Showdown doesn't store TM numbers.
 - **Validation:** labels unique, every move exists and is available in the region's move generation, and each machine has at least one compatible species in the regional dex (warning).
+
+**Revised Nov 2026 ([#250](https://github.com/pokesandbox/pokesandbox/issues/250)):**
+
+- **Reusable is a region rule**, not a per-machine flag: `RegionRules.systems.machines.tmReusable` (Gen 1–4 false, Gen 5+ true). HMs are always reusable ([18](18-rules-time-and-randomness.md)).
+- **Numbers are stored and gaps are fine.** Removing TM25 leaves the slot empty until the owner fills it, and nothing renumbers, so a player's `machine:tm24` never changes meaning. The builder sorts by number and shows empty slots. Adding a machine takes the next free number.
+- **A removed machine is hidden, never shown as unusable.** A `machine:` item whose label has no entry resolves to nothing, so it's hidden from the bag, teach prompts, and shops. Journeys keep it quietly, and it comes back if the slot is filled again. The publish review prompts a release note ([01](01-content-vs-state-and-publishing.md)). An empty slot is a Region Health **info** item.
+
+## Regional Pokédex (decided Nov 2026)
+
+From the authoring mockups ([#250](https://github.com/pokesandbox/pokesandbox/issues/250)).
+
+- **Slot range:** regional dex numbers run from 1 to the number of species the region's data rules allow plus the region's custom species, with a backstop of 2,000. This replaces the fixed 1–1500 (`MAX_POKEDEX_NO` in the bot's Pokédex modal). Gaps are fine while building.
+- **Visibility to players** is region content, compiled into the release. It's presentation only and never changes gameplay:
+
+```ts
+Region.dexVisibility: {
+  preset: 'openBook' | 'likeTheGames' | 'spoilerSafe' | 'custom';   // editing a field switches to 'custom'; Kanto Classic: 'likeTheGames'
+  fields: Record<'identity' | 'types' | 'locations' | 'stats' | 'details' | 'evolution' | 'forms' | 'moves',
+                 'always' | 'seen' | 'caught'>;                     // 'locations' is its own field: the biggest spoiler
+  visitors: 'everything' | 'newPlayer';                             // people browsing without a journey
+}
+```
+
+- The player pages that use it are in [28 § Player pages](28-webapp-authoring-and-mobile-first-ux.md#player-pages-decided-nov-2026). Issues: [#260](https://github.com/pokesandbox/pokesandbox/issues/260) (setting), [#261](https://github.com/pokesandbox/pokesandbox/issues/261) (pages).
 
 ## Where canon data lives (decided Oct 2026)
 

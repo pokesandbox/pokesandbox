@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cover · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a><span>Cover <small></small></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="cv">
+        <svg viewBox="0 0 960 300" width="960" height="300" aria-hidden="true">
+          <!--
+      blocks: brand 232x176 (sand, lead), accent 112x132 bleeding bottom (sea), ink slab 256x332 bleeding top/right, brand-soft 112x56, discord 112x68 (small: it only means Discord)
+      arrangement: one tall dark slab with sand and sea satellites, x >= 480
+      pattern: geometric, modular tiles cut by radius-sm, some merged two-wide; a sandbox is built from blocks
+      steps and radii: pitch 48 (space-12), gap 8 (space-2), tile 32, radius-lg 16 on blocks, radius-sm 6 on tiles
+    -->
+          <rect class="b brand" x="480" y="0" width="232" height="176" />
+          <rect class="b soft" x="600" y="184" width="112" height="56" />
+          <rect class="b discord" x="600" y="248" width="112" height="68" />
+          <rect class="b accent" x="480" y="184" width="112" height="132" />
+          <rect class="b ink" x="720" y="-16" width="256" height="332" />
+          <g class="t ground">
+            <rect x="744" y="24" width="32" height="32" />
+            <rect x="792" y="24" width="32" height="32" />
+            <rect x="888" y="24" width="32" height="32" />
+            <rect x="744" y="72" width="32" height="32" />
+            <rect x="840" y="72" width="32" height="32" />
+            <rect x="792" y="120" width="32" height="32" />
+            <rect x="888" y="120" width="32" height="32" />
+            <rect x="744" y="168" width="32" height="32" />
+            <rect x="840" y="168" width="32" height="32" />
+            <rect x="792" y="216" width="32" height="32" />
+            <rect x="888" y="216" width="32" height="32" />
+            <rect x="744" y="264" width="32" height="32" />
+            <rect x="840" y="264" width="32" height="32" />
+          </g>
+          <g class="t brandt">
+            <rect x="840" y="24" width="32" height="32" />
+            <rect x="888" y="72" width="80" height="32" />
+            <rect x="744" y="120" width="32" height="32" />
+            <rect x="840" y="120" width="32" height="32" />
+            <rect x="792" y="168" width="32" height="32" />
+            <rect x="744" y="216" width="80" height="32" />
+            <rect x="888" y="264" width="80" height="32" />
+          </g>
+          <g class="t soft">
+            <rect x="512" y="32" width="80" height="32" />
+            <rect x="512" y="80" width="32" height="32" />
+            <rect x="608" y="128" width="80" height="32" />
+          </g>
+        </svg>
+        <div class="txt">
+          <div class="name">PokeSandbox</div>
+          <div class="tag">Build a region on the web. Play it in Discord.</div>
+        </div>
+      </div>
+      <style>
+        html,
+        body {
+          margin: 0;
+        }
+        .cv {
+          position: relative;
+          width: 960px;
+          height: 300px;
+          background: var(--bg);
+          overflow: hidden;
+        }
+        .cv svg {
+          position: absolute;
+          inset: 0;
+        }
+        .b {
+          rx: var(--radius-lg);
+        }
+        .t rect {
+          rx: var(--radius-sm);
+        }
+        .brand {
+          fill: var(--brand);
+        }
+        .soft,
+        .soft rect {
+          fill: var(--brand-soft);
+        }
+        .accent {
+          fill: var(--accent);
+        }
+        .discord {
+          fill: var(--discord);
+        }
+        .ink {
+          fill: var(--ink);
+        }
+        .ground rect {
+          fill: var(--bg);
+        }
+        .brandt rect {
+          fill: var(--brand);
+        }
+        .txt {
+          position: absolute;
+          left: 40px;
+          bottom: 40px;
+          max-width: 420px;
+        }
+        .name {
+          font: 700 64px/0.95 var(--font-display);
+          letter-spacing: -0.02em;
+          color: var(--ink);
+        }
+        .tag {
+          margin-top: 12px;
+          font: 400 14px/20px var(--font-sans);
+          color: var(--ink-muted);
+        }
+      </style>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Q1 · Regional Pokédex · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >Q1 · Regional Pokédex
+        <small
+          >Q1 · Regional Pokédex · phone list, edit slot (species and forms),
+          add a National Dex range, desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Slots</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Edit slot #052 (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="slot"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Add from National Dex range (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="bulk"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1300px;
+          "
+        >
+          <li>
+            <b>Matches today's Discord builder:</b> numbered slots, up to the
+            number of species your rules allow, each holding one species. A slot
+            can be added, swapped, removed, or customised (whether the base form
+            is included, plus which other forms and in what order). Empty slots
+            are allowed and show as gaps you can fill.
+          </li>
+          <li>
+            <b>Search</b> finds by name or number. Rows show the number, a
+            neutral image placeholder, the species, and its forms ("+1 form").
+          </li>
+          <li>
+            <b>Reorder</b> with the handle or More → Move up/down. Moving
+            renumbers the slots in between, and the sheet says which numbers
+            change before you confirm.
+          </li>
+          <li>
+            <b>Add from National Dex range</b> fills many slots at once, for
+            example #001–#151, skipping slots that already have a species unless
+            you say otherwise. The summary says exactly what will happen.
+          </li>
+          <li>
+            <b>Species info:</b> "View species info" under the species, and an
+            info button on every form row, open the shared Species info view
+            (stats, evolutions, forms, moves, where it's used) without leaving
+            the slot. Alolan Meowth's row would also show a warning here,
+            because its Dark type isn't in Classic Gen 1 rules.
+          </li>
+          <li>
+            Species use the round 1 SearchCombobox; fuzzy matches ("pikahcu")
+            show "Did you mean Pikachu?", like the Discord builder's match
+            picker.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · list + slot detail
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 920px"
+        ></div>
+      </div>
+      <script>
+        var DEX = [
+          [1, 'Bulbasaur'],
+          [2, 'Ivysaur'],
+          [3, 'Venusaur'],
+          [4, ''],
+          [5, ''],
+          [6, 'Charizard'],
+          [7, 'Squirtle'],
+          [25, 'Pikachu'],
+          [26, 'Raichu', '+1 form'],
+          [52, 'Meowth', '+1 form'],
+          [133, 'Eevee'],
+          [150, 'Mewtwo'],
+        ];
+        function pad(n) {
+          return '#' + String(n).padStart(3, '0');
+        }
+        function rows(cur) {
+          return DEX.map(function (d) {
+            if (!d[1])
+              return (
+                '<div class="ps-list-row" style="background:var(--bg)"><span class="t-mono ps-subtle" style="width:44px">' +
+                pad(d[0]) +
+                '</span><span class="ps-row-text"><b class="ps-subtle" style="font-weight:500">Empty slot</b></span><button class="ps-btn ps-btn--ghost"><span data-i="plus" data-s="18"></span>Add</button></div>'
+              );
+            return (
+              '<button class="ps-list-row"' +
+              (cur === d[0] ? ' aria-current="true"' : '') +
+              ' style="padding-left:4px"><span class="ps-handle" aria-hidden="true"><span data-i="grip"></span></span><span class="t-mono ps-subtle" style="width:40px">' +
+              pad(d[0]) +
+              '</span><span class="ps-thumb"></span><span class="ps-row-text"><b>' +
+              d[1] +
+              '</b>' +
+              (d[2] ? '<span>' + d[2] + '</span>' : '') +
+              '</span><span data-i="chevR"></span></button>'
+            );
+          }).join('');
+        }
+        var toolbar =
+          '<div class="ps-toolbar"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search by name or number" aria-label="Search the Pokédex"></div><div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Add slot</button><button class="ps-btn ps-btn--ghost">Add a range</button></div></div>';
+        function slotForm() {
+          var form = function (on, name, note) {
+            return (
+              '<div class="ps-mon" style="padding-left:0"><button class="ps-handle" aria-label="Reorder ' +
+              name +
+              '"><span data-i="grip"></span></button><span class="ps-thumb"></span><div><b>' +
+              name +
+              '</b><span>' +
+              note +
+              '</span></div>' +
+              PS.infoBtn(name) +
+              '<button class="ps-switch" role="switch" aria-checked="' +
+              on +
+              '" aria-label="Include ' +
+              name +
+              '"></button></div>'
+            );
+          };
+          return (
+            '<div class="ps-pair" style="grid-template-columns:120px 1fr"><div class="ps-field"><label class="ps-label">Slot</label><input class="ps-input" type="number" inputmode="numeric" value="52"></div>' +
+            '<div class="ps-field"><span class="ps-label">Species</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span class="ps-thumb" style="width:28px;height:28px"></span>Meowth</span><span data-i="search"></span></button><button class="ps-btn ps-btn--ghost" style="align-self:flex-start;padding:0 8px"><span data-i="info" data-s="18"></span>View species info</button></div></div>' +
+            '<div class="ps-field"><span class="ps-label">Forms in this slot</span><p class="ps-help">Turn on the forms players can find. Drag to set their order in the Pokédex entry.</p><div class="ps-mons">' +
+            form(true, 'Meowth', 'Base form') +
+            form(true, 'Alolan Meowth', 'Form') +
+            form(false, 'Galarian Meowth', 'Form') +
+            '</div></div>' +
+            '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary">Swap species</button><button class="ps-btn ps-btn--ghost" style="color:var(--danger)"><span data-i="trash" data-s="18"></span>Remove from slot</button></div>'
+          );
+        }
+        function sheet(title, body, primary) {
+          return (
+            '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="' +
+            title +
+            '" style="top:120px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">' +
+            title +
+            '</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+            body +
+            '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">' +
+            primary +
+            '</button></div></div>'
+          );
+        }
+        var bulk =
+          '<div class="ps-pair"><div class="ps-field"><label class="ps-label">From National Dex</label><input class="ps-input" type="number" inputmode="numeric" value="1"></div><div class="ps-field"><label class="ps-label">To</label><input class="ps-input" type="number" inputmode="numeric" value="151"></div></div>' +
+          '<div class="ps-field"><label class="ps-label">Start at slot</label><input class="ps-input" type="number" inputmode="numeric" value="1" style="max-width:140px"></div>' +
+          '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Keep slots that already have a species</b><span>Off: they’re replaced.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Keep filled slots"></button></label>' +
+          '<div class="ps-cond-preview"><span>Result</span><p>Adds 141 species to slots #001–#151. 10 slots already filled are kept. Base forms only; add other forms per slot.</p></div>';
+        var bar = PS.phoneBar(
+          'Pokédex',
+          'Kanto Classic · 151 species',
+          PS.moreBtn,
+        );
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'list')
+            el.innerHTML =
+              bar + toolbar + '<div class="ps-scroll">' + rows() + '</div>';
+          if (v === 'slot')
+            el.innerHTML =
+              bar +
+              toolbar +
+              '<div class="ps-scroll">' +
+              rows() +
+              '</div>' +
+              sheet('Slot #052', slotForm(), 'Done');
+          if (v === 'bulk')
+            el.innerHTML =
+              bar +
+              toolbar +
+              '<div class="ps-scroll">' +
+              rows() +
+              '</div>' +
+              sheet('Add from National Dex', bulk, 'Add 141 species');
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('pokedex') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              PS.listPane('Pokédex', 151, rows(52), toolbar) +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px"><span class="t-mono ps-subtle" style="font-size:17px">#052</span> Meowth</h2>' +
+              PS.moreBtn +
+              '</div><div class="ps-scroll"><div class="ps-form">' +
+              slotForm() +
+              '</div></div></section></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

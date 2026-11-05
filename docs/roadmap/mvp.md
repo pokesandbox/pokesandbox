@@ -162,7 +162,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 **Epic: Conditions & Effects** (Q17)
 
 - [ ] Condition tree (`all/any/not`) + fact/operator registry (evaluate/explain/validate/references) + scoped evaluation context (M)
-- [ ] MVP facts: `milestone.has`, `milestone.count`, `choice.value`, `flag`, `bag.count`, `visited` (incl. `$target`), `party.knowsMove`, `party.hasSpecies`, `dex.caughtCount`, `progression.value`, `location.cleared`, `location.visit.*`, `location.trainersDefeated` (L)
+- [ ] MVP facts: `milestone.has`, `milestone.count`, `choice.value`, `flag`, `bag.count`, `visited` (incl. `$target`), `party.knowsMove`, `party.hasSpecies`, `dex.caughtCount`, `progression.value`, `location.lifetime.*`, `location.visit.*` (incl. `encounters`), `trainers.defeated`, `location.trainersDefeated` (L)
 - [ ] Gate envelope (`presentation`, `latch`, `cost`) + `checkGate` + `gateBlocked` event (M)
 - [ ] Effect union + registry + atomic executor with idempotency (L)
 - [ ] MVP effects: currency, item, progression, milestone (grant/revoke), choice, flag, setRespawn, `teleport: respawn` (Escape Rope / Dig / Teleport), random (L). `givePokemon` (PC + swap offer) and `heal` land in CP0a with `PokemonInstance`.
@@ -180,6 +180,15 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Scaffold `libs/authoring` (`execute(actor, command)`, per-entity OCC, role checks, `ContentChange` + `suggestions` output) (M)
 - [ ] Migrate existing admin menus (pokedex, progression, locations) onto `libs/authoring` commands; they keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (Q36) (M)
 - [ ] `RegionRelease` model + publish/compile + `ContentProvider` + deployment status (draft/live/paused) separate from discovery (L)
+
+**Epic: Webapp UI Foundations** (Q36) ([#254](https://github.com/pokesandbox/pokesandbox/issues/254)). Moved from CP1 (Nov 2026) so CP1's screens can start as soon as their components exist. Each shared component is its own issue and blocks only the screens that use it.
+
+- [ ] **First (can start any time):** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks ([#202](https://github.com/pokesandbox/pokesandbox/issues/202)) (S)
+- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it ([#203](https://github.com/pokesandbox/pokesandbox/issues/203)) (M)
+- [ ] Design tokens and base primitives, incl. the dialog that becomes a bottom sheet and the confirm dialog ([#255](https://github.com/pokesandbox/pokesandbox/issues/255)) (M)
+- [ ] Search combobox: species, moves, items, locations ([#256](https://github.com/pokesandbox/pokesandbox/issues/256)) (M)
+- [ ] Sortable list with move up/down ([#257](https://github.com/pokesandbox/pokesandbox/issues/257)) (S)
+- [ ] Passage editor with Discord preview ([#258](https://github.com/pokesandbox/pokesandbox/issues/258)) (M)
 
 ## M1: Battle Core & Catalog
 
@@ -262,7 +271,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Mode machine + persisted script cursor + resume on input (M)
 - [ ] Trigger dispatch: journeyStarted (payload: `newCharacter`, `carriedPokemon`), enterLocation (optional `from`/`via` filters; any arrival counts), interact; once/priority/forced (M)
 - [ ] NPC model (placements with single/everywhere presence and per-placement interact, trainer, engagement) (M)
-- [ ] `givePokemon` effect (PC + swap offer) and the Starter/Pick-N Gift and Simple Talker templates (M)
+- [ ] `givePokemon` effect (PC + swap offer) and the Starter/Pick-N Gift template (sets `Starter` and, with the counter-pick, `Rival's starter`) (M)
 - [ ] Passage renderer: Components v2, `dialogue` and `prose` styles, markdown, auto-paging by text/component budget, choices on the last page (M)
 - [ ] `/play` hub renderer (mode-aware): claims the session (newest wins), resumes any mode incl. mid-battle requests and pending prompts, and shuts down superseded sessions cleanly (L)
 - [ ] Travel action (conditions, locked explanations, enter triggers, `visited:<key>` flags) (M)
@@ -285,8 +294,8 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Fork patch: external choice hook (bag/catch/run consume the turn) + `caught`/`ran` end reasons (L)
 - [ ] ItemDefinition model + Gen 1 item seed (pockets, prices, field/battle handlers) (L)
 - [ ] Gen 1 catch and escape formulas, with test vectors (S)
-- [ ] Encounter method registry + conditioned encounter tables (engine side; the builder screen is CP1) (M)
-- [ ] Explore action: the weighted outcome table with `wild` outcomes (trainer and item outcomes arrive in CP1) (S)
+- [ ] Encounter method registry (label, icon, requirement, Repel, per-method outcome table; canon defaults incl. Look around) + conditioned encounter tables (engine side; the builder screen is CP1) (M)
+- [ ] Explore action: roll the method's outcome table (percent rows, location override) with `wild` outcomes (trainer and item rows arrive in CP1) (S)
 - [ ] Wild battles: catch, run odds, bag in battle (via the hook), Script VM `wildBattle` step; the default intro line, with the encounter start event carrying `firstSighting` and a resolved `intro` reference so authored intros can be added later ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) (L)
 - [ ] Bag: pockets, use outside battle, key items (Oak's Parcel) (M)
 - [ ] Shops: buy/sell (the Viridian Mart), Script VM `shop` step; money never below 0 (S)
@@ -297,17 +306,18 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 **Epic: Webapp Builder (Q24, Q36)** ([#201](https://github.com/pokesandbox/pokesandbox/issues/201))
 
-- [ ] **First, before any webapp authoring work (can start any time):** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks ([#202](https://github.com/pokesandbox/pokesandbox/issues/202)) (S)
-- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it ([#203](https://github.com/pokesandbox/pokesandbox/issues/203)) (M)
 - [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width; blocked by [#202](https://github.com/pokesandbox/pokesandbox/issues/202) and [#203](https://github.com/pokesandbox/pokesandbox/issues/203) ([#204](https://github.com/pokesandbox/pokesandbox/issues/204)) (M)
-- [ ] Shared builder components: search combobox (species/moves/items), sortable list, confirm dialog, passage editor with Discord preview (M)
+- [ ] "Your servers" home with builder access ([#263](https://github.com/pokesandbox/pokesandbox/issues/263)) (M)
 - [ ] Open in builder links from `/region` (plain URLs, Discord OAuth sign-in) (S)
-- [ ] Shared condition builder component (flat "all of" + one nesting level + templates) (L)
+- [ ] Shared rule-group editor for conditions and traversal costs (All of / Any of + one level of groups, per-use configs, templates) ([#265](https://github.com/pokesandbox/pokesandbox/issues/265)) (L)
 - [ ] Region config screen: currency object, starting location, respawn, rules preset (M)
 - [ ] Location screens: kinds, grouping (`parentKey`), description and conditioned `descriptionVariants` as `Passage`s (Q37), services, tags; connections with the two-way toggle and labels; list/detail region map (L)
-- [ ] Encounter table grid (M)
+- [ ] Explore tab: method outcome tables (region default, Customize, Reset), encounter table grid, hidden items (once or renewing), per-exit traversal costs with the locked-message preview; Settings → Encounter methods (L)
+- [ ] Location Events tab: "When a player…" triggers (enter, leave, explore with methods and Always/chance, use item), the shared trigger sheet (also the NPC Talk row), priority warnings (M)
 - [ ] Trainer party editor with conditioned variants (unset moves default to the last 4 level-up moves from the region's learnsets) and the "Lines" tab (M)
 - [ ] Validator Tier 1 + basic Tier 2 + Region Health (webapp view, plus a `/region` summary in Discord) (L)
+- [ ] Region Health: dismiss warnings ([#259](https://github.com/pokesandbox/pokesandbox/issues/259)) (M)
+- [ ] Progressions editor (webapp), parity with the Discord builder ([#262](https://github.com/pokesandbox/pokesandbox/issues/262)) (M)
 
 **Epic: Webapp Hosting (private)** (deferred from M2, decided Nov 2026: the Arena release is bot-only). Lands before CP1's stretch is authored on the PokeSandbox server; staff and testers only until the MVP Release.
 
@@ -317,10 +327,11 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 **Adventure**
 
-- [ ] Explore outcomes `trainer` and `item`, trainer engagement (`onTalk`, `onExplore`, `onEnter`), hidden items (M)
-- [ ] Trigger events `battleEnd` and `explore` (S)
-- [ ] Traversal requirements: location progress counters (lifetime/visit), one-time + permanent costs, compiled exit gates with explanations (M)
-- [ ] Templates: Gym Leader, Forced Encounter (the Route 22 rival), Gift NPC (M)
+- [ ] Explore outcome rows `trainer`, `item` and `event` with renormalizing and hidden buttons, trainer engagement (`onTalk`, `onExplore`, `onEnter`), hidden items with `Journey.pickups` and renewal (M)
+- [ ] Trigger events `battleEnd`, `explore` (methods, `always` / `chance`) and `leaveLocation` (with the `stay` step) (M)
+- [ ] Traversal requirements: location progress counters (lifetime/visit, incl. encounters), per-exit first-time + every-time costs, compiled exit gates (`traversal:<edge>:passed`) with explanations (M)
+- [ ] Templates: Gym Leader, Forced Encounter (the Route 22 rival; enter, leave or explore), Gift NPC (items or a Pokémon) (M)
+- [ ] Basic script step editor (webapp): linear steps (Text, Ask name, Give, Take, Set flag/progression/badge, Heal, Battle, Move player); the Scripts list; several conditioned Talk scripts per NPC (ordered, first match wins); a failed Take ends the script; `{species:<id>}` placeholders; Region Settings → New game opens the `journeyStarted` script; Starter Gift template form (M)
 - [ ] TM/HM lists ([#196](https://github.com/pokesandbox/pokesandbox/issues/196)) and teaching a TM from the bag (M)
 - [ ] Post-battle level evolution (S)
 - [ ] AI trainer item use ([#176](https://github.com/pokesandbox/pokesandbox/issues/176)) (S)
@@ -329,7 +340,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 ## CP2: Cascade Badge
 
-- [ ] Script step editor (webapp) (L)
+- [ ] Script step editor (webapp), full: choices, branches, labels and gotos on top of the CP1 basic editor (L)
 - [ ] Templates: Gauntlet (Nugget Bridge), In-game Trade; Script VM `npcTrade` step (M)
 - [ ] Stone evolution, Repel (safe steps), Escape Rope / Dig / Teleport via `teleport: respawn` (M)
 - [ ] PC boxes: deposit/withdraw/release, overflow, access per `RegionRules.systems.storage.access`; party reorder; full party → PC + "Swap into party?" offer for gifts and catches (M)
@@ -357,7 +368,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 - [ ] Fly network (template, HM02), Fly destination lists grouped and paginated (S)
 - [ ] Region map canvas for wide screens (directional/two-way edges, grouping, gate badges) (L)
-- [ ] Scripted static encounters (Snorlax), Card Key gates, gifts with a full party (Lapras) (S)
+- [ ] Scripted static encounters (Snorlax, with the `useItem` trigger for the Poké Flute), Card Key gates, gifts with a full party (Lapras) (S)
 
 ## CP6: Volcano & Earth (8 badges)
 
@@ -377,6 +388,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 ## MVP Release 🚀
 
 - [ ] Webapp goes public: player profile and character pages (with their journeys), privacy settings, the adventure log view (M)
+- [ ] Pokédex visibility settings ([#260](https://github.com/pokesandbox/pokesandbox/issues/260)) and the player region Pokédex and species pages ([#261](https://github.com/pokesandbox/pokesandbox/issues/261)) (M)
 - [ ] Report content + staff takedown tools for discovery, public pages, and narration ([#206](https://github.com/pokesandbox/pokesandbox/issues/206)) (L)
 - [ ] Load test: N concurrent players + battles on target hosting (M)
 - [ ] Dependency security re-check: no open critical/high Dependabot alerts before release (S)

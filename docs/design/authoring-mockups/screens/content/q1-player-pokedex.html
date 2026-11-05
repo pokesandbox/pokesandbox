@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Q1 · Player Pokédex setting · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >Q1 · Player Pokédex setting
+        <small
+          >Q1 · Player Pokédex (builder setting) · what seeing and catching
+          reveal · presets and per-field control</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Pokédex → Player view</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="top"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Per-field (scrolled)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="fields"></div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Where:</b> a "Player view" tab on the builder's Pokédex
+                screen (next to Slots). It's region content, so it's part of the
+                release and takes effect when published.
+              </li>
+              <li>
+                <b>Presets first:</b> Open book (everything always), Like the
+                games (default: seeing shows the basics, catching shows the
+                rest) and Spoiler-safe (almost everything needs a catch, and
+                unseen entries hide their names). Changing a field switches the
+                preset to Custom.
+              </li>
+              <li>
+                <b>Per field:</b> each kind of dex info is Always, After seen,
+                or After caught. "Where to find it" has its own row because it's
+                the biggest spoiler.
+              </li>
+              <li>
+                <b>Visitors</b> (people not playing the region) see either
+                everything or the same as a brand-new player.
+              </li>
+              <li>
+                <b>Preview as a player</b> opens the region Pokédex as a player
+                with nothing, something seen, or something caught.
+              </li>
+              <li>
+                <b>Data:</b> seen and caught would be journey state (the journey
+                holds all engine state, doc 23); this setting only decides what
+                the pages reveal. It never changes gameplay.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <script>
+        var FIELDS = [
+          [
+            'Name and image',
+            'Shown on the Pokédex grid and the entry.',
+            'seen',
+          ],
+          ['Types', '', 'seen'],
+          ['Where to find it', 'Encounter locations and rates.', 'caught'],
+          ['Base stats', '', 'caught'],
+          ['Details', 'Catch rate, growth, height, weight.', 'caught'],
+          ['Evolution', 'Members not yet seen show as "???".', 'caught'],
+          ['Forms', 'Each form reveals by its own seen or caught.', 'seen'],
+          ['Moves and TMs', '', 'caught'],
+        ];
+        function seg(v) {
+          return (
+            '<div class="ps-seg" role="group">' +
+            [
+              ['always', 'Always'],
+              ['seen', 'After seen'],
+              ['caught', 'After caught'],
+            ]
+              .map(function (o) {
+                return (
+                  '<button aria-pressed="' +
+                  (o[0] === v) +
+                  '">' +
+                  o[1] +
+                  '</button>'
+                );
+              })
+              .join('') +
+            '</div>'
+          );
+        }
+        var choice = function (on, t, d) {
+          return (
+            '<button class="ps-choice" role="radio" aria-checked="' +
+            on +
+            '"><span class="ps-radio"></span><span class="ps-choice-text"><b>' +
+            t +
+            '</b><span>' +
+            d +
+            '</span></span></button>'
+          );
+        };
+        var tabs = PS.tabs(
+          [
+            ['slots', 'Slots'],
+            ['player', 'Player view'],
+          ],
+          'player',
+        );
+        var topHtml =
+          '<div class="ps-field"><span class="ps-label">What players see in the Pokédex</span><div role="radiogroup" class="ps-stack" style="gap:8px">' +
+          choice(
+            false,
+            'Open book',
+            'Everything about every Pokémon in this Pokédex, from the start. Good for planning ahead.',
+          ) +
+          choice(
+            true,
+            'Like the games',
+            'Seeing a Pokémon shows its name, image, types and forms you’ve seen. Catching it shows the rest.',
+          ) +
+          choice(
+            false,
+            'Spoiler-safe',
+            'Unseen entries hide their names. Almost everything needs a catch, including where to find it.',
+          ) +
+          '</div></div>' +
+          '<div class="ps-field"><span class="ps-label">Visitors who aren’t playing</span><div class="ps-seg" role="group"><button aria-pressed="false">See everything</button><button aria-pressed="true">Same as a new player</button></div><p class="ps-help">For people browsing the region page without a journey.</p></div>' +
+          '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="user" data-s="18"></span>Preview as a player</button>';
+        var fields =
+          '<div class="ps-field"><span class="ps-label">Fine-tune <span class="ps-opt">(preset: Like the games)</span></span><div>' +
+          FIELDS.map(function (f) {
+            return (
+              '<div class="ps-vis-row"><b>' +
+              f[0] +
+              '</b>' +
+              (f[1] ? '<span>' + f[1] + '</span>' : '') +
+              seg(f[2]) +
+              '</div>'
+            );
+          }).join('') +
+          '</div></div>';
+        var bar = PS.phoneBar(
+          'Pokédex',
+          'Kanto Classic · 151 species',
+          PS.saved + PS.moreBtn,
+        );
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          el.innerHTML =
+            bar +
+            tabs +
+            '<div class="ps-scroll"><div class="ps-form">' +
+            (v === 'top' ? topHtml + fields : fields) +
+            '</div></div>';
+          if (v === 'fields') {
+            var sc = el.querySelector('.ps-scroll');
+            setTimeout(function () {
+              sc.scrollTop = 120;
+            }, 0);
+          }
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

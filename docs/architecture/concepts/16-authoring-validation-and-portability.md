@@ -14,7 +14,8 @@
 
 ```ts
 validateRegion(draft) → { errors: Issue[]; warnings: Issue[]; info: Issue[] }
-Issue { code: 'EDGE_TARGET_MISSING' | 'UNREACHABLE_LOCATION' | …; severity; subject: Ref; message; fixHint? }
+Issue { code: 'EDGE_TARGET_MISSING' | 'UNREACHABLE_LOCATION' | …; severity; area; subject: Ref; fingerprint; message; fixHint? }
+// area groups Region Health; subject is precise enough to deep-link to the field; fingerprint is stable across runs
 ```
 
 **Tier 1: structural (MVP)**
@@ -121,6 +122,15 @@ Both call the same commands, so a Discord editor can be added for any feature la
 - **Preview/playtest:** "Play draft as test journey". It's the fastest feedback loop for authors (later, but design the engine to support it: a release built from the draft, and a journey flagged `isTest`).
 - Discord is good for quick actions and poor for 200-node graphs and long step lists, which is why MVP authoring is webapp-first ([28](28-webapp-authoring-and-mobile-first-ux.md)).
 
+### Dismissed warnings (decided Nov 2026)
+
+Authors can dismiss a **warning** they've judged fine, so Region Health and the publish review stay readable ([#259](https://github.com/pokesandbox/pokesandbox/issues/259)):
+
+- A dismissal is `{ fingerprint, by, at, reason }`, stored on the **draft**, shared by every editor, and never compiled into a release.
+- **Errors can't be dismissed.**
+- The `fingerprint` is the issue's code + subject + the facts that triggered it. When those facts change (Route 22 gains or loses a connection), the fingerprint changes, the dismissal lapses, and the warning is open again.
+- Region Health has Open and Dismissed tabs (who, when, why, Restore). The publish review shows dismissed warnings collapsed under a count.
+
 ## MVP scope
 
 - Tier 1 and basic Tier 2 (reachability ignoring conditions, plus "grants exist for required milestones/flags"), the Region Health view, delete-guard "used by", and JSON export/import of a region.
@@ -159,14 +169,14 @@ Editing afterwards works either way: fix it in the tools on the HQ server and re
 
 MVP authoring is **webapp-first and mobile-first** ([28](28-webapp-authoring-and-mobile-first-ux.md)). This replaces the earlier plan of Discord-complete authoring with targeted webapp editors. The editors below are the ones that most need a real screen; every other MVP builder feature (region settings and rules, progressions, shops, transport networks, NPC basics, TM/HM lists) gets a webapp form too. All of them are built on the same `libs/authoring` commands (per-entity optimistic concurrency, role checks), so a Discord editor can be added for any of them later.
 
-| Editor                                   | Why Discord struggles                                                  | Webapp shape (phone first; wide screens get more)                                                                                                         |
-| ---------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Script step editor**                   | Long ordered step lists, labels/branches, multi-paragraph dialogue     | Step list with drag handles and move up/down, a full-screen step editor, inline passage editing with a Discord preview, template insertion                |
-| **Region map**                           | Hundreds of locations and directional edges, grouping, traversal gates | List/detail of locations with their connections on phones; a node-edge canvas (e.g. React Flow) with two-way edge drawing and gate badges on wide screens |
-| **Encounter table grid**                 | Species × level range × weight × method × condition                    | One row per encounter as a card on phones, a spreadsheet-style grid on wide screens, with species search and a weight-percentage preview                  |
-| **Trainer party editor**                 | Up to 6 Pokémon × moves/levels × conditioned party variants            | Variant tabs, each with a party list; learnset-aware move pickers; condition per variant                                                                  |
-| **Condition builder** (shared component) | Nested any/all/not trees                                               | Tree editor used inside every editor above                                                                                                                |
-| **Region Health** (read-only)            | Long validator reports with cross-links                                | Grouped issue list linking to the relevant editor                                                                                                         |
+| Editor                                                                                                  | Why Discord struggles                                                                                                                | Webapp shape (phone first; wide screens get more)                                                                                                         |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Script step editor**                                                                                  | Long ordered step lists, labels/branches, multi-paragraph dialogue                                                                   | Step list with drag handles and move up/down, a full-screen step editor, inline passage editing with a Discord preview, template insertion                |
+| **Region map**                                                                                          | Hundreds of locations and directional edges, grouping, traversal gates                                                               | List/detail of locations with their connections on phones; a node-edge canvas (e.g. React Flow) with two-way edge drawing and gate badges on wide screens |
+| **Encounter table grid**                                                                                | Species × level range × weight × method × condition                                                                                  | One row per encounter as a card on phones, a spreadsheet-style grid on wide screens, with species search and a weight-percentage preview                  |
+| **Trainer party editor**                                                                                | Up to 6 Pokémon × moves/levels × conditioned party variants                                                                          | Variant tabs, each with a party list; learnset-aware move pickers; condition per variant                                                                  |
+| **Rule-group editor** (shared component, [#265](https://github.com/pokesandbox/pokesandbox/issues/265)) | All of / Any of with one level of groups; Not and repeats per use ([05](05-requirements.md#authoring-ux-so-option-c-stays-friendly)) | Tree editor used inside every editor above                                                                                                                |
+| **Region Health** (read-only)                                                                           | Long validator reports with cross-links                                                                                              | Grouped issue list linking to the relevant editor                                                                                                         |
 
 ## Open questions
 

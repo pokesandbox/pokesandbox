@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>R4 · Encounter methods · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >R4 · Encounter methods
+        <small
+          >R4 · Encounter methods (Settings) · list, Look around for towns and
+          buildings, each method’s outcome table, a total over 100%, add a
+          custom method, delete confirm; desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 2980px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Settings → Encounter methods</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Walk in the grass</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="grass"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Look around (towns and buildings)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="look"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Surf · adding an outcome</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="surf"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Total over 100% (can’t save)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="over"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Add a method (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="add"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Delete Good Rod (confirm)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="delete"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1900px;
+          "
+        >
+          <li>
+            <b>Where:</b> Settings → Encounter methods. A location’s Explore tab
+            links to the method its outcomes come from.
+          </li>
+          <li>
+            <b>The list</b> starts with Walk in the grass, Explore the cave,
+            Surf, Old Rod, Good Rod, Super Rod and Look around. Each row shows
+            an icon placeholder, the method’s outcomes, and its requirement.
+          </li>
+          <li>
+            <b>Outcomes:</b> each method has its own table of what an explore
+            can find: wild Pokémon, a trainer, or a hidden item, each with a
+            percentage. "+ Outcome" adds a kind the table doesn’t have; any row
+            can be removed, but a method needs at least one.
+          </li>
+          <li>
+            <b>The total must be 100%.</b> Edits never change other rows. Over
+            or under 100%, the total turns red, the error says how much to
+            remove or add, and the method can’t be saved.
+          </li>
+          <li>
+            <b>Running out:</b> when a location has no trainers left to beat or
+            items left to find, their share is spread over the remaining rows. A
+            method with nothing left to find hides its button in Discord; a
+            renewing item coming back brings the button back.
+          </li>
+          <li>
+            <b>Look around</b> is how towns and buildings offer hidden items and
+            trainers: no requirement, Trainer 50 · Item 50 with no Wild row.
+            It’s only a starting point: rename it, change its rows or delete it
+            like any method.
+          </li>
+          <li>
+            <b>Affected by Repel</b> depends only on whether the table has a
+            Wild row: it’s hidden without one, and adding one brings it back,
+            switched on.
+          </li>
+          <li>
+            <b>Locations</b> use these tables unless they customize their own,
+            which is where events can be added.
+          </li>
+          <li>
+            <b>Custom methods</b> ("Search the tall reeds") work the same as the
+            seeded ones. Deleting a method lists the locations that use it;
+            their tables for it are removed.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · list and detail
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 900px"
+        ></div>
+      </div>
+      <script>
+        var METHODS = [
+          {
+            k: 'grass',
+            n: 'Walk in the grass',
+            icon: 'leaf',
+            oc: [
+              ['wild', 70],
+              ['trainer', 20],
+              ['item', 10],
+            ],
+            req: 'No requirement',
+            locs: 18,
+          },
+          {
+            k: 'cave',
+            n: 'Explore the cave',
+            icon: 'dungeon',
+            oc: [
+              ['wild', 60],
+              ['trainer', 25],
+              ['item', 15],
+            ],
+            req: 'No requirement',
+            locs: 9,
+          },
+          {
+            k: 'surf',
+            n: 'Surf',
+            icon: 'water',
+            oc: [
+              ['wild', 95],
+              ['item', 5],
+            ],
+            req: 'Knows Surf and has the Soul Badge',
+            locs: 11,
+          },
+          {
+            k: 'old',
+            n: 'Old Rod',
+            icon: 'water',
+            oc: [['wild', 100]],
+            req: 'Has the Old Rod',
+            locs: 14,
+          },
+          {
+            k: 'good',
+            n: 'Good Rod',
+            icon: 'water',
+            oc: [['wild', 100]],
+            req: 'Has the Good Rod',
+            locs: 4,
+          },
+          {
+            k: 'super',
+            n: 'Super Rod',
+            icon: 'water',
+            oc: [['wild', 100]],
+            req: 'Has the Super Rod',
+            locs: 7,
+          },
+          {
+            k: 'look',
+            n: 'Look around',
+            icon: 'search',
+            oc: [
+              ['trainer', 50],
+              ['item', 50],
+            ],
+            req: 'No requirement',
+            locs: 6,
+          },
+        ];
+        var SHORT = { wild: 'Wild', trainer: 'Trainer', item: 'Item' };
+        var ocText = function (oc) {
+          return oc
+            .map(function (o) {
+              return SHORT[o[0]] + ' ' + o[1];
+            })
+            .join(' · ');
+        };
+        var ocRows = function (oc) {
+          return oc.map(function (o) {
+            return { k: o[0], pct: o[1] };
+          });
+        };
+        function rows(cur) {
+          return METHODS.map(function (m) {
+            return (
+              '<button class="ps-list-row"' +
+              (cur === m.k ? ' aria-current="true"' : '') +
+              '><span class="ps-kind" data-i="' +
+              m.icon +
+              '"></span><span class="ps-row-text"><b>' +
+              m.n +
+              '</b><span>' +
+              ocText(m.oc) +
+              '</span><span>' +
+              m.req +
+              '</span></span><span data-i="chevR"></span></button>'
+            );
+          }).join('');
+        }
+        var addBtn =
+          '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Add method"><span data-i="plus"></span></button>';
+        var sw = function (on, t, d) {
+          return (
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>' +
+            t +
+            '</b><span>' +
+            d +
+            '</span></span><button class="ps-switch" role="switch" aria-checked="' +
+            on +
+            '" aria-label="' +
+            t +
+            '"></button></label>'
+          );
+        };
+        function used(list, more) {
+          return (
+            '<div class="ps-field"><span class="ps-label">Used by ' +
+            (list.length + more) +
+            ' locations</span><div class="ps-review">' +
+            list
+              .map(function (l) {
+                return (
+                  '<div class="ps-review-row"><span class="ps-kind" data-i="' +
+                  l[1] +
+                  '"></span><div><dd>' +
+                  l[0] +
+                  '</dd><dt style="font-weight:400">' +
+                  l[2] +
+                  '</dt></div><button class="ps-btn ps-btn--ghost">Open</button></div>'
+                );
+              })
+              .join('') +
+            '</div>' +
+            (more
+              ? '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Show all ' +
+                (list.length + more) +
+                '</button>'
+              : '') +
+            '</div>'
+          );
+        }
+        function detail(m) {
+          return (
+            '<div class="ps-sprite-row"><span class="ps-sprite" style="width:64px;height:64px">Icon</span><button class="ps-btn ps-btn--secondary">Choose icon</button></div>' +
+            '<div class="ps-field"><label class="ps-label">Button label</label><input class="ps-input" value="' +
+            (m.label || m.n) +
+            '"><p class="ps-help">What players tap in Discord.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">Outcomes</span><p class="ps-help" style="margin-top:-4px">What an explore with this method can find.</p>' +
+            PS.outcomes(m.ocRows || ocRows(m.oc), { menu: m.menu }) +
+            '<p class="ps-help">When a location has no trainers left to beat or items left to find, their share goes to the other rows. Locations can customize this.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">Requirement</span>' +
+            (m.req === 'No requirement'
+              ? PS.condSummary('', {
+                  emptyHint:
+                    'Everyone sees this button where the location has it.',
+                })
+              : PS.condSummary(
+                  'Requires ' + m.req.charAt(0).toLowerCase() + m.req.slice(1),
+                )) +
+            '<p class="ps-help">Players only see the button when this passes.</p></div>' +
+            ((m.ocRows || ocRows(m.oc)).some(function (o) {
+              return o.k === 'wild';
+            })
+              ? sw(
+                  true,
+                  'Affected by Repel',
+                  'Wild Pokémon only. A Repel turns weak ones into safe steps.',
+                )
+              : '')
+          );
+        }
+        var grassUsed = used(
+          [
+            ['Route 1', 'route', '2 tables'],
+            ['Route 2', 'route', '1 table'],
+            ['Viridian Forest', 'dungeon', '1 table'],
+          ],
+          15,
+        );
+        var lookUsed = used(
+          [
+            ['Pewter City', 'town', 'Trainer 50 · Item 50'],
+            ['Viridian City', 'town', 'Customized'],
+            ['Pewter Museum', 'building', 'Trainer 50 · Item 50'],
+          ],
+          3,
+        );
+        var surfUsed = used(
+          [
+            ['Route 19', 'water', '1 table'],
+            ['Cerulean City', 'town', '1 table'],
+          ],
+          9,
+        );
+        var addSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="New method" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">New method</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+          detail({
+            k: 'reeds',
+            n: 'Search the tall reeds',
+            icon: 'leaf',
+            oc: [
+              ['wild', 60],
+              ['item', 40],
+            ],
+            req: 'No requirement',
+          }) +
+          '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Add method</button></div></div>';
+        var deleteSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet" role="alertdialog" aria-labelledby="dm"><div class="ps-grabber"></div><h2 class="t-title-2" id="dm">Delete Good Rod?</h2>' +
+          '<p class="t-body">4 locations use it. Their Good Rod tables will be removed, and players won’t see a Good Rod button there.</p>' +
+          '<div class="ps-review">' +
+          ['Route 12', 'Route 13', 'Fuchsia City', 'Seafoam Islands']
+            .map(function (l) {
+              return (
+                '<div class="ps-review-row"><span class="ps-kind" data-i="water"></span><div><dd>' +
+                l +
+                '</dd></div></div>'
+              );
+            })
+            .join('') +
+          '</div>' +
+          '<div class="ps-actions"><button class="ps-btn ps-btn--danger ps-btn--block">Delete method</button><button class="ps-btn ps-btn--ghost ps-btn--block">Cancel</button></div></div>';
+        var listBar = PS.phoneBar(
+          'Encounter methods',
+          'Settings · Kanto Classic',
+          addBtn,
+        );
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v'),
+            body = function (x) {
+              return (
+                '<div class="ps-scroll"><div class="ps-form">' +
+                x +
+                '</div></div>'
+              );
+            };
+          if (v === 'list')
+            el.innerHTML =
+              listBar +
+              '<div class="ps-scroll"><p class="t-body-sm ps-muted" style="padding:12px 16px 4px">The ways players can look for wild Pokémon. Each is a button on a location’s Explore.</p>' +
+              rows() +
+              '</div>';
+          if (v === 'grass')
+            el.innerHTML =
+              PS.phoneBar(
+                'Walk in the grass',
+                'Encounter method',
+                PS.saved + PS.moreBtn,
+              ) + body(detail(METHODS[0]) + grassUsed);
+          if (v === 'over')
+            el.innerHTML =
+              PS.phoneBar(
+                'Walk in the grass',
+                'Encounter method',
+                '<span class="ps-save ps-save--error"><span data-i="error" data-s="16"></span>Not saved</span>' +
+                  PS.moreBtn,
+              ) +
+              body(
+                detail({
+                  k: 'grass',
+                  n: 'Walk in the grass',
+                  icon: 'leaf',
+                  req: 'No requirement',
+                  ocRows: [
+                    { k: 'wild', pct: 70 },
+                    { k: 'trainer', pct: 25 },
+                    { k: 'item', pct: 10 },
+                  ],
+                }),
+              );
+          if (v === 'look')
+            el.innerHTML =
+              PS.phoneBar(
+                'Look around',
+                'Encounter method',
+                PS.saved + PS.moreBtn,
+              ) + body(detail(METHODS[6]) + lookUsed);
+          if (v === 'surf')
+            el.innerHTML =
+              PS.phoneBar('Surf', 'Encounter method', PS.saved + PS.moreBtn) +
+              body(
+                detail(Object.assign({ menu: ['trainer'] }, METHODS[2])) +
+                  surfUsed,
+              );
+          if (v === 'add')
+            el.innerHTML =
+              listBar +
+              '<div class="ps-scroll">' +
+              rows() +
+              '</div>' +
+              addSheet;
+          if (v === 'delete')
+            el.innerHTML =
+              PS.phoneBar(
+                'Good Rod',
+                'Encounter method',
+                PS.saved + PS.moreBtn,
+              ) +
+              body(detail(METHODS[4])) +
+              deleteSheet;
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('settings') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              PS.listPane('Encounter methods', 7, rows('grass')) +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">Walk in the grass</h2>' +
+              PS.moreBtn +
+              '</div><div class="ps-scroll"><div class="ps-form" style="max-width:640px">' +
+              detail(METHODS[0]) +
+              grassUsed +
+              '</div></div></section></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

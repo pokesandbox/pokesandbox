@@ -1,0 +1,86 @@
+/* Page chrome for the standalone mockups (not part of the design system). */
+html,
+body {
+  margin: 0;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+.mk-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 56px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font: 500 15px/20px var(--font-sans);
+}
+.mk-bar a {
+  color: var(--brand-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.mk-bar span {
+  flex: 1;
+  color: var(--ink);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mk-bar button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 15px/20px var(--font-sans);
+  cursor: pointer;
+}
+.mk-bar small {
+  color: var(--ink-subtle);
+  font-weight: 400;
+}
+.mk-stage {
+  position: relative;
+}
+.mk-index {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.mk-index ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.mk-index a.ps-card {
+  text-decoration: none;
+  color: inherit;
+  gap: 4px;
+  min-height: 44px;
+}
+.mk-index a.ps-card:hover {
+  border-color: var(--border-strong);
+}
+.mk-index a.ps-card b {
+  font: 600 16px/22px var(--font-sans);
+}
+.mk-index a.ps-card span {
+  font: 400 14px/20px var(--font-sans);
+  color: var(--ink-muted);
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Toast · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Toast
+        <small
+          >Inverted, bottom of the screen, optional single action</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <div class="ps-stack" style="gap: 12px">
+          <div class="ps-toast" role="status">
+            <span data-i="check"></span><span>Location added</span>
+          </div>
+          <div class="ps-toast" role="status">
+            <span data-i="trash"></span><span>Route 2 deleted</span
+            ><button class="ps-btn">Undo</button>
+          </div>
+          <div class="ps-toast" role="alert">
+            <span data-i="error"></span
+            ><span>Couldn't save. Check your connection.</span
+            ><button class="ps-btn">Retry</button>
+          </div>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

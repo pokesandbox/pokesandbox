@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>E · Access states · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >E · Access states
+        <small
+          >E · Access states · sign in to continue, no builder access</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1400px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">
+              Sign in to continue (from a Discord "Open in builder" link)
+            </p>
+            <div class="ps-phone ps-phone--tall">
+              <header class="ps-header">
+                <a class="ps-wordmark" href="#">PokeSandbox</a>
+              </header>
+              <main class="ps-center">
+                <div class="ps-center-icon">
+                  <span data-i="lock" data-s="28"></span>
+                </div>
+                <h1 class="t-title-1">Sign in to continue</h1>
+                <p class="t-body ps-muted">
+                  You're opening a page in the builder:
+                </p>
+                <div class="ps-context">
+                  <span class="ps-kind" data-i="route"></span>
+                  <div style="flex: 1">
+                    <b class="t-title-3" style="font-size: 15px">Route 1</b>
+                    <p class="t-body-sm ps-subtle">
+                      Kanto Classic · Pallet Town League
+                    </p>
+                  </div>
+                </div>
+                <button class="ps-btn ps-btn--discord ps-btn--block">
+                  <span data-i="chat"></span>Sign in with Discord
+                </button>
+                <p class="t-body-sm ps-subtle">
+                  We use Discord to check that you're an admin or mod on this
+                  server. We never post as you. You'll come straight back to
+                  this page.
+                </p>
+              </main>
+              <footer class="ps-footer">
+                <span
+                  >Inside Discord's browser? Sign-in may open a new window.
+                  That's expected.</span
+                >
+              </footer>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">No builder access</p>
+            <div class="ps-phone ps-phone--tall">
+              <header class="ps-header">
+                <a class="ps-wordmark" href="#">PokeSandbox</a
+                ><span class="ps-header-spacer"></span
+                ><button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Account: misty"
+                >
+                  <span class="ps-me">M</span>
+                </button>
+              </header>
+              <main class="ps-center">
+                <div class="ps-center-icon">
+                  <span data-i="lock" data-s="28"></span>
+                </div>
+                <h1 class="t-title-1">
+                  You don't have builder access for this server
+                </h1>
+                <p class="t-body ps-muted">
+                  Only admins and mods of
+                  <b style="color: var(--ink)">Pallet Town League</b> can edit
+                  its regions. You're signed in as
+                  <b style="color: var(--ink)">misty</b>.
+                </p>
+                <div class="ps-callout ps-callout--info">
+                  <span data-i="book" data-s="18"></span
+                  ><span
+                    >If you should have access, ask a server admin to give you
+                    the admin or mod role, then reload this page.</span
+                  >
+                </div>
+                <div class="ps-actions">
+                  <button class="ps-btn ps-btn--primary ps-btn--block">
+                    View Kanto Classic
+                  </button>
+                  <button class="ps-btn ps-btn--secondary ps-btn--block">
+                    Reload
+                  </button>
+                  <button class="ps-btn ps-btn--ghost ps-btn--block">
+                    Sign in with a different account
+                  </button>
+                </div>
+              </main>
+            </div>
+          </div>
+          <div style="width: 440px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                The links from Discord carry no tokens, so a first visit lands
+                here. The card names where you were going so it doesn't feel
+                like a dead end.
+              </li>
+              <li>After sign-in we return to the exact URL, tab included.</li>
+              <li>
+                The role check happens on the server for every builder action,
+                not just on this page. If a role is removed mid-session, the
+                next save shows this screen.
+              </li>
+              <li>
+                "View Kanto Classic" falls back to the public region page;
+                "Reload" re-checks the role after an admin grants it.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      L+M · NPCs (one list, trainers folded in) · PokeSandbox mockups
+    </title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >L+M · NPCs (one list, trainers folded in)
+        <small
+          >L+M · One NPCs list (chosen) · trainers folded in · list, Person tab,
+          Battle tab, non-battle NPC, desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 2140px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">One list, filtered</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Rival · Person tab</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="person"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Rival · Battle tab</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="battle"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Nurse Joy · Battle tab (doesn't battle)
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="nobattle"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Rocket Grunt · Person (battle only, not placed)
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="unplaced"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1500px;
+          "
+        >
+          <li>
+            <b>One list for every NPC, trainers included.</b> The sidebar has
+            one "NPCs" entry; Trainers goes away. Filters: All · Trainers ·
+            Non-battle · Battle only. Picking Trainers adds the class chips from
+            L1.
+          </li>
+          <li>
+            <b>One editor, four tabs:</b> Person (who, where, talk) · Battle
+            (class, AI, payout, format, engagement, after defeat) · Party ·
+            Lines. Party and Lines are the L2 tabs unchanged. An NPC who doesn't
+            battle shows Person and Battle only; Battle explains and offers
+            "Make battleable", which creates the trainer and reveals Party and
+            Lines.
+          </li>
+          <li>
+            <b>No linking step.</b> The data stays as doc 11 decided (an NPC
+            references a Trainer), but the builder creates and names the trainer
+            for you. The two edge cases become explicit, rarer actions:
+          </li>
+          <li style="margin-left: 16px">
+            <b>Shared trainer</b> (one Rocket Grunt team behind several NPCs):
+            Battle → More → "Use an existing trainer". A banner then says
+            "Shared with 3 other NPCs. Changes apply to all of them." with "Make
+            a copy for this NPC".
+          </li>
+          <li style="margin-left: 16px">
+            <b>Battle only</b> (a trainer used only by a script, like a forced
+            ambush): listed with a "Battle only" badge. Its Person tab shows
+            "Not placed anywhere yet" under Where they appear, with Add a place.
+          </li>
+          <li>
+            <b>Presence wording</b> (doc 11): "One place at a time" and "Every
+            listed place", each with a one-line explanation. Only listed places
+            count; the overlap warning reads "Two places can match at once; the
+            first one wins."
+          </li>
+          <li>
+            Sprite lives on Person; Battle uses it unless the trainer class
+            overrides it.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · Battle tab
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 960px"
+        ></div>
+      </div>
+      <script>
+        var PEOPLE = [
+          {
+            k: 'rival',
+            n: '{name:rival}',
+            meta: 'Rival · 3 places · 3 party variants',
+            tag: 'Trainer',
+            warn: true,
+          },
+          {
+            k: 'brock',
+            n: 'Brock',
+            meta: 'Gym Leader · Pewter Gym · 2 Pokémon',
+            tag: 'Trainer',
+          },
+          {
+            k: 'rick',
+            n: 'Bug Catcher Rick',
+            meta: 'Viridian Forest · on explore · 2 Pokémon',
+            tag: 'Trainer',
+          },
+          {
+            k: 'grunt',
+            n: 'Rocket Grunt',
+            meta: 'Mt. Moon · script mt-moon-ambush',
+            tag: 'Battle only',
+          },
+          { k: 'oak', n: 'Professor Oak', meta: '2 places · 2 Talk scripts' },
+          { k: 'joy', n: 'Nurse Joy', meta: 'Everywhere · 9 Pokémon Centers' },
+          { k: 'mom', n: 'Mom', meta: 'Pallet Town · 1 Talk script' },
+        ];
+        function rows(cur) {
+          return PEOPLE.map(function (p) {
+            var lead =
+              p.tag === 'Battle only'
+                ? '<span class="ps-kind" data-i="swap"></span>'
+                : '<span class="ps-sprite ps-sprite--sm"></span>';
+            var badge = p.tag
+              ? '<span class="ps-badge' +
+                (p.tag === 'Trainer'
+                  ? ' ps-badge--brand'
+                  : ' ps-badge--outline') +
+                '" style="align-self:flex-start;margin-top:2px">' +
+                p.tag +
+                '</span>'
+              : '';
+            return (
+              '<button class="ps-list-row"' +
+              (cur === p.k ? ' aria-current="true"' : '') +
+              '>' +
+              lead +
+              '<span class="ps-row-text"><b>' +
+              PS.trainerName(p.n) +
+              '</b><span>' +
+              p.meta +
+              '</span>' +
+              badge +
+              '</span>' +
+              (p.warn
+                ? '<span class="ps-dot" aria-label="Has warnings"></span>'
+                : '') +
+              '<span data-i="chevR"></span></button>'
+            );
+          }).join('');
+        }
+        function filters() {
+          return (
+            '<div class="ps-toolbar"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search NPCs" aria-label="Search NPCs"></div>' +
+            '<div class="ps-chips"><button class="ps-chip" aria-pressed="true">All</button><button class="ps-chip" aria-pressed="false">Trainers</button><button class="ps-chip" aria-pressed="false">Non-battle</button><button class="ps-chip" aria-pressed="false">Battle only</button></div></div>'
+          );
+        }
+        var tabs = PS.npcTabs;
+        var person = PS.npcPerson;
+        var battle = PS.npcBattle;
+        function noBattle() {
+          return (
+            '<div class="ps-center" style="align-items:center;text-align:center;padding-top:48px"><div class="ps-center-icon"><span data-i="swap" data-s="28"></span></div><h2 class="t-title-2">Nurse Joy doesn’t battle</h2>' +
+            '<p class="t-body ps-muted">Make her battleable to give her a class, a team and battle lines. Her name, sprite and places stay the same.</p>' +
+            '<button class="ps-btn ps-btn--primary ps-btn--block">Make battleable</button><button class="ps-btn ps-btn--ghost ps-btn--block">Use an existing trainer</button>' +
+            '<p class="t-body-sm ps-subtle">Use an existing trainer to share one team between several NPCs, like Rocket Grunts.</p></div>'
+          );
+        }
+        var rivalTitle =
+          '<span class="t-mono" style="font-size:15px">{name:rival}</span>';
+        var addBtn =
+          '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Add NPC"><span data-i="plus"></span></button>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'list')
+            el.innerHTML =
+              PS.phoneBar('NPCs', 'Kanto Classic · 41', addBtn) +
+              filters() +
+              '<div class="ps-scroll">' +
+              rows() +
+              '</div>';
+          if (v === 'person')
+            el.innerHTML =
+              PS.phoneBar(rivalTitle, 'NPC · Trainer', PS.saved + PS.moreBtn) +
+              tabs('person', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              person() +
+              '</div></div>';
+          if (v === 'battle')
+            el.innerHTML =
+              PS.phoneBar(rivalTitle, 'NPC · Trainer', PS.saved + PS.moreBtn) +
+              tabs('battle', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              battle() +
+              '</div></div>';
+          if (v === 'nobattle')
+            el.innerHTML =
+              PS.phoneBar('Nurse Joy', 'NPC', PS.saved + PS.moreBtn) +
+              tabs('battle', false) +
+              '<div class="ps-scroll">' +
+              noBattle() +
+              '</div>';
+          if (v === 'unplaced')
+            el.innerHTML =
+              PS.phoneBar(
+                'Rocket Grunt',
+                'Battle only',
+                PS.saved + PS.moreBtn,
+              ) +
+              tabs('person', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Rocket Grunt"></div>' +
+              '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="true">One place at a time</button><button aria-pressed="false">Every listed place</button></div><p class="ps-help">Shows up at the first listed place whose condition matches. Good for story characters who move.</p>' +
+              '<h2 class="t-title-2" style="margin-top:8px">Where they appear</h2><div class="ps-empty" style="border:1px dashed var(--border-strong);border-radius:16px;padding:24px 16px"><span data-i="pin" data-s="28"></span><b class="t-title-3" style="color:var(--ink)">Not placed anywhere yet</b><span class="t-body-sm">Players only meet this trainer through script <span class="t-mono">mt-moon-ambush</span>.</span><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Add a place</button></div>' +
+              '</div></div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('npcs') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              PS.listPane('NPCs', 41, rows('rival'), filters()) +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">' +
+              rivalTitle +
+              '</h2><span class="ps-badge ps-badge--brand">Trainer</span>' +
+              PS.moreBtn +
+              '</div>' +
+              tabs('battle', true).replace(
+                'ps-tabs"',
+                'ps-tabs" style="padding-left:16px"',
+              ) +
+              '<div class="ps-scroll"><div class="ps-form" style="max-width:640px">' +
+              battle() +
+              '</div></div></section></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

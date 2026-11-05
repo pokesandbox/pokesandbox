@@ -154,6 +154,12 @@ Region.discovery: {
 - **Journey saves (MVP):** the migration rules above run lazily when a journey loads on a newer release. Rule changes that would break saves need a fix-up rule ([18](18-rules-time-and-randomness.md#decisions-oct-2026-piecemeal-rules-gen-1-first)).
 - **Shared state (post-MVP):** each publish review also checks the release against the region's `RegionState`, and region-state migrations run once, at publish, inside the publish transaction, because the state is shared. The rules are in [24 § Publishing](24-shared-state-region-and-server.md#publishing-decided-oct-2026).
 
+**5. From the authoring mockups (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)).**
+
+- `Region.discovery.description` is the region's **short description**, at most 200 characters. It's shown on the server and region pages and asked for when a region is created.
+- **Removed TMs and release notes:** when a release empties a TM/HM slot the previous release had, the publish review lists it and suggests a line for `notes.authored`, so the owner can tell players. Removed machines are hidden from players ([12 § TM/HM lists](12-content-catalog-species-moves-items.md#tmhm-lists-decided-oct-2026)).
+- **Region Health dismissals** live on the draft and are never compiled into a release ([16 § Dismissed warnings](16-authoring-validation-and-portability.md#dismissed-warnings-decided-nov-2026)).
+
 ## Open questions
 
 - ~~Hot-fix a published release?~~ **Decided (Oct 2026):** no. Every change, typo fixes included, goes live only through a publish (with its review step, see [16](16-authoring-validation-and-portability.md)). One path means one set of validation and one change history.

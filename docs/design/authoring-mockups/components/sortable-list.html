@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sortable list · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Sortable list
+        <small>Drag handle plus Move up/down in the row menu</small></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <div class="ps-demos">
+          <div style="width: 358px">
+            <p class="ps-demo-label">Resting, row menu open</p>
+            <ul class="ps-sortable" id="list"></ul>
+          </div>
+          <div style="width: 358px">
+            <p class="ps-demo-label">Dragging</p>
+            <ul class="ps-sortable">
+              <li class="ps-sort-row">
+                <button class="ps-handle" aria-label="Reorder Pidgey">
+                  <span data-i="grip"></span>
+                </button>
+                <div class="ps-sort-main">
+                  <span class="ps-thumb"></span>
+                  <div>
+                    <b class="t-title-3" style="font-size: 15px">Pidgey</b>
+                    <p class="t-body-sm ps-subtle">Lv 2–5 · 45%</p>
+                  </div>
+                </div>
+              </li>
+              <li class="ps-drop-slot" aria-hidden="true"></li>
+              <li class="ps-sort-row is-dragging">
+                <button class="ps-handle" aria-label="Reorder Caterpie">
+                  <span data-i="grip"></span>
+                </button>
+                <div class="ps-sort-main">
+                  <span class="ps-thumb"></span>
+                  <div>
+                    <b class="t-title-3" style="font-size: 15px">Caterpie</b>
+                    <p class="t-body-sm ps-subtle">Lv 3–4 · 10%</p>
+                  </div>
+                </div>
+              </li>
+              <li class="ps-sort-row">
+                <button class="ps-handle" aria-label="Reorder Rattata">
+                  <span data-i="grip"></span>
+                </button>
+                <div class="ps-sort-main">
+                  <span class="ps-thumb"></span>
+                  <div>
+                    <b class="t-title-3" style="font-size: 15px">Rattata</b>
+                    <p class="t-body-sm ps-subtle">Lv 2–4 · 45%</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <script>
+        var rows = [
+          ['Pidgey', 'Lv 2–5 · 45%'],
+          ['Rattata', 'Lv 2–4 · 45%'],
+          ['Caterpie', 'Lv 3–4 · 10%'],
+        ];
+        var openIdx = 0;
+        function render() {
+          var ul = document.getElementById('list');
+          ul.innerHTML = rows
+            .map(function (r, i) {
+              var menu =
+                i === openIdx
+                  ? '<ul class="ps-listbox ps-menu" role="menu" style="right:8px;top:52px">' +
+                    '<li class="ps-option" role="menuitem" data-a="up" data-n="' +
+                    i +
+                    '"' +
+                    (i === 0
+                      ? ' aria-disabled="true" style="opacity:.45"'
+                      : '') +
+                    '><span data-i="up" data-s="18"></span>Move up</li>' +
+                    '<li class="ps-option" role="menuitem" data-a="down" data-n="' +
+                    i +
+                    '"' +
+                    (i === rows.length - 1
+                      ? ' aria-disabled="true" style="opacity:.45"'
+                      : '') +
+                    '><span data-i="down" data-s="18"></span>Move down</li>' +
+                    '<li class="ps-option ps-option--danger" role="menuitem"><span data-i="trash" data-s="18"></span>Remove</li></ul>'
+                  : '';
+              return (
+                '<li class="ps-sort-row"><button class="ps-handle" aria-label="Reorder ' +
+                r[0] +
+                '"><span data-i="grip"></span></button>' +
+                '<div class="ps-sort-main"><span class="ps-thumb"></span><div><b class="t-title-3" style="font-size:15px">' +
+                r[0] +
+                '</b><p class="t-body-sm ps-subtle">' +
+                r[1] +
+                '</p></div></div>' +
+                '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Actions for ' +
+                r[0] +
+                '" aria-haspopup="menu" data-m="' +
+                i +
+                '"><span data-i="more"></span></button>' +
+                menu +
+                '</li>'
+              );
+            })
+            .join('');
+          PS.mount(ul);
+        }
+        document.getElementById('list').addEventListener('click', function (e) {
+          var m = e.target.closest('[data-m]'),
+            a = e.target.closest('[data-a]');
+          if (m) {
+            var n = +m.getAttribute('data-m');
+            openIdx = openIdx === n ? -1 : n;
+            render();
+            return;
+          }
+          if (a && a.getAttribute('aria-disabled') !== 'true') {
+            var i = +a.getAttribute('data-n'),
+              j = a.getAttribute('data-a') === 'up' ? i - 1 : i + 1;
+            var t = rows[i];
+            rows[i] = rows[j];
+            rows[j] = t;
+            openIdx = j;
+            render();
+          }
+        });
+        render();
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>
