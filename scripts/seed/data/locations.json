@@ -36,13 +36,13 @@
             "timeOfDay": "any",
             "slots": [
               {
-                "speciesId": "6503c389d5ce71f0a74682c3",
+                "speciesId": "pidgey",
                 "minLevel": 2,
                 "maxLevel": 5,
                 "weight": 50
               },
               {
-                "speciesId": "6503c389d5ce71f0a74683b0",
+                "speciesId": "rattata",
                 "minLevel": 2,
                 "maxLevel": 4,
                 "weight": 50
@@ -125,25 +125,25 @@
             "timeOfDay": "any",
             "slots": [
               {
-                "speciesId": "6503c389d5ce71f0a74682c3",
+                "speciesId": "pidgey",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 35
               },
               {
-                "speciesId": "6503c389d5ce71f0a74683b0",
+                "speciesId": "rattata",
                 "minLevel": 2,
                 "maxLevel": 5,
                 "weight": 35
               },
               {
-                "speciesId": "6503c389d5ce71f0a74680f7",
+                "speciesId": "caterpie",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 15
               },
               {
-                "speciesId": "6503c389d5ce71f0a74681ed",
+                "speciesId": "weedle",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 15
@@ -179,31 +179,31 @@
             "timeOfDay": "morning",
             "slots": [
               {
-                "speciesId": "6503c389d5ce71f0a74680f7",
+                "speciesId": "caterpie",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 40
               },
               {
-                "speciesId": "6503c389d5ce71f0a7468125",
+                "speciesId": "metapod",
                 "minLevel": 4,
                 "maxLevel": 6,
                 "weight": 15
               },
               {
-                "speciesId": "6503c389d5ce71f0a74681ed",
+                "speciesId": "weedle",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 30
               },
               {
-                "speciesId": "6503c389d5ce71f0a7468222",
+                "speciesId": "kakuna",
                 "minLevel": 4,
                 "maxLevel": 6,
                 "weight": 10
               },
               {
-                "speciesId": "6503c38ad5ce71f0a74685dc",
+                "speciesId": "pikachu",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 5
@@ -214,31 +214,31 @@
             "timeOfDay": "day",
             "slots": [
               {
-                "speciesId": "6503c389d5ce71f0a74680f7",
+                "speciesId": "caterpie",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 35
               },
               {
-                "speciesId": "6503c389d5ce71f0a7468125",
+                "speciesId": "metapod",
                 "minLevel": 4,
                 "maxLevel": 6,
                 "weight": 10
               },
               {
-                "speciesId": "6503c389d5ce71f0a74681ed",
+                "speciesId": "weedle",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 35
               },
               {
-                "speciesId": "6503c389d5ce71f0a7468222",
+                "speciesId": "kakuna",
                 "minLevel": 4,
                 "maxLevel": 6,
                 "weight": 10
               },
               {
-                "speciesId": "6503c38ad5ce71f0a74685dc",
+                "speciesId": "pikachu",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 10
@@ -249,31 +249,31 @@
             "timeOfDay": "night",
             "slots": [
               {
-                "speciesId": "6503c389d5ce71f0a74680f7",
+                "speciesId": "caterpie",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 30
               },
               {
-                "speciesId": "6503c389d5ce71f0a74681ed",
+                "speciesId": "weedle",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 30
               },
               {
-                "speciesId": "6503c38ad5ce71f0a74685dc",
+                "speciesId": "pikachu",
                 "minLevel": 3,
                 "maxLevel": 5,
                 "weight": 10
               },
               {
-                "speciesId": "6503c389d5ce71f0a7468125",
+                "speciesId": "metapod",
                 "minLevel": 4,
                 "maxLevel": 6,
                 "weight": 15
               },
               {
-                "speciesId": "6503c389d5ce71f0a7468222",
+                "speciesId": "kakuna",
                 "minLevel": 4,
                 "maxLevel": 6,
                 "weight": 15
@@ -356,31 +356,31 @@
             "timeOfDay": "any",
             "slots": [
               {
-                "speciesId": "6503c389d5ce71f0a74682c3",
+                "speciesId": "pidgey",
                 "minLevel": 6,
                 "maxLevel": 8,
                 "weight": 30
               },
               {
-                "speciesId": "6503c389d5ce71f0a74684bc",
+                "speciesId": "spearow",
                 "minLevel": 6,
                 "maxLevel": 8,
                 "weight": 30
               },
               {
-                "speciesId": "6503c38ad5ce71f0a7468987",
+                "speciesId": "nidoranm",
                 "minLevel": 6,
                 "maxLevel": 8,
                 "weight": 15
               },
               {
-                "speciesId": "6503c38ad5ce71f0a74688b0",
+                "speciesId": "nidoranf",
                 "minLevel": 6,
                 "maxLevel": 8,
                 "weight": 15
               },
               {
-                "speciesId": "6503c38bd5ce71f0a7468c03",
+                "speciesId": "jigglypuff",
                 "minLevel": 5,
                 "maxLevel": 7,
                 "weight": 10
@@ -416,31 +416,31 @@
             "timeOfDay": "any",
             "slots": [
               {
-                "speciesId": "6503c38bd5ce71f0a7468cc1",
+                "speciesId": "zubat",
                 "minLevel": 7,
                 "maxLevel": 10,
                 "weight": 40
               },
               {
-                "speciesId": "6503c38dd5ce71f0a74697d5",
+                "speciesId": "geodude",
                 "minLevel": 7,
                 "maxLevel": 10,
                 "weight": 25
               },
               {
-                "speciesId": "6503c38bd5ce71f0a7468e01",
+                "speciesId": "paras",
                 "minLevel": 8,
                 "maxLevel": 10,
                 "weight": 15
               },
               {
-                "speciesId": "6503c38ad5ce71f0a7468a4d",
+                "speciesId": "clefairy",
                 "minLevel": 8,
                 "maxLevel": 12,
                 "weight": 10
               },
               {
-                "speciesId": "6503c38ad5ce71f0a74687d2",
+                "speciesId": "sandshrew",
                 "minLevel": 8,
                 "maxLevel": 10,
                 "weight": 10
@@ -476,25 +476,25 @@
             "timeOfDay": "any",
             "slots": [
               {
-                "speciesId": "6503c389d5ce71f0a74683b0",
+                "speciesId": "rattata",
                 "minLevel": 8,
                 "maxLevel": 12,
                 "weight": 30
               },
               {
-                "speciesId": "6503c389d5ce71f0a74684bc",
+                "speciesId": "spearow",
                 "minLevel": 8,
                 "maxLevel": 12,
                 "weight": 30
               },
               {
-                "speciesId": "6503c389d5ce71f0a7468531",
+                "speciesId": "ekans",
                 "minLevel": 8,
                 "maxLevel": 12,
                 "weight": 20
               },
               {
-                "speciesId": "6503c38ad5ce71f0a74687d2",
+                "speciesId": "sandshrew",
                 "minLevel": 8,
                 "maxLevel": 12,
                 "weight": 20

@@ -190,32 +190,16 @@ export interface IShowdownDexEntry {
   natDexTier?: SinglesTier | OtherTier;
 }
 
-export interface IDexEntry extends Omit<
-  IShowdownDexEntry,
-  | 'baseSpecies'
-  | 'changesFrom'
-  | 'cosmeticFormes'
-  | 'evoRegion'
-  | 'evos'
-  | 'formeOrder'
-  | 'otherFormes'
-  | 'prevo'
-> {
-  baseSpecies?: {
-    id: Types.ObjectId;
-    name: string;
-  };
+/** Showdown ID (`toID` of the name, e.g. `pikachu`); the only way content refers to a species. */
+export type SpeciesId = string;
+
+export interface IDexEntry extends Omit<IShowdownDexEntry, 'evoRegion'> {
+  baseSpecies?: SpeciesId;
   baseHappiness: number;
   baseStatTotal: number;
   catchRate: number;
-  changesFrom?: {
-    id: Types.ObjectId;
-    name: string;
-  };
-  cosmeticFormes?: {
-    id: Types.ObjectId;
-    name: string;
-  }[];
+  changesFrom?: SpeciesId;
+  cosmeticFormes?: SpeciesId[];
   classification: string;
   createdAt: Date;
   dexEntries?: string[];
@@ -226,30 +210,18 @@ export interface IDexEntry extends Omit<
         name: string;
       }
     | string;
-  evos?: {
-    id: Types.ObjectId;
-    name: string;
-  }[];
+  evos?: SpeciesId[];
   expGrowth: string;
   expYield: number;
-  formeOrder?: {
-    id: Types.ObjectId;
-    name: string;
-  }[];
+  formeOrder?: SpeciesId[];
   hatchCycles: number;
   heightIn: number;
   isCanon?: boolean;
   isPublic?: boolean;
   originServer?: Types.ObjectId;
-  otherFormes?: {
-    id: Types.ObjectId;
-    name: string;
-  }[];
-  prevo?: {
-    id: Types.ObjectId;
-    name: string;
-  };
-  showdownName: string;
+  otherFormes?: SpeciesId[];
+  prevo?: SpeciesId;
+  speciesId: SpeciesId;
   sprites: ISprites;
   updatedAt: Date;
   weightLb: number;
@@ -288,13 +260,7 @@ export const dexEntryDbSchema = new Schema<
     },
     baseForme: String,
     baseHappiness: { type: Number, required: true },
-    baseSpecies: {
-      type: {
-        id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
-        name: String,
-      },
-      required: false,
-    },
+    baseSpecies: { type: String, required: false },
     baseStatTotal: { type: Number, required: true },
     baseStats: {
       type: {
@@ -312,24 +278,10 @@ export const dexEntryDbSchema = new Schema<
     canHatch: { type: Boolean, required: false },
     cannotDynamax: { type: Boolean, required: false },
     catchRate: { type: Number, required: true },
-    changesFrom: {
-      type: {
-        id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
-        name: String,
-      },
-      required: false,
-    },
+    changesFrom: { type: String, required: false },
     classification: { type: String, required: true },
     color: { type: String, required: true },
-    cosmeticFormes: {
-      type: [
-        {
-          id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
-          name: String,
-        },
-      ],
-      required: false,
-    },
+    cosmeticFormes: { type: [String], required: false },
     dexEntries: { type: [String], required: false },
     doublesTier: String,
     eggGroups: { type: [String], required: true },
@@ -356,27 +308,11 @@ export const dexEntryDbSchema = new Schema<
       required: false,
     },
     evoType: String,
-    evos: {
-      type: [
-        {
-          id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
-          name: String,
-        },
-      ],
-      required: false,
-    },
+    evos: { type: [String], required: false },
     expGrowth: { type: String, required: true },
     expYield: { type: Number, required: true },
     forme: String,
-    formeOrder: {
-      type: [
-        {
-          id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
-          name: String,
-        },
-      ],
-      required: false,
-    },
+    formeOrder: { type: [String], required: false },
     gen: { type: Number, required: false },
     gender: String,
     genderRatio: {
@@ -403,28 +339,14 @@ export const dexEntryDbSchema = new Schema<
       ref: 'Server',
       required: false,
     },
-    otherFormes: {
-      type: [
-        {
-          id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
-          name: String,
-        },
-      ],
-      required: false,
-    },
+    otherFormes: { type: [String], required: false },
     pokemonGoData: { type: [String], required: false },
-    prevo: {
-      type: {
-        id: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: false },
-        name: String,
-      },
-      required: false,
-    },
+    prevo: { type: String, required: false },
     requiredAbility: String,
     requiredItem: String,
     requiredItems: { type: [String], required: false },
     requiredMove: String,
-    showdownName: { type: String, required: true },
+    speciesId: { type: String, required: true },
     sprites: {
       type: {
         footprint: String,
@@ -732,6 +654,13 @@ export const dexEntryDbSchema = new Schema<
       },
     },
   },
+);
+
+// Unique among canon entries only: library overrides and imports share species
+// IDs by design (27 § Identity and uniqueness).
+dexEntryDbSchema.index(
+  { speciesId: 1 },
+  { unique: true, partialFilterExpression: { isCanon: true } },
 );
 
 export const DexEntry = (models.DexEntry ||

@@ -16,7 +16,7 @@ export const searchPokemon = async (
       {
         $or: [
           { name: { $regex: new RegExp(searchName, 'i') } },
-          { showdownName: searchName.toLowerCase().replace(/[^a-zA-Z]/g, '') },
+          { speciesId: searchName.toLowerCase().replace(/[^a-zA-Z]/g, '') },
         ],
       },
       { $or: [{ isCanon: true }, { originServer: serverId }] },

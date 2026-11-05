@@ -1,3 +1,4 @@
+import { DexEntry } from './dexentry.model';
 import { Location } from './location/location.model';
 import { Server } from './server.model';
 import { User } from './user.model';
@@ -15,6 +16,16 @@ describe('declared indexes', () => {
     expect(User.schema.indexes()).toContainEqual([
       { userId: 1 },
       expect.objectContaining({ unique: true }),
+    ]);
+  });
+
+  it('makes DexEntry.speciesId unique among canon entries only', () => {
+    expect(DexEntry.schema.indexes()).toContainEqual([
+      { speciesId: 1 },
+      expect.objectContaining({
+        unique: true,
+        partialFilterExpression: { isCanon: true },
+      }),
     ]);
   });
 

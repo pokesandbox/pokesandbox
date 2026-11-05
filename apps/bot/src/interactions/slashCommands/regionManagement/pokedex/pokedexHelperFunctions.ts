@@ -1,5 +1,3 @@
-import { Types } from 'mongoose';
-
 import type { DexEntry, Region } from '@shared/models';
 
 import {
@@ -99,14 +97,16 @@ export const handlePokemonSelected = async (
   pokedexNo: string,
   navigateToMenuOptions?: NavigateMenuOptions,
 ) => {
-  if (region.pokedex.some((pkmn) => pkmn?.id.equals(selectedPokemon._id))) {
+  if (
+    region.pokedex.some((pkmn) => pkmn?.speciesId === selectedPokemon.speciesId)
+  ) {
     ctx.state.set(
       'prompt',
       `The Pokémon "${selectedPokemon.name}" is already in the Pokédex. Please choose a different Pokémon.`,
     );
   } else {
     region.pokedex[+pokedexNo - 1] = {
-      id: selectedPokemon._id,
+      speciesId: selectedPokemon.speciesId,
       name: selectedPokemon.name,
     };
     await saveRegion(region);
@@ -123,7 +123,7 @@ export const handlePokemonSelected = async (
 export const removePokedexSlot = (
   region: Region,
   pokedexIndex: number,
-): { name: string; id: Types.ObjectId } | null => {
+): Region['pokedex'][number] => {
   const pokedexEntry = region.pokedex[pokedexIndex];
   region.pokedex[pokedexIndex] = null;
   removeNullsFromEndOfPokedex(region);
@@ -141,7 +141,7 @@ export const checkHasOtherFormes = async (
   pokedexNo: string,
 ): Promise<boolean> => {
   const region = await getAssertedCachedRegion(regionId);
-  const dexEntryId = region.pokedex[+pokedexNo - 1]?.id;
-  const dexEntry = await getAssertedCachedDexEntry(dexEntryId);
+  const speciesId = region.pokedex[+pokedexNo - 1]?.speciesId;
+  const dexEntry = await getAssertedCachedDexEntry(speciesId);
   return !!dexEntry.otherFormes && dexEntry.otherFormes.length > 0;
 };

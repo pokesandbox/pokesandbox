@@ -1,4 +1,4 @@
-import { Schema, Types } from 'mongoose';
+import { Schema } from 'mongoose';
 import z from 'zod';
 
 // Zod Validation Schemas
@@ -7,7 +7,7 @@ import z from 'zod';
  * Encounter slot — a single species entry in a wild encounter table
  */
 const encounterSlotSchema = z.object({
-  speciesId: z.instanceof(Types.ObjectId),
+  speciesId: z.string().min(1),
   minLevel: z.number().int(),
   maxLevel: z.number().int(),
   weight: z.number().int().positive(),
@@ -41,7 +41,7 @@ export const wildTableSchema = z.object({
 
 const encounterSlotDbSchema = new Schema(
   {
-    speciesId: { type: Schema.Types.ObjectId, ref: 'DexEntry', required: true },
+    speciesId: { type: String, required: true },
     minLevel: { type: Number, required: true },
     maxLevel: { type: Number, required: true },
     weight: { type: Number, required: true },

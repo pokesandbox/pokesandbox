@@ -10,14 +10,14 @@ export const regionDTOSchema = z.object({
   pokedex: z.array(
     z
       .object({
-        id: z.string(),
+        speciesId: z.string(),
         name: z.string(),
         isBaseFormNotIncluded: z.boolean().optional(),
         baseFormOrdinal: z.number().optional(),
         includedForms: z
           .array(
             z.object({
-              id: z.string(),
+              speciesId: z.string(),
               ordinal: z.number(),
             }),
           )
@@ -45,12 +45,12 @@ export const RegionDTO = {
       pokedex: entity.pokedex.map((p) =>
         p
           ? {
-              id: p.id.toHexString(),
+              speciesId: p.speciesId,
               name: p.name,
               isBaseFormNotIncluded: p.isBaseFormNotIncluded,
               baseFormOrdinal: p.baseFormOrdinal,
               includedForms: p.includedForms?.map((f) => ({
-                id: f.id.toHexString(),
+                speciesId: f.speciesId,
                 ordinal: f.ordinal,
               })),
             }

@@ -6,22 +6,21 @@ import { DexEntry } from '@shared/models';
 import { CachePrefix, CacheTTL } from './constants';
 import { toIdString, toIdStrings } from './utils';
 
-/**
- * Fetch a dex entry by its ObjectId or string ID, hitting the cache first.
- */
+/** Canon entries win when a custom entry shares the species ID. */
 export async function getCachedDexEntry(
-  dexEntryId?: Types.ObjectId | string,
+  speciesId?: string,
 ): Promise<DexEntry | null> {
-  if (!dexEntryId) return null;
-  const normalisedDexEntryId = toIdString(dexEntryId); // Ensure it's a string for consistent cache keys
+  if (!speciesId) return null;
 
   const cache = getCacheService();
-  const key = `${CachePrefix.DEX_ENTRY}${normalisedDexEntryId}`;
+  const key = `${CachePrefix.DEX_ENTRY}species:${speciesId}`;
 
   const cached = cache.get<DexEntry>(key);
   if (cached) return cached;
 
-  const dexEntry = await DexEntry.findById(normalisedDexEntryId).exec();
+  const dexEntry = await DexEntry.findOne({ speciesId })
+    .sort({ isCanon: -1 })
+    .exec();
   if (dexEntry) {
     cache.set(key, dexEntry, CacheTTL.DEX_ENTRY);
   }
@@ -29,9 +28,9 @@ export async function getCachedDexEntry(
 }
 
 export async function getAssertedCachedDexEntry(
-  dexEntryId?: Types.ObjectId | string,
+  speciesId?: string,
 ): Promise<DexEntry> {
-  const dexEntry = await getCachedDexEntry(dexEntryId);
+  const dexEntry = await getCachedDexEntry(speciesId);
 
   if (!dexEntry) {
     throw new Error(

@@ -28,6 +28,7 @@ jest.mock('@bot/utils', () => ({
 
 const pikachu = {
   _id: new Types.ObjectId(),
+  speciesId: 'pikachu',
   name: 'Pikachu',
   classification: 'Mouse',
   types: ['Electric'],
@@ -36,6 +37,7 @@ const pikachu = {
 } as unknown as DexEntry;
 const raichu = {
   _id: new Types.ObjectId(),
+  speciesId: 'raichu',
   name: 'Raichu',
   classification: 'Mouse',
   types: ['Electric'],
@@ -47,14 +49,14 @@ describe('edit pokedex slot menu', () => {
   it('opens the name modal from Swap and replaces the slot', async () => {
     jest
       .mocked(getAssertedCachedDexEntry)
-      .mockImplementation(async (id) =>
-        id?.toString() === raichu._id.toString() ? raichu : pikachu,
+      .mockImplementation(async (speciesId) =>
+        speciesId === raichu.speciesId ? raichu : pikachu,
       );
     jest
       .mocked(searchPokemon)
       .mockResolvedValue({ exactMatch: raichu, potentialMatches: [raichu] });
     const { harness, region } = await startEditSlotMenu([
-      { id: pikachu._id, name: 'Pikachu' },
+      { speciesId: 'pikachu', name: 'Pikachu' },
     ]);
 
     harness.clickModal('Swap');
@@ -70,7 +72,7 @@ describe('edit pokedex slot menu', () => {
     jest.mocked(getAssertedCachedDexEntry).mockResolvedValue(pikachu);
     jest.mocked(searchPokemon).mockResolvedValue({ potentialMatches: [] });
     const { harness, region } = await startEditSlotMenu([
-      { id: pikachu._id, name: 'Pikachu' },
+      { speciesId: 'pikachu', name: 'Pikachu' },
     ]);
 
     harness.clickModal('Swap');
@@ -92,9 +94,30 @@ describe('edit pokedex slot menu', () => {
     harness.clickModal('Add Pokémon');
     await submitModalFields(harness, { 'pokemon-name': 'Pikachu' });
 
-    expect(region.pokedex[0]).toEqual({ id: pikachu._id, name: 'Pikachu' });
+    expect(region.pokedex[0]).toEqual({
+      speciesId: 'pikachu',
+      name: 'Pikachu',
+    });
     expect(saveRegion).toHaveBeenCalledWith(region);
     expect(harness.hasText('#1: Pikachu - The Mouse Pokémon')).toBe(true);
+  });
+
+  it('rejects a Pokémon whose species is already in the Pokédex', async () => {
+    jest.mocked(getAssertedCachedDexEntry).mockResolvedValue(raichu);
+    jest
+      .mocked(searchPokemon)
+      .mockResolvedValue({ exactMatch: pikachu, potentialMatches: [pikachu] });
+    const { harness, region } = await startEditSlotMenu([
+      null,
+      { speciesId: 'pikachu', name: 'Pikachu' },
+    ]);
+
+    harness.clickModal('Add Pokémon');
+    await submitModalFields(harness, { 'pokemon-name': 'Pikachu' });
+
+    expect(region.pokedex[0]).toBeNull();
+    expect(saveRegion).not.toHaveBeenCalled();
+    expect(harness.hasText('is already in the Pokédex')).toBe(true);
   });
 });
 

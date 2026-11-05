@@ -1,5 +1,3 @@
-import { Types } from 'mongoose';
-
 export type PokedexMenuState = {
   prompt?: string;
   thumbnail?: string;
@@ -17,13 +15,13 @@ export type PokedexSlotCustomizeMenuState = {
 
 export type Slot = {
   name: string;
-  id: Types.ObjectId;
+  speciesId: string;
   isBaseFormNotIncluded?: boolean;
   baseFormOrdinal?: number;
-  includedForms?: { id: Types.ObjectId; ordinal: number }[];
+  includedForms?: { speciesId: string; ordinal: number }[];
 };
 
 export type Form = {
-  id: Types.ObjectId;
+  speciesId: string;
   name: string;
 };
