@@ -59,6 +59,7 @@ Every change, human or agent. ⚙ = enforced by a hook or CI.
 - ⚙ Stage files by name (no `git add -A` / `git add .`). Don't hand-format or reorder imports; the pre-commit hook does it. Don't reformat code you didn't change.
 - Never commit `.env`, tokens, or real server IDs.
 - No `any`, `@ts-ignore`, or non-null `!` without a one-line reason. No new dependency without a reason in the PR.
+- Comments: two lines or less, and only where the behavior or the reason for specific logic isn't evident from the code. Don't restate what a name or body already says.
 - ⚙ Every Nx project carries a `scope:*` tag in its `project.json`; `@nx/enforce-module-boundaries` in the root `.eslintrc.json` holds the layering and banned imports. A new library uses its planned tag (`scope:engine`, `scope:battle`, `scope:authoring`, `scope:presentation`), whose rules already exist.
 - Model changes: run `npm run erd:generate` and update `scripts/seed/data`.
 - If your change makes this file, a package `AGENTS.md`, `CONTRIBUTING.md`, or a skill wrong, update it in the same PR.
