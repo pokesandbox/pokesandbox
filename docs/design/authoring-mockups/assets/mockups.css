@@ -2331,3 +2331,109 @@
   padding-top: var(--space-4);
   border-top: 1px solid var(--border);
 }
+
+/* Player pages: species page, region Pokédex grid, gated sections */
+.ps-dex-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+.ps-dex-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-align: center;
+  min-height: 44px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.ps-dex-card .ps-thumb {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+}
+.ps-dex-card b {
+  font: 600 13px/18px var(--font-sans);
+}
+.ps-dex-card small {
+  font: 500 12px/16px var(--font-mono);
+  color: var(--ink-subtle);
+}
+.ps-dex-card.is-unseen {
+  background: var(--bg);
+  border-style: dashed;
+}
+.ps-dex-card.is-unseen .ps-thumb {
+  display: grid;
+  place-items: center;
+  font: 700 22px/1 var(--font-display);
+  color: var(--ink-subtle);
+}
+.ps-dex-card.is-unseen b {
+  color: var(--ink-subtle);
+}
+.ps-dex-card.is-seen .ps-thumb {
+  opacity: 0.55;
+}
+.ps-dex-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 600 11px/14px var(--font-sans);
+  color: var(--ink-subtle);
+}
+.ps-dex-state.is-caught {
+  color: var(--success);
+}
+.ps-locked {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-strong);
+  background: var(--bg);
+  color: var(--ink-muted);
+  font: 400 14px/20px var(--font-sans);
+}
+.ps-locked > [data-i] {
+  color: var(--ink-subtle);
+}
+.ps-hero {
+  display: flex;
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.ps-hero .ps-thumb {
+  width: 160px;
+  height: 160px;
+  border-radius: var(--radius-lg);
+}
+.ps-vis-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border);
+}
+.ps-vis-row:first-child {
+  border-top: 0;
+}
+.ps-vis-row > b {
+  font: 600 15px/20px var(--font-sans);
+}
+.ps-vis-row > span {
+  font: 400 13px/18px var(--font-sans);
+  color: var(--ink-subtle);
+}

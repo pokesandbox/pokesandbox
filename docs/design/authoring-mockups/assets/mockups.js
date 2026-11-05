@@ -912,3 +912,279 @@ window.PS = (function () {
     );
   };
 })(window.PS);
+
+/* Species sections, shared by the builder's SpeciesInfoPanel and the player pages.
+   In the app these render one species view model (libs/presentation) built from the catalog plus a rules context. */
+(function (PS) {
+  var stat = function (label, v) {
+    return (
+      '<div class="ps-stat"><span>' +
+      label +
+      '</span><b>' +
+      v +
+      '</b><i><i style="width:' +
+      Math.round((v / 255) * 100) +
+      '%"></i></i></div>'
+    );
+  };
+  var STATS = {
+    gen1: [
+      ['HP', 40],
+      ['Attack', 45],
+      ['Defense', 35],
+      ['Special', 40],
+      ['Speed', 90],
+    ],
+    latest: [
+      ['HP', 40],
+      ['Attack', 45],
+      ['Defense', 35],
+      ['Sp. Atk', 40],
+      ['Sp. Def', 40],
+      ['Speed', 90],
+    ],
+  };
+  var sec = function (title, body) {
+    return (
+      '<section class="ps-info-section"><h3 class="t-title-3">' +
+      title +
+      '</h3>' +
+      body +
+      '</section>'
+    );
+  };
+  PS.sp = {
+    locked: function (title, text) {
+      return sec(
+        title,
+        '<div class="ps-locked"><span data-i="lock" data-s="18"></span><span>' +
+          text +
+          '</span></div>',
+      );
+    },
+    header: function (o) {
+      return (
+        '<div class="ps-species-head"><span class="ps-thumb"></span><div class="ps-stack" style="gap:4px"><h2 class="t-title-1">Meowth</h2><span class="t-body-sm ps-subtle"><span class="t-mono">#052</span> National' +
+        (o.slot ? ' · ' + o.slot : '') +
+        '</span><div class="ps-row" style="gap:6px"><span class="ps-type">Normal</span>' +
+        (o.extra || '') +
+        '</div></div></div>'
+      );
+    },
+    stats: function (rules) {
+      var s = STATS[rules],
+        t = s.reduce(function (a, x) {
+          return a + x[1];
+        }, 0);
+      return sec(
+        'Base stats',
+        s
+          .map(function (x) {
+            return stat(x[0], x[1]);
+          })
+          .join('') +
+          '<p class="t-body-sm ps-subtle">Total ' +
+          t +
+          '</p>',
+      );
+    },
+    details: function (rules) {
+      var tiles = [
+        ['Catch rate', '255'],
+        ['Growth', 'Medium Fast'],
+        ['Height', '0.4 m'],
+        ['Weight', '4.2 kg'],
+      ];
+      if (rules === 'latest')
+        tiles = [
+          ['Abilities', 'Pickup, Technician'],
+          ['Hidden ability', 'Unnerve'],
+          ['Gender', '50% ♂ · 50% ♀'],
+          ['Egg group', 'Field'],
+        ].concat(tiles);
+      return sec(
+        'Details',
+        '<div class="ps-facts">' +
+          tiles
+            .map(function (x) {
+              return '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>';
+            })
+            .join('') +
+          '</div>',
+      );
+    },
+    evo: function (o) {
+      return sec(
+        'Evolution',
+        '<div class="ps-evo"><div class="ps-evo-step"><span class="ps-thumb" style="width:32px;height:32px"></span><span><b>Meowth</b>' +
+          (o.meowthNote ? '<small>' + o.meowthNote + '</small>' : '') +
+          '</span></div><span class="t-body-sm ps-subtle">Lv 28 →</span>' +
+          '<div class="ps-evo-step"' +
+          (o.persianWarn ? ' style="border-color:var(--warning)"' : '') +
+          '><span class="ps-thumb" style="width:32px;height:32px"></span><span><b>' +
+          (o.persianHidden ? '???' : 'Persian') +
+          '</b>' +
+          (o.persianNote
+            ? '<small' +
+              (o.persianWarn ? ' style="color:var(--warning)"' : '') +
+              '>' +
+              o.persianNote +
+              '</small>'
+            : '') +
+          '</span></div></div>' +
+          (o.after || ''),
+      );
+    },
+    forms: function (list) {
+      return sec(
+        'Forms',
+        list
+          .map(function (f) {
+            return (
+              '<div class="ps-placement' +
+              (f.warn ? ' is-warn' : '') +
+              '" style="gap:6px"><div class="ps-variant-head"><span class="ps-thumb"></span><b>' +
+              f.name +
+              '</b><span class="ps-type">' +
+              f.type +
+              '</span></div><p class="t-body-sm ps-muted">' +
+              f.diff +
+              '</p>' +
+              (f.note
+                ? '<p class="t-body-sm" style="color:var(--' +
+                  (f.noteColor || 'ink-subtle') +
+                  ')">' +
+                  f.note +
+                  '</p>'
+                : '') +
+              (f.warn
+                ? '<p class="ps-error" style="color:var(--warning)"><span data-i="alert" data-s="18"></span>' +
+                  f.warn +
+                  '</p>'
+                : '') +
+              '</div>'
+            );
+          })
+          .join(''),
+      );
+    },
+    moves: function (rules) {
+      var m = [
+        ['1', 'Scratch'],
+        ['1', 'Growl'],
+        ['12', 'Bite'],
+        ['17', 'Pay Day'],
+        ['24', 'Screech'],
+        ['33', 'Fury Swipes'],
+        ['44', 'Slash'],
+      ];
+      if (rules === 'latest')
+        m = [
+          ['1', 'Scratch'],
+          ['1', 'Growl'],
+          ['4', 'Fake Out'],
+          ['8', 'Pay Day'],
+          ['12', 'Bite'],
+          ['16', 'Charm'],
+          ['20', 'Assurance'],
+          ['+5', 'more'],
+        ];
+      return sec(
+        'Moves by level',
+        '<div class="ps-moves">' +
+          m
+            .map(function (x) {
+              return (
+                '<span>' +
+                (x[0].charAt(0) === '+' ? '' : 'Lv ' + x[0]) +
+                '</span><span>' +
+                (x[0].charAt(0) === '+'
+                  ? '<span class="ps-subtle">' + x[0] + ' more</span>'
+                  : x[1]) +
+                '</span>'
+              );
+            })
+            .join('') +
+          '</div>',
+      );
+    },
+    tms: function (note) {
+      return sec(
+        'TMs & HMs it can learn',
+        '<div class="ps-tags"><span class="ps-badge">TM06 Toxic</span><span class="ps-badge">TM08 Body Slam</span><span class="ps-badge">TM09 Take Down</span><span class="ps-badge">TM10 Double-Edge</span><span class="ps-badge ps-badge--outline">+12 more</span></div><p class="t-body-sm ps-subtle">' +
+          note +
+          '</p>',
+      );
+    },
+    links: function (title, rows) {
+      return sec(
+        title,
+        '<div class="ps-review">' +
+          rows
+            .map(function (u) {
+              return (
+                '<div class="ps-review-row"><span class="ps-kind" data-i="' +
+                u[0] +
+                '"></span><div><dd>' +
+                u[1] +
+                '</dd><dt style="font-weight:400">' +
+                u[2] +
+                '</dt></div><button class="ps-btn ps-btn--ghost">' +
+                (u[3] || 'Open') +
+                '</button></div>'
+              );
+            })
+            .join('') +
+          '</div>',
+      );
+    },
+  };
+  /* The builder panel, now composed from the shared sections. */
+  PS.speciesInfo = function () {
+    var sp = PS.sp;
+    return (
+      sp.header({ slot: 'slot #052 in Kanto Classic' }) +
+      '<div class="ps-callout ps-callout--info"><span data-i="book" data-s="18"></span><span>Shown with Classic Gen 1 rules: one Special stat, no abilities, gender or held items.</span></div>' +
+      sp.stats('gen1') +
+      sp.details('gen1') +
+      sp.evo({
+        meowthNote: 'Slot #052',
+        persianNote: 'Not in this Pokédex',
+        persianWarn: true,
+        after:
+          '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start;padding:0 8px"><span data-i="plus" data-s="18"></span>Add Persian to slot #053</button>',
+      }) +
+      sp.forms([
+        {
+          name: 'Meowth',
+          type: 'Normal',
+          diff: 'Base form.',
+          note: 'Included in slot #052',
+          noteColor: 'success',
+        },
+        {
+          name: 'Alolan Meowth',
+          type: 'Dark',
+          diff: 'Attack 35 (−10). Otherwise the same.',
+          note: 'Included in slot #052',
+          noteColor: 'success',
+          warn: 'Dark isn’t a type in Classic Gen 1 rules. Region Health will flag it.',
+        },
+        {
+          name: 'Galarian Meowth',
+          type: 'Steel',
+          diff: 'HP 50 (+10), Attack 65 (+20), Defense 55 (+20), Speed 40 (−50).',
+          note: 'Not included',
+          warn: 'Steel isn’t a type in Classic Gen 1 rules.',
+        },
+      ]) +
+      sp.moves('gen1') +
+      sp.tms('From this region’s TM case.') +
+      sp.links('Used in this region · 3', [
+        ['leaf', 'Route 5 · Walk in grass', '10%, Lv 10–14'],
+        ['user', 'Rocket Grunt', 'Party, Lv 12'],
+        ['book', 'Pokédex slot #052', 'With Alolan Meowth'],
+      ])
+    );
+  };
+})(window.PS);

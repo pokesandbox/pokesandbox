@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Canon species page · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >Canon species page
+        <small
+          >Canon species page /species/meowth · no region or server · phone,
+          desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Phone · latest rules</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Phone · rules switched to Classic Gen 1
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="gen1"></div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Canon only, no context:</b>
+                <span class="t-mono">/species/meowth</span> shows the species as
+                the catalog has it, not tied to a server, region or journey.
+                Nothing is gated; there's nothing to spoil.
+              </li>
+              <li>
+                <b>Rules selector:</b> defaults to the latest rules. Switching
+                to a preset (Classic Gen 1) redraws the same sections the way
+                that preset sees them: one Special stat, no abilities or gender,
+                Gen 1 learnset. The choice is in the URL (<span class="t-mono"
+                  >?rules=classic-gen1</span
+                >).
+              </li>
+              <li>
+                <b>Same sections as the builder panel</b> (stats, details,
+                evolution, forms, moves), in a page shell: public header,
+                breadcrumb, shareable URL. No TM list here: TM compatibility
+                depends on a region's TM case, so it lives on region pages.
+              </li>
+              <li>
+                <b>Regions that feature Meowth</b> lists public regions whose
+                published Pokédex includes it, each linking to that region's
+                entry.
+              </li>
+              <li>
+                <b>Custom species</b> use the same page at
+                <span class="t-mono"
+                  >/publishers/:publisherId/species/:slug</span
+                >, with a publisher credit band under the header and "Regions
+                using this species". Only species a publisher made public are
+                listed or searchable.
+              </li>
+              <li>
+                <b>Search</b> (header) finds canon and public custom species by
+                name or number.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">Desktop 1440</p>
+        <div
+          class="ps-browser slot"
+          data-v="desktop"
+          style="height: 1100px; overflow: hidden"
+        ></div>
+      </div>
+      <script>
+        var sp = PS.sp;
+        var head = function (desk) {
+          return (
+            '<header class="ps-header"><a class="ps-wordmark" href="#">PokeSandbox</a><span class="ps-header-spacer"></span>' +
+            (desk
+              ? '<div class="ps-input-wrap" style="width:320px"><span class="ps-lead" data-i="search"></span><input class="ps-input" placeholder="Search species" aria-label="Search species"></div><a class="ps-btn ps-btn--ghost" href="#">Browse servers</a>'
+              : '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Search species"><span data-i="search"></span></button>') +
+            '<span class="ps-me">M</span></header>'
+          );
+        };
+        var crumb =
+          '<p class="t-body-sm ps-subtle"><a class="ps-link" href="#">Species</a> › Meowth</p>';
+        var rules = function (which) {
+          return (
+            '<div class="ps-field"><span class="ps-label">Shown with</span><button class="ps-trigger"><span>' +
+            (which === 'gen1' ? 'Classic Gen 1 rules' : 'Latest rules') +
+            '</span><span data-i="chevD"></span></button></div>'
+          );
+        };
+        var forms = [
+          { name: 'Meowth', type: 'Normal', diff: 'Base form.' },
+          { name: 'Alolan Meowth', type: 'Dark', diff: 'Attack 35 (−10).' },
+          {
+            name: 'Galarian Meowth',
+            type: 'Steel',
+            diff: 'HP 50, Attack 65, Defense 55, Speed 40.',
+          },
+        ];
+        var gen1Forms = [
+          { name: 'Meowth', type: 'Normal', diff: 'Base form.' },
+          {
+            name: 'Alolan and Galarian forms',
+            type: '—',
+            diff: 'Not part of Classic Gen 1 rules.',
+          },
+        ];
+        var regions = sp.links('Regions that feature Meowth · 2', [
+          ['town', 'Kanto Classic', 'Pallet Town League · slot #052', 'View'],
+          ['town', 'Orange Isles', 'Pallet Town League · slot #018', 'View'],
+        ]);
+        function body(which) {
+          return (
+            crumb +
+            sp.header({}) +
+            rules(which) +
+            sp.stats(which) +
+            sp.details(which) +
+            sp.evo({ meowthNote: '#052', persianNote: '#053' }) +
+            sp.forms(which === 'gen1' ? gen1Forms : forms) +
+            sp.moves(which) +
+            regions
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'phone')
+            el.innerHTML =
+              head() +
+              '<div class="ps-scroll"><main class="ps-page" style="gap:16px">' +
+              body('latest') +
+              '</main></div>';
+          if (v === 'gen1')
+            el.innerHTML =
+              head() +
+              '<div class="ps-scroll"><main class="ps-page" style="gap:16px">' +
+              body('gen1') +
+              '</main></div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              head(true) +
+              '<main class="ps-page" style="padding:32px 120px">' +
+              crumb +
+              '<div style="display:grid;grid-template-columns:380px 1fr;gap:32px;align-items:start"><aside class="ps-card" style="position:sticky;top:24px;gap:16px"><span class="ps-thumb" style="width:100%;height:auto;aspect-ratio:1;border-radius:16px"></span>' +
+              '<div><h1 class="t-display" style="font-size:40px;line-height:44px">Meowth</h1><p class="t-body-sm ps-subtle"><span class="t-mono">#052</span> National</p></div><div class="ps-row" style="gap:6px"><span class="ps-type">Normal</span></div>' +
+              rules('latest') +
+              '</aside>' +
+              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 32px;align-items:start"><div class="ps-stack">' +
+              sp.stats('latest') +
+              sp.evo({ meowthNote: '#052', persianNote: '#053' }) +
+              sp.moves('latest') +
+              '</div><div class="ps-stack">' +
+              sp.details('latest') +
+              sp.forms(forms) +
+              regions +
+              '</div></div></div></main>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>
