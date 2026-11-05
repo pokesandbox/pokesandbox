@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>S2 · Worked example: Oak’s Parcel · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >S2 · Worked example: Oak’s Parcel
+        <small
+          >S2 · Worked example: Oak&#x27;s Parcel · the Mart event, Oak&#x27;s
+          Talk scripts and the Route 2 guard, each with its script
+          (phone)</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1760px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">1 · Viridian Mart · Events</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="mart"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">2 · Professor Oak · Talk</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="oak"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">3 · Route 2 guard · Talk</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="guard"></div>
+          </div>
+          <div style="width: 340px" class="ps-stack">
+            <p class="ps-frame-label">How it plays</p>
+            <ol
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Viridian Mart:</b> the first time a player walks in, the
+                clerk hands over Oak's Parcel. The event runs automatically,
+                once, and only before
+                <span class="t-mono">oak_parcel_delivered</span>.
+              </li>
+              <li>
+                <b>Route 2:</b> until then, the guard turns them back. His only
+                Talk script has the same condition, so once the parcel is
+                delivered he has nothing to say and players walk past.
+              </li>
+              <li>
+                <b>Oak's Lab:</b> talking to Oak runs the first Talk script
+                whose condition matches. With the parcel in the bag, he takes
+                it, gives the Pokédex and sets the flag; otherwise he says his
+                usual lines.
+              </li>
+              <li>
+                <b>No branches needed:</b> each "Oak, once you have the parcel"
+                moment is its own Talk script or event with a condition, so
+                every script here is a straight list of steps.
+              </li>
+            </ol>
+            <p class="ps-frame-label" style="margin-top: 12px">Talk section</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>"Talks differently when…"</b> lists an NPC's Talk scripts in
+                order; the first whose condition matches runs. Reorder by handle
+                or the ⋯ menu.
+              </li>
+              <li>
+                <b>The last one</b> usually has no condition and reads
+                "Otherwise". With a single Talk script it reads "Always".
+              </li>
+              <li>
+                <b>If none match,</b> players don't see a Talk button for that
+                NPC.
+              </li>
+              <li>
+                <b>Each row</b> opens the event sheet with the event fixed to
+                talking to them; its script opens in the step editor, or in its
+                form if a template made it.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">1 · The clerk's script</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="martScript"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">2a · Deliver the parcel</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="deliver"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">2b · Oak's usual lines</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="usual"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">3 · The guard's script</p>
+            <div
+              class="ps-phone ps-phone--tall slot"
+              data-v="guardScript"
+            ></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        var mono = function (s) {
+          return '<span class="t-mono">' + s + '</span>';
+        };
+        var BEFORE = 'Only before flag ' + mono('oak_parcel_delivered');
+        function eventRow() {
+          return (
+            '<article class="ps-trigger-row"><div class="ps-variant-head"><span class="ps-kind" data-i="door"></span><b>Enters Viridian Mart → Mart clerk gives the parcel</b>' +
+            PS.moreBtn +
+            '</div>' +
+            '<div class="ps-trigger-meta"><span class="ps-badge">Automatic</span><span class="ps-badge">Once</span></div>' +
+            PS.condSummary(BEFORE) +
+            PS.scriptRow('mart-parcel') +
+            '</article>'
+          );
+        }
+        function scriptPage(title, key, used, steps) {
+          return (
+            PS.phoneBar(title, 'Script · ' + key, PS.saved + PS.moreBtn) +
+            '<div class="ps-scroll"><div class="ps-form">' +
+            PS.usedBy(used) +
+            '<div class="ps-section-head"><h2 class="t-title-3">Steps</h2><span class="t-body-sm ps-subtle">Run in order</span></div>' +
+            PS.stepList(steps, {}) +
+            '</div></div>'
+          );
+        }
+        var npcHead = function (name, place, kind) {
+          return (
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="' +
+            name +
+            '"></div>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Where they appear</h2><article class="ps-placement"><div class="ps-variant-head"><span class="ps-kind" data-i="' +
+            kind +
+            '"></span><b>' +
+            place +
+            '</b>' +
+            PS.moreBtn +
+            '</div>' +
+            PS.condSummary('', {
+              empty: 'No condition',
+              emptyHint: 'Always here.',
+            }) +
+            '</article>'
+          );
+        };
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'mart')
+            el.innerHTML =
+              PS.phoneBar(
+                'Viridian Mart',
+                'Building · Viridian City',
+                PS.saved + PS.moreBtn,
+              ) +
+              PS.locTabs('events') +
+              '<div class="ps-scroll"><div class="ps-form"><div class="ps-section-head"><h2 class="t-title-3">When a player…</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Event</button></div>' +
+              '<p class="t-body-sm ps-muted">Things that happen at Viridian Mart, and what runs when they do.</p>' +
+              eventRow() +
+              '</div></div>';
+          if (v === 'oak')
+            el.innerHTML =
+              PS.phoneBar('Professor Oak', 'NPC', PS.saved + PS.moreBtn) +
+              PS.npcTabs('person') +
+              '<div class="ps-scroll" data-scroll-end><div class="ps-form">' +
+              npcHead('Professor Oak', 'Oak’s Lab, Pallet Town', 'building') +
+              PS.talkSection([
+                {
+                  name: 'Deliver the parcel',
+                  cond: 'Only when the player has Oak’s Parcel',
+                  script: 'oak-deliver-parcel',
+                },
+                { name: 'Oak’s usual lines', script: 'oak-usual' },
+              ]) +
+              '</div></div>';
+          if (v === 'guard')
+            el.innerHTML =
+              PS.phoneBar('Route 2 guard', 'NPC', PS.saved + PS.moreBtn) +
+              PS.npcTabs('person') +
+              '<div class="ps-scroll" data-scroll-end><div class="ps-form">' +
+              npcHead('Guard', 'Route 2, north gate', 'route') +
+              PS.talkSection(
+                [{ name: 'Turns them back', cond: BEFORE, script: 'r2-guard' }],
+                { note: 'With none matching, there’s no Talk button.' },
+              ) +
+              '</div></div>';
+          if (v === 'martScript')
+            el.innerHTML = scriptPage(
+              'Mart clerk gives the parcel',
+              'mart-parcel',
+              [['building', 'Viridian Mart · Enters', 'Automatic · Once']],
+              [
+                {
+                  t: 'text',
+                  sum: 'Text · Clerk: “Hey! You came from Pallet Town? …”',
+                },
+                { t: 'give', sum: 'Give 1× Oak’s Parcel' },
+                {
+                  t: 'text',
+                  sum: 'Text · Clerk: “Say hi to Professor Oak for me!”',
+                },
+              ],
+            );
+          if (v === 'deliver')
+            el.innerHTML = scriptPage(
+              'Deliver the parcel',
+              'oak-deliver-parcel',
+              [
+                [
+                  'user',
+                  'Professor Oak · Talk',
+                  'When the player has Oak’s Parcel',
+                ],
+              ],
+              [
+                {
+                  t: 'text',
+                  sum:
+                    'Text · Oak: “Ah, ' +
+                    mono('{name:player}') +
+                    '! What’s this? …”',
+                },
+                { t: 'take', sum: 'Take 1× Oak’s Parcel' },
+                { t: 'give', sum: 'Give 1× Pokédex' },
+                { t: 'set', sum: 'Set flag ' + mono('oak_parcel_delivered') },
+                {
+                  t: 'text',
+                  sum: 'Text · Oak: “This is the Pokédex. It records …”',
+                },
+              ],
+            );
+          if (v === 'usual')
+            el.innerHTML = scriptPage(
+              'Oak’s usual lines',
+              'oak-usual',
+              [['user', 'Professor Oak · Talk', 'Otherwise']],
+              [
+                {
+                  t: 'text',
+                  sum:
+                    'Text · Oak: “' +
+                    mono('{name:player}') +
+                    ', how is your Pokédex coming? …”',
+                },
+              ],
+            );
+          if (v === 'guardScript')
+            el.innerHTML = scriptPage(
+              'Turns them back',
+              'r2-guard',
+              [
+                [
+                  'route',
+                  'Route 2 guard · Talk',
+                  'Only before ' + mono('oak_parcel_delivered'),
+                ],
+              ],
+              [
+                {
+                  t: 'text',
+                  sum: 'Text · Guard: “The road ahead is closed. …”',
+                },
+                {
+                  t: 'text',
+                  sum: 'Text · Guard: “Professor Oak was looking for you.”',
+                },
+              ],
+            );
+        });
+        document.querySelectorAll('[data-scroll-end]').forEach(function (el) {
+          setTimeout(function () {
+            el.scrollTop = el.scrollHeight;
+          }, 0);
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

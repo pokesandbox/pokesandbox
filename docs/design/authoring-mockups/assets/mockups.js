@@ -300,7 +300,9 @@ window.PS = (function () {
   PS.scriptRow = function (name, tpl) {
     return (
       '<button class="ps-link-row ps-script-row" aria-label="' +
-      (tpl ? 'Open ' + name + ' in the ' + tpl + ' form' : 'View ' + name) +
+      (tpl
+        ? 'Open ' + name + ' in the ' + tpl + ' form'
+        : 'Open ' + name + ' in the step editor') +
       '"><span data-i="code"></span><span>' +
       name +
       '<small>' +
@@ -308,7 +310,7 @@ window.PS = (function () {
         ? '<span class="ps-badge ps-badge--accent">Made with the ' +
           tpl +
           ' template</span>'
-        : 'Read-only until the step editor') +
+        : 'Opens in the step editor') +
       '</small></span><span data-i="chevR"></span></button>'
     );
   };
@@ -822,7 +824,14 @@ window.PS = (function () {
       place(2, 'town', 'Viridian City', 'Requires the Boulder Badge') +
       '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>Two places can match at once; the first one wins. With One place at a time, places 1 and 2 can both match, so 2 may never be used.</span></div>' +
       '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Show all 3</button>' +
-      '<h2 class="t-title-2" style="margin-top:8px">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>rival-smalltalk<small>When the player talks to them</small></span><button class="ps-btn ps-btn--ghost">Change</button></div>'
+      PS.talkSection([
+        {
+          name: 'Sore about Route 22',
+          cond: 'Only after flag <span class="t-mono">rival_r22_beaten</span>',
+          script: 'rival-sore',
+        },
+        { name: 'Smalltalk', script: 'rival-smalltalk' },
+      ])
     );
   };
   PS.npcBattle = function () {
@@ -1354,6 +1363,23 @@ window.PS = (function () {
 
 /* Round 4: step editor icons and helpers. */
 (function (PS) {
+  // Scripts is live in CP1: move it out of Soon, after NPCs
+  var si = PS.SOON.findIndex(function (n) {
+    return n[0] === 'Scripts';
+  });
+  if (si > -1) PS.SOON.splice(si, 1);
+  if (
+    !PS.NAV.some(function (n) {
+      return n[2] === 'scripts';
+    })
+  )
+    PS.NAV.splice(
+      PS.NAV.findIndex(function (n) {
+        return n[2] === 'npcs';
+      }) + 1,
+      0,
+      ['Scripts', 'code', 'scripts', '24'],
+    );
   PS.icons.pen = '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>';
   PS.icons.gift =
     '<path d="M4 11h16v10H4zM3 7h18v4H3zM12 7v14"/><path d="M12 7c-1-3-5-4-5-1.5S10 7 12 7zM12 7c1-3 5-4 5-1.5S14 7 12 7z"/>';
@@ -1454,6 +1480,47 @@ window.PS = (function () {
       (o.readOnly
         ? ''
         : '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus" data-s="18"></span>Add step</button>')
+    );
+  };
+  // An NPC's Talk section: Talk scripts in priority order, first match wins. rows: [{ name, cond, script, tpl? }]
+  PS.talkSection = function (rows, o) {
+    o = o || {};
+    var row = function (r, i) {
+      var cond = r.cond
+        ? PS.condSummary(r.cond)
+        : PS.condSummary('', {
+            empty: rows.length > 1 ? 'Otherwise' : 'Always',
+            emptyHint:
+              rows.length > 1
+                ? 'When none above match.'
+                : 'Whenever they’re talked to.',
+          });
+      return (
+        '<article class="ps-placement"><div class="ps-variant-head">' +
+        (rows.length > 1
+          ? '<button class="ps-handle" aria-label="Reorder ' +
+            r.name +
+            '"><span data-i="grip"></span></button><span class="ps-priority">' +
+            (i + 1) +
+            '</span>'
+          : '') +
+        '<span class="ps-kind" data-i="chat"></span><b>' +
+        r.name +
+        '</b>' +
+        PS.moreBtn +
+        '</div>' +
+        cond +
+        PS.scriptRow(r.script, r.tpl) +
+        '</article>'
+      );
+    };
+    return (
+      '<div class="ps-section-head" style="margin-top:8px"><h2 class="t-title-2">Talk</h2></div>' +
+      '<p class="t-body-sm ps-muted" style="margin-top:-8px">Talks differently when… The first one whose condition matches runs, top to bottom.' +
+      (o.note ? ' ' + o.note : '') +
+      '</p>' +
+      rows.map(row).join('') +
+      '<button class="ps-btn ps-btn--secondary" style="align-self:flex-start"><span data-i="plus" data-s="18"></span>Add a Talk script</button>'
     );
   };
   // "Used by": the triggers and Talk rows that run a script

@@ -15,9 +15,9 @@
       ><span
         >S1 · Basic step editor ★
         <small
-          >S1 · Basic step editor ★ · steps list (light, dark), row menu,
-          dragging, add a step, each step&#x27;s sheet, validation, empty,
-          read-only; desktop 1440</small
+          >S1 · Basic step editor ★ · Scripts list, steps list (light, dark),
+          row menu, dragging, add a step, each step&#x27;s sheet, validation,
+          empty, read-only; desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
@@ -125,6 +125,12 @@
         </div>
         <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
           <div>
+            <p class="ps-frame-label">Scripts (sidebar → Scripts)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="scripts"></div>
+            </div>
+          </div>
+          <div>
             <p class="ps-frame-label">Read-only: made with a template</p>
             <div data-theme="light">
               <div class="ps-phone ps-phone--tall slot" data-v="tpl"></div>
@@ -136,7 +142,7 @@
               <div class="ps-phone ps-phone--tall slot" data-v="choices"></div>
             </div>
           </div>
-          <div style="width: 760px" class="ps-stack">
+          <div style="width: 420px" class="ps-stack">
             <p class="ps-frame-label">Notes</p>
             <ul
               class="t-body-sm ps-muted"
@@ -148,6 +154,12 @@
                 gap: 6px;
               "
             >
+              <li>
+                <b>Scripts</b> is its own section in the builder: every script
+                in the region with its step count and what uses it, searchable.
+                "+ Script" starts an empty one. Scripts also open from wherever
+                they're used.
+              </li>
               <li>
                 <b>A script is a list of steps</b> that run in order. This
                 editor has no choices, branches, labels or gotos; those come
@@ -459,6 +471,66 @@
         ];
         var choiceNote =
           '<div class="ps-callout ps-callout--info"><span data-i="lock" data-s="18"></span><span>This script uses choices or branches. They can be edited when the full editor arrives.</span></div>';
+        var SCRIPTS = [
+          [
+            'Deliver the parcel',
+            'oak-deliver-parcel',
+            '5 steps · Professor Oak · Talk',
+            '',
+          ],
+          [
+            'Mart clerk gives the parcel',
+            'mart-parcel',
+            '3 steps · Viridian Mart · Enters',
+            '',
+          ],
+          ['New game', 'new-game', '4 steps · Region settings', ''],
+          [
+            'Fishing Guru’s gift',
+            'fishing-guru-gift',
+            '3 steps · Fishing Guru · Talk',
+            '<span class="ps-badge ps-badge--accent">Gift NPC</span>',
+          ],
+          [
+            'Bill’s request',
+            'bill-cottage',
+            '5 steps · Bill · Talk',
+            '<span class="ps-badge">Has choices</span>',
+          ],
+          [
+            'Museum entry',
+            'museum-entry',
+            '4 steps · Pewter Museum · Enters',
+            '<span class="ps-badge ps-badge--danger">1 error</span>',
+          ],
+          [
+            'Old man’s tip',
+            'r22-old-man',
+            'No steps yet · Route 22 · Enters',
+            '',
+          ],
+        ];
+        var scriptsList =
+          PS.phoneBar(
+            'Scripts',
+            'Kanto Classic · 24',
+            '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="New script"><span data-i="plus"></span></button>',
+          ) +
+          '<div class="ps-scroll"><div style="padding:12px 16px 4px"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" placeholder="Search scripts"></div></div>' +
+          SCRIPTS.map(function (x) {
+            return (
+              '<button class="ps-list-row"><span class="ps-kind" data-i="code"></span><span class="ps-row-text"><b>' +
+              x[0] +
+              '</b><span class="t-mono" style="font-size:12px">' +
+              x[1] +
+              '</span><span>' +
+              x[2] +
+              '</span></span>' +
+              x[3] +
+              '<span data-i="chevR"></span></button>'
+            );
+          }).join('') +
+          '</div>';
         function desktop() {
           var panel =
             '<div class="ps-scrim" style="z-index:2"></div><aside class="ps-sidepanel" role="dialog" aria-label="Edit step 1"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title">Text<small>Step 1 of 5</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
@@ -466,10 +538,10 @@
             textBody +
             '</div></div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></aside>';
           return (
-            PS.sidebar('npcs') +
+            PS.sidebar('scripts') +
             '<div class="ps-main">' +
             PS.topbar() +
-            '<div class="ps-main-body"><div class="ps-section-head"><div><span class="t-body-sm ps-subtle">NPCs › Professor Oak › Talk</span><h1 class="t-title-1">Deliver the parcel</h1><span class="t-body-sm ps-subtle">Script · ' +
+            '<div class="ps-main-body"><div class="ps-section-head"><div><span class="t-body-sm ps-subtle">Scripts</span><h1 class="t-title-1">Deliver the parcel</h1><span class="t-body-sm ps-subtle">Script · ' +
             mono('oak-deliver-parcel') +
             '</span></div>' +
             PS.moreBtn +
@@ -600,6 +672,7 @@
                   ]),
                 PS.stepList(CHOICES, { readOnly: true }),
               );
+          if (v === 'scripts') el.innerHTML = scriptsList;
           if (v === 'desktop') el.innerHTML = desktop();
         });
         PS.mount(document);

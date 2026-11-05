@@ -86,7 +86,7 @@
                 read-only.
               </li>
               <li>
-                Review says what it creates, then the NPC opens with its talk
+                Review says what it creates, then the NPC opens with its Talk
                 script marked "Made with the Gift NPC template"; tapping it
                 reopens the form.
               </li>
@@ -240,7 +240,7 @@
                 })
                 .join('') +
               '</dl>' +
-              '<div class="ps-callout ps-callout--info"><span data-i="check" data-s="18"></span><span>Creates 1 script and sets this NPC’s talk script. Also creates the NPC Fishing Guru.</span></div>'
+              '<div class="ps-callout ps-callout--info"><span data-i="check" data-s="18"></span><span>Creates 1 script and adds it as this NPC’s Talk script. Also creates the NPC Fishing Guru.</span></div>'
             );
           },
         };
@@ -276,8 +276,13 @@
               emptyHint: 'Always here.',
             }) +
             '</article>' +
-            '<h2 class="t-title-2">Talk script</h2>' +
-            PS.scriptRow('fishing-guru-gift', 'Gift NPC') +
+            PS.talkSection([
+              {
+                name: 'The Old Rod',
+                script: 'fishing-guru-gift',
+                tpl: 'Gift NPC',
+              },
+            ]) +
             '</div></div><div class="ps-toast-dock"><div class="ps-toast" role="status">' +
             PS.icon('check') +
             '<span>Fishing Guru created</span></div></div>'
@@ -300,7 +305,7 @@
             [
               '1 NPC · Fishing Guru',
               '1 script · fishing-guru-gift',
-              'Sets the NPC’s talk script',
+              'Adds a Talk script on the NPC',
             ]
               .map(function (t) {
                 return (
