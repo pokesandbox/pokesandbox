@@ -270,6 +270,7 @@ window.PS = (function () {
         ['details', 'Details'],
         ['connections', 'Connections <span class="ps-tab-meta">3</span>'],
         ['encounters', 'Explore'],
+        ['events', 'Events'],
       ]
         .map(function (t) {
           return (
@@ -1196,4 +1197,13 @@ window.PS = (function () {
       ])
     );
   };
+})(window.PS);
+
+/* Round 3 icons. */
+(function (PS) {
+  PS.icons.bolt = '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>';
+  PS.icons.gem =
+    '<path d="M6 3h12l3 6-9 12L3 9z"/><path d="M3 9h18M12 21L8 9l4-6 4 6z"/>';
+  PS.icons.door =
+    '<path d="M5 21V4h10v17M15 12h.01M3 21h18"/><path d="M15 4l4 2v15"/>';
 })(window.PS);

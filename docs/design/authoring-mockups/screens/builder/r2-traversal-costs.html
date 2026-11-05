@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>R2 · Traversal costs · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >R2 · Traversal costs
+        <small
+          >R2 · Traversal costs · off, which exits, first time and every time
+          (live preview), Connections badge (phone)</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Off (default)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="off"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">On · which exits, first time through</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="on"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Every time through, and what players see (live)
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="every"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Connections tab · gated exit</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="edges"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1500px;
+          "
+        >
+          <li>
+            <b>Doc 10 § Traversal requirements</b> is the source:
+            <span class="t-mono"
+              >Location.traversal { exits: 'all' | keys, firstPass { trainers,
+              trainerBattles, wildBattles, explores }, everyPass { explores }
+              }</span
+            >. The builder compiles it into attemptable gates on the chosen
+            exits.
+          </li>
+          <li>
+            <b>Off by default</b> ("Players can pass through freely"). Turning
+            it on opens the sections below; turning it off keeps the values in
+            case it comes back on.
+          </li>
+          <li>
+            <b>Which exits:</b> all, or a checklist of this location's
+            connections (direction matters: north to Pewter City, not south to
+            Route 2).
+          </li>
+          <li>
+            <b>First time through</b> is one-time: specific trainers (picked
+            from this location's trainers) and optional counts.
+            <b>Every time through</b> is a minimum number of explores, for caves
+            and forests. The first pass needs both.
+          </li>
+          <li>
+            <b>Preview</b> shows the locked message on the gated exit, built
+            from the settings ("Defeat Bug Catcher Rick and 1 more trainer to
+            continue", "Keep exploring: 2 more steps to get through"). Change a
+            number to see it update. Repel still counts toward explores: a step
+            that would have found a weak Pokémon becomes a safe step.
+          </li>
+          <li>
+            <b>On the Connections tab</b> a gated exit shows a "Traversal cost"
+            badge that links back here. Its own requirement (K1) still works
+            alongside it.
+          </li>
+          <li>Desktop: the same sections in the Explore tab's detail pane.</li>
+        </ul>
+      </div>
+      <script>
+        var S = {
+          firstTrainers: ['Bug Catcher Rick', 'Bug Catcher Doug'],
+          wild: 0,
+          explores: 0,
+          every: 3,
+        };
+        var head = PS.phoneBar(
+          'Viridian Forest',
+          'Dungeon',
+          PS.saved + PS.moreBtn,
+        );
+        var sw = function (on, t, d) {
+          return (
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>' +
+            t +
+            '</b><span>' +
+            d +
+            '</span></span><button class="ps-switch" role="switch" aria-checked="' +
+            on +
+            '" aria-label="' +
+            t +
+            '"></button></label>'
+          );
+        };
+        var check = function (on, t, d) {
+          return (
+            '<div class="ps-check-row" role="checkbox" aria-checked="' +
+            on +
+            '"><span class="ps-check" aria-checked="' +
+            on +
+            '">' +
+            (on ? PS.icon('check', 16) : '') +
+            '</span><span>' +
+            t +
+            (d ? '<small>' + d + '</small>' : '') +
+            '</span></div>'
+          );
+        };
+        var counter = function (t, d, v, key) {
+          return (
+            '<div class="ps-counter"><span><b>' +
+            t +
+            '</b><small>' +
+            d +
+            '</small></span><input class="ps-input" type="number" inputmode="numeric" min="0" value="' +
+            v +
+            '" aria-label="' +
+            t +
+            '"' +
+            (key ? ' data-k="' + key + '"' : '') +
+            '></div>'
+          );
+        };
+        var title =
+          '<div class="ps-section-head"><h2 class="t-title-3">Traversal cost</h2></div>';
+        function exits() {
+          return (
+            '<div class="ps-field"><span class="ps-label">Which exits it gates</span><div class="ps-seg" role="group"><button aria-pressed="false">All exits</button><button aria-pressed="true">Chosen exits</button></div>' +
+            '<div>' +
+            check(true, 'North to Pewter City', 'The way forward') +
+            check(false, 'South to Route 2', 'Back the way they came') +
+            '</div></div>'
+          );
+        }
+        function first() {
+          return (
+            '<h3 class="t-title-3" style="margin-top:8px">First time through</h3><p class="t-body-sm ps-muted" style="margin-top:-8px">Only needed once. After that, this part never applies again.</p>' +
+            '<div class="ps-field"><span class="ps-label">Trainers who must be beaten</span><div class="ps-tags">' +
+            S.firstTrainers
+              .map(function (t) {
+                return (
+                  '<span class="ps-tag">' +
+                  t +
+                  '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
+                  t +
+                  '"><span data-i="x" data-s="16"></span></button></span>'
+                );
+              })
+              .join('') +
+            '<button class="ps-chip"><span data-i="plus" data-s="16"></span>Pick a trainer</button></div><p class="ps-help">From this location’s trainers.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">Also need <span class="ps-opt">(optional)</span></span><div>' +
+            counter('Trainer battles', 'Any trainers here', 0) +
+            counter('Wild battles', 'Fights with wild Pokémon', 0) +
+            counter('Explores', 'Presses of Explore', 0) +
+            '</div></div>'
+          );
+        }
+        function every() {
+          return (
+            '<h3 class="t-title-3">Every time through</h3><p class="t-body-sm ps-muted" style="margin-top:-8px">A minimum for each visit, like walking all the way through a cave.</p>' +
+            '<div>' +
+            counter(
+              'Explores to get through',
+              'Counted each visit. Repel still counts.',
+              S.every,
+              'every',
+            ) +
+            '</div>'
+          );
+        }
+        function messages() {
+          var t = S.firstTrainers,
+            firstMsg = t.length
+              ? 'Defeat ' +
+                t[0] +
+                (t.length > 1
+                  ? ' and ' +
+                    (t.length - 1) +
+                    ' more trainer' +
+                    (t.length > 2 ? 's' : '')
+                  : '') +
+                ' to continue.'
+              : '';
+          var left = Math.max(0, S.every - 1),
+            everyMsg = S.every
+              ? 'Keep exploring: ' +
+                left +
+                ' more step' +
+                (left === 1 ? '' : 's') +
+                ' to get through Viridian Forest.'
+              : '';
+          return (
+            '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">What players see on the gated exit</span></div>' +
+            (firstMsg
+              ? '<div class="ps-embed"><span class="ps-embed-muted">First time, before the trainers</span><span>' +
+                firstMsg +
+                '</span><div class="ps-embed-buttons"><span class="is-locked">\u{1F512} North to Pewter City</span><span>South to Route 2</span><span>Explore</span></div></div>'
+              : '') +
+            (everyMsg
+              ? '<div class="ps-embed"><span class="ps-embed-muted">Any visit, after 1 explore</span><span>' +
+                everyMsg +
+                '</span><div class="ps-embed-buttons"><span class="is-locked">\u{1F512} North to Pewter City</span><span>Explore</span></div></div>'
+              : '') +
+            (!firstMsg && !everyMsg
+              ? '<p class="ps-help">No cost set, so the exit stays open.</p>'
+              : '') +
+            '</div>'
+          );
+        }
+        function edges() {
+          var e = function (dir, to, kind, badges) {
+            return (
+              '<div class="ps-edge" style="padding-left:0"><button class="ps-handle" aria-label="Reorder ' +
+              to +
+              '"><span data-i="grip"></span></button><span class="ps-kind" data-i="' +
+              kind +
+              '"></span><div><span class="ps-edge-dir">' +
+              dir +
+              '</span><b class="t-title-3" style="font-size:15px">' +
+              to +
+              '</b>' +
+              badges +
+              '</div>' +
+              PS.moreBtn +
+              '</div>'
+            );
+          };
+          return (
+            '<div class="ps-form"><p class="t-body-sm ps-muted">Where players can travel from Viridian Forest.</p><div class="ps-edges">' +
+            e(
+              'North',
+              'Pewter City',
+              'town',
+              '<a class="ps-badge ps-badge--warning" href="#" style="align-self:flex-start;text-decoration:none"><span data-i="steps" data-s="14"></span>Traversal cost</a>',
+            ) +
+            e('South', 'Route 2', 'route', '') +
+            '</div><p class="ps-help">The badge opens Explore → Traversal cost.</p><button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add connection</button></div>'
+          );
+        }
+        function draw() {
+          document.querySelectorAll('.slot').forEach(function (el) {
+            var v = el.getAttribute('data-v');
+            if (v === 'off')
+              el.innerHTML =
+                head +
+                PS.locTabs('encounters') +
+                '<div class="ps-scroll"><div class="ps-form">' +
+                title +
+                sw(
+                  false,
+                  'Traversal cost',
+                  'Players can pass through freely.',
+                ) +
+                '<p class="t-body-sm ps-muted">Turn it on to make players beat trainers or keep exploring before an exit opens.</p></div></div>';
+            if (v === 'on')
+              el.innerHTML =
+                head +
+                PS.locTabs('encounters') +
+                '<div class="ps-scroll"><div class="ps-form">' +
+                title +
+                sw(
+                  true,
+                  'Traversal cost',
+                  'Exits stay locked until the cost is paid.',
+                ) +
+                exits() +
+                first() +
+                '</div></div>';
+            if (v === 'every') {
+              var y = el.querySelector('.ps-scroll')
+                ? el.querySelector('.ps-scroll').scrollTop
+                : 0;
+              el.innerHTML =
+                head +
+                PS.locTabs('encounters') +
+                '<div class="ps-scroll"><div class="ps-form">' +
+                every() +
+                messages() +
+                '</div></div>';
+            }
+            if (v === 'edges')
+              el.innerHTML =
+                head +
+                PS.locTabs('connections') +
+                '<div class="ps-scroll">' +
+                edges() +
+                '</div>';
+          });
+          PS.mount(document);
+        }
+        document.addEventListener('input', function (e) {
+          var k = e.target.getAttribute('data-k');
+          if (k !== 'every') return;
+          S.every = Math.max(0, parseInt(e.target.value, 10) || 0);
+          var host = e.target.closest('.slot');
+          host.querySelector('.ps-form').lastElementChild.outerHTML =
+            messages();
+        });
+        draw();
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

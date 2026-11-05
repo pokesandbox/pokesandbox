@@ -2437,3 +2437,116 @@
   font: 400 13px/18px var(--font-sans);
   color: var(--ink-subtle);
 }
+
+/* Round 3: checklists, counters, trigger rows, read-only steps */
+.ps-check-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: 4px 0;
+  cursor: pointer;
+}
+.ps-check-row + .ps-check-row {
+  border-top: 1px solid var(--border);
+}
+.ps-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 2px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: var(--surface);
+}
+.ps-check[aria-checked='true'] {
+  background: var(--brand-ink);
+  border-color: var(--brand-ink);
+  color: var(--surface);
+}
+.ps-check-row > span:nth-child(2) {
+  flex: 1;
+  font: 400 15px/20px var(--font-sans);
+}
+.ps-check-row small {
+  display: block;
+  font: 400 13px/18px var(--font-sans);
+  color: var(--ink-subtle);
+}
+.ps-counter {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  gap: var(--space-3);
+  align-items: center;
+  min-height: 52px;
+}
+.ps-counter + .ps-counter {
+  border-top: 1px solid var(--border);
+}
+.ps-counter b {
+  font: 600 15px/20px var(--font-sans);
+}
+.ps-counter small {
+  display: block;
+  font: 400 13px/18px var(--font-sans);
+  color: var(--ink-subtle);
+}
+.ps-trigger-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.ps-trigger-row > .ps-variant-head b {
+  font: 600 15px/20px var(--font-sans);
+}
+.ps-trigger-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ps-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  counter-reset: step;
+}
+.ps-steps li {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font: 400 14px/20px var(--font-sans);
+}
+.ps-steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: var(--surface-muted);
+  color: var(--ink-muted);
+  font: 700 12px/22px var(--font-sans);
+  text-align: center;
+  flex: none;
+}
+.ps-steps li b {
+  display: block;
+  font: 600 13px/18px var(--font-sans);
+  color: var(--ink-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ps-embed-buttons span.is-locked {
+  opacity: 0.6;
+}
