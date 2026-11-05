@@ -86,16 +86,15 @@
                 can be added later on the NPC.
               </li>
               <li>
-                <b>Milestone awarded</b> is a progression plus one of its
-                milestones, so a region with trials instead of badges uses the
-                same template (pick "Trials" and "Ocean Trial").
+                <b>Badge awarded</b> picks a badge, which is a milestone in the
+                region’s Badges progression. The template stays gym-focused;
+                regions with trials get a Trial Captain template later.
               </li>
               <li>
                 <b>No badges yet:</b> step 3 says so and offers Create Badges (a
-                quick-create sheet: name, kind, first badge, all prefilled), Use
-                another progression, or No milestone. You never leave the form.
-                Full editing is on the Progressions screen, which lists it as
-                used by this leader.
+                quick-create sheet: name, kind, first badge, all prefilled) or
+                No badge. You never leave the form. Full editing is on the
+                Progressions screen, which lists it as used by this leader.
               </li>
               <li>
                 Intro, defeat and after-defeat text are passages with the
@@ -189,32 +188,19 @@
             'Brock: Keep going east. Cerulean’s leader won’t go easy on you.',
         };
         function milestone(has) {
-          var plus = function (t) {
-            return (
-              '<button class="ps-btn ps-btn--ghost" style="padding:0 8px;align-self:flex-start"><span data-i="plus" data-s="18"></span>' +
-              t +
-              '</button>'
-            );
-          };
           if (!has)
             return (
-              '<div class="ps-field"><span class="ps-label">Milestone awarded</span>' +
-              '<div class="ps-callout ps-callout--info"><span data-i="gym" data-s="18"></span><span><b>This region doesn\u2019t have badges yet.</b><br>Gym leaders usually award one. Pick how this leader marks a win.</span></div>' +
+              '<div class="ps-field"><span class="ps-label">Badge awarded</span>' +
+              '<div class="ps-callout ps-callout--info"><span data-i="gym" data-s="18"></span><span><b>This region doesn\u2019t have badges yet.</b><br>Badges are milestones in a Badges progression. Create it here, or skip the badge.</span></div>' +
               '<div role="radiogroup" class="ps-stack" style="gap:8px">' +
               '<button class="ps-choice" role="radio" aria-checked="true"><span class="ps-radio"></span><span class="ps-choice-text"><b>Create Badges</b><span>Adds a Badges progression with Boulder Badge as its first badge.</span></span></button>' +
-              '<button class="ps-choice" role="radio" aria-checked="false"><span class="ps-radio"></span><span class="ps-choice-text"><b>Use another progression</b><span>For regions with trials, stamps or ranks: 2 progressions available.</span></span></button>' +
-              '<button class="ps-choice" role="radio" aria-checked="false"><span class="ps-radio"></span><span class="ps-choice-text"><b>No milestone</b><span>The leader only gives the TM and prize money.</span></span></button></div></div>'
+              '<button class="ps-choice" role="radio" aria-checked="false"><span class="ps-radio"></span><span class="ps-choice-text"><b>No badge</b><span>The leader only gives items and prize money.</span></span></button></div></div>'
             );
           return (
-            '<div class="ps-field"><span class="ps-label">Milestone awarded</span>' +
-            '<div class="ps-field" style="gap:4px"><span class="t-body-sm ps-subtle">Progression</span>' +
-            trig('steps', 'Badges') +
-            '</div>' +
-            '<div class="ps-field" style="gap:4px"><span class="t-body-sm ps-subtle">Milestone</span>' +
+            '<div class="ps-field"><span class="ps-label">Badge awarded</span>' +
             trig('gym', 'Boulder Badge') +
-            plus('New badge') +
-            '</div>' +
-            '<p class="ps-help">Set on the player\u2019s journey when they win. Regions with trials pick their own progression here.</p></div>'
+            '<button class="ps-btn ps-btn--ghost" style="padding:0 8px;align-self:flex-start"><span data-i="plus" data-s="18"></span>New badge</button>' +
+            '<p class="ps-help">Badges are milestones in the region\u2019s Badges progression. Winning sets this one on the player\u2019s journey.</p></div>'
           );
         }
         var S = {
@@ -296,11 +282,7 @@
               [
                 ['Leader', 'Brock · Pewter Gym', 1],
                 ['Team', 'Geodude Lv 12, Onix Lv 14', 2],
-                [
-                  'Rewards',
-                  'Boulder Badge (Badges) · 1× TM34 Bide · ₽1,386',
-                  3,
-                ],
+                ['Rewards', 'Boulder Badge · 1× TM34 Bide · ₽1,386', 3],
                 ['Text', 'Intro, defeat and after-battle lines', 4],
                 ['Gym trainers', 'Camper Liam, required first', 5],
               ]
