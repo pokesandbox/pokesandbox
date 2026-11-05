@@ -10,7 +10,6 @@ Mid-fidelity mockups for the webapp's public pages and region builder (issue #25
 - `screens/publishing/`, `screens/content/`: round 2 group 4 (Region Health and publishing; TMs & HMs, Pokédex, progressions).
 - `screens/scripts/`: round 4 (S1 the basic step editor and Scripts list, S2 the Oak's Parcel worked example). S3 (New game) is on `screens/builder/h-settings.html`, and N5 (Starter Gift) is with the templates.
 - `screens/player/`: player-facing pages (canon species page, region Pokédex with seen and caught).
-- `screens/archive/`: superseded designs kept in case we revert (the separate Trainers and NPCs lists).
 
 Phone frames are drawn at 390×844 and desktop frames at 1440, side by side on one page, so the pages aren't responsive. Screens marked ★ also show a dark version; the top bar's toggle switches everything else.
 
