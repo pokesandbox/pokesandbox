@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>K2 · Condition editor ★ · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >K2 · Condition editor ★
+        <small
+          >K2 · Condition editor ★ · phone sheet light (live), dark, problem
+          state, desktop side panel</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div
+        class="ps-root ps-pad"
+        data-theme="light"
+        style="background: transparent"
+      >
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">
+              Phone · light (try it: templates, Not, groups)
+            </p>
+            <div data-theme="light">
+              <div
+                class="ps-phone ps-phone--tall host"
+                data-s="a"
+                data-f="phone"
+              ></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Phone · dark</p>
+            <div data-theme="dark">
+              <div
+                class="ps-phone ps-phone--tall host"
+                data-s="a"
+                data-f="phone"
+              ></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Phone · a row that points at a deleted location
+            </p>
+            <div data-theme="light">
+              <div
+                class="ps-phone ps-phone--tall host"
+                data-s="b"
+                data-f="phone"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1300px;
+          "
+        >
+          <li>
+            <b>Shape:</b> a flat "All of these" list, plus at most one group
+            that can be "Any of these" (or "All of"), plus "Not" on any row.
+            Nothing deeper. "Add group" disappears once a group exists; deeper
+            trees come by JSON import later.
+          </li>
+          <li>
+            <b>Templates first:</b> each chip adds a ready-made row (Badge… adds
+            "Has badge" and opens the badge picker). Most authors never pick a
+            raw fact. "Add condition" opens the full fact list (badge,
+            progression, item, party move or species, visited, flag, time of
+            day, money).
+          </li>
+          <li>
+            <b>Rows</b> are fact · operator · value, with the value input
+            matching the fact: badge, item, move and location comboboxes, a
+            number, a segmented control for time of day or "is set / not set
+            yet". Only once needs no value.
+          </li>
+          <li>
+            <b>Reads as</b> updates live from the same explainer players see
+            when something is locked. Rows with problems still save (so work
+            isn't lost), but they show here and in Region Health, and block
+            publish.
+          </li>
+          <li>
+            Phones: a tall bottom sheet over the page, with Save pinned.
+            Desktop: a 480px side panel, so the thing being gated stays visible.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · side panel over the Connections tab
+        </p>
+        <div data-theme="light">
+          <div
+            class="ps-desktop host"
+            data-s="a"
+            data-f="desktop"
+            style="height: 900px; position: relative"
+          ></div>
+        </div>
+      </div>
+      <script>
+        PS.icons.clock =
+          '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
+        PS.icons.flag = '<path d="M5 21V4h11l-2 4 2 4H5"/>';
+        var esc = function (s) {
+          return String(s).replace(/[&<>"]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+          });
+        };
+        var code = function (s) {
+          return '<span class="t-mono">' + esc(s) + '</span>';
+        };
+        var TIMES = [
+          ['morning', 'Morning', 'in the morning'],
+          ['day', 'Day', 'during the day'],
+          ['night', 'Night', 'at night'],
+        ];
+        var FACTS = {
+          badge: {
+            label: 'Has badge',
+            icon: 'gym',
+            kind: 'combo',
+            ph: 'Choose a badge',
+            def: 'Boulder Badge',
+            say: function (r) {
+              return 'the ' + r.value;
+            },
+          },
+          item: {
+            label: 'Has item',
+            icon: 'bag',
+            kind: 'item',
+            ph: 'Choose an item',
+            def: 'Bike Voucher',
+            say: function (r) {
+              return (r.n > 1 ? r.n + '× ' : 'a ') + r.value;
+            },
+          },
+          move: {
+            label: 'Party knows move',
+            icon: 'user',
+            kind: 'combo',
+            ph: 'Choose a move',
+            def: 'Cut',
+            say: function (r) {
+              return 'a Pokémon that knows ' + r.value;
+            },
+          },
+          visited: {
+            label: 'Has visited',
+            icon: 'pin',
+            kind: 'combo',
+            ph: 'Choose a location',
+            def: 'Cerulean City',
+            say: function (r) {
+              return 'having visited ' + r.value;
+            },
+          },
+          flag: {
+            label: 'Flag',
+            icon: 'flag',
+            kind: 'flag',
+            ph: 'Choose a flag',
+            def: 'oak_parcel_delivered',
+            say: function (r) {
+              return r.op === 'set'
+                ? 'flag ' + code(r.value)
+                : 'before ' + code(r.value);
+            },
+            qual: function (r) {
+              return r.op !== 'set';
+            },
+          },
+          time: {
+            label: 'Time of day',
+            icon: 'clock',
+            kind: 'time',
+            say: function (r) {
+              return (
+                r.t
+                  .map(function (k) {
+                    return TIMES.filter(function (x) {
+                      return x[0] === k;
+                    })[0][2];
+                  })
+                  .join(' or ') || 'any time'
+              );
+            },
+            qual: function () {
+              return true;
+            },
+          },
+          once: {
+            label: 'Only once',
+            icon: 'check',
+            kind: 'none',
+            say: function () {
+              return 'the first time';
+            },
+            qual: function () {
+              return true;
+            },
+          },
+        };
+        function newRow(fact) {
+          var f = FACTS[fact],
+            r = { fact: fact, not: false };
+          if (f.kind === 'combo' || f.kind === 'item' || f.kind === 'flag')
+            r.value = f.def;
+          if (f.kind === 'item') r.n = 1;
+          if (f.kind === 'flag') r.op = 'unset';
+          if (f.kind === 'time') r.t = ['night'];
+          return r;
+        }
+        var STATES = {
+          a: function () {
+            return {
+              rows: [newRow('badge')],
+              group: { mode: 'any', rows: [newRow('move'), newRow('item')] },
+            };
+          },
+          b: function () {
+            var v = newRow('visited');
+            v.value = 'Route 2';
+            v.deleted = true;
+            return { rows: [v, newRow('flag'), newRow('time')], group: null };
+          },
+        };
+        function phrase(r) {
+          var s = FACTS[r.fact].say(r);
+          return r.not ? 'not ' + s : s;
+        }
+        function list(a, word) {
+          return a.length < 2
+            ? a[0] || ''
+            : a.slice(0, -1).join(', ') + ' ' + word + ' ' + a[a.length - 1];
+        }
+        function sentence(st) {
+          var req = [],
+            qual = [];
+          st.rows.forEach(function (r) {
+            var f = FACTS[r.fact];
+            (f.qual && f.qual(r) ? qual : req).push(r);
+          });
+          var reqText = req.map(phrase);
+          if (st.group && st.group.rows.length) {
+            var g = st.group.rows.map(phrase);
+            reqText.push(
+              st.group.mode === 'any' && g.length > 1
+                ? 'either ' + list(g, 'or')
+                : list(g, 'and'),
+            );
+          }
+          var qualText = qual.map(function (r) {
+            return (r.not ? 'not ' : 'only ') + FACTS[r.fact].say(r);
+          });
+          var out =
+            (reqText.length ? 'Requires ' + list(reqText, 'and') : '') +
+            (qualText.length
+              ? (reqText.length ? ', ' : '') + qualText.join(', ')
+              : '');
+          if (!out) return 'No requirement. Anyone can use this.';
+          return out.charAt(0).toUpperCase() + out.slice(1) + '.';
+        }
+        function rowHTML(r, path) {
+          var f = FACTS[r.fact],
+            body = '',
+            bad = r.deleted;
+          var trig = function () {
+            return (
+              '<button class="ps-trigger"' +
+              (bad ? ' aria-invalid="true"' : '') +
+              '><span style="display:flex;gap:10px;align-items:center"><span data-i="' +
+              f.icon +
+              '"></span>' +
+              (r.value
+                ? f.kind === 'flag'
+                  ? code(r.value)
+                  : esc(r.value)
+                : '<span class="ps-placeholder">' + f.ph + '</span>') +
+              '</span><span data-i="search"></span></button>'
+            );
+          };
+          if (f.kind === 'combo') body = trig();
+          if (f.kind === 'item')
+            body =
+              '<div style="display:grid;grid-template-columns:1fr 84px;gap:8px">' +
+              trig() +
+              '<input class="ps-input" type="number" inputmode="numeric" min="1" value="' +
+              r.n +
+              '" aria-label="Minimum count" data-act="n" data-p="' +
+              path +
+              '"></div>';
+          if (f.kind === 'flag')
+            body =
+              '<div class="ps-seg" role="group" aria-label="Flag state"><button aria-pressed="' +
+              (r.op === 'set') +
+              '" data-act="flagop" data-v="set" data-p="' +
+              path +
+              '">Is set</button><button aria-pressed="' +
+              (r.op !== 'set') +
+              '" data-act="flagop" data-v="unset" data-p="' +
+              path +
+              '">Not set yet</button></div>' +
+              trig();
+          if (f.kind === 'time')
+            body =
+              '<div class="ps-seg" role="group" aria-label="Time of day">' +
+              TIMES.map(function (t) {
+                return (
+                  '<button aria-pressed="' +
+                  (r.t.indexOf(t[0]) > -1) +
+                  '" data-act="time" data-v="' +
+                  t[0] +
+                  '" data-p="' +
+                  path +
+                  '">' +
+                  t[1] +
+                  '</button>'
+                );
+              }).join('') +
+              '</div>';
+          if (f.kind === 'none')
+            body =
+              '<p class="ps-help">Passes until this has happened once, then never again.</p>';
+          if (bad)
+            body +=
+              '<p class="ps-error"><span data-i="error" data-s="18"></span>Route 2 was deleted. Pick another location or remove this row.</p>';
+          return (
+            '<div class="ps-cond-row' +
+            (bad ? ' is-invalid' : '') +
+            '"><div class="ps-cond-row-head"><b><span data-i="' +
+            f.icon +
+            '" data-s="18"></span>' +
+            f.label +
+            '</b>' +
+            '<button class="ps-chip ps-chip--not" aria-pressed="' +
+            r.not +
+            '" data-act="not" data-p="' +
+            path +
+            '">Not</button>' +
+            '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
+            f.label +
+            '" data-act="rm" data-p="' +
+            path +
+            '"><span data-i="x"></span></button></div><div class="ps-cond-row-body">' +
+            body +
+            '</div></div>'
+          );
+        }
+        function editorHTML(st) {
+          var tpl = [
+            ['badge', 'Badge…'],
+            ['item', 'Item…'],
+            ['move', 'HM move…'],
+            ['once', 'Only once'],
+            ['flag', 'Before flag…'],
+            ['time', 'Time of day…'],
+          ];
+          var html =
+            '<div class="ps-field"><span class="ps-label">Start from a template</span><div class="ps-chips" style="flex-wrap:wrap">' +
+            tpl
+              .map(function (t) {
+                return (
+                  '<button class="ps-chip" data-act="tpl" data-v="' +
+                  t[0] +
+                  '"><span data-i="plus" data-s="16"></span>' +
+                  t[1] +
+                  '</button>'
+                );
+              })
+              .join('') +
+            '</div></div>';
+          html +=
+            '<div class="ps-field"><span class="ps-label">Requires all of these</span><div class="ps-cond-rows">';
+          var parts = st.rows.map(function (r, i) {
+            return rowHTML(r, 't' + i);
+          });
+          if (st.group) {
+            parts.push(
+              '<div class="ps-cond-group"><div class="ps-cond-group-head"><div class="ps-seg" role="group" aria-label="Group mode"><button aria-pressed="' +
+                (st.group.mode === 'any') +
+                '" data-act="gmode" data-v="any">Any of these</button><button aria-pressed="' +
+                (st.group.mode === 'all') +
+                '" data-act="gmode" data-v="all">All of these</button></div><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove group" data-act="rmgroup"><span data-i="trash"></span></button></div>' +
+                st.group.rows
+                  .map(function (r, i) {
+                    return (
+                      (i
+                        ? '<div class="ps-cond-join">' +
+                          (st.group.mode === 'any' ? 'or' : 'and') +
+                          '</div>'
+                        : '') + rowHTML(r, 'g' + i)
+                    );
+                  })
+                  .join('') +
+                '<button class="ps-btn ps-btn--ghost" data-act="addg" style="align-self:flex-start"><span data-i="plus" data-s="18"></span>Add to group</button></div>',
+            );
+          }
+          html +=
+            parts
+              .map(function (p, i) {
+                return (i ? '<div class="ps-cond-join">and</div>' : '') + p;
+              })
+              .join('') ||
+            '<p class="ps-help">No conditions yet. Pick a template above.</p>';
+          html +=
+            '</div></div><div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary" data-act="add"><span data-i="plus" data-s="18"></span>Add condition</button>' +
+            (st.group
+              ? ''
+              : '<button class="ps-btn ps-btn--ghost" data-act="group"><span data-i="plus" data-s="18"></span>Add group (any of)</button>') +
+            '</div>';
+          var problems = st.rows
+            .concat(st.group ? st.group.rows : [])
+            .filter(function (r) {
+              return r.deleted;
+            }).length;
+          html +=
+            '<div class="ps-cond-preview" aria-live="polite"><span>Reads as</span><p>' +
+            sentence(st) +
+            '</p>' +
+            (problems
+              ? '<span class="t-body-sm" style="color:var(--danger);text-transform:none;letter-spacing:0;font-weight:500">' +
+                problems +
+                ' problem to fix</span>'
+              : '<span class="t-body-sm ps-subtle" style="text-transform:none;letter-spacing:0;font-weight:400">Players see this when the connection is locked.</span>') +
+            '</div>';
+          return html;
+        }
+        function shell(f, inner) {
+          if (f === 'phone')
+            return (
+              PS.phoneBar('Route 1', 'Route', PS.moreBtn) +
+              PS.locTabs('connections') +
+              '<div class="ps-scroll"></div><div class="ps-scrim"></div>' +
+              '<div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Requirement"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Requirement<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">North · Route 1 → Viridian City</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+              '<div class="ps-sheet-scroll ed">' +
+              inner +
+              '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save requirement</button></div></div>'
+            );
+          return (
+            PS.sidebar('locations') +
+            '<div class="ps-main">' +
+            PS.topbar() +
+            '<div class="ps-split"><section class="ps-pane-list"><div class="ps-appbar" style="padding:0 8px 0 16px"><h2 class="ps-appbar-title">Locations</h2></div><div class="ps-scroll">' +
+            PS.locRows('route-1') +
+            '</div></section>' +
+            '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">Route 1</h2></div>' +
+            PS.locTabs('connections') +
+            '</section></div></div>' +
+            '<div class="ps-scrim" style="z-index:2"></div><aside class="ps-sidepanel" role="dialog" aria-label="Requirement"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title">Requirement<small>North · Route 1 → Viridian City</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            '<div class="ps-sidepanel-body ed">' +
+            inner +
+            '</div><div class="ps-sidepanel-foot"><button class="ps-btn ps-btn--primary">Save requirement</button><button class="ps-btn ps-btn--ghost">Cancel</button></div></aside>'
+          );
+        }
+        document.querySelectorAll('.host').forEach(function (host) {
+          var st = STATES[host.getAttribute('data-s')](),
+            f = host.getAttribute('data-f');
+          host.innerHTML = shell(f, '');
+          var ed = host.querySelector('.ed');
+          function draw() {
+            ed.innerHTML = editorHTML(st);
+            PS.mount(ed);
+          }
+          function at(p) {
+            return p.charAt(0) === 't'
+              ? [st.rows, +p.slice(1)]
+              : [st.group.rows, +p.slice(1)];
+          }
+          ed.addEventListener('click', function (e) {
+            var b = e.target.closest('[data-act]');
+            if (!b || b.tagName === 'INPUT') return;
+            var a = b.getAttribute('data-act'),
+              p = b.getAttribute('data-p'),
+              v = b.getAttribute('data-v'),
+              loc = p ? at(p) : null,
+              r = loc ? loc[0][loc[1]] : null;
+            if (a === 'tpl') st.rows.push(newRow(v));
+            if (a === 'add') st.rows.push(newRow('visited'));
+            if (a === 'group')
+              st.group = { mode: 'any', rows: [newRow('move')] };
+            if (a === 'addg') st.group.rows.push(newRow('item'));
+            if (a === 'rmgroup') st.group = null;
+            if (a === 'gmode') st.group.mode = v;
+            if (a === 'not') r.not = !r.not;
+            if (a === 'rm') {
+              loc[0].splice(loc[1], 1);
+              if (st.group && !st.group.rows.length) st.group = null;
+            }
+            if (a === 'flagop') r.op = v;
+            if (a === 'time') {
+              var i = r.t.indexOf(v);
+              if (i > -1) r.t.splice(i, 1);
+              else r.t.push(v);
+              r.t.sort(function (x, y) {
+                return (
+                  ['morning', 'day', 'night'].indexOf(x) -
+                  ['morning', 'day', 'night'].indexOf(y)
+                );
+              });
+            }
+            draw();
+          });
+          ed.addEventListener('change', function (e) {
+            var el = e.target;
+            if (el.getAttribute('data-act') !== 'n') return;
+            var loc = at(el.getAttribute('data-p'));
+            loc[0][loc[1]].n = Math.max(1, parseInt(el.value, 10) || 1);
+            draw();
+          });
+          draw();
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

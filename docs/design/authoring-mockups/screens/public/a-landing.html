@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A · Landing ★ · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >A · Landing ★
+        <small
+          >A · Landing, signed out ★ · phone light, phone dark, desktop
+          1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div
+        class="ps-root ps-pad"
+        data-theme="light"
+        style="background: transparent"
+      >
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Phone · light</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Phone · dark</p>
+            <div data-theme="dark">
+              <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
+            </div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                One line says what it is; the two Discord actions come first
+                because nothing works without the bot and a sign-in.
+              </li>
+              <li>
+                "Add bot to Discord" is the primary for server owners. "Sign in
+                with Discord" is secondary; it's also in the header on desktop.
+              </li>
+              <li>
+                Hero art is built from the sand and sea blocks (an original
+                sandcastle shape), with a placeholder where a mascot
+                illustration might go. No official art.
+              </li>
+              <li>Feature tiles use the accent; the one solid tile leads.</li>
+              <li>Footer carries the fan-project disclaimer on every page.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · light
+        </p>
+        <div data-theme="light">
+          <div class="ps-browser slot" data-v="desktop"></div>
+        </div>
+      </div>
+      <script>
+        function art(h) {
+          return (
+            '<div class="ps-hero-art" style="height:' +
+            h +
+            'px" aria-hidden="true">' +
+            '<i class="sea"></i><i class="sand"></i>' +
+            '<i class="tower" style="left:14%;height:' +
+            Math.round(h * 0.22) +
+            'px"></i>' +
+            '<i class="tower" style="left:34%;height:' +
+            Math.round(h * 0.34) +
+            'px;width:48px"></i>' +
+            '<i class="crenel" style="left:calc(34% + 0px);bottom:calc(58% + ' +
+            Math.round(h * 0.34) +
+            'px)"></i>' +
+            '<i class="crenel" style="left:calc(34% + 36px);bottom:calc(58% + ' +
+            Math.round(h * 0.34) +
+            'px)"></i>' +
+            '<i class="ph">Mascot art<br>placeholder</i></div>'
+          );
+        }
+        var FEATURES = [
+          [
+            'town',
+            'Build a region',
+            'Towns, routes, wild encounters and trainers, edited from your phone.',
+            true,
+          ],
+          [
+            'chat',
+            'Play in Discord',
+            'Your members explore, catch and level up without leaving the server.',
+          ],
+          [
+            'gym',
+            'Battle in the Arena',
+            'Challenge other players and gym leaders in turn-based battles.',
+          ],
+        ];
+        function feats() {
+          return FEATURES.map(function (f) {
+            return (
+              '<article class="ps-card" style="flex-direction:row;gap:16px"><span class="ps-feature-tile' +
+              (f[3] ? ' ps-feature-tile--solid' : '') +
+              '" data-i="' +
+              f[0] +
+              '" data-s="24"></span><div><h3 class="t-title-3">' +
+              f[1] +
+              '</h3><p class="t-body-sm ps-muted">' +
+              f[2] +
+              '</p></div></article>'
+            );
+          }).join('');
+        }
+        var footer =
+          '<footer class="ps-footer"><span>PokeSandbox is a non-commercial fan project, not affiliated with Nintendo, Game Freak, Creatures or The Pokémon Company.</span><span><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Support server</a></span></footer>';
+        function phone() {
+          return (
+            '<header class="ps-header"><a class="ps-wordmark" href="#">PokeSandbox</a><span class="ps-header-spacer"></span><button class="ps-btn ps-btn--ghost">Sign in</button></header>' +
+            '<div class="ps-scroll"><main class="ps-page">' +
+            art(180) +
+            '<section class="ps-hero"><h1 class="t-display">Build a region. Play it in Discord.</h1><p class="t-body ps-muted">Make your own Pokémon-style game on the web. Your server plays it right inside Discord.</p>' +
+            '<div class="ps-hero-ctas"><button class="ps-btn ps-btn--discord ps-btn--block"><span data-i="chat"></span>Add bot to Discord</button><button class="ps-btn ps-btn--secondary ps-btn--block">Sign in with Discord</button></div>' +
+            '<a class="ps-link" href="#" style="align-self:center">Browse servers</a></section>' +
+            '<section class="ps-features" aria-label="Features">' +
+            feats() +
+            '</section></main>' +
+            footer +
+            '</div>'
+          );
+        }
+        function desktop() {
+          return (
+            '<header class="ps-header"><a class="ps-wordmark" href="#">PokeSandbox</a><span class="ps-header-spacer"></span><nav class="ps-header-nav"><a class="ps-btn ps-btn--ghost" href="#">Browse servers</a></nav><button class="ps-btn ps-btn--secondary">Sign in with Discord</button></header>' +
+            '<main class="ps-page"><div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">' +
+            '<section class="ps-hero"><h1 class="t-display" style="font-size:56px;line-height:60px">Build a region.<br>Play it in Discord.</h1><p class="t-body ps-muted" style="font-size:18px;line-height:28px;max-width:480px">Make your own Pokémon-style game on the web. Your server plays it right inside Discord.</p>' +
+            '<div class="ps-row" style="margin-top:8px"><button class="ps-btn ps-btn--discord"><span data-i="chat"></span>Add bot to Discord</button><a class="ps-link" href="#" style="margin-left:8px">Browse servers</a></div></section>' +
+            art(380) +
+            '</div>' +
+            '<section class="ps-grid" aria-label="Features">' +
+            feats() +
+            '</section></main>' +
+            footer
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          el.innerHTML =
+            el.getAttribute('data-v') === 'phone' ? phone() : desktop();
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

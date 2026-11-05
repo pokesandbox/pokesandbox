@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Search combobox · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Search combobox
+        <small
+          >Species and locations, async, 1,000+ entries. Full-screen on
+          phones.</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1330px">
+      <div class="ps-root ps-pad">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-demo-label">Live: type a species</p>
+            <div class="ps-phone ps-phone--mini">
+              <div class="ps-appbar">
+                <button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Back"
+                >
+                  <span data-i="back"></span>
+                </button>
+                <div class="ps-input-wrap" style="flex: 1; margin-right: 8px">
+                  <span class="ps-lead" data-i="search"></span
+                  ><input
+                    class="ps-input"
+                    id="q"
+                    role="combobox"
+                    aria-expanded="true"
+                    aria-controls="lb"
+                    aria-autocomplete="list"
+                    placeholder="Search species"
+                    value="pi"
+                  />
+                </div>
+              </div>
+              <div class="ps-scroll">
+                <ul
+                  class="ps-listbox ps-listbox--flat"
+                  role="listbox"
+                  id="lb"
+                ></ul>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-demo-label">Loading</p>
+            <div class="ps-phone ps-phone--mini">
+              <div class="ps-appbar">
+                <span
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  data-i="back"
+                ></span>
+                <div class="ps-input-wrap" style="flex: 1; margin-right: 8px">
+                  <span class="ps-lead" data-i="search"></span
+                  ><input
+                    class="ps-input"
+                    value="char"
+                    aria-label="Search species"
+                  />
+                </div>
+              </div>
+              <div class="ps-listbox-note" role="status">
+                <span class="ps-spinner"></span>Searching…
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-demo-label">No results</p>
+            <div class="ps-phone ps-phone--mini">
+              <div class="ps-appbar">
+                <span
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  data-i="back"
+                ></span>
+                <div class="ps-input-wrap" style="flex: 1; margin-right: 8px">
+                  <span class="ps-lead" data-i="search"></span
+                  ><input
+                    class="ps-input"
+                    value="pikahcu"
+                    aria-label="Search species"
+                  />
+                </div>
+              </div>
+              <div class="ps-empty" role="status">
+                <span data-i="search" data-s="28"></span
+                ><b class="t-title-3" style="color: var(--ink)"
+                  >No species match “pikahcu”</b
+                ><span class="t-body-sm"
+                  >Check the spelling, or search by Pokédex number, like
+                  25.</span
+                >
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-demo-label">Locations, empty query</p>
+            <div class="ps-phone ps-phone--mini">
+              <div class="ps-appbar">
+                <span
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  data-i="back"
+                ></span>
+                <div class="ps-input-wrap" style="flex: 1; margin-right: 8px">
+                  <span class="ps-lead" data-i="search"></span
+                  ><input
+                    class="ps-input"
+                    placeholder="Search locations"
+                    aria-label="Search locations"
+                  />
+                </div>
+              </div>
+              <ul class="ps-listbox ps-listbox--flat" role="listbox">
+                <li class="ps-group-label" role="presentation">Recent</li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="town"></span
+                  ><span>Viridian City<span class="ps-sub">Town</span></span>
+                </li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="building"></span
+                  ><span
+                    >Pokémon Center<span class="ps-sub"
+                      >in Viridian City</span
+                    ></span
+                  >
+                </li>
+                <li class="ps-group-label" role="presentation">
+                  All locations · 64
+                </li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="dungeon"></span
+                  ><span>Mt. Moon<span class="ps-sub">Dungeon</span></span>
+                </li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="town"></span
+                  ><span>Pallet Town<span class="ps-sub">Town</span></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <p class="ps-demo-label">md and up: inline field with a popover</p>
+        <div style="width: 400px; position: relative">
+          <div class="ps-field">
+            <span class="ps-label">Starting location</span>
+            <div class="ps-input-wrap">
+              <span class="ps-lead" data-i="search"></span
+              ><input
+                class="ps-input"
+                value="pal"
+                aria-label="Starting location"
+              />
+            </div>
+          </div>
+          <ul class="ps-listbox" role="listbox" style="margin-top: 4px">
+            <li class="ps-option is-active" role="option">
+              <span class="ps-kind" data-i="town"></span
+              ><span
+                ><mark>Pal</mark>let Town<span class="ps-sub">Town</span></span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <script>
+        var SPECIES = [
+          'Bulbasaur',
+          'Ivysaur',
+          'Venusaur',
+          'Charmander',
+          'Charmeleon',
+          'Charizard',
+          'Squirtle',
+          'Wartortle',
+          'Blastoise',
+          'Caterpie',
+          'Metapod',
+          'Butterfree',
+          'Weedle',
+          'Kakuna',
+          'Beedrill',
+          'Pidgey',
+          'Pidgeotto',
+          'Pidgeot',
+          'Rattata',
+          'Raticate',
+          'Spearow',
+          'Fearow',
+          'Ekans',
+          'Arbok',
+          'Pikachu',
+          'Raichu',
+          'Sandshrew',
+          'Sandslash',
+          'Nidoran♀',
+          'Nidorina',
+          'Nidoqueen',
+          'Nidoran♂',
+          'Nidorino',
+          'Nidoking',
+          'Clefairy',
+          'Clefable',
+          'Vulpix',
+          'Ninetales',
+          'Jigglypuff',
+          'Wigglytuff',
+          'Zubat',
+          'Golbat',
+          'Oddish',
+          'Gloom',
+          'Vileplume',
+          'Paras',
+          'Parasect',
+          'Venonat',
+          'Venomoth',
+          'Diglett',
+          'Dugtrio',
+          'Meowth',
+          'Persian',
+          'Psyduck',
+          'Golduck',
+          'Mankey',
+          'Primeape',
+          'Growlithe',
+          'Arcanine',
+          'Poliwag',
+          'Poliwhirl',
+          'Poliwrath',
+          'Abra',
+          'Kadabra',
+          'Alakazam',
+        ];
+        SPECIES = SPECIES.concat([
+          'Pinsir',
+          'Piloswine',
+          'Pichu',
+          'Pidove',
+          'Pignite',
+        ]);
+        var NUM = {
+          Pinsir: 127,
+          Piloswine: 221,
+          Pichu: 172,
+          Pidove: 519,
+          Pignite: 499,
+        };
+        var q = document.getElementById('q'),
+          lb = document.getElementById('lb'),
+          timer;
+        function esc(s) {
+          return s.replace(/[&<>]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c];
+          });
+        }
+        function results(term) {
+          var t = term.trim().toLowerCase();
+          if (/^\d+$/.test(t))
+            return SPECIES.filter(function (n, i) {
+              return String(NUM[n] || i + 1) === String(+t);
+            });
+          return SPECIES.filter(function (n) {
+            return n.toLowerCase().indexOf(t) !== -1;
+          });
+        }
+        function show(term) {
+          var t = term.trim();
+          if (!t) {
+            lb.innerHTML =
+              '<li class="ps-listbox-note">Type a name or Pokédex number.</li>';
+            return;
+          }
+          var r = results(t);
+          if (!r.length) {
+            lb.innerHTML =
+              '<li class="ps-empty" role="status">' +
+              PS.icon('search', 28) +
+              '<b class="t-title-3" style="color:var(--ink)">No species match “' +
+              esc(t) +
+              '”</b><span class="t-body-sm">Check the spelling, or search by Pokédex number, like 25.</span></li>';
+            return;
+          }
+          var lower = t.toLowerCase();
+          lb.innerHTML =
+            r
+              .slice(0, 7)
+              .map(function (n, i) {
+                var at = n.toLowerCase().indexOf(lower),
+                  label =
+                    at < 0
+                      ? esc(n)
+                      : esc(n.slice(0, at)) +
+                        '<mark>' +
+                        esc(n.slice(at, at + t.length)) +
+                        '</mark>' +
+                        esc(n.slice(at + t.length));
+                var num = NUM[n] || SPECIES.indexOf(n) + 1;
+                return (
+                  '<li class="ps-option' +
+                  (i === 0 ? ' is-active' : '') +
+                  '" role="option"><span class="ps-thumb"></span><span>' +
+                  label +
+                  '</span><span class="ps-meta">#' +
+                  String(num).padStart(3, '0') +
+                  '</span></li>'
+                );
+              })
+              .join('') +
+            (r.length > 7
+              ? '<li class="ps-listbox-note t-body-sm">Showing 7 of ' +
+                r.length +
+                '. Keep typing to narrow.</li>'
+              : '');
+        }
+        q.addEventListener('input', function () {
+          clearTimeout(timer);
+          lb.innerHTML =
+            '<li class="ps-listbox-note" role="status"><span class="ps-spinner"></span>Searching…</li>';
+          timer = setTimeout(function () {
+            show(q.value);
+          }, 350);
+        });
+        lb.addEventListener('click', function (e) {
+          var o = e.target.closest('.ps-option');
+          if (!o) return;
+          q.value = o.querySelector(
+            'span:not(.ps-thumb):not(.ps-meta)',
+          ).textContent;
+          show(q.value);
+        });
+        show(q.value);
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

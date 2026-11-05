@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>G · Create region · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >G · Create region
+        <small
+          >G · Create region · 3 steps from the server admin strip · phone,
+          desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">1 · Name</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="1"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">2 · Rules preset</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="2"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">3 · Review</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="3"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1200px;
+          "
+        >
+          <li>
+            A full-screen flow on phones (a close button, not a back arrow,
+            leaves it; back steps between pages). The action bar sticks above
+            the keyboard.
+          </li>
+          <li>
+            The rules preset is the only choice that can't change later, so step
+            2 says so before you pick, and step 3 repeats it.
+          </li>
+          <li>
+            "Create region" creates an empty draft and lands on its builder home
+            (F) with a toast "Kanto Classic created". Nothing is visible to
+            players until the first publish.
+          </li>
+          <li>
+            Desktop: the same three steps in a centred 640px column over the
+            server page.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · step 2
+        </p>
+        <div
+          class="ps-browser slot"
+          data-v="desktop"
+          style="height: 760px; position: relative"
+        ></div>
+      </div>
+      <script>
+        function bar(step, title) {
+          return (
+            '<div class="ps-appbar"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="' +
+            (step > 1 ? 'Back' : 'Close') +
+            '"><span data-i="' +
+            (step > 1 ? 'back' : 'x') +
+            '"></span></button><h1 class="ps-appbar-title">' +
+            title +
+            '<small>Pallet Town League</small></h1></div>'
+          );
+        }
+        function stepper(step, name) {
+          return (
+            '<div class="ps-stepper"><span class="t-body-sm ps-subtle">Step ' +
+            step +
+            ' of 3 · ' +
+            name +
+            '</span><div class="ps-stepper-bar">' +
+            [1, 2, 3]
+              .map(function (i) {
+                return '<i' + (i <= step ? ' class="is-done"' : '') + '></i>';
+              })
+              .join('') +
+            '</div></div>'
+          );
+        }
+        function presets() {
+          return (
+            '<div role="radiogroup" aria-label="Rules preset" class="ps-stack" style="gap:12px">' +
+            '<button class="ps-choice" role="radio" aria-checked="true"><span class="ps-radio"></span><span class="ps-choice-text"><b>Classic Gen 1</b><span>151 species, the first-generation type chart, moves and stats. Badges gate HMs.</span></span></button>' +
+            '<button class="ps-choice" role="radio" aria-checked="false" aria-disabled="true"><span class="ps-radio"></span><span class="ps-choice-text"><b>Classic Gen 2</b><span>Coming later</span></span></button>' +
+            '<button class="ps-choice" role="radio" aria-checked="false" aria-disabled="true"><span class="ps-radio"></span><span class="ps-choice-text"><b>Custom rules</b><span>Coming later</span></span></button></div>'
+          );
+        }
+        function body(step) {
+          if (step === 1)
+            return (
+              stepper(1, 'Name') +
+              '<h2 class="t-title-1">Name your region</h2>' +
+              '<div class="ps-field"><label class="ps-label" for="rn">Region name</label><input class="ps-input" id="rn" value="Kanto Classic"><p class="ps-help">Players see this in Discord. You can change it later.</p></div>' +
+              '<div class="ps-field"><label class="ps-label" for="rd">Short description <span class="ps-opt">(optional)</span></label><textarea class="ps-textarea" id="rd">A faithful first-generation journey with a few new routes.</textarea><p class="ps-help">58 / 200</p></div>'
+            );
+          if (step === 2)
+            return (
+              stepper(2, 'Rules') +
+              '<h2 class="t-title-1">Choose a rules preset</h2>' +
+              '<p class="t-body ps-muted">Rules set which species, moves and mechanics exist. You can’t change them after the region is created.</p>' +
+              presets()
+            );
+          return (
+            stepper(3, 'Review') +
+            '<h2 class="t-title-1">Review and create</h2>' +
+            '<dl class="ps-review" style="margin:0">' +
+            '<div class="ps-review-row"><div><dt>Name</dt><dd>Kanto Classic</dd></div><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
+            '<div class="ps-review-row"><div><dt>Description</dt><dd>A faithful first-generation journey with a few new routes.</dd></div><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
+            '<div class="ps-review-row"><div><dt>Rules preset</dt><dd>Classic Gen 1</dd><span class="t-body-sm ps-subtle">Can’t be changed later</span></div><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
+            '<div class="ps-review-row"><div><dt>Server</dt><dd>Pallet Town League</dd></div></div></dl>' +
+            '<div class="ps-callout ps-callout--info"><span data-i="book" data-s="18"></span><span>The region starts as an empty draft. Players won’t see it until you publish.</span></div>'
+          );
+        }
+        function actions(step) {
+          return (
+            '<div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">' +
+            (step === 3 ? 'Create region' : 'Continue') +
+            '</button></div>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'desktop') {
+            el.innerHTML =
+              '<header class="ps-header"><a class="ps-wordmark" href="#">PokeSandbox</a><span class="ps-header-spacer"></span><span class="ps-me">A</span></header>' +
+              '<div style="position:absolute;inset:64px 0 0;background:var(--scrim)"></div>' +
+              '<div class="ps-dialog" role="dialog" style="position:absolute;left:50%;top:104px;transform:translateX(-50%);width:640px;gap:20px">' +
+              '<div class="ps-sheet-head"><h2 class="t-title-2">Create region</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+              body(2).replace('t-title-1', 't-title-3') +
+              '<div class="ps-actions"><button class="ps-btn ps-btn--primary">Continue</button><button class="ps-btn ps-btn--ghost">Back</button></div></div>';
+          } else {
+            var s = +v;
+            el.innerHTML =
+              bar(s, 'Create region') +
+              '<div class="ps-scroll"><div class="ps-page" style="gap:20px">' +
+              body(s) +
+              '</div></div>' +
+              actions(s);
+          }
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

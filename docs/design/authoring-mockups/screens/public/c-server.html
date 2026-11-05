@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C · Server page · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >C · Server page
+        <small>C · Server page · visitor and admin, phone</small></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1400px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Visitor</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="visitor"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Admin</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="admin"></div>
+          </div>
+          <div style="width: 480px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                Visitors see only published regions: name, the version players
+                are on, and the player count. A row opens the public region
+                page.
+              </li>
+              <li>
+                Admins and mods also see an admin strip with "Create region",
+                and every region, unpublished drafts included.
+              </li>
+              <li>
+                Each admin row shows its status (Draft with unpublished changes,
+                or Published) and its own "Open builder".
+              </li>
+              <li>
+                A region that has never been published shows only "Not
+                published" and no player count.
+              </li>
+              <li>
+                From md up the rows become a two-column grid; the layout doesn't
+                otherwise change, so no desktop frame.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <script>
+        var REGIONS = [
+          { n: 'Kanto Classic', v: 7, p: 148, draft: 3 },
+          {
+            n: 'Orange Isles',
+            v: 2,
+            p: 0,
+            draft: 0,
+            hidden: false,
+            players0: true,
+          },
+          { n: 'Sevii Story', v: 0, p: 0, draft: 12, unpublished: true },
+        ];
+        function row(r, admin) {
+          var meta = r.unpublished
+            ? 'Never published'
+            : 'Published v' +
+              r.v +
+              ' · ' +
+              (r.p ? r.p + ' players' : 'No players yet');
+          var badge = !admin
+            ? ''
+            : r.unpublished
+              ? '<span class="ps-badge">Not published</span>'
+              : r.draft
+                ? '<span class="ps-badge ps-badge--draft">Draft · ' +
+                  r.draft +
+                  ' changes</span>'
+                : '<span class="ps-badge ps-badge--success">Published</span>';
+          return (
+            '<article class="ps-region-row"><div class="ps-region-top"><span class="ps-thumb" style="width:48px;height:48px;border-radius:10px"></span><div><h3 class="t-title-3">' +
+            r.n +
+            '</h3><p class="t-body-sm ps-subtle">' +
+            meta +
+            '</p></div>' +
+            (admin ? '' : '<span data-i="chevR" class="ps-subtle"></span>') +
+            '</div>' +
+            (admin
+              ? '<div class="ps-row" style="justify-content:space-between">' +
+                badge +
+                '<span class="ps-row" style="gap:8px">' +
+                (r.unpublished
+                  ? ''
+                  : '<button class="ps-btn ps-btn--ghost">View</button>') +
+                '<button class="ps-btn ps-btn--primary">Open builder</button></span></div>'
+              : '') +
+            '</article>'
+          );
+        }
+        function page(admin) {
+          var regs = REGIONS.filter(function (r) {
+            return admin || !r.unpublished;
+          });
+          return (
+            '<header class="ps-header"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Back"><span data-i="back"></span></button><span class="ps-header-spacer"></span><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Account"><span class="ps-me">A</span></button></header>' +
+            '<div class="ps-scroll"><main class="ps-page">' +
+            '<div class="ps-entity-head"><div class="ps-avatar">PT</div><div><h1 class="t-title-1">Pallet Town League</h1><p class="t-body-sm ps-subtle">1,204 members · ' +
+            regs.length +
+            ' regions</p></div></div>' +
+            '<p class="t-body ps-muted">A friendly server for slow, story-first adventures. New regions every season, gym nights on Fridays.</p>' +
+            (admin
+              ? '<section class="ps-admin-strip" aria-label="Admin"><div class="ps-row" style="justify-content:space-between"><span class="ps-badge ps-badge--brand" style="background:var(--surface)">Builder access · Admin</span></div><p class="t-body-sm">Build a new region from scratch. Players won’t see it until you publish.</p><button class="ps-btn ps-btn--primary ps-btn--block"><span data-i="plus"></span>Create region</button></section>'
+              : '') +
+            '<section class="ps-stack" style="gap:12px"><h2 class="t-title-2">Regions</h2><div class="ps-region-rows">' +
+            regs
+              .map(function (r) {
+                return row(r, admin);
+              })
+              .join('') +
+            '</div></section>' +
+            (admin
+              ? ''
+              : '<button class="ps-btn ps-btn--discord ps-btn--block"><span data-i="chat"></span>Open server in Discord</button>') +
+            '</main></div>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          el.innerHTML = page(el.getAttribute('data-v') === 'admin');
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

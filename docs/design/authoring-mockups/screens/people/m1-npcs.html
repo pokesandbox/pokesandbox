@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>M1 · NPCs · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >M1 · NPCs
+        <small
+          >M1 · NPCs list → NPC detail · battle NPC (rival) and non-battle NPC
+          (Nurse Joy), desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">List</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Detail · who and how they battle</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="top"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Detail · where they are and what they say
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="bottom"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Non-battle NPC · Nurse Joy</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="joy"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1300px;
+          "
+        >
+          <li>
+            An NPC is who stands there; a Trainer is how they battle. Linking a
+            trainer is optional, and the Engagement section only appears once
+            one is linked.
+          </li>
+          <li>
+            <b>Presence:</b> Single uses the first placement whose condition
+            matches (story characters who move). Everywhere uses every matching
+            placement (Nurse Joy in every Center). The explanation under the
+            control changes with the choice.
+          </li>
+          <li>
+            <b>Placements</b> are ordered, each with a location, a condition
+            (K1), and an optional talk-script override for that spot. With
+            Single presence, two placements that can both match get the warning
+            "Two single placements can match at the same time; the first wins."
+          </li>
+          <li>
+            <b>Talk script:</b> link an existing script, or "Create from
+            template" (Group 3). The raw step editor comes later.
+          </li>
+          <li>
+            <b>After defeat</b> (doc 11): stay or leave, plus the after-battle
+            talk script. This is where the trainer's "post-battle talk lives on
+            the NPC" note points.
+          </li>
+          <li>
+            <b>NPCs who don’t battle</b> (Nurse Joy, Mom, clerks, item givers)
+            leave Trainer empty. Engagement and After defeat are hidden; what’s
+            left is name, sprite, presence, placements and talk script. Linking
+            a trainer later brings those sections back.
+          </li>
+          <li>
+            No tabs: an NPC fits one scrolling form, with section headings.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">Desktop 1440</p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 1000px"
+        ></div>
+      </div>
+      <script>
+        var NPCS = [
+          {
+            k: 'rival',
+            n: '{name:rival}',
+            meta: 'Trainer: Rival · 3 placements',
+            warn: true,
+          },
+          { k: 'oak', n: 'Professor Oak', meta: '2 placements · talk script' },
+          { k: 'mom', n: 'Mom', meta: 'Pallet Town · talk script' },
+          { k: 'joy', n: 'Nurse Joy', meta: 'Everywhere · 9 Pokémon Centers' },
+          { k: 'brock', n: 'Brock', meta: 'Trainer: Gym Leader · Pewter Gym' },
+          {
+            k: 'rick',
+            n: 'Bug Catcher Rick',
+            meta: 'Trainer · Viridian Forest · on explore',
+          },
+          { k: 'clerk', n: 'Mart clerk', meta: 'Everywhere · 7 Marts' },
+        ];
+        function rows(cur) {
+          return NPCS.map(function (n) {
+            return (
+              '<button class="ps-list-row"' +
+              (cur === n.k ? ' aria-current="true"' : '') +
+              '><span class="ps-sprite ps-sprite--sm"></span><span class="ps-row-text"><b>' +
+              PS.trainerName(n.n) +
+              '</b><span>' +
+              n.meta +
+              '</span></span>' +
+              (n.warn
+                ? '<span class="ps-dot" aria-label="Has warnings"></span>'
+                : '') +
+              '<span data-i="chevR"></span></button>'
+            );
+          }).join('');
+        }
+        var choice = function (on, t, d) {
+          return (
+            '<button class="ps-choice" role="radio" aria-checked="' +
+            on +
+            '"><span class="ps-radio"></span><span class="ps-choice-text"><b>' +
+            t +
+            '</b><span>' +
+            d +
+            '</span></span></button>'
+          );
+        };
+        function npcTop() {
+          return (
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="{name:rival}" style="font-family:var(--font-mono);font-size:15px"></div>' +
+            '<div class="ps-field"><span class="ps-label">Sprite</span><div class="ps-sprite-row"><span class="ps-sprite">Sprite<br>placeholder</span><button class="ps-btn ps-btn--secondary">Choose image</button></div></div>' +
+            '<div class="ps-field"><span class="ps-label">Trainer <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="swap"></span><span class="t-mono">{name:rival}</span> · Rival</span><span data-i="search"></span></button><p class="ps-help">Link one to make this NPC battleable.</p></div>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Engagement</h2><div role="radiogroup" aria-label="Engagement" class="ps-stack" style="gap:8px">' +
+            choice(
+              false,
+              'On explore',
+              'Each Explore may turn up this trainer instead of a wild Pokémon. The default for route trainers.',
+            ) +
+            choice(
+              false,
+              'On entering',
+              'Battles as soon as the player arrives. Several of these run back to back.',
+            ) +
+            choice(
+              true,
+              'On talk',
+              'Only battles when the player talks to them. Good for optional trainers.',
+            ) +
+            '</div>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="true">Single</button><button aria-pressed="false">Everywhere</button></div><p class="ps-help">In one place at a time: the first placement that matches.</p>'
+          );
+        }
+        function placement(n, kind, loc, cond, script, warn) {
+          return (
+            '<article class="ps-placement' +
+            (warn ? ' is-warn' : '') +
+            '"><div class="ps-variant-head"><button class="ps-handle" aria-label="Reorder placement ' +
+            n +
+            '"><span data-i="grip"></span></button><span class="ps-priority">' +
+            n +
+            '</span><span class="ps-kind" data-i="' +
+            kind +
+            '"></span><b>' +
+            loc +
+            '</b>' +
+            PS.moreBtn +
+            '</div>' +
+            PS.condSummary(cond, {
+              empty: 'No condition',
+              emptyHint: 'Always here, unless an earlier placement matches.',
+            }) +
+            '<div class="ps-link-row"><span data-i="code"></span><span>' +
+            (script
+              ? script + '<small>Talk script here</small>'
+              : 'Default talk script<small>No override for this spot</small>') +
+            '</span><button class="ps-btn ps-btn--ghost">' +
+            (script ? 'Change' : 'Override') +
+            '</button></div></article>'
+          );
+        }
+        function bottom() {
+          return (
+            '<h2 class="t-title-2">Placements</h2><p class="t-body-sm ps-muted">Checked in order. With Single presence, the first match is where they are.</p>' +
+            placement(
+              1,
+              'building',
+              'Oak’s Lab, Pallet Town',
+              'Only before <span class="t-mono">oak_parcel_delivered</span>',
+              'rival-lab-intro',
+              true,
+            ) +
+            placement(
+              2,
+              'town',
+              'Viridian City',
+              'Requires the Boulder Badge',
+              '',
+              true,
+            ) +
+            placement(3, 'route', 'Route 22', 'Requires the Earth Badge', '') +
+            '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>Two single placements can match at the same time; the first wins. Placements 1 and 2 can both be true.</span></div>' +
+            '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add placement</button>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>rival-smalltalk<small>Default when talking to them</small></span><button class="ps-btn ps-btn--ghost">Change</button></div>' +
+            '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary">Link a script</button><button class="ps-btn ps-btn--ghost">Create from template</button></div>' +
+            '<h2 class="t-title-2" style="margin-top:8px">After defeat</h2><label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Stays after defeat</b><span>Off: they disappear from "People here".</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Stays after defeat"></button></label>' +
+            '<div class="ps-link-row"><span data-i="code"></span><span>None<small>What they say after you win</small></span><button class="ps-btn ps-btn--ghost">Add</button></div>'
+          );
+        }
+        function joy() {
+          var spot = function (n, loc, script) {
+            return (
+              '<article class="ps-placement"><div class="ps-variant-head"><button class="ps-handle" aria-label="Reorder placement ' +
+              n +
+              '"><span data-i="grip"></span></button><span class="ps-priority">' +
+              n +
+              '</span><span class="ps-kind" data-i="building"></span><b>' +
+              loc +
+              '</b>' +
+              PS.moreBtn +
+              '</div>' +
+              '<div class="ps-link-row"><span data-i="code"></span><span>' +
+              script +
+              '<small>Talk script here</small></span><button class="ps-btn ps-btn--ghost">Change</button></div></article>'
+            );
+          };
+          return (
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Nurse Joy"></div>' +
+            '<div class="ps-field"><span class="ps-label">Sprite</span><div class="ps-sprite-row"><span class="ps-sprite">Sprite<br>placeholder</span><button class="ps-btn ps-btn--secondary">Choose image</button></div></div>' +
+            '<div class="ps-field"><span class="ps-label">Trainer <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span class="ps-placeholder">None, doesn\u2019t battle</span><span data-i="search"></span></button><p class="ps-help">Link one to make this NPC battleable.</p></div>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Presence</h2><div class="ps-seg" role="group"><button aria-pressed="false">Single</button><button aria-pressed="true">Everywhere</button></div><p class="ps-help">Appears at every placement that matches, like staff in each Pok\u00e9mon Center.</p>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Placements <span class="ps-subtle" style="font-weight:400;font-size:15px">· 9</span></h2>' +
+            spot(
+              1,
+              'Pok\u00e9mon Center, Viridian City',
+              'Default talk script',
+            ) +
+            spot(2, 'Pok\u00e9mon Center, Pewter City', 'Default talk script') +
+            spot(
+              3,
+              'Pok\u00e9mon Center, Cerulean City',
+              'joy-cerulean-welcome',
+            ) +
+            '<button class="ps-btn ps-btn--ghost">Show all 9</button><button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add placement</button>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>joy-heal<small>Default when talking to her: offers to heal</small></span><button class="ps-btn ps-btn--ghost">Change</button></div>'
+          );
+        }
+        var title =
+          '<span class="t-mono" style="font-size:15px">{name:rival}</span>';
+        var addBtn =
+          '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Add NPC"><span data-i="plus"></span></button>';
+        var search =
+          '<div class="ps-toolbar"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search NPCs" aria-label="Search NPCs"></div></div>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'list')
+            el.innerHTML =
+              PS.phoneBar('NPCs', 'Kanto Classic · 34', addBtn) +
+              search +
+              '<div class="ps-scroll">' +
+              rows() +
+              '</div>';
+          if (v === 'top')
+            el.innerHTML =
+              PS.phoneBar(title, 'NPC', PS.saved + PS.moreBtn) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              npcTop() +
+              '</div></div>';
+          if (v === 'bottom')
+            el.innerHTML =
+              PS.phoneBar(title, 'NPC', PS.saved + PS.moreBtn) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              bottom() +
+              '</div></div>';
+          if (v === 'joy')
+            el.innerHTML =
+              PS.phoneBar('Nurse Joy', 'NPC', PS.saved + PS.moreBtn) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              joy() +
+              '</div></div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('npcs') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              PS.listPane('NPCs', 34, rows('rival'), search) +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">' +
+              title +
+              '</h2>' +
+              PS.moreBtn +
+              '</div>' +
+              '<div class="ps-scroll"><div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;padding:24px;align-items:start"><div class="ps-stack">' +
+              npcTop() +
+              '</div><div class="ps-stack">' +
+              bottom() +
+              '</div></div></div></section></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

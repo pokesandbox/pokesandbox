@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>K3 · Where conditions appear · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >K3 · Where conditions appear
+        <small
+          >K3 · Where conditions appear · connection gate, conditioned encounter
+          table, description variant (phone)</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1460px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">
+              1 · Connection gate (Edit connection sheet)
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="edge"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              2 · Encounters: "Night only" before Default
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="enc"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">3 · Details: description variants</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="desc"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1300px;
+          "
+        >
+          <li>
+            <b>Same row everywhere:</b> each attach point shows the K1 summary
+            and opens the K2 editor. Only the empty text changes ("Anyone can
+            travel here", "Always used", "Shown when…").
+          </li>
+          <li>
+            <b>Gate settings stay on the attach point.</b> A connection adds
+            "When it isn't met" (Hide · Show locked · Let them try, defaulting
+            to Hide for connections), optional locked text that replaces the
+            generated explanation, and "Once passed, always passed" (the latch).
+            These belong to the gate, not the condition.
+          </li>
+          <li>
+            <b>Ordered alternatives</b> (encounter tables, description variants)
+            are numbered cards; the first whose condition matches wins, and the
+            last entry is the unconditioned default, which can't be moved or
+            given a condition. Reorder with the handle or Move up/down.
+          </li>
+        </ul>
+      </div>
+      <script>
+        PS.icons.clock =
+          '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
+        var edge =
+          PS.phoneBar('Route 1', 'Route', PS.moreBtn) +
+          PS.locTabs('connections') +
+          '<div class="ps-scroll"></div><div class="ps-scrim"></div>' +
+          '<div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit connection" style="top:96px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Edit connection</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+          '<div class="ps-field"><span class="ps-label">Destination</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="town"></span>Viridian City</span><span data-i="search"></span></button></div>' +
+          '<div class="ps-field"><span class="ps-label">Requirement</span>' +
+          PS.condSummary(
+            'Requires the Boulder Badge and a Pokémon that knows Cut',
+          ) +
+          '</div>' +
+          '<div class="ps-field"><span class="ps-label">When it isn’t met</span><div class="ps-seg" role="group"><button aria-pressed="false">Hide</button><button aria-pressed="true">Show locked</button><button aria-pressed="false">Let them try</button></div><p class="ps-help">Players see the travel button with a lock and the reason.</p></div>' +
+          '<div class="ps-field"><label class="ps-label">Locked text <span class="ps-opt">(optional)</span></label><input class="ps-input" placeholder="Requires the Boulder Badge and a Pokémon that knows Cut"><p class="ps-help">Replaces the generated reason, e.g. "A small tree blocks the path."</p></div>' +
+          '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Once passed, always passed</b><span>Stays open even if the badge is later lost.</span></span><button class="ps-switch" role="switch" aria-checked="false" aria-label="Once passed, always passed"></button></label>' +
+          '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save connection</button></div></div>';
+
+        function table(n, name, cond, slots, isDefault) {
+          return (
+            '<article class="ps-variant"><div class="ps-variant-head">' +
+            (isDefault
+              ? '<span style="width:44px"></span>'
+              : '<button class="ps-handle" aria-label="Reorder ' +
+                name +
+                '"><span data-i="grip"></span></button>') +
+            '<span class="ps-priority">' +
+            n +
+            '</span><b>' +
+            name +
+            '</b>' +
+            PS.moreBtn +
+            '</div>' +
+            (isDefault
+              ? '<p class="t-body-sm ps-subtle">Used when no table above matches. Always last, no condition.</p>'
+              : PS.condSummary(cond, { icon: 'clock' })) +
+            '<div class="ps-row" style="gap:6px">' +
+            slots
+              .map(function (s) {
+                return '<span class="ps-badge">' + s + '</span>';
+              })
+              .join('') +
+            '</div><button class="ps-btn ps-btn--ghost" style="align-self:flex-start;padding:0 8px">Edit slots<span data-i="chevR" data-s="18"></span></button></article>'
+          );
+        }
+        var enc =
+          PS.phoneBar('Route 1', 'Route', PS.saved + PS.moreBtn) +
+          PS.locTabs('encounters') +
+          '<div class="ps-tabs" role="tablist"><button class="ps-tab" role="tab" aria-selected="true">Walk in grass <span class="ps-tab-meta">20%</span></button><button class="ps-tab" role="tab">Old Rod <span class="ps-tab-meta">100%</span></button></div>' +
+          '<div class="ps-scroll"><div class="ps-form"><p class="t-body-sm ps-muted">Tables are checked in order. The first one whose condition matches is used.</p>' +
+          table(1, 'Night only', 'Only at night', [
+            'Oddish 40%',
+            'Venonat 35%',
+            'Rattata 25%',
+          ]) +
+          table(
+            2,
+            'Default',
+            '',
+            ['Pidgey 43%', 'Rattata 43%', 'Caterpie 8%', '+2'],
+            true,
+          ) +
+          '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add conditional table</button></div></div>';
+
+        var desc =
+          PS.phoneBar('Pallet Town', 'Town', PS.saved + PS.moreBtn) +
+          PS.locTabs('details') +
+          '<div class="ps-scroll"><div class="ps-form">' +
+          '<div class="ps-field"><label class="ps-label">Description</label><textarea class="ps-textarea" style="min-height:96px">A quiet town of white fences and tall grass. Professor Oak’s lab sits on the hill.</textarea></div>' +
+          '<div class="ps-field"><span class="ps-label">Variants <span class="ps-opt">(optional)</span></span><p class="ps-help">Shown instead of the description when their condition matches. The first match wins.</p></div>' +
+          '<article class="ps-variant"><div class="ps-variant-head"><button class="ps-handle" aria-label="Reorder variant 1"><span data-i="grip"></span></button><span class="ps-priority">1</span><b>Before the parcel</b>' +
+          PS.moreBtn +
+          '</div>' +
+          PS.condSummary(
+            'Only before <span class="t-mono">oak_parcel_delivered</span>',
+            { icon: 'landmark' },
+          ) +
+          '<textarea class="ps-textarea" style="min-height:88px" aria-label="Variant text">Oak’s lab is busy today. Through the window you see him pacing, waiting for a delivery.</textarea></article>' +
+          '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus"></span>Add a description shown when…</button></div></div>';
+
+        var V = { edge: edge, enc: enc, desc: desc };
+        document.querySelectorAll('.slot').forEach(function (el) {
+          el.innerHTML = V[el.getAttribute('data-v')];
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

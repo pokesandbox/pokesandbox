@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>H · Region settings · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >H · Region settings
+        <small>H · Region settings · phone, desktop 1440</small></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Phone</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                Every field autosaves on blur; the app bar shows Saving… then
+                Saved. No Save button.
+              </li>
+              <li>
+                Starting and respawn locations use the location SearchCombobox
+                (full-screen picker on phones). The respawn help explains when
+                it applies.
+              </li>
+              <li>
+                The symbol has a live sample ("₽500") so authors see how prices
+                read.
+              </li>
+              <li>
+                The rules preset is shown as read-only text with a lock and the
+                reason, not as a disabled select, so it's readable and doesn't
+                look broken.
+              </li>
+              <li>
+                Name and description live here too, so Settings is the one place
+                for region-wide fields.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">Desktop 1440</p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 900px"
+        ></div>
+      </div>
+      <script>
+        function loc(label, name, kind, help) {
+          return (
+            '<div class="ps-field"><span class="ps-label">' +
+            label +
+            '</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="' +
+            kind +
+            '"></span>' +
+            name +
+            '</span><span data-i="search"></span></button>' +
+            (help ? '<p class="ps-help">' + help + '</p>' : '') +
+            '</div>'
+          );
+        }
+        function form() {
+          return (
+            '<section class="ps-form-section"><h2 class="t-title-2">General</h2>' +
+            '<div class="ps-field"><label class="ps-label">Region name</label><input class="ps-input" value="Kanto Classic"></div>' +
+            '<div class="ps-field"><label class="ps-label">Short description</label><textarea class="ps-textarea" style="min-height:88px">A faithful first-generation journey with a few new routes.</textarea></div></section>' +
+            '<section class="ps-form-section"><h2 class="t-title-2">Currency</h2>' +
+            '<div class="ps-pair"><div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Poké Dollars"></div><div class="ps-field"><label class="ps-label">Symbol</label><input class="ps-input" value="₽"></div></div>' +
+            '<p class="ps-help" style="margin-top:-8px">Prices show as <b style="color:var(--ink)">₽500</b>.</p></section>' +
+            '<section class="ps-form-section"><h2 class="t-title-2">Locations</h2>' +
+            loc(
+              'Starting location',
+              'Pallet Town',
+              'town',
+              'Where every new journey begins.',
+            ) +
+            loc(
+              'Default respawn location',
+              'Pokémon Center, Viridian City',
+              'building',
+              'Where players go after losing a battle, until they heal somewhere else.',
+            ) +
+            '</section>' +
+            '<section class="ps-form-section"><h2 class="t-title-2">Rules</h2><div class="ps-field"><span class="ps-label">Rules preset</span>' +
+            '<div class="ps-readonly"><span data-i="lock" data-s="18"></span><div><b>Classic Gen 1</b><p class="t-body-sm ps-muted">Rules are fixed once a region is created, because players’ saved journeys depend on them. To use different rules, create a new region.</p></div></div></div></section>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          if (el.getAttribute('data-v') === 'phone')
+            el.innerHTML =
+              PS.phoneBar('Settings', 'Kanto Classic · Draft', PS.saved) +
+              '<div class="ps-scroll"><div class="ps-form" style="gap:24px;padding-bottom:32px">' +
+              form() +
+              '</div></div>';
+          else
+            el.innerHTML =
+              PS.sidebar('settings') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-main-body"><div class="ps-form" style="padding:0;gap:24px;max-width:640px"><h1 class="t-title-1">Settings</h1>' +
+              form() +
+              '</div></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

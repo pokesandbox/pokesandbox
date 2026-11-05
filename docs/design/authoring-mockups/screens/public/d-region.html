@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>D · Region page · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >D · Region page
+        <small
+          >D · Region page, public · phone, with the admin-only additions
+          marked</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 980px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Phone · signed in as an admin</p>
+            <div class="ps-phone ps-phone--tall">
+              <header class="ps-header">
+                <button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Back to Pallet Town League"
+                >
+                  <span data-i="back"></span></button
+                ><span class="t-body-sm ps-subtle" style="flex: 1"
+                  >Pallet Town League</span
+                ><button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Account"
+                >
+                  <span class="ps-me">A</span>
+                </button>
+              </header>
+              <div class="ps-scroll">
+                <main class="ps-page">
+                  <div class="ps-banner-art" aria-hidden="true"></div>
+                  <div class="ps-stack" style="gap: 8px">
+                    <h1 class="t-title-1">Kanto Classic</h1>
+                    <div class="ps-row" style="gap: 8px">
+                      <span class="ps-badge ps-badge--success"
+                        >Published v7</span
+                      ><span class="ps-badge">Classic Gen 1 rules</span>
+                    </div>
+                  </div>
+                  <p class="t-body ps-muted">
+                    Start in Pallet Town, earn eight badges, and take on the
+                    League. A faithful first-generation journey with a few new
+                    routes.
+                  </p>
+                  <div class="ps-stats">
+                    <div class="ps-stat"><b>148</b><span>players</span></div>
+                    <div class="ps-stat"><b>64</b><span>locations</span></div>
+                    <div class="ps-stat"><b>151</b><span>species</span></div>
+                  </div>
+                  <section class="ps-stack" style="gap: 8px">
+                    <button class="ps-btn ps-btn--discord ps-btn--block">
+                      <span data-i="chat"></span>Play in Discord
+                    </button>
+                    <p class="t-body-sm ps-subtle" style="text-align: center">
+                      Opens Pallet Town League. Type
+                      <span class="t-mono">/play</span> to start.
+                    </p>
+                  </section>
+                  <section class="ps-admin-only" aria-label="Admin">
+                    <span class="t-caption">ADMINS AND MODS ONLY</span>
+                    <div class="ps-row" style="justify-content: space-between">
+                      <span class="ps-badge ps-badge--draft"
+                        >Draft · 3 unpublished changes</span
+                      >
+                    </div>
+                    <button class="ps-btn ps-btn--secondary ps-btn--block">
+                      Edit draft
+                    </button>
+                  </section>
+                  <section class="ps-stack" style="gap: 8px">
+                    <h2 class="t-title-2">Starting town</h2>
+                    <div class="ps-context">
+                      <span class="ps-kind" data-i="town"></span>
+                      <div style="flex: 1">
+                        <b class="t-title-3" style="font-size: 15px"
+                          >Pallet Town</b
+                        >
+                        <p class="t-body-sm ps-subtle">Heal · PC</p>
+                      </div>
+                    </div>
+                  </section>
+                </main>
+              </div>
+            </div>
+          </div>
+          <div style="width: 440px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                Everything above the dashed box is what visitors and players
+                see: art placeholder, name, published version, rules preset,
+                overview, counts, and "Play in Discord".
+              </li>
+              <li>
+                "Play in Discord" deep-links to the server; the hint names the
+                command, so it still works if the link opens Discord's home.
+              </li>
+              <li>
+                The dashed box marks admin-only content for this mockup; in the
+                product it's a plain section with no dashes. "Edit draft" opens
+                the builder home.
+              </li>
+              <li>
+                A never-published region has no public page: visitors get "This
+                region isn't published yet", and admins are sent to the builder.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabs · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span>Tabs <small>Detail tabs and scrollable method tabs</small></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <div style="width: 390px">
+          <p class="ps-demo-label">Location detail</p>
+          <div class="ps-tabs" role="tablist">
+            <button class="ps-tab" role="tab" aria-selected="true">
+              Details
+            </button>
+            <button class="ps-tab" role="tab">
+              Connections <span class="ps-tab-meta">3</span>
+            </button>
+            <button class="ps-tab" role="tab">
+              Encounters <span class="ps-dot" aria-label="Has warnings"></span>
+            </button>
+          </div>
+          <p class="ps-demo-label">Encounter methods (scrolls sideways)</p>
+          <div class="ps-tabs" role="tablist">
+            <button class="ps-tab" role="tab" aria-selected="true">
+              Walk in grass <span class="ps-tab-meta">20%</span>
+            </button>
+            <button class="ps-tab" role="tab">
+              Surf <span class="ps-tab-meta">5%</span>
+            </button>
+            <button class="ps-tab" role="tab">
+              Old Rod <span class="ps-tab-meta">100%</span>
+            </button>
+            <button class="ps-tab" role="tab">
+              <span data-i="plus" data-s="18"></span>Method
+            </button>
+          </div>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+        document.querySelectorAll('[role=tablist]').forEach(function (l) {
+          l.querySelectorAll('.ps-tab').forEach(function (t) {
+            t.addEventListener('click', function () {
+              l.querySelectorAll('.ps-tab').forEach(function (o) {
+                o.setAttribute('aria-selected', o === t ? 'true' : 'false');
+              });
+            });
+          });
+        });
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

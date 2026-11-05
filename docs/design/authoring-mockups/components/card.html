@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Card · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Card
+        <small
+          >Server cards (admin, visitor), feature blurbs, info callout</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <p class="ps-demo-label">Server cards</p>
+        <div class="ps-demos">
+          <article class="ps-card" style="width: 358px">
+            <div class="ps-card-head">
+              <div class="ps-avatar">PT</div>
+              <div>
+                <h3 class="t-title-3">Pallet Town League</h3>
+                <p class="t-body-sm ps-subtle">2 regions · 148 players</p>
+              </div>
+            </div>
+            <div class="ps-row" style="gap: 8px">
+              <span class="ps-badge ps-badge--brand">Builder access</span
+              ><span class="ps-badge">Admin</span>
+            </div>
+            <div class="ps-card-actions">
+              <button class="ps-btn ps-btn--secondary">View</button
+              ><button class="ps-btn ps-btn--primary">Open builder</button>
+            </div>
+          </article>
+          <article class="ps-card" style="width: 358px">
+            <div class="ps-card-head">
+              <div class="ps-avatar">CC</div>
+              <div>
+                <h3 class="t-title-3">Cerulean Cape Club</h3>
+                <p class="t-body-sm ps-subtle">1 region · 37 players</p>
+              </div>
+            </div>
+            <p class="t-body-sm ps-muted">
+              A slow, story-first region with weekly gym nights.
+            </p>
+            <div class="ps-card-actions">
+              <button class="ps-btn ps-btn--secondary">View</button>
+            </div>
+          </article>
+        </div>
+        <p class="ps-demo-label">Feature blurbs (landing) · accent tiles</p>
+        <div class="ps-demos">
+          <article
+            class="ps-card"
+            style="width: 358px; flex-direction: row; gap: 16px"
+          >
+            <span
+              class="ps-feature-tile ps-feature-tile--solid"
+              data-i="town"
+              data-s="24"
+            ></span>
+            <div>
+              <h3 class="t-title-3">Build a region</h3>
+              <p class="t-body-sm ps-muted">
+                Towns, routes, encounters and trainers, from your phone.
+              </p>
+            </div>
+          </article>
+          <article
+            class="ps-card"
+            style="width: 358px; flex-direction: row; gap: 16px"
+          >
+            <span class="ps-feature-tile" data-i="chat" data-s="24"></span>
+            <div>
+              <h3 class="t-title-3">Play in Discord</h3>
+              <p class="t-body-sm ps-muted">
+                Your members explore and catch without leaving the server.
+              </p>
+            </div>
+          </article>
+        </div>
+        <p class="ps-demo-label">Info callout</p>
+        <div class="ps-callout ps-callout--info" style="width: 540px">
+          <span data-i="book" data-s="18"></span
+          ><span
+            >Players see the last published version. Your edits stay in the
+            draft until you publish.</span
+          >
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

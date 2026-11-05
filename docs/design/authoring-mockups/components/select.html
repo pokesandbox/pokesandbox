@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Select · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Select
+        <small
+          >Trigger; on phones the options open in a bottom sheet</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <div class="ps-demos">
+          <div class="ps-stack" style="width: 358px">
+            <p class="ps-demo-label">Closed</p>
+            <div class="ps-field">
+              <span class="ps-label">Kind</span>
+              <button class="ps-trigger" aria-haspopup="listbox">
+                <span style="display: flex; gap: 10px; align-items: center"
+                  ><span data-i="route"></span>Route</span
+                ><span data-i="chevD"></span>
+              </button>
+            </div>
+            <div class="ps-field">
+              <span class="ps-label">Rules preset</span>
+              <button class="ps-trigger" aria-haspopup="listbox">
+                <span class="ps-placeholder">Choose a preset</span
+                ><span data-i="chevD"></span>
+              </button>
+            </div>
+            <div class="ps-field">
+              <span class="ps-label">Kind</span>
+              <button class="ps-trigger" aria-invalid="true">
+                <span class="ps-placeholder">Choose a kind</span
+                ><span data-i="chevD"></span>
+              </button>
+              <p class="ps-error">
+                <span data-i="error" data-s="18"></span>Pick a kind for this
+                location.
+              </p>
+            </div>
+            <p class="ps-demo-label">From md up: a popover under the trigger</p>
+          </div>
+          <div class="ps-phone" style="height: 500px">
+            <div class="ps-appbar">
+              <span
+                class="ps-btn ps-btn--ghost ps-btn--icon"
+                data-i="back"
+              ></span
+              ><span class="ps-appbar-title">Route 1</span>
+            </div>
+            <div class="ps-scrim"></div>
+            <div class="ps-sheet" role="dialog" aria-label="Kind">
+              <div class="ps-grabber"></div>
+              <div class="ps-sheet-head">
+                <h2 class="t-title-3">Kind</h2>
+                <button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Close"
+                >
+                  <span data-i="x"></span>
+                </button>
+              </div>
+              <ul
+                class="ps-listbox ps-listbox--flat"
+                role="listbox"
+                style="margin: -8px -8px 0"
+              >
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="town"></span>Town
+                </li>
+                <li
+                  class="ps-option is-active"
+                  role="option"
+                  aria-selected="true"
+                >
+                  <span class="ps-kind" data-i="route"></span>Route<span
+                    class="ps-check"
+                    data-i="check"
+                  ></span>
+                </li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="dungeon"></span>Dungeon
+                </li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="building"></span>Building
+                </li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="gym"></span>Gym
+                </li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="landmark"></span>Landmark
+                </li>
+                <li class="ps-option" role="option">
+                  <span class="ps-kind" data-i="water"></span>Water
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

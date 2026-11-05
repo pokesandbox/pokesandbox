@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Switch · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span>Switch <small>Whole row is the tap target</small></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <div style="width: 358px">
+          <p class="ps-demo-label">Services</p>
+          <label class="ps-switch-row"
+            ><span data-i="heart" class="ps-muted"></span
+            ><span class="ps-switch-text"
+              ><b>Heal</b
+              ><span>Players can restore their party here</span></span
+            ><button
+              class="ps-switch"
+              role="switch"
+              aria-checked="true"
+              aria-label="Heal"
+            ></button
+          ></label>
+          <label class="ps-switch-row"
+            ><span data-i="monitor" class="ps-muted"></span
+            ><span class="ps-switch-text"
+              ><b>PC</b><span>Players can manage boxed Pokémon</span></span
+            ><button
+              class="ps-switch"
+              role="switch"
+              aria-checked="false"
+              aria-label="PC"
+            ></button
+          ></label>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+        document.querySelectorAll('.ps-switch').forEach(function (s) {
+          s.addEventListener('click', function (e) {
+            e.preventDefault();
+            s.setAttribute(
+              'aria-checked',
+              s.getAttribute('aria-checked') === 'true' ? 'false' : 'true',
+            );
+          });
+        });
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      Alternative · One NPCs list with trainers · PokeSandbox mockups
+    </title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >Alternative · One NPCs list with trainers
+        <small
+          >L+M alternative · one NPCs list with trainers folded in · list,
+          Person tab, Battle tab, non-battle NPC, desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">One list, filtered</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Rival · Person tab</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="person"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Rival · Battle tab</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="battle"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Nurse Joy · Battle tab (doesn't battle)
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="nobattle"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1500px;
+          "
+        >
+          <li>
+            <b>An alternative to L1 + M1.</b> The sidebar has one "NPCs" entry;
+            Trainers goes away. Filters: All · Trainers · Non-battle · Battle
+            only. Picking Trainers adds the class chips from L1.
+          </li>
+          <li>
+            <b>One editor, four tabs:</b> Person (who, where, talk) · Battle
+            (class, AI, payout, format, engagement, after defeat) · Party ·
+            Lines. Party and Lines are the L2 tabs unchanged. An NPC who doesn't
+            battle shows Person and Battle only; Battle explains and offers
+            "Make battleable", which creates the trainer and reveals Party and
+            Lines.
+          </li>
+          <li>
+            <b>No linking step.</b> The data stays as doc 11 decided (an NPC
+            references a Trainer), but the builder creates and names the trainer
+            for you. The two edge cases become explicit, rarer actions:
+          </li>
+          <li style="margin-left: 16px">
+            <b>Shared trainer</b> (one Rocket Grunt team behind several NPCs):
+            Battle → More → "Use an existing trainer". A banner then says
+            "Shared with 3 other NPCs. Changes apply to all of them." with "Make
+            a copy for this NPC".
+          </li>
+          <li style="margin-left: 16px">
+            <b>Battle only</b> (a trainer used only by a script, like a forced
+            ambush): listed with a "Battle only" badge. Its Person tab says "Not
+            placed anywhere. Used by script mt-moon-ambush." with "Give them a
+            presence".
+          </li>
+          <li>
+            Sprite lives on Person; Battle uses it unless the trainer class
+            overrides it.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · Battle tab
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 960px"
+        ></div>
+      </div>
+      <script>
+        /* In this alternative the sidebar has one NPCs entry and no Trainers entry. */
+        PS.NAV.splice(
+          PS.NAV.findIndex(function (n) {
+            return n[2] === 'trainers';
+          }),
+          1,
+        ); /* in place: PS.sidebar() reads this same array */
+        PS.NAV.forEach(function (n) {
+          if (n[2] === 'npcs') n[3] = '41';
+        });
+        var PEOPLE = [
+          {
+            k: 'rival',
+            n: '{name:rival}',
+            meta: 'Rival · 3 places · 3 party variants',
+            tag: 'Trainer',
+            warn: true,
+          },
+          {
+            k: 'brock',
+            n: 'Brock',
+            meta: 'Gym Leader · Pewter Gym · 2 Pokémon',
+            tag: 'Trainer',
+          },
+          {
+            k: 'rick',
+            n: 'Bug Catcher Rick',
+            meta: 'Viridian Forest · on explore · 2 Pokémon',
+            tag: 'Trainer',
+          },
+          {
+            k: 'grunt',
+            n: 'Rocket Grunt',
+            meta: 'Mt. Moon · script mt-moon-ambush',
+            tag: 'Battle only',
+          },
+          { k: 'oak', n: 'Professor Oak', meta: '2 places · talk script' },
+          { k: 'joy', n: 'Nurse Joy', meta: 'Everywhere · 9 Pokémon Centers' },
+          { k: 'mom', n: 'Mom', meta: 'Pallet Town · talk script' },
+        ];
+        function rows(cur) {
+          return PEOPLE.map(function (p) {
+            var lead =
+              p.tag === 'Battle only'
+                ? '<span class="ps-kind" data-i="swap"></span>'
+                : '<span class="ps-sprite ps-sprite--sm"></span>';
+            var badge = p.tag
+              ? '<span class="ps-badge' +
+                (p.tag === 'Trainer'
+                  ? ' ps-badge--brand'
+                  : ' ps-badge--outline') +
+                '" style="align-self:flex-start;margin-top:2px">' +
+                p.tag +
+                '</span>'
+              : '';
+            return (
+              '<button class="ps-list-row"' +
+              (cur === p.k ? ' aria-current="true"' : '') +
+              '>' +
+              lead +
+              '<span class="ps-row-text"><b>' +
+              PS.trainerName(p.n) +
+              '</b><span>' +
+              p.meta +
+              '</span>' +
+              badge +
+              '</span>' +
+              (p.warn
+                ? '<span class="ps-dot" aria-label="Has warnings"></span>'
+                : '') +
+              '<span data-i="chevR"></span></button>'
+            );
+          }).join('');
+        }
+        function filters() {
+          return (
+            '<div class="ps-toolbar"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" type="search" placeholder="Search NPCs" aria-label="Search NPCs"></div>' +
+            '<div class="ps-chips"><button class="ps-chip" aria-pressed="true">All</button><button class="ps-chip" aria-pressed="false">Trainers</button><button class="ps-chip" aria-pressed="false">Non-battle</button><button class="ps-chip" aria-pressed="false">Battle only</button></div></div>'
+          );
+        }
+        function tabs(active, battles) {
+          var t = [
+            ['person', 'Person'],
+            ['battle', 'Battle'],
+          ];
+          if (battles)
+            t.push(
+              ['party', 'Party <span class="ps-tab-meta">3</span>'],
+              ['lines', 'Lines'],
+            );
+          return PS.tabs(t, active);
+        }
+        var choice = function (on, t, d) {
+          return (
+            '<button class="ps-choice" role="radio" aria-checked="' +
+            on +
+            '"><span class="ps-radio"></span><span class="ps-choice-text"><b>' +
+            t +
+            '</b><span>' +
+            d +
+            '</span></span></button>'
+          );
+        };
+        function person() {
+          var place = function (n, kind, loc, cond) {
+            return (
+              '<article class="ps-placement"><div class="ps-variant-head"><button class="ps-handle" aria-label="Reorder place ' +
+              n +
+              '"><span data-i="grip"></span></button><span class="ps-priority">' +
+              n +
+              '</span><span class="ps-kind" data-i="' +
+              kind +
+              '"></span><b>' +
+              loc +
+              '</b>' +
+              PS.moreBtn +
+              '</div>' +
+              PS.condSummary(cond) +
+              '</article>'
+            );
+          };
+          return (
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="{name:rival}" style="font-family:var(--font-mono);font-size:15px"><div class="ps-hint-chips"><span class="t-body-sm ps-subtle">Insert:</span><button class="ps-chip">{name:rival}</button><button class="ps-chip">{name:player}</button></div></div>' +
+            '<div class="ps-field"><span class="ps-label">Sprite</span><div class="ps-sprite-row"><span class="ps-sprite">Sprite<br>placeholder</span><button class="ps-btn ps-btn--secondary">Choose image</button></div></div>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Where they are</h2><div class="ps-seg" role="group"><button aria-pressed="true">Single</button><button aria-pressed="false">Everywhere</button></div><p class="ps-help">In one place at a time: the first that matches.</p>' +
+            place(
+              1,
+              'building',
+              'Oak’s Lab, Pallet Town',
+              'Only before <span class="t-mono">oak_parcel_delivered</span>',
+            ) +
+            place(2, 'town', 'Viridian City', 'Requires the Boulder Badge') +
+            '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Show all 3</button>' +
+            '<h2 class="t-title-2" style="margin-top:8px">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>rival-smalltalk<small>When the player talks to them</small></span><button class="ps-btn ps-btn--ghost">Change</button></div>'
+          );
+        }
+        function battle() {
+          return (
+            '<div class="ps-callout ps-callout--info"><span data-i="swap" data-s="18"></span><span>This NPC battles. Their team is on the Party tab.</span></div>' +
+            '<div class="ps-field"><span class="ps-label">Class</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="swap"></span>Rival</span><span data-i="chevD"></span></button></div>' +
+            '<div class="ps-field"><span class="ps-label">How the battle starts</span><div role="radiogroup" class="ps-stack" style="gap:8px">' +
+            choice(
+              false,
+              'On explore',
+              'Each Explore may turn them up instead of a wild Pokémon.',
+            ) +
+            choice(false, 'On entering', 'As soon as the player arrives.') +
+            choice(true, 'On talk', 'Only when the player talks to them.') +
+            '</div></div>' +
+            '<div class="ps-field"><span class="ps-label">AI</span><div class="ps-seg" role="group"><button aria-pressed="false">Random</button><button aria-pressed="false">Basic</button><button aria-pressed="true">Smart</button></div></div>' +
+            '<div class="ps-field"><span class="ps-label">Payout</span><div class="ps-seg" role="group"><button aria-pressed="true">Formula</button><button aria-pressed="false">Fixed amount</button></div><p class="ps-help">₽35 × level of the last Pokémon = <b style="color:var(--ink)">₽630</b>.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">Battle format</span><div class="ps-seg" role="group"><button aria-pressed="true">Singles</button><button aria-pressed="false" disabled style="opacity:.5">Doubles · later</button></div></div>' +
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Stays after defeat</b><span>Off: they leave once beaten.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Stays after defeat"></button></label>' +
+            '<div class="ps-link-row"><span data-i="code"></span><span>None<small>What they say after you win</small></span><button class="ps-btn ps-btn--ghost">Add</button></div>'
+          );
+        }
+        function noBattle() {
+          return (
+            '<div class="ps-center" style="align-items:center;text-align:center;padding-top:48px"><div class="ps-center-icon"><span data-i="swap" data-s="28"></span></div><h2 class="t-title-2">Nurse Joy doesn’t battle</h2>' +
+            '<p class="t-body ps-muted">Make her battleable to give her a class, a team and battle lines. Her name, sprite and places stay the same.</p>' +
+            '<button class="ps-btn ps-btn--primary ps-btn--block">Make battleable</button><button class="ps-btn ps-btn--ghost ps-btn--block">Use an existing trainer</button>' +
+            '<p class="t-body-sm ps-subtle">Use an existing trainer to share one team between several NPCs, like Rocket Grunts.</p></div>'
+          );
+        }
+        var rivalTitle =
+          '<span class="t-mono" style="font-size:15px">{name:rival}</span>';
+        var addBtn =
+          '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Add NPC"><span data-i="plus"></span></button>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'list')
+            el.innerHTML =
+              PS.phoneBar('NPCs', 'Kanto Classic · 41', addBtn) +
+              filters() +
+              '<div class="ps-scroll">' +
+              rows() +
+              '</div>';
+          if (v === 'person')
+            el.innerHTML =
+              PS.phoneBar(rivalTitle, 'NPC · Trainer', PS.saved + PS.moreBtn) +
+              tabs('person', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              person() +
+              '</div></div>';
+          if (v === 'battle')
+            el.innerHTML =
+              PS.phoneBar(rivalTitle, 'NPC · Trainer', PS.saved + PS.moreBtn) +
+              tabs('battle', true) +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              battle() +
+              '</div></div>';
+          if (v === 'nobattle')
+            el.innerHTML =
+              PS.phoneBar('Nurse Joy', 'NPC', PS.saved + PS.moreBtn) +
+              tabs('battle', false) +
+              '<div class="ps-scroll">' +
+              noBattle() +
+              '</div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('npcs') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              PS.listPane('NPCs', 41, rows('rival'), filters()) +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">' +
+              rivalTitle +
+              '</h2><span class="ps-badge ps-badge--brand">Trainer</span>' +
+              PS.moreBtn +
+              '</div>' +
+              tabs('battle', true).replace(
+                'ps-tabs"',
+                'ps-tabs" style="padding-left:16px"',
+              ) +
+              '<div class="ps-scroll"><div class="ps-form" style="max-width:640px">' +
+              battle() +
+              '</div></div></section></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

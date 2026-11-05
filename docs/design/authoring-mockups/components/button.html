@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Button · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Button
+        <small
+          >Primary, secondary, ghost, Discord, danger. Always 44px tall.</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <p class="ps-demo-label">Variants</p>
+        <div class="ps-row">
+          <button class="ps-btn ps-btn--primary">Open builder</button>
+          <button class="ps-btn ps-btn--secondary">View</button>
+          <button class="ps-btn ps-btn--ghost">Cancel</button>
+          <button class="ps-btn ps-btn--discord">
+            <span data-i="chat"></span>Sign in with Discord
+          </button>
+          <button class="ps-btn ps-btn--danger">Delete location</button>
+        </div>
+        <p class="ps-demo-label">Icon, icon only, busy, disabled</p>
+        <div class="ps-row">
+          <button class="ps-btn ps-btn--secondary">
+            <span data-i="plus"></span>Add location
+          </button>
+          <button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Back">
+            <span data-i="back"></span>
+          </button>
+          <button
+            class="ps-btn ps-btn--secondary ps-btn--icon"
+            aria-label="More actions"
+          >
+            <span data-i="more"></span>
+          </button>
+          <button class="ps-btn ps-btn--primary" aria-busy="true">
+            <span class="ps-spinner"></span>Publishing…
+          </button>
+          <button class="ps-btn ps-btn--primary" disabled>Publish</button>
+          <a class="ps-link" href="#">Browse servers</a>
+        </div>
+        <p class="ps-demo-label">Phone actions: full width, primary first</p>
+        <div class="ps-actions" style="max-width: 358px">
+          <button class="ps-btn ps-btn--primary ps-btn--block">
+            Create region
+          </button>
+          <button class="ps-btn ps-btn--ghost ps-btn--block">Back</button>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

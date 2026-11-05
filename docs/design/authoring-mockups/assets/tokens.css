@@ -1,0 +1,150 @@
+/* PokeSandbox: generated from the design system tokens.json. Do not edit by hand. */
+:root,
+[data-theme='light'] {
+  --bg: #fbf8f1;
+  --surface: #ffffff;
+  --surface-muted: #f4efe3;
+  --border: #e3dccb;
+  --border-strong: #8f8571;
+  --ink: #1f1b14;
+  --ink-muted: #5f574a;
+  --ink-subtle: #6f6658;
+  --brand: #faad14;
+  --brand-hover: #e89a06;
+  --on-brand: #1f1b14;
+  --brand-ink: #874d00;
+  --brand-soft: #fff1b8;
+  --accent: #0e7490;
+  --on-accent: #ffffff;
+  --accent-ink: #0b5f75;
+  --accent-soft: #d5f3f6;
+  --discord: #4752c4;
+  --discord-hover: #3c45a5;
+  --on-discord: #ffffff;
+  --danger: #b42318;
+  --on-danger: #ffffff;
+  --danger-soft: #fee4e2;
+  --warning: #b54708;
+  --warning-soft: #fef0c7;
+  --success: #2f7d16;
+  --success-soft: #e3f6d5;
+  --focus: #4752c4;
+  --scrim: rgba(31, 27, 20, 0.5);
+  --embed-bg: #2b2d31;
+  --embed-ink: #dbdee1;
+  --embed-muted: #b5bac1;
+  --shadow-sm: 0 1px 2px rgba(31, 27, 20, 0.12);
+  --shadow-pop:
+    0 8px 24px rgba(31, 27, 20, 0.14), 0 2px 6px rgba(31, 27, 20, 0.08);
+  --shadow-sheet: 0 -8px 32px rgba(31, 27, 20, 0.18);
+}
+[data-theme='dark'] {
+  --bg: #15130f;
+  --surface: #1e1b16;
+  --surface-muted: #2a2620;
+  --border: #3a352c;
+  --border-strong: #7a705e;
+  --ink: #f5efe2;
+  --ink-muted: #c4b9a5;
+  --ink-subtle: #a0957f;
+  --brand: #e8b339;
+  --brand-hover: #f3cc62;
+  --brand-ink: #f3cc62;
+  --brand-soft: #443111;
+  --accent: #22b8cf;
+  --on-accent: #0f1a1c;
+  --accent-ink: #67d4e4;
+  --accent-soft: #0d3640;
+  --danger: #f97066;
+  --on-danger: #1f1b14;
+  --danger-soft: #3d1512;
+  --warning: #f79009;
+  --warning-soft: #3a2208;
+  --success: #8bd450;
+  --success-soft: #1c2e0f;
+  --focus: #8b94f7;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-sheet: 0 -8px 32px rgba(0, 0, 0, 0.6);
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --tap-min: 44px;
+  --appbar-h: 56px;
+  --row-h: 60px;
+  --sidebar-w: 264px;
+  --list-w: 360px;
+  --form-max: 640px;
+  --font-display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
+  --font-sans:
+    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+.t-display {
+  font-family: var(--font-display);
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.t-title-1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.t-title-2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 700;
+}
+.t-title-3 {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+}
+.t-body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+.t-body-sm {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.t-label {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+.t-caption {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+}

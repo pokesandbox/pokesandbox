@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>K1 · Condition summary row · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >K1 · Condition summary row
+        <small
+          >K1 · Collapsed condition row: empty, set, mixed, problem</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <div class="ps-demos">
+          <div class="ps-stack" style="width: 358px; gap: 12px">
+            <p class="ps-demo-label">Empty</p>
+            <div class="slot" data-k="empty"></div>
+            <p class="ps-demo-label">Set</p>
+            <div class="slot" data-k="one"></div>
+            <div class="slot" data-k="two"></div>
+            <p class="ps-demo-label">Group and qualifiers</p>
+            <div class="slot" data-k="mixed"></div>
+            <p class="ps-demo-label">Problem</p>
+            <div class="slot" data-k="error"></div>
+          </div>
+          <div class="ps-stack" style="width: 358px; gap: 12px">
+            <p class="ps-demo-label">Replaces "Requires…" in a connection</p>
+            <div class="ps-field">
+              <span class="ps-label">Requirement</span>
+              <div class="slot" data-k="two"></div>
+            </div>
+            <p class="ps-help">
+              Tap Edit (or anywhere on the row) to open the editor. The text is
+              generated from the condition, never typed.
+            </p>
+          </div>
+        </div>
+      </div>
+      <script>
+        var S = {
+          empty: PS.condSummary(''),
+          one: PS.condSummary('Requires the Boulder Badge'),
+          two: PS.condSummary(
+            'Requires the Boulder Badge and a Pokémon that knows Cut',
+          ),
+          mixed: PS.condSummary(
+            'Requires the Boulder Badge and either a Pokémon that knows Cut or a Bike Voucher, only at night',
+            { note: '3 conditions · 1 group' },
+          ),
+          error: PS.condSummary('Requires having visited Route 2', {
+            error: true,
+            note: 'Route 2 was deleted. Edit to fix.',
+          }),
+        };
+        document.querySelectorAll('.slot').forEach(function (el) {
+          el.innerHTML = S[el.getAttribute('data-k')];
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

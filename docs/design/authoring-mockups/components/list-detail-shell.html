@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>List/detail shell · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >List/detail shell
+        <small
+          >Phone: list, tap, full-screen detail, back. md+: side by side, with
+          the builder sidebar from lg.</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1460px">
+      <div class="ps-root ps-pad">
+        <div class="ps-demos">
+          <div>
+            <p class="ps-demo-label">Phone · list</p>
+            <div class="ps-phone">
+              <div class="ps-appbar">
+                <button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Back to builder"
+                >
+                  <span data-i="back"></span>
+                </button>
+                <h1 class="ps-appbar-title">
+                  Locations<small>Kanto Classic · Draft</small>
+                </h1>
+                <button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Add location"
+                >
+                  <span data-i="plus"></span>
+                </button>
+              </div>
+              <div class="ps-toolbar">
+                <div class="ps-input-wrap">
+                  <span class="ps-lead" data-i="search"></span
+                  ><input
+                    class="ps-input"
+                    type="search"
+                    placeholder="Search locations"
+                    aria-label="Search locations"
+                  />
+                </div>
+                <div class="ps-chips kinds"></div>
+              </div>
+              <div class="ps-scroll list"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-demo-label">Phone · detail (after tapping Route 1)</p>
+            <div class="ps-phone">
+              <div class="ps-appbar">
+                <button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Back to locations"
+                >
+                  <span data-i="back"></span>
+                </button>
+                <h1 class="ps-appbar-title">Route 1</h1>
+                <span class="ps-save ps-save--ok"
+                  ><span data-i="check" data-s="16"></span>Saved</span
+                >
+                <button
+                  class="ps-btn ps-btn--ghost ps-btn--icon"
+                  aria-label="Location actions"
+                >
+                  <span data-i="more"></span>
+                </button>
+              </div>
+              <div class="ps-tabs" role="tablist">
+                <button class="ps-tab" role="tab" aria-selected="true">
+                  Details</button
+                ><button class="ps-tab" role="tab">
+                  Connections <span class="ps-tab-meta">1</span></button
+                ><button class="ps-tab" role="tab">Encounters</button>
+              </div>
+              <div class="ps-scroll"><div class="ps-form detail"></div></div>
+            </div>
+          </div>
+          <div style="width: 520px" class="ps-stack">
+            <p class="ps-demo-label">Rules</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                The URL names the selected item (<span class="t-mono"
+                  >/regions/:id/build/locations/route-1</span
+                >). On phones that URL shows the detail screen; on md+ it shows
+                both panes.
+              </li>
+              <li>
+                Phone app bar: back (44px), title plus one context line, one or
+                two icon actions. The back arrow returns to the list with its
+                scroll and filters kept.
+              </li>
+              <li>
+                Children sit under their parent, indented 24px. A Region Health
+                dot sits before the chevron.
+              </li>
+              <li>
+                Edits autosave per field; the app bar shows Saving… then Saved.
+              </li>
+              <li>
+                md (768): list 360px plus detail. lg (1024): the builder sidebar
+                appears and persists across every builder screen. Below lg the
+                sidebar is the builder home list.
+              </li>
+              <li>
+                Empty list: one sentence and the primary action ("No locations
+                yet. Add your first town or route." + Add location).
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-demo-label">Desktop 1440 · sidebar + list + detail</p>
+        <div class="ps-desktop">
+          <nav class="ps-sidebar" aria-label="Builder">
+            <div class="ps-sidebar-head">
+              <b class="t-title-3">Kanto Classic</b
+              ><span class="t-body-sm ps-subtle">Pallet Town League</span>
+            </div>
+            <div class="nav"></div>
+          </nav>
+          <div class="ps-main">
+            <header class="ps-topbar">
+              <h1 class="t-title-3">Kanto Classic</h1>
+              <span class="ps-badge ps-badge--draft">Draft</span>
+              <span class="t-body-sm ps-subtle" style="flex: 1"
+                >Published v7 · 3 unpublished changes</span
+              >
+              <span class="ps-save ps-save--ok"
+                ><span data-i="check" data-s="16"></span>Saved</span
+              >
+              <button class="ps-btn ps-btn--primary">Publish</button>
+            </header>
+            <div class="ps-split">
+              <section class="ps-pane-list" aria-label="Locations">
+                <div class="ps-appbar" style="padding: 0 8px 0 16px">
+                  <h2 class="ps-appbar-title">
+                    Locations
+                    <span class="ps-subtle" style="font-weight: 400">· 64</span>
+                  </h2>
+                  <button class="ps-btn ps-btn--secondary">
+                    <span data-i="plus"></span>Add
+                  </button>
+                </div>
+                <div class="ps-toolbar">
+                  <div class="ps-input-wrap">
+                    <span class="ps-lead" data-i="search"></span
+                    ><input
+                      class="ps-input"
+                      type="search"
+                      placeholder="Search locations"
+                      aria-label="Search locations"
+                    />
+                  </div>
+                  <div class="ps-chips kinds"></div>
+                </div>
+                <div class="ps-scroll list" data-current="route-1"></div>
+              </section>
+              <section class="ps-pane-detail" aria-label="Route 1">
+                <div class="ps-appbar" style="padding: 0 8px 0 24px">
+                  <h2 class="ps-appbar-title" style="font-size: 20px">
+                    Route 1
+                  </h2>
+                  <span class="ps-badge">Route</span
+                  ><button
+                    class="ps-btn ps-btn--ghost ps-btn--icon"
+                    aria-label="Location actions"
+                  >
+                    <span data-i="more"></span>
+                  </button>
+                </div>
+                <div class="ps-tabs" role="tablist" style="padding-left: 16px">
+                  <button class="ps-tab" role="tab" aria-selected="true">
+                    Details</button
+                  ><button class="ps-tab" role="tab">
+                    Connections <span class="ps-tab-meta">1</span></button
+                  ><button class="ps-tab" role="tab">Encounters</button>
+                </div>
+                <div class="ps-scroll"><div class="ps-form detail"></div></div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        var KINDS = [
+          ['Town', 'town'],
+          ['Route', 'route'],
+          ['Dungeon', 'dungeon'],
+          ['Building', 'building'],
+          ['Gym', 'gym'],
+          ['Landmark', 'landmark'],
+          ['Water', 'water'],
+        ];
+        var LOCS = [
+          {
+            k: 'pallet-town',
+            n: 'Pallet Town',
+            kind: 'town',
+            meta: 'Town · 2 connections',
+          },
+          {
+            k: 'route-1',
+            n: 'Route 1',
+            kind: 'route',
+            meta: 'Route · 1 connection',
+            warn: true,
+          },
+          {
+            k: 'viridian-city',
+            n: 'Viridian City',
+            kind: 'town',
+            meta: 'Town · 3 connections',
+          },
+          {
+            k: 'vc-center',
+            n: 'Pokémon Center',
+            kind: 'building',
+            meta: 'Building · Heal, PC',
+            child: true,
+          },
+          {
+            k: 'vc-mart',
+            n: 'Viridian Mart',
+            kind: 'building',
+            meta: 'Building',
+            child: true,
+          },
+          {
+            k: 'route-2',
+            n: 'Route 2',
+            kind: 'route',
+            meta: 'Route · no connections',
+            err: true,
+          },
+          {
+            k: 'viridian-forest',
+            n: 'Viridian Forest',
+            kind: 'dungeon',
+            meta: 'Dungeon · 2 connections',
+          },
+        ];
+        document.querySelectorAll('.kinds').forEach(function (el) {
+          el.innerHTML =
+            '<button class="ps-chip" aria-pressed="true">All</button>' +
+            KINDS.map(function (k) {
+              return (
+                '<button class="ps-chip" aria-pressed="false"><span data-i="' +
+                k[1] +
+                '" data-s="16"></span>' +
+                k[0] +
+                '</button>'
+              );
+            }).join('');
+        });
+        document.querySelectorAll('.list').forEach(function (el) {
+          var cur = el.getAttribute('data-current');
+          el.innerHTML = LOCS.map(function (l) {
+            var dot = l.err
+              ? '<span class="ps-dot ps-dot--danger" aria-label="Has errors"></span>'
+              : l.warn
+                ? '<span class="ps-dot" aria-label="Has warnings"></span>'
+                : '';
+            return (
+              '<button class="ps-list-row' +
+              (l.child ? ' is-child' : '') +
+              '"' +
+              (cur === l.k ? ' aria-current="true"' : '') +
+              '><span class="ps-kind" data-i="' +
+              l.kind +
+              '"></span><span class="ps-row-text"><b>' +
+              l.n +
+              '</b><span>' +
+              l.meta +
+              '</span></span>' +
+              dot +
+              '<span data-i="chevR"></span></button>'
+            );
+          }).join('');
+        });
+        document.querySelectorAll('.detail').forEach(function (el) {
+          el.innerHTML =
+            '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>Route 1 has only one connection. Players can enter but not leave.</span></div>' +
+            '<div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Route 1"></div>' +
+            '<div class="ps-field"><span class="ps-label">Kind</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="route"></span>Route</span><span data-i="chevD"></span></button></div>' +
+            '<div class="ps-field"><span class="ps-label">Parent <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span class="ps-placeholder">None, top level</span><span data-i="search"></span></button></div>' +
+            '<div class="ps-field"><label class="ps-label">Description</label><textarea class="ps-textarea">A quiet path north of Pallet Town. Tall grass lines both sides.</textarea></div>';
+        });
+        var NAV = [
+          ['Overview', 'home'],
+          ['Settings', 'settings'],
+          ['Locations', 'pin', 1],
+          ['Encounters', 'leaf'],
+          ['Trainers', 'user'],
+          ['Pokédex', 'book'],
+          ['Progressions', 'steps'],
+        ];
+        var SOON = [
+          ['Scripts', 'code'],
+          ['Shops', 'bag'],
+          ['Transport', 'swap'],
+        ];
+        document.querySelector('.nav').innerHTML =
+          NAV.map(function (n) {
+            return (
+              '<a class="ps-nav-item" href="#"' +
+              (n[2] ? ' aria-current="page"' : '') +
+              '><span data-i="' +
+              n[1] +
+              '"></span>' +
+              n[0] +
+              (n[0] === 'Locations'
+                ? '<span class="ps-badge ps-badge--danger">1</span>'
+                : '') +
+              '</a>'
+            );
+          }).join('') +
+          '<div class="ps-nav-sep"></div>' +
+          SOON.map(function (n) {
+            return (
+              '<span class="ps-nav-item is-soon" aria-disabled="true"><span data-i="' +
+              n[1] +
+              '"></span>' +
+              n[0] +
+              '<span class="ps-badge ps-badge--outline">Soon</span></span>'
+            );
+          }).join('');
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>

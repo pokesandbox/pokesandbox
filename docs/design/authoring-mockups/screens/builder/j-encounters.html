@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>J · Encounters · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >J · Encounters
+        <small
+          >J · Encounters tab · methods, slots, live %, validation, totals ·
+          phone, desktop 1440 (edit levels and weights)</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Phone · Walk in grass</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
+          </div>
+          <div style="width: 560px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                Method tabs come from the region's method registry; each shows
+                its encounter rate. "+ Method" adds one this location supports
+                (Surf only appears in the list when the region has it).
+              </li>
+              <li>
+                The rate is the chance that one Explore finds a Pokémon. It's
+                per method, per location.
+              </li>
+              <li>
+                Each slot: species (SearchCombobox), min and max level, weight.
+                The % is weight ÷ total weight, rounded to whole numbers, and
+                updates as you type. Both views here are live.
+              </li>
+              <li>
+                Validation sits on the row: a red tint plus the sentence under
+                the fields ("Min level is above max."). Errors also appear in
+                Region Health and block publish.
+              </li>
+              <li>
+                Reorder with the handle or More → Move up/down. Order only
+                affects display; weights decide odds.
+              </li>
+              <li>
+                The totals footer stays pinned: slot count, total weight, and a
+                warning when the table has no slots or a zero total.
+              </li>
+              <li>
+                Conditional tables (night, swarms) need the condition builder,
+                so "Add conditional table" is shown as coming soon.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">Desktop 1440</p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 900px"
+        ></div>
+      </div>
+      <script>
+        var SLOTS = [
+          { s: 'Pidgey', n: 16, min: 2, max: 5, w: 45 },
+          { s: 'Rattata', n: 19, min: 2, max: 4, w: 45 },
+          { s: 'Caterpie', n: 10, min: 3, max: 4, w: 8 },
+          { s: 'Nidoran♀', n: 29, min: 12, max: 5, w: 5 },
+          { s: 'Pikachu', n: 25, min: 3, max: 5, w: 2 },
+        ];
+        var METHODS =
+          '<div class="ps-tabs" role="tablist"><button class="ps-tab" role="tab" aria-selected="true"><span data-i="leaf" data-s="16"></span>Walk in grass <span class="ps-tab-meta">20%</span></button><button class="ps-tab" role="tab"><span data-i="water" data-s="16"></span>Surf <span class="ps-tab-meta">5%</span></button><button class="ps-tab" role="tab">Old Rod <span class="ps-tab-meta">100%</span></button><button class="ps-tab" role="tab"><span data-i="plus" data-s="16"></span>Method</button></div>';
+        function rateRow() {
+          return (
+            '<div class="ps-pair" style="grid-template-columns:120px 1fr;align-items:start"><div class="ps-field"><label class="ps-label">Encounter rate</label><div class="ps-input-wrap"><input class="ps-input" type="number" inputmode="numeric" value="20" style="padding-right:32px"><span class="ps-trail ps-subtle" style="padding-right:12px">%</span></div></div>' +
+            '<p class="ps-help" style="margin-top:28px">Chance that one Explore in the grass finds a Pokémon.</p></div>' +
+            '<div class="ps-section-head"><h3 class="t-title-3">Default table</h3><button class="ps-btn ps-btn--ghost" aria-disabled="true" style="opacity:.6">Add conditional table <span class="ps-badge ps-badge--outline">Soon</span></button></div>'
+          );
+        }
+        function err(r) {
+          return r.min > r.max
+            ? 'Min level is above max.'
+            : r.w <= 0
+              ? 'Weight must be at least 1.'
+              : '';
+        }
+        function phoneSlots() {
+          return (
+            '<div class="ps-sortable" style="overflow:hidden">' +
+            SLOTS.map(function (r, i) {
+              var e = err(r);
+              return (
+                '<div class="ps-slot' +
+                (e ? ' is-invalid' : '') +
+                '" data-r="' +
+                i +
+                '"><div class="ps-slot-head"><button class="ps-handle" aria-label="Reorder ' +
+                r.s +
+                '"><span data-i="grip"></span></button>' +
+                '<button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span class="ps-thumb" style="width:28px;height:28px"></span>' +
+                r.s +
+                ' <span class="t-mono ps-subtle">#' +
+                String(r.n).padStart(3, '0') +
+                '</span></span><span data-i="search"></span></button>' +
+                PS.moreBtn +
+                '</div>' +
+                '<div class="ps-slot-fields">' +
+                field('Min level', 'min', r, i, e && r.min > r.max) +
+                field('Max level', 'max', r, i, e && r.min > r.max) +
+                field('Weight', 'w', r, i, false) +
+                '<div class="ps-pct" data-pct="' +
+                i +
+                '"></div>' +
+                '<p class="ps-error" data-err="' +
+                i +
+                '"' +
+                (e ? '' : ' hidden') +
+                '><span data-i="error" data-s="18"></span><span>' +
+                e +
+                '</span></p></div></div>'
+              );
+            }).join('') +
+            '</div>'
+          );
+        }
+        function field(label, key, r, i, bad) {
+          return (
+            '<div class="ps-field" style="gap:2px"><label class="ps-label">' +
+            label +
+            '</label><input class="ps-input" type="number" inputmode="numeric" data-k="' +
+            key +
+            '" data-i2="' +
+            i +
+            '" value="' +
+            r[key] +
+            '"' +
+            (bad ? ' aria-invalid="true"' : '') +
+            '></div>'
+          );
+        }
+        function table() {
+          return (
+            '<table class="ps-slot-table"><thead><tr><th style="width:52px"></th><th>Species</th><th>Min level</th><th>Max level</th><th>Weight</th><th style="text-align:right">Chance</th><th style="width:52px"></th></tr></thead><tbody>' +
+            SLOTS.map(function (r, i) {
+              var e = err(r);
+              var inp = function (k) {
+                return (
+                  '<td class="num"><input class="ps-input" type="number" aria-label="' +
+                  k +
+                  ' for ' +
+                  r.s +
+                  '" data-k="' +
+                  k +
+                  '" data-i2="' +
+                  i +
+                  '" value="' +
+                  r[k] +
+                  '"' +
+                  (e && k !== 'w' && r.min > r.max
+                    ? ' aria-invalid="true"'
+                    : '') +
+                  '></td>'
+                );
+              };
+              return (
+                '<tr data-r="' +
+                i +
+                '"' +
+                (e ? ' class="is-invalid"' : '') +
+                '><td><button class="ps-handle" aria-label="Reorder ' +
+                r.s +
+                '"><span data-i="grip"></span></button></td>' +
+                '<td><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span class="ps-thumb" style="width:28px;height:28px"></span>' +
+                r.s +
+                ' <span class="t-mono ps-subtle">#' +
+                String(r.n).padStart(3, '0') +
+                '</span></span><span data-i="search"></span></button>' +
+                '<p class="ps-error" data-err="' +
+                i +
+                '" style="margin-top:4px"' +
+                (e ? '' : ' hidden') +
+                '><span data-i="error" data-s="18"></span><span>' +
+                e +
+                '</span></p></td>' +
+                inp('min') +
+                inp('max') +
+                inp('w') +
+                '<td class="ps-pct" data-pct="' +
+                i +
+                '" style="padding-right:16px"></td><td>' +
+                PS.moreBtn +
+                '</td></tr>'
+              );
+            }).join('') +
+            '</tbody></table>'
+          );
+        }
+        function totals() {
+          return '<div class="ps-totals"><span><b class="tot-n">5</b> slots · total weight <b class="tot-w">105</b></span><button class="ps-btn ps-btn--secondary"><span data-i="plus"></span>Add slot</button></div>';
+        }
+        function update() {
+          var total = SLOTS.reduce(function (a, r) {
+            return a + Math.max(0, r.w || 0);
+          }, 0);
+          SLOTS.forEach(function (r, i) {
+            var p = total
+                ? Math.round((Math.max(0, r.w || 0) / total) * 100)
+                : 0,
+              e = err(r);
+            document
+              .querySelectorAll('[data-pct="' + i + '"]')
+              .forEach(function (el) {
+                el.textContent = p + '%';
+              });
+            document
+              .querySelectorAll('[data-err="' + i + '"]')
+              .forEach(function (el) {
+                el.hidden = !e;
+                el.lastChild.textContent = e;
+              });
+            document
+              .querySelectorAll('[data-r="' + i + '"]')
+              .forEach(function (el) {
+                el.classList.toggle('is-invalid', !!e);
+                el.classList.toggle('is-invalid', !!e);
+              });
+            document
+              .querySelectorAll('[data-i2="' + i + '"]')
+              .forEach(function (el) {
+                var k = el.getAttribute('data-k');
+                if (document.activeElement !== el) el.value = r[k];
+                if (k !== 'w') {
+                  if (r.min > r.max) el.setAttribute('aria-invalid', 'true');
+                  else el.removeAttribute('aria-invalid');
+                } else {
+                  if (r.w <= 0) el.setAttribute('aria-invalid', 'true');
+                  else el.removeAttribute('aria-invalid');
+                }
+              });
+          });
+          document.querySelectorAll('.tot-w').forEach(function (el) {
+            el.textContent = total;
+          });
+          document.querySelectorAll('.tot-n').forEach(function (el) {
+            el.textContent = SLOTS.length;
+          });
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          if (el.getAttribute('data-v') === 'phone')
+            el.innerHTML =
+              PS.phoneBar('Route 1', 'Route', PS.saved + PS.moreBtn) +
+              PS.locTabs('encounters') +
+              METHODS +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              rateRow() +
+              phoneSlots() +
+              '</div></div>' +
+              totals();
+          else
+            el.innerHTML =
+              PS.sidebar('locations') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-split">' +
+              '<section class="ps-pane-list"><div class="ps-appbar" style="padding:0 8px 0 16px"><h2 class="ps-appbar-title">Locations</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus"></span>Add</button></div><div class="ps-scroll">' +
+              PS.locRows('route-1') +
+              '</div></section>' +
+              '<section class="ps-pane-detail"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title" style="font-size:20px">Route 1</h2>' +
+              PS.moreBtn +
+              '</div>' +
+              PS.locTabs('encounters') +
+              METHODS +
+              '<div class="ps-scroll"><div class="ps-form" style="max-width:none">' +
+              rateRow() +
+              table() +
+              '</div></div>' +
+              totals() +
+              '</section></div></div>';
+        });
+        document.addEventListener('input', function (e) {
+          var el = e.target,
+            i = el.getAttribute('data-i2');
+          if (i === null) return;
+          SLOTS[+i][el.getAttribute('data-k')] = parseInt(el.value, 10) || 0;
+          update();
+        });
+        PS.mount(document);
+        update();
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

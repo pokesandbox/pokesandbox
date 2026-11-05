@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Input · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Input
+        <small
+          >Text, number pair, text area, search. Label above, error
+          below.</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage">
+      <div class="ps-root ps-pad">
+        <div class="ps-demos">
+          <div class="ps-stack" style="width: 358px">
+            <div class="ps-field">
+              <label class="ps-label" for="n">Name</label>
+              <input class="ps-input" id="n" value="Route 1" />
+            </div>
+            <div class="ps-field">
+              <label class="ps-label" for="c"
+                >Currency symbol <span class="ps-opt">(optional)</span></label
+              >
+              <input
+                class="ps-input"
+                id="c"
+                placeholder="₽"
+                aria-describedby="c-h"
+              />
+              <p class="ps-help" id="c-h">
+                Shown before prices in shops, like ₽500.
+              </p>
+            </div>
+            <div class="ps-field">
+              <span class="ps-label" id="lv">Level</span>
+              <div class="ps-pair">
+                <input
+                  class="ps-input"
+                  type="number"
+                  inputmode="numeric"
+                  value="12"
+                  aria-label="Min level"
+                  aria-invalid="true"
+                  aria-describedby="lv-e"
+                />
+                <input
+                  class="ps-input"
+                  type="number"
+                  inputmode="numeric"
+                  value="5"
+                  aria-label="Max level"
+                  aria-invalid="true"
+                  aria-describedby="lv-e"
+                />
+              </div>
+              <p class="ps-error" id="lv-e">
+                <span data-i="error" data-s="18"></span>Min level is above max.
+              </p>
+            </div>
+          </div>
+          <div class="ps-stack" style="width: 358px">
+            <div class="ps-field">
+              <label class="ps-label" for="d">Description</label>
+              <textarea class="ps-textarea" id="d">
+A quiet path north of Pallet Town. Tall grass lines both sides.</textarea>
+              <p class="ps-help">62 / 2,000</p>
+            </div>
+            <div class="ps-field">
+              <label class="ps-label" for="s">Search locations</label>
+              <div class="ps-input-wrap">
+                <span class="ps-lead" data-i="search"></span>
+                <input
+                  class="ps-input"
+                  id="s"
+                  type="search"
+                  placeholder="Search by name"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>
