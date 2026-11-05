@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>M1 · NPCs · PokeSandbox mockups</title>
+    <title>M1 · Separate NPCs list · PokeSandbox mockups</title>
     <link rel="stylesheet" href="../../assets/tokens.css" />
     <link rel="stylesheet" href="../../assets/mockups.css" />
     <link rel="stylesheet" href="../../assets/page.css" />
@@ -13,10 +13,10 @@
     <header class="mk-bar">
       <a href="../../index.html">All mockups</a
       ><span
-        >M1 · NPCs
+        >M1 · Separate NPCs list
         <small
-          >M1 · NPCs list → NPC detail · battle NPC (rival) and non-battle NPC
-          (Nurse Joy), desktop 1440</small
+          >Archived · M1 · separate NPCs list → NPC detail · battle NPC (rival)
+          and non-battle NPC (Nurse Joy), desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
@@ -97,6 +97,15 @@
         ></div>
       </div>
       <script>
+        /* Archived: restores the old navigation, with separate Trainers and NPCs entries. */
+        PS.NAV.splice(
+          PS.NAV.findIndex(function (n) {
+            return n[2] === 'npcs';
+          }),
+          1,
+          ['Trainers', 'user', 'trainers', '28'],
+          ['NPCs', 'chat', 'npcs', '34'],
+        );
         var NPCS = [
           {
             k: 'rival',

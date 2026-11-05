@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>L1 · Trainers list · PokeSandbox mockups</title>
+    <title>L1 · Separate trainers list · PokeSandbox mockups</title>
     <link rel="stylesheet" href="../../assets/tokens.css" />
     <link rel="stylesheet" href="../../assets/mockups.css" />
     <link rel="stylesheet" href="../../assets/page.css" />
@@ -13,8 +13,11 @@
     <header class="mk-bar">
       <a href="../../index.html">All mockups</a
       ><span
-        >L1 · Trainers list
-        <small>L1 · Trainers list · phone, unfiltered and filtered</small></span
+        >L1 · Separate trainers list
+        <small
+          >Archived · L1 · separate Trainers list · phone, unfiltered and
+          filtered</small
+        ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
     <main class="mk-stage" style="min-width: 1400px">
@@ -68,6 +71,15 @@
         </div>
       </div>
       <script>
+        /* Archived: restores the old navigation, with separate Trainers and NPCs entries. */
+        PS.NAV.splice(
+          PS.NAV.findIndex(function (n) {
+            return n[2] === 'npcs';
+          }),
+          1,
+          ['Trainers', 'user', 'trainers', '28'],
+          ['NPCs', 'chat', 'npcs', '34'],
+        );
         var addBtn =
           '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Add trainer"><span data-i="plus"></span></button>';
         function toolbar(filter) {

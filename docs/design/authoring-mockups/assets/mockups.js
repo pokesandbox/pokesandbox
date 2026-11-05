@@ -397,12 +397,13 @@ window.PS = (function () {
       loc: '1 location',
     },
   ];
-  if (
-    !PS.NAV.some(function (n) {
-      return n[2] === 'npcs';
-    })
-  )
-    PS.NAV.splice(5, 0, ['NPCs', 'chat', 'npcs', '34']);
+  /* One NPCs list, trainers folded in (chosen Nov 2026): NPCs replaces the Trainers entry. */
+  (function () {
+    var i = PS.NAV.findIndex(function (n) {
+      return n[2] === 'trainers';
+    });
+    if (i > -1) PS.NAV.splice(i, 1, ['NPCs', 'chat', 'npcs', '41']);
+  })();
   PS.trainerName = function (n) {
     return n.replace(
       '{name:rival}',

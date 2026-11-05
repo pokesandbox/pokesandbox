@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
-      Alternative · One NPCs list with trainers · PokeSandbox mockups
+      L+M · NPCs (one list, trainers folded in) · PokeSandbox mockups
     </title>
     <link rel="stylesheet" href="../../assets/tokens.css" />
     <link rel="stylesheet" href="../../assets/mockups.css" />
@@ -15,10 +15,10 @@
     <header class="mk-bar">
       <a href="../../index.html">All mockups</a
       ><span
-        >Alternative · One NPCs list with trainers
+        >L+M · NPCs (one list, trainers folded in)
         <small
-          >L+M alternative · one NPCs list with trainers folded in · list,
-          Person tab, Battle tab, non-battle NPC, desktop 1440</small
+          >L+M · One NPCs list (chosen) · trainers folded in · list, Person tab,
+          Battle tab, non-battle NPC, desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
@@ -56,9 +56,10 @@
           "
         >
           <li>
-            <b>An alternative to L1 + M1.</b> The sidebar has one "NPCs" entry;
-            Trainers goes away. Filters: All · Trainers · Non-battle · Battle
-            only. Picking Trainers adds the class chips from L1.
+            <b>Chosen over separate L1 + M1 lists</b> (those are under
+            Archived). The sidebar has one "NPCs" entry; Trainers goes away.
+            Filters: All · Trainers · Non-battle · Battle only. Picking Trainers
+            adds the class chips from L1.
           </li>
           <li>
             <b>One editor, four tabs:</b> Person (who, where, talk) · Battle
@@ -100,16 +101,6 @@
         ></div>
       </div>
       <script>
-        /* In this alternative the sidebar has one NPCs entry and no Trainers entry. */
-        PS.NAV.splice(
-          PS.NAV.findIndex(function (n) {
-            return n[2] === 'trainers';
-          }),
-          1,
-        ); /* in place: PS.sidebar() reads this same array */
-        PS.NAV.forEach(function (n) {
-          if (n[2] === 'npcs') n[3] = '41';
-        });
         var PEOPLE = [
           {
             k: 'rival',
