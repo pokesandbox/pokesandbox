@@ -126,8 +126,9 @@
                 other one.
               </li>
               <li>
-                <b>Script:</b> pick one, or Create from template. Template-made
-                scripts show Edit as form; others open read-only for now.
+                <b>Script:</b> pick one, or Create from template. A
+                template-made script opens its form; others open read-only for
+                now.
               </li>
               <li>
                 <b>From an NPC:</b> the Talk script row on an NPC opens this
@@ -237,15 +238,8 @@
               : '') +
             '</div>' +
             (t.cond ? PS.condSummary(t.cond) : '') +
-            '<div class="ps-link-row"><span data-i="code"></span><span>' +
-            t.script +
-            '<small>' +
-            (t.tpl
-              ? 'Made with the ' + t.tpl + ' template'
-              : 'Read-only until the step editor') +
-            '</small></span><button class="ps-btn ps-btn--ghost">' +
-            (t.tpl ? 'Edit as form' : 'View') +
-            '</button></div></article>'
+            PS.scriptRow(t.script, t.tpl) +
+            '</article>'
           );
         }
         function list(key, place) {
@@ -282,7 +276,9 @@
             (clash
               ? '<div class="ps-field"><label class="ps-label" for="pr">Priority</label><input class="ps-input" id="pr" type="number" inputmode="numeric" value="10" style="max-width:120px"><div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>"Old man’s tip" can also run when a player enters Route 22. Only the higher priority runs; it has 0.</span></div></div>'
               : '') +
-            '<div class="ps-field"><span class="ps-label">Script</span><div class="ps-link-row"><span data-i="code"></span><span>rival-r22<small><span class="ps-badge ps-badge--accent" style="margin-top:2px">Made with the Forced Encounter template</span></small></span><button class="ps-btn ps-btn--secondary">Edit as form</button></div>' +
+            '<div class="ps-field"><span class="ps-label">Script</span>' +
+            PS.scriptRow('rival-r22', 'Forced Encounter') +
+            '' +
             '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--ghost">Pick another script</button><button class="ps-btn ps-btn--ghost">Create from template</button></div></div>'
           );
         }

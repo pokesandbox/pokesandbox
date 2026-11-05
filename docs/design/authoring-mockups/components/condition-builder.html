@@ -74,10 +74,10 @@
           "
         >
           <li>
-            <b>Shape:</b> a flat "All of these" list, plus at most one group
-            that can be "Any of these" (or "All of"), plus "Not" on any row.
-            Nothing deeper. "Add group" disappears once a group exists; deeper
-            trees come by JSON import later.
+            <b>Shape:</b> the Rule-group editor set up for conditions: an "All
+            of" or "Any of" list, groups one level deep with their own All of /
+            Any of, and "Not" on any row. Deeper trees come by JSON import
+            later.
           </li>
           <li>
             <b>Templates first:</b> each chip adds a ready-made row (Badge… adds
@@ -397,9 +397,9 @@
             parts.push(
               '<div class="ps-cond-group"><div class="ps-cond-group-head"><div class="ps-seg" role="group" aria-label="Group mode"><button aria-pressed="' +
                 (st.group.mode === 'any') +
-                '" data-act="gmode" data-v="any">Any of these</button><button aria-pressed="' +
+                '" data-act="gmode" data-v="any">Any of</button><button aria-pressed="' +
                 (st.group.mode === 'all') +
-                '" data-act="gmode" data-v="all">All of these</button></div><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove group" data-act="rmgroup"><span data-i="trash"></span></button></div>' +
+                '" data-act="gmode" data-v="all">All of</button></div><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove group" data-act="rmgroup"><span data-i="trash"></span></button></div>' +
                 st.group.rows
                   .map(function (r, i) {
                     return (

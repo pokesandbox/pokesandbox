@@ -42,7 +42,7 @@
         </div>
         <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
           <div>
-            <p class="ps-frame-label">4 · What they say</p>
+            <p class="ps-frame-label">4 · Text</p>
             <div class="ps-phone ps-phone--tall slot" data-v="4"></div>
           </div>
           <div>
@@ -80,14 +80,15 @@
                 fixed.
               </li>
               <li>
-                <b>Text:</b> offering the gift, what they say the next time you
-                talk, and what they say when the bag or party is full. What
+                <b>Text:</b> offering the gift, the next time you talk, and when
+                the bag is full. Each can be dialogue, narration, or both. What
                 happens when the party is full follows the region's rules, shown
                 read-only.
               </li>
               <li>
-                Review says what it creates, then the NPC opens with "Made with
-                the Gift NPC template" and Edit as form.
+                Review says what it creates, then the NPC opens with its talk
+                script marked "Made with the Gift NPC template"; tapping it
+                reopens the form.
               </li>
             </ul>
           </div>
@@ -102,7 +103,7 @@
         ></div>
       </div>
       <script>
-        var STEPS = ['Who', 'Gift', 'When', 'What they say', 'Review'];
+        var STEPS = ['Who', 'Gift', 'When', 'Text', 'Review'];
         function stepper(n) {
           return (
             '<div class="ps-stepper"><span class="t-body-sm ps-subtle">Step ' +
@@ -207,7 +208,7 @@
           },
           4: function () {
             return (
-              '<h2 class="t-title-2">What they say</h2>' +
+              '<h2 class="t-title-2">Text</h2><p class="t-body-sm ps-muted">Dialogue, narration, or both.</p>' +
               passage('Offering the gift', 'offer', '', true) +
               passage('The next time you talk', 'after') +
               passage(
@@ -275,7 +276,8 @@
               emptyHint: 'Always here.',
             }) +
             '</article>' +
-            '<h2 class="t-title-2">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>fishing-guru-gift<small><span class="ps-badge ps-badge--accent" style="margin-top:2px">Made with the Gift NPC template</span></small></span><button class="ps-btn ps-btn--secondary">Edit as form</button></div>' +
+            '<h2 class="t-title-2">Talk script</h2>' +
+            PS.scriptRow('fishing-guru-gift', 'Gift NPC') +
             '</div></div><div class="ps-toast-dock"><div class="ps-toast" role="status">' +
             PS.icon('check') +
             '<span>Fishing Guru created</span></div></div>'

@@ -297,6 +297,21 @@ window.PS = (function () {
   };
   PS.saved =
     '<span class="ps-save ps-save--ok"><span data-i="check" data-s="16"></span>Saved</span>';
+  PS.scriptRow = function (name, tpl) {
+    return (
+      '<button class="ps-link-row ps-script-row" aria-label="' +
+      (tpl ? 'Open ' + name + ' in the ' + tpl + ' form' : 'View ' + name) +
+      '"><span data-i="code"></span><span>' +
+      name +
+      '<small>' +
+      (tpl
+        ? '<span class="ps-badge ps-badge--accent">Made with the ' +
+          tpl +
+          ' template</span>'
+        : 'Read-only until the step editor') +
+      '</small></span><span data-i="chevR"></span></button>'
+    );
+  };
   PS.moreBtn =
     '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="More actions"><span data-i="more"></span></button>';
 })(window.PS);
@@ -720,7 +735,7 @@ window.PS = (function () {
       '<div class="ps-field"><span class="ps-label">Payout</span><div class="ps-seg" role="group"><button aria-pressed="true">Formula</button><button aria-pressed="false">Fixed amount</button></div><p class="ps-help">₽35 × level of the last Pokémon = <b style="color:var(--ink)">₽630</b>.</p></div>' +
       '<div class="ps-field"><span class="ps-label">Battle format</span><div class="ps-seg" role="group"><button aria-pressed="true">Singles</button><button aria-pressed="false" disabled style="opacity:.5">Doubles · later</button></div></div>' +
       '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Stays after defeat</b><span>Off: they leave once beaten.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Stays after defeat"></button></label>' +
-      '<div class="ps-link-row"><span data-i="code"></span><span>None<small>What they say after you win</small></span><button class="ps-btn ps-btn--ghost">Add</button></div>'
+      '<div class="ps-link-row"><span data-i="code"></span><span>None<small>Runs when they’re talked to after a win</small></span><button class="ps-btn ps-btn--ghost">Add</button></div>'
     );
   };
   PS.npcTabs = function (active, battles) {
@@ -1356,11 +1371,11 @@ window.PS = (function () {
       path +
       ':all" aria-pressed="' +
       (m === 'all') +
-      '">All of these</button><button data-re-mode="' +
+      '">All of</button><button data-re-mode="' +
       path +
       ':any" aria-pressed="' +
       (m === 'any') +
-      '">Any of these</button></div>'
+      '">Any of</button></div>'
     );
   };
   var joinW = function (m) {

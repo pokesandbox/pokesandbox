@@ -2596,8 +2596,14 @@
 .ps-cond-group-head .ps-seg {
   min-width: 0;
 }
+.ps-cond-group-head .ps-seg {
+  flex: 0 1 auto;
+}
+.ps-cond-group-head .ps-seg ~ .ps-btn:last-child {
+  margin-left: auto;
+}
 .ps-cond-group-head .ps-seg > button {
-  padding: 0 6px;
+  padding: 0 12px;
 }
 .ps-re-row-head > b {
   overflow: hidden;
@@ -2609,4 +2615,24 @@
   width: 24px;
   height: 24px;
   font-size: 12px;
+}
+
+/* Template-made script: the whole row opens its form */
+.ps-script-row {
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding-right: var(--space-3);
+}
+.ps-script-row:hover {
+  background: var(--surface-muted);
+}
+.ps-script-row small .ps-badge {
+  margin-top: 4px;
+  white-space: normal;
+  height: auto;
+  min-height: 24px;
+  padding-block: 3px;
 }

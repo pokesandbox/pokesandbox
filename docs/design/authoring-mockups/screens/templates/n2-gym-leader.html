@@ -46,7 +46,7 @@
             <div class="ps-phone ps-phone--tall slot" data-v="3create"></div>
           </div>
           <div>
-            <p class="ps-frame-label">4 · What they say</p>
+            <p class="ps-frame-label">4 · Text</p>
             <div class="ps-phone ps-phone--tall slot" data-v="4"></div>
           </div>
           <div>
@@ -150,7 +150,7 @@
           'Leader',
           'Party',
           'Rewards',
-          'What they say',
+          'Text',
           'Gym trainers',
           'Review',
         ];
@@ -253,7 +253,7 @@
           },
           4: function () {
             return (
-              '<h2 class="t-title-2">What they say</h2>' +
+              '<h2 class="t-title-2">Text</h2><p class="t-body-sm ps-muted">Dialogue, narration, or both.</p>' +
               '<div class="ps-field"><label class="ps-label">When the battle starts</label><textarea class="ps-textarea" style="min-height:88px">' +
               LINES.intro +
               '</textarea></div>' +
@@ -417,7 +417,8 @@
             PS.condSummary('Requires defeating Camper Liam', {
               note: 'Gate on talking to Brock · shown locked until then',
             }) +
-            '<h2 class="t-title-2">Talk script</h2><div class="ps-link-row"><span data-i="code"></span><span>brock-gym<small><span class="ps-badge ps-badge--accent" style="margin-top:2px">Made with the Gym Leader template</span></small></span><button class="ps-btn ps-btn--secondary">Edit as form</button></div>' +
+            '<h2 class="t-title-2">Talk script</h2>' +
+            PS.scriptRow('brock-gym', 'Gym Leader') +
             '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start"><span data-i="code" data-s="18"></span>Edit steps</button></div></div>' +
             '<div class="ps-toast-dock"><div class="ps-toast" role="status">' +
             PS.icon('check') +

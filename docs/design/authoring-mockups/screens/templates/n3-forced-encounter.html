@@ -15,17 +15,21 @@
       ><span
         >N3 · Forced Encounter template
         <small
-          >N3 · Forced Encounter template · 6 phone steps and the created event,
-          one long form on desktop</small
+          >N3 · Forced Encounter template · 6 phone steps, choosing when it
+          starts, and the created event, one long form on desktop</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 1720px">
+    <main class="mk-stage" style="min-width: 2140px">
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
             <p class="ps-frame-label">1 · Where</p>
             <div class="ps-phone ps-phone--tall slot" data-v="1"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">1 · Choosing when it starts</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="start"></div>
           </div>
           <div>
             <p class="ps-frame-label">2 · Who</p>
@@ -35,14 +39,14 @@
             <p class="ps-frame-label">3 · When</p>
             <div class="ps-phone ps-phone--tall slot" data-v="3"></div>
           </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
           <div>
             <p class="ps-frame-label">4 · Battle</p>
             <div class="ps-phone ps-phone--tall slot" data-v="4"></div>
           </div>
-        </div>
-        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
           <div>
-            <p class="ps-frame-label">5 · What they say</p>
+            <p class="ps-frame-label">5 · Text</p>
             <div class="ps-phone ps-phone--tall slot" data-v="5"></div>
           </div>
           <div>
@@ -72,8 +76,9 @@
                 form.
               </li>
               <li>
-                <b>Where:</b> the location, plus optionally only when arriving
-                from chosen places.
+                <b>Where:</b> the location, and when it starts: entering it
+                (optionally only from chosen places), leaving toward chosen
+                exits, or exploring there.
               </li>
               <li>
                 <b>Who:</b> an existing trainer, or Create a trainer, which
@@ -89,12 +94,14 @@
                 the rival) and whether to heal the party afterwards.
               </li>
               <li>
-                <b>Text:</b> before the battle, after a win, after a loss, with
-                the Discord preview filling in sample names.
+                <b>Text:</b> dialogue, narration, or both, before the battle,
+                after a win, after a loss, with the Discord preview filling in
+                sample names.
               </li>
               <li>
-                It creates an Enters event on the location and its script, and
-                uses the chosen trainer; it doesn't copy the trainer.
+                It creates an event on the location and its script, and uses the
+                chosen trainer; it doesn't copy the trainer. The script card
+                opens this form again.
               </li>
             </ul>
           </div>
@@ -109,14 +116,7 @@
         ></div>
       </div>
       <script>
-        var STEPS = [
-          'Where',
-          'Who',
-          'When',
-          'Battle',
-          'What they say',
-          'Review',
-        ];
+        var STEPS = ['Where', 'Who', 'When', 'Battle', 'Text', 'Review'];
         var mono = function (s) {
           return '<span class="t-mono">' + s + '</span>';
         };
@@ -194,7 +194,10 @@
               '<h2 class="t-title-2">Where does it happen?</h2>' +
               '<div class="ps-field"><span class="ps-label">Location</span>' +
               trig('route', 'Route 22') +
-              '<p class="ps-help">The battle starts when a player enters it.</p></div>' +
+              '</div>' +
+              '<div class="ps-field"><span class="ps-label">Starts when a player</span>' +
+              trig('door', 'Enters Route 22', 'chevD') +
+              '</div>' +
               '<div class="ps-field"><span class="ps-label">Only when arriving from <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Viridian City<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Viridian City"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Place</button></div><p class="ps-help">Leave empty for any arrival.</p></div>'
             );
           },
@@ -251,7 +254,7 @@
           },
           5: function () {
             return (
-              '<h2 class="t-title-2">What they say</h2>' +
+              '<h2 class="t-title-2">Text</h2><p class="t-body-sm ps-muted">Dialogue, narration, or both.</p>' +
               passage('Before the battle', 'before', 'Kai blocks the path!') +
               passage('After a win', 'win', 'You defeated Kai!') +
               passage('After a loss', 'lose', '')
@@ -300,6 +303,48 @@
             '</button></div>'
           );
         }
+        var STARTS = [
+          [
+            'door',
+            'Enters Route 22',
+            'As soon as they arrive. Can be limited to arrivals from chosen places.',
+            true,
+          ],
+          [
+            'route',
+            'Leaves Route 22',
+            'When they pick one of the chosen exits, before they go.',
+          ],
+          [
+            'leaf',
+            'Explores Route 22',
+            'When they press Explore, in place of what it would find.',
+          ],
+        ];
+        function startSheet() {
+          return (
+            '<div class="ps-scrim"></div><div class="ps-sheet" role="dialog" aria-label="Starts when a player…"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">Starts when a player…</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            '<div role="listbox" class="ps-stack" style="gap:0">' +
+            STARTS.map(function (o) {
+              return (
+                '<button class="ps-list-row" role="option" aria-selected="' +
+                !!o[3] +
+                '"' +
+                (o[3] ? ' aria-current="true"' : '') +
+                '><span class="ps-kind" data-i="' +
+                o[0] +
+                '"></span><span class="ps-row-text"><b>' +
+                o[1] +
+                '</b><span>' +
+                o[2] +
+                '</span></span>' +
+                (o[3] ? '<span data-i="check"></span>' : '') +
+                '</button>'
+              );
+            }).join('') +
+            '</div></div>'
+          );
+        }
         function done() {
           var row =
             '<article class="ps-trigger-row"><div class="ps-variant-head"><span class="ps-kind" data-i="door"></span><b>Enters Route 22 → Rival battle</b>' +
@@ -307,7 +352,8 @@
             '</div>' +
             '<div class="ps-trigger-meta"><span class="ps-badge">Automatic</span><span class="ps-badge">Once</span><span class="ps-badge ps-badge--outline">Arriving from Viridian City</span></div>' +
             PS.condSummary('Only after ' + mono('oak_parcel_delivered')) +
-            '<div class="ps-link-row"><span data-i="code"></span><span>rival-r22<small><span class="ps-badge ps-badge--accent" style="margin-top:2px">Made with the Forced Encounter template</span></small></span><button class="ps-btn ps-btn--secondary">Edit as form</button></div></article>';
+            PS.scriptRow('rival-r22', 'Forced Encounter') +
+            '</article>';
           return (
             PS.phoneBar('Route 22', 'Route', PS.saved + PS.moreBtn) +
             PS.locTabs('events') +
@@ -382,7 +428,13 @@
         document.querySelectorAll('.slot').forEach(function (el) {
           var v = el.getAttribute('data-v');
           el.innerHTML =
-            v === 'desktop' ? desktop() : v === 'done' ? done() : phone(+v);
+            v === 'desktop'
+              ? desktop()
+              : v === 'done'
+                ? done()
+                : v === 'start'
+                  ? phone(1) + startSheet()
+                  : phone(+v);
         });
         PS.mount(document);
       </script>
