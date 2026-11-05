@@ -15,8 +15,8 @@
       ><span
         >R2 · Traversal costs
         <small
-          >R2 · Traversal costs per exit · shared cost cards, all-or-any needs,
-          detach one exit, re-include, preview (live), Connections
+          >R2 · Traversal costs · first-time and every-time costs per exit,
+          grouped requirements, split one exit off, preview (live), Connections
           (phone)</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
@@ -33,93 +33,94 @@
             <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
           </div>
           <div>
-            <p class="ps-frame-label">Edit a cost: all or any (sheet)</p>
-            <div class="ps-phone ps-phone--tall slot" data-v="sheet"></div>
+            <p class="ps-frame-label">Edit a first-time cost (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="first"></div>
           </div>
           <div>
-            <p class="ps-frame-label">One exit's menu: edit just this exit</p>
-            <div class="ps-phone ps-phone--tall slot" data-v="menu"></div>
+            <p class="ps-frame-label">Edit an every-time cost (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="every"></div>
           </div>
         </div>
         <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
           <div>
-            <p class="ps-frame-label">After detaching West</p>
-            <div class="ps-phone ps-phone--tall slot" data-v="detached"></div>
-          </div>
-          <div>
-            <p class="ps-frame-label">
-              Adding West back to Forest walk (confirm)
-            </p>
-            <div class="ps-phone ps-phone--tall slot" data-v="rejoin"></div>
+            <p class="ps-frame-label">One exit's menu</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="menu"></div>
           </div>
           <div>
             <p class="ps-frame-label">What players see (try the switch)</p>
             <div class="ps-phone ps-phone--tall slot" data-v="preview"></div>
           </div>
           <div>
-            <p class="ps-frame-label">Connections tab · each exit's cost</p>
+            <p class="ps-frame-label">Connections tab · each exit's costs</p>
             <div class="ps-phone ps-phone--tall slot" data-v="edges"></div>
           </div>
-        </div>
-        <ul
-          class="t-body-sm ps-muted"
-          style="
-            margin: 24px 0 0;
-            padding-left: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-width: 1500px;
-          "
-        >
-          <li>
-            <b>Per exit, shared when you want:</b> a location has any number of
-            costs; each applies to one or more exits ("Applies to", with an All
-            exits shortcut), and editing it updates every exit it covers. An
-            exit belongs to at most one cost; exits with none are free.
-            <b>Proposal for doc 10:</b>
-            <span class="t-mono"
-              >traversal.costs[{ exits, firstPass, everyPass, detachedFrom?
-              }]</span
+          <div style="width: 340px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
             >
-            replaces the single <span class="t-mono">traversal</span>.
-          </li>
-          <li>
-            <b>All or any:</b> each section has "Needs: All of these / Any one".
-            All means every requirement in the section must be met; Any one
-            means the first one met is enough (e.g. 3 explores or 2 wild
-            encounters). Required trainers count as one requirement.
-          </li>
-          <li>
-            <b>Detach one exit:</b> an exit's menu in a shared card has "Edit
-            just this exit". It copies the shared cost into a new card for that
-            exit only, marked "Detached from Forest walk", and opens it; the
-            shared card no longer covers that exit.
-          </li>
-          <li>
-            <b>Re-include:</b> checking a detached exit in its old shared card's
-            Applies to confirms first, then deletes the detached card. Adding an
-            exit that belongs to another regular cost just moves it.
-          </li>
-          <li>
-            <b>First visit and later visits stack:</b> on the first time through
-            both sections apply; later, only Every visit. The preview shows each
-            case.
-          </li>
-          <li>
-            <b>Every visit</b> counts explores (doc 10). Proposals: wild
-            encounters (Repel-avoided ones count too), and trainer battles,
-            which warn unless a trainer here battles again every visit
-            (rematches are post-MVP, doc 11).
-          </li>
-        </ul>
+              <li>
+                <b>Two kinds of cost, each its own card:</b> First time through
+                (paid once per exit, the first time a player uses it) and Every
+                time through (paid on each visit). Each card applies to one or
+                more exits, with an All exits shortcut. An exit has at most one
+                of each kind, and can have none.
+              </li>
+              <li>
+                <b>Requirements work like conditions:</b> a list that needs All
+                or Any of its rows, plus one group with its own All or Any. That
+                gives "(beat these trainers and win 3 wild battles) or explore
+                10 times". "Reads as" spells it out.
+              </li>
+              <li>
+                <b>First time</b> can ask for: trainers who must be beaten, wild
+                battles won, explores. <b>Every time</b> can ask for: explores,
+                wild encounters (ones a Repel avoids count too).
+              </li>
+              <li>
+                <b>Split one exit off:</b> an exit's menu has "Edit just this
+                exit", which makes a new cost for that exit with the same
+                requirements and opens it. Ticking an exit that has another cost
+                of the same kind moves it there.
+              </li>
+              <li>
+                <b>Preview</b> builds the locked message for an exit and a
+                visit.
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <script>
-        var EXITS = {
+        var EX = {
           North: ['North', 'Pewter City', 'town'],
           South: ['South', 'Route 2', 'route'],
           West: ['West', 'Hidden grove', 'landmark'],
+          East: ['East', 'Ranger’s hut', 'building'],
         };
+        var FIRST = [
+          {
+            name: 'Forest trainers',
+            exits: ['North', 'South'],
+            reads:
+              'Beat Bug Catcher Rick and Bug Catcher Doug and win 3 wild battles, or explore 10 times',
+          },
+          { name: 'Grove path', exits: ['West'], reads: 'Explore 5 times' },
+        ];
+        var EVERY = [
+          {
+            name: 'Forest walk',
+            exits: 'all',
+            reads: 'Explore 3 times or have 2 wild encounters',
+          },
+        ];
         var head = PS.phoneBar(
           'Viridian Forest',
           'Dungeon',
@@ -152,34 +153,19 @@
             '</span></div>'
           );
         };
-        var counter = function (t, d, v, extra) {
+        var seg = function (all, label) {
           return (
-            '<div class="ps-counter"><span><b>' +
-            t +
-            '</b><small>' +
-            d +
-            '</small>' +
-            (extra || '') +
-            '</span><input class="ps-input" type="number" inputmode="numeric" min="0" value="' +
-            v +
-            '" aria-label="' +
-            t +
-            '"></div>'
-          );
-        };
-        var needs = function (all) {
-          return (
-            '<div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><span class="t-body-sm ps-subtle" style="white-space:nowrap">Needs</span><div class="ps-seg" role="group" style="flex:1"><button aria-pressed="' +
+            '<div class="ps-seg" role="group" aria-label="' +
+            label +
+            '"><button aria-pressed="' +
             all +
             '">All of these</button><button aria-pressed="' +
             !all +
-            '">Any one</button></div></div>'
+            '">Any of these</button></div>'
           );
         };
-        var proposal =
-          '<span class="ps-badge ps-badge--outline" style="margin-top:4px">Proposal</span>';
         var exitChip = function (k, menu) {
-          var e = EXITS[k];
+          var e = EX[k];
           return (
             '<span style="position:relative;display:inline-flex"><button class="ps-chip" style="height:32px;font-size:13px" aria-haspopup="menu">' +
             e[0] +
@@ -193,149 +179,156 @@
           );
         };
         function card(c, menuOn) {
+          var to =
+            c.exits === 'all'
+              ? '<span class="ps-badge">All exits</span>'
+              : c.exits
+                  .map(function (k) {
+                    return exitChip(k, menuOn === k);
+                  })
+                  .join('');
           return (
             '<article class="ps-placement" style="gap:8px' +
             (menuOn ? ';position:relative;z-index:4' : '') +
             '"><div class="ps-variant-head"><span class="ps-kind" data-i="steps"></span><b>' +
             c.name +
-            '</b>' +
-            (c.detached
-              ? '<span class="ps-badge ps-badge--accent">Detached from ' +
-                c.detached +
-                '</span>'
-              : '') +
-            '<button class="ps-btn ps-btn--ghost">Edit</button></div>' +
+            '</b><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
             '<div class="ps-trigger-meta" style="align-items:center"><span class="t-body-sm ps-subtle">Applies to</span>' +
-            c.exits
-              .map(function (k) {
-                return exitChip(k, menuOn === k);
-              })
-              .join('') +
-            '</div>' +
-            '<div class="ps-review">' +
-            (c.first
-              ? '<div class="ps-review-row"><div><dt>First visit · ' +
-                c.firstMode +
-                '</dt><dd>' +
-                c.first +
-                '</dd></div></div>'
-              : '') +
-            '<div class="ps-review-row"><div><dt>Every visit · ' +
-            c.everyMode +
-            '</dt><dd>' +
-            c.every +
-            '</dd></div></div></div></article>'
+            to +
+            '</div><p class="t-body-sm">' +
+            c.reads +
+            '.</p></article>'
           );
         }
-        var A = {
-          name: 'Forest trainers',
-          exits: ['North'],
-          first: 'Beat Bug Catcher Rick and Bug Catcher Doug',
-          firstMode: 'all',
-          every: '3 explores or 2 wild encounters',
-          everyMode: 'any one',
-        };
-        var B = {
-          name: 'Forest walk',
-          exits: ['South', 'West'],
-          every: '3 explores',
-          everyMode: 'all',
-        };
-        var B2 = {
-          name: 'Forest walk',
-          exits: ['South'],
-          every: '3 explores',
-          everyMode: 'all',
-        };
-        var W = {
-          name: 'West to Hidden grove',
-          exits: ['West'],
-          detached: 'Forest walk',
-          every: '5 explores',
-          everyMode: 'all',
-        };
-        function list(cards, menuOn, note) {
+        function list(menuOn) {
           return (
-            '<div class="ps-form"><div class="ps-section-head"><h2 class="t-title-3">Traversal costs</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Cost</button></div>' +
-            '<p class="t-body-sm ps-muted">Each cost locks the exits it applies to until it’s paid. One cost can cover several exits.</p>' +
-            cards
-              .map(function (c) {
-                return card(c, menuOn);
-              })
-              .join('') +
-            '<p class="t-body-sm ps-subtle">' +
-            (note || 'All 3 exits have a cost.') +
-            '</p></div>'
+            '<div class="ps-form"><h2 class="t-title-3">Traversal costs</h2><p class="t-body-sm ps-muted" style="margin-top:-8px">Locked exits open once their costs are paid.</p>' +
+            '<div class="ps-section-head"><h3 class="t-title-3" style="font-size:15px">First time through</h3><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Cost</button></div><p class="t-body-sm ps-subtle" style="margin-top:-8px">Paid once per exit, the first time a player uses it.</p>' +
+            FIRST.map(function (c) {
+              return card(c, menuOn);
+            }).join('') +
+            '<p class="t-body-sm ps-subtle">East to Ranger’s hut has no first-time cost.</p>' +
+            '<div class="ps-section-head" style="margin-top:8px"><h3 class="t-title-3" style="font-size:15px">Every time through</h3><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Cost</button></div><p class="t-body-sm ps-subtle" style="margin-top:-8px">Paid on every visit.</p>' +
+            EVERY.map(function (c) {
+              return card(c);
+            }).join('') +
+            '</div>'
           );
         }
-        function sheetBody() {
+        function reqRow(icon, label, body) {
+          return (
+            '<div class="ps-cond-row"><div class="ps-cond-row-head"><b><span data-i="' +
+            icon +
+            '" data-s="18"></span>' +
+            label +
+            '</b><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
+            label +
+            '"><span data-i="x"></span></button></div><div class="ps-cond-row-body">' +
+            body +
+            '</div></div>'
+          );
+        }
+        var num = function (v, unit) {
+          return (
+            '<div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><input class="ps-input" type="number" inputmode="numeric" min="1" value="' +
+            v +
+            '" style="width:88px" aria-label="' +
+            unit +
+            '"><span class="t-body-sm ps-muted">' +
+            unit +
+            '</span></div>'
+          );
+        };
+        var trainers =
+          '<div class="ps-tags"><span class="ps-tag">Bug Catcher Rick<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Rick"><span data-i="x" data-s="16"></span></button></span><span class="ps-tag">Bug Catcher Doug<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Doug"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Trainer</button></div>';
+        function applies(rows, allOn) {
+          return (
+            '<div class="ps-field"><div class="ps-section-head"><span class="ps-label">Applies to</span><button class="ps-btn ps-btn--ghost" style="padding:0 8px"' +
+            (allOn ? ' aria-pressed="true"' : '') +
+            '>All exits</button></div><div>' +
+            rows +
+            '</div></div>'
+          );
+        }
+        function firstBody() {
           return (
             '<div class="ps-field"><label class="ps-label" for="cn">Name <span class="ps-opt">(optional)</span></label><input class="ps-input" id="cn" value="Forest trainers"></div>' +
-            '<div class="ps-field"><div class="ps-section-head"><span class="ps-label">Applies to</span><button class="ps-btn ps-btn--ghost" style="padding:0 8px">All exits</button></div><div>' +
-            check(true, 'North to Pewter City', '') +
-            check(
-              false,
-              'South to Route 2',
-              'Has Forest walk. Checking it moves it here.',
+            applies(
+              check(true, 'North to Pewter City') +
+                check(true, 'South to Route 2') +
+                check(
+                  false,
+                  'West to Hidden grove',
+                  'Has Grove path. Ticking it moves it here.',
+                ) +
+                check(false, 'East to Ranger’s hut'),
             ) +
-            check(
-              false,
-              'West to Hidden grove',
-              'Has Forest walk. Checking it moves it here.',
-            ) +
-            '</div></div>' +
-            '<div class="ps-callout ps-callout--info"><span data-i="book" data-s="18"></span><span>First visit: both sections apply. Later visits: only Every visit.</span></div>' +
-            '<h3 class="t-title-3">First visit</h3>' +
-            needs(true) +
-            '<div class="ps-field"><span class="ps-label">Trainers who must be beaten</span><div class="ps-tags"><span class="ps-tag">Bug Catcher Rick<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Rick"><span data-i="x" data-s="16"></span></button></span><span class="ps-tag">Bug Catcher Doug<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Doug"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Pick a trainer</button></div><p class="ps-help">Counts as one requirement: all of them.</p></div>' +
-            '<div>' +
-            counter('Trainer battles', 'Any trainers here', 0) +
-            counter('Wild battles', 'Fights with wild Pokémon', 0) +
-            counter('Explores', 'Presses of Explore', 0) +
+            '<div class="ps-field"><span class="ps-label">Players need</span>' +
+            seg(false, 'Top level') +
+            '<div class="ps-cond-rows">' +
+            '<div class="ps-cond-group"><div class="ps-cond-group-head">' +
+            seg(true, 'Group') +
+            '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove group"><span data-i="trash"></span></button></div>' +
+            reqRow('user', 'Beat these trainers', trainers) +
+            '<div class="ps-cond-join">and</div>' +
+            reqRow('leaf', 'Win wild battles', num(3, 'wild battles')) +
             '</div>' +
-            '<h3 class="t-title-3">Every visit</h3>' +
-            needs(false) +
-            '<div>' +
-            counter('Explores', 'Every press counts. Repel still counts.', 3) +
-            counter(
-              'Wild encounters',
-              'Repel-avoided ones count too.',
-              2,
-              proposal,
-            ) +
-            counter(
-              'Trainer battles',
-              'Needs a trainer here who battles again every visit.',
-              0,
-              proposal,
-            ) +
+            '<div class="ps-cond-join">or</div>' +
+            reqRow('steps', 'Explore', num(10, 'times')) +
             '</div>' +
-            '<p class="ps-help">Any one: 3 explores or 2 wild encounters, whichever comes first.</p>'
+            '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Requirement</button></div></div>' +
+            '<div class="ps-cond-preview"><span>Reads as</span><p>Beat Bug Catcher Rick and Bug Catcher Doug and win 3 wild battles, or explore 10 times.</p></div>'
           );
         }
-        function sheet() {
+        function everyBody() {
           return (
-            '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit cost" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Edit cost</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
-            sheetBody() +
+            '<div class="ps-field"><label class="ps-label" for="en">Name <span class="ps-opt">(optional)</span></label><input class="ps-input" id="en" value="Forest walk"></div>' +
+            applies(
+              check(true, 'North to Pewter City') +
+                check(true, 'South to Route 2') +
+                check(true, 'West to Hidden grove') +
+                check(true, 'East to Ranger’s hut'),
+              true,
+            ) +
+            '<div class="ps-field"><span class="ps-label">Players need</span>' +
+            seg(false, 'Top level') +
+            '<div class="ps-cond-rows">' +
+            reqRow('steps', 'Explore', num(3, 'times')) +
+            '<div class="ps-cond-join">or</div>' +
+            reqRow(
+              'leaf',
+              'Wild encounters',
+              num(2, 'encounters') +
+                '<p class="ps-help">Ones a Repel avoids count too.</p>',
+            ) +
+            '</div>' +
+            '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Requirement</button><button class="ps-btn ps-btn--ghost"><span data-i="plus" data-s="18"></span>Group</button></div></div>' +
+            '<div class="ps-cond-preview"><span>Reads as</span><p>Explore 3 times or have 2 wild encounters.</p></div>'
+          );
+        }
+        function sheet(title, body) {
+          return (
+            '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="' +
+            title +
+            '" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">' +
+            title +
+            '</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+            body +
             '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save cost</button></div></div>'
           );
         }
-        var rejoin =
-          '<div class="ps-scrim"></div><div class="ps-sheet" role="alertdialog" aria-labelledby="rj"><div class="ps-grabber"></div><h2 class="t-title-2" id="rj">Add West back to Forest walk?</h2>' +
-          '<p class="t-body">West to Hidden grove has its own detached cost (5 explores). Adding it back to Forest walk removes that cost, and West uses Forest walk’s 3 explores again.</p>' +
-          '<div class="ps-actions"><button class="ps-btn ps-btn--primary ps-btn--block">Add back and remove its own cost</button><button class="ps-btn ps-btn--ghost ps-btn--block">Cancel</button></div></div>';
         var visit = 'first';
         function preview() {
           var msg =
             visit === 'first'
-              ? 'Defeat Bug Catcher Rick and 1 more trainer to continue.'
+              ? 'To continue: beat 2 trainers and win 3 wild battles, or explore 8 more times.'
               : 'Keep exploring: 2 more steps, or 1 more wild encounter, to get through Viridian Forest.';
           var sub =
             visit === 'first'
-              ? 'First visit, before the trainers'
+              ? 'First visit, after 2 explores'
               : 'A later visit, after 1 explore and 1 wild encounter';
           return (
-            '<div class="ps-form"><div class="ps-field"><span class="ps-label">Exit</span><button class="ps-trigger"><span>North to Pewter City · Forest trainers</span><span data-i="chevD"></span></button></div>' +
+            '<div class="ps-form"><div class="ps-field"><span class="ps-label">Exit</span><button class="ps-trigger"><span>North to Pewter City</span><span data-i="chevD"></span></button></div>' +
             '<div class="ps-seg" role="group" aria-label="Visit"><button data-visit="first" aria-pressed="' +
             (visit === 'first') +
             '">First visit</button><button data-visit="later" aria-pressed="' +
@@ -348,14 +341,14 @@
             '</span><div class="ps-embed-buttons"><span class="is-locked">\u{1F512} North to Pewter City</span><span>South to Route 2</span><span>Explore</span></div></div>' +
             '<p class="ps-help">' +
             (visit === 'first'
-              ? 'After both trainers, Every visit still applies: 3 explores or 2 wild encounters.'
-              : 'Only Every visit applies now, and any one of its counts is enough.') +
+              ? 'On a first visit, the first-time cost and the every-time cost both apply.'
+              : 'After the first time, only Forest walk applies.') +
             '</p></div>'
           );
         }
         function edges() {
-          var e = function (k, badge, accent) {
-            var x = EXITS[k];
+          var e = function (k, badges) {
+            var x = EX[k];
             return (
               '<div class="ps-edge" style="padding-left:0"><button class="ps-handle" aria-label="Reorder ' +
               x[1] +
@@ -365,20 +358,33 @@
               x[0] +
               '</span><b class="t-title-3" style="font-size:15px">' +
               x[1] +
-              '</b><a class="ps-badge ' +
-              (accent ? 'ps-badge--accent' : 'ps-badge--warning') +
-              '" href="#" style="align-self:flex-start;text-decoration:none"><span data-i="steps" data-s="14"></span>' +
-              badge +
-              '</a></div>' +
+              '</b><div class="ps-trigger-meta">' +
+              badges
+                .map(function (b) {
+                  return (
+                    '<a class="ps-badge ps-badge--warning" href="#" style="text-decoration:none"><span data-i="steps" data-s="14"></span>' +
+                    b +
+                    '</a>'
+                  );
+                })
+                .join('') +
+              '</div></div>' +
               PS.moreBtn +
               '</div>'
             );
           };
           return (
             '<div class="ps-form"><p class="t-body-sm ps-muted">Where players can travel from Viridian Forest.</p><div class="ps-edges">' +
-            e('North', 'Forest trainers') +
-            e('South', 'Forest walk') +
-            e('West', 'Own cost · detached', true) +
+            e('North', [
+              'First time: Forest trainers',
+              'Every time: Forest walk',
+            ]) +
+            e('South', [
+              'First time: Forest trainers',
+              'Every time: Forest walk',
+            ]) +
+            e('West', ['First time: Grove path', 'Every time: Forest walk']) +
+            e('East', ['Every time: Forest walk']) +
             '</div><p class="ps-help">Each badge opens that cost on the Explore tab.</p></div>'
           );
         }
@@ -386,44 +392,39 @@
           document.querySelectorAll('.slot').forEach(function (el) {
             var v = el.getAttribute('data-v'),
               tabs = PS.locTabs('encounters'),
-              scroll = function (x) {
+              sc = function (x) {
                 return '<div class="ps-scroll">' + x + '</div>';
               };
             if (v === 'off')
               el.innerHTML =
                 head +
                 tabs +
-                scroll(
+                sc(
                   '<div class="ps-form"><h2 class="t-title-3">Traversal costs</h2>' +
                     sw(
                       false,
                       'Traversal costs',
                       'Players can pass through freely.',
                     ) +
-                    '<p class="t-body-sm ps-muted">Turn it on to lock exits until players beat trainers or keep exploring. Each exit can have its own cost.</p></div>',
+                    '<p class="t-body-sm ps-muted">Turn it on to lock exits until players beat trainers, win wild battles or keep exploring.</p></div>',
                 );
-            if (v === 'list') el.innerHTML = head + tabs + scroll(list([A, B]));
-            if (v === 'sheet')
-              el.innerHTML = head + tabs + scroll(list([A, B])) + sheet();
-            if (v === 'menu')
-              el.innerHTML = head + tabs + scroll(list([A, B], 'West'));
-            if (v === 'detached')
+            if (v === 'list') el.innerHTML = head + tabs + sc(list());
+            if (v === 'first')
               el.innerHTML =
                 head +
                 tabs +
-                scroll(
-                  list(
-                    [A, B2, W],
-                    null,
-                    'All 3 exits have a cost. West has its own, detached from Forest walk.',
-                  ),
-                );
-            if (v === 'rejoin')
+                sc(list()) +
+                sheet('First-time cost', firstBody());
+            if (v === 'every')
               el.innerHTML =
-                head + tabs + scroll(list([A, B2, W], null, '')) + rejoin;
-            if (v === 'preview') el.innerHTML = head + tabs + scroll(preview());
+                head +
+                tabs +
+                sc(list()) +
+                sheet('Every-time cost', everyBody());
+            if (v === 'menu') el.innerHTML = head + tabs + sc(list('South'));
+            if (v === 'preview') el.innerHTML = head + tabs + sc(preview());
             if (v === 'edges')
-              el.innerHTML = head + PS.locTabs('connections') + scroll(edges());
+              el.innerHTML = head + PS.locTabs('connections') + sc(edges());
           });
           PS.mount(document);
         }

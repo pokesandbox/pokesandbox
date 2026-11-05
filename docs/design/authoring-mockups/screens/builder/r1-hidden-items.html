@@ -60,30 +60,26 @@
                 <b>Where it lives:</b> one Explore tab, in this order: the
                 method tabs and the selected method's rate, requirement and
                 tables; then "Also found by exploring here" (counts that jump to
-                their section); then Hidden items; then Traversal cost (R2). The
+                their section); then Hidden items; then Traversal costs. The
                 "Hidden items: 3" count scrolls to the section.
               </li>
               <li>
-                <b>What the docs define:</b> a hidden item is an Explore outcome
-                tracked by
-                <span class="t-mono">pickup:&lt;key&gt;:taken</span> (doc 04,
-                doc 10). It joins Explore's outcomes on methods that allow
-                trainers and items (grass, cave), never on Surf or the rods.
+                <b>Found by Explore:</b> while untaken, a hidden item is one of
+                the things Explore can turn up on methods that allow trainers
+                and items (grass, cave), never on Surf or the rods.
               </li>
               <li>
-                <b>Design proposal, not in the docs yet:</b> the item (TMs
-                included), a quantity, an optional condition (K1), and
-                <b>Can be found</b>: Once per journey (default), or Again after
-                a while for berries and gems, every N hours or days. The cadence
-                is the server's call; there's no built-in minimum. Renewable
-                pickups would store when they were taken, not just a flag.
+                <b>Each item:</b> the item (TMs included), a quantity, an
+                optional condition, and Can be found: Once per journey
+                (default), or Again after a while, every N hours or days, for
+                berries and gems. Each player has their own timer.
               </li>
               <li>
                 Remove confirms first; players who already found it keep it.
               </li>
               <li>
                 Desktop: the same sections in the detail pane; the sheet becomes
-                the side panel (K2).
+                the side panel.
               </li>
             </ul>
           </div>
@@ -195,15 +191,15 @@
             r('bag', 'Hidden items: 3', '1 renewable', 'Jump to') +
             r(
               'steps',
-              'Traversal cost: 1 exit',
-              'North to Pewter City',
+              'Traversal costs: 1',
+              'First time through on 1 exit',
               'Jump to',
             ) +
             '</div>' +
             band(3, 'Hidden items') +
             hidden +
-            band(4, 'Traversal cost (R2)') +
-            '<div class="ps-link-row"><span data-i="steps"></span><span>1 cost on 1 exit<small>North to Pewter City · first visit: 2 trainers</small></span><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
+            band(4, 'Traversal costs') +
+            '<div class="ps-link-row"><span data-i="steps"></span><span>First time through: 1 cost<small>North to Pewter City · beat 2 trainers</small></span><button class="ps-btn ps-btn--ghost">Edit</button></div>' +
             '</div></div>'
           );
         }

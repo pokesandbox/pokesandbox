@@ -16,11 +16,12 @@
         >R3 · Events: When a player… ★
         <small
           >R3 · Events tab: When a player… ★ · lists (light, dark), trigger
-          sheet, priority clash, empty, read-only script, desktop 1440</small
+          sheet, event dropdown, priority clash, empty, read-only script,
+          leaving, desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 1720px">
+    <main class="mk-stage" style="min-width: 2140px">
       <div
         class="ps-root ps-pad"
         data-theme="light"
@@ -66,12 +67,18 @@
             </div>
           </div>
           <div>
+            <p class="ps-frame-label">Choosing the event (dropdown)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="picker"></div>
+            </div>
+          </div>
+          <div>
             <p class="ps-frame-label">Leaves this location (sheet)</p>
             <div data-theme="light">
               <div class="ps-phone ps-phone--tall slot" data-v="leave"></div>
             </div>
           </div>
-          <div style="width: 340px" class="ps-stack">
+          <div style="width: 340px" class="ps-stack" data-notes>
             <p class="ps-frame-label">Notes</p>
             <ul
               class="t-body-sm ps-muted"
@@ -84,63 +91,47 @@
               "
             >
               <li>
-                <b>Doc 07 Trigger</b> is the source:
-                <span class="t-mono">on</span> (an event),
-                <span class="t-mono">mode</span> forced or offered,
-                <span class="t-mono">once</span>,
-                <span class="t-mono">condition</span>,
-                <span class="t-mono">priority</span> (highest wins),
-                <span class="t-mono">script</span>. The builder calls it "When a
-                player…".
+                <b>When a player…</b> lists what happens at this location: the
+                event, Automatic or the button label, Once, the condition, and
+                the script it runs.
               </li>
               <li>
-                <b>Events on a location:</b> enters this location (optionally
-                only when arriving from chosen places, or by a way of travel),
-                explores here, or uses an item here. A row shows the event,
-                Automatic or the button label, Once, the condition (K1) and the
-                script.
+                <b>Events</b> are picked from a dropdown: enters this location
+                (optionally only from chosen places or by a way of travel),
+                leaves this location (optionally only toward chosen exits),
+                explores here, uses an item here, uses a move here.
               </li>
               <li>
-                <b>New events, decided in review (doc 07 to update):</b>
-                <b>Uses a move here</b> (a field move at this location: Headbutt
-                trees, Strength boulders, Rock Smash rocks; obstacles that only
-                block a path stay requirements on the connection) and
-                <b>Leaves this location</b>, optionally only toward chosen
-                exits. A leave event runs after the exit's requirement passes
-                and before the player moves, so a script can stop them: a riddle
-                they get wrong, or an urgent story beat. If it does, they stay
-                here and the next location isn't marked visited.
+                <b>Leaving</b> runs after the exit's requirement passes and
+                before the player moves, so its script can stop them: a riddle
+                they get wrong, an urgent story beat. If it does, they stay here
+                and the next location isn't marked visited.
               </li>
               <li>
-                <b>Runs:</b> Automatically (forced: it starts as soon as the
-                event happens) or As a button (offered: players see the label,
-                e.g. "Talk to the old man").
+                <b>Uses a move here</b> covers field moves at this location
+                (Headbutt trees, Strength boulders, Rock Smash rocks). Obstacles
+                that only block a path stay requirements on the connection.
               </li>
               <li>
-                <b>Only once</b> writes
-                <span class="t-mono">script:&lt;key&gt;:done</span> when it
-                runs, so it doesn't need a condition for that. The condition
-                here is for other rules ("Only after the parcel").
+                <b>Runs:</b> Automatically (as soon as the event happens) or As
+                a button (players see the label, e.g. "Talk to the old man").
               </li>
               <li>
-                <b>Priority</b> stays hidden until two triggers can match the
-                same event at once. Then the sheet shows it with a warning
-                naming the other trigger, and the list orders them.
+                <b>Only once</b> means it never runs again for that player, so
+                it doesn't need a condition for that.
               </li>
               <li>
-                <b>Script:</b> pick an existing script, or Create from template
-                (Forced Encounter, Gift NPC…). Scripts made with a template show
-                "Edit as form". Others open read-only until the step editor
-                exists.
+                <b>Priority</b> stays hidden until two events can happen at the
+                same moment; then the sheet shows it with a warning naming the
+                other one.
               </li>
               <li>
-                <b>From an NPC:</b> an NPC's talk script is a "Talks to this
-                NPC" trigger, so its Talk script row opens this same sheet with
-                the event fixed.
+                <b>Script:</b> pick one, or Create from template. Template-made
+                scripts show Edit as form; others open read-only for now.
               </li>
               <li>
-                The location detail tabs are now Details · Connections · Explore
-                · Events.
+                <b>From an NPC:</b> the Talk script row on an NPC opens this
+                same sheet, with the event fixed to talking to them.
               </li>
             </ul>
           </div>
@@ -238,9 +229,6 @@
             '<div class="ps-trigger-meta"><span class="ps-badge">' +
             t.mode +
             '</span>' +
-            (t.isNew
-              ? '<span class="ps-badge ps-badge--outline">New event · doc 07</span>'
-              : '') +
             (t.once ? '<span class="ps-badge">Once</span>' : '') +
             (t.filter
               ? '<span class="ps-badge ps-badge--outline">' +
@@ -283,21 +271,7 @@
         };
         function sheetBody(clash) {
           return (
-            '<div class="ps-field"><span class="ps-label">When a player…</span><div role="radiogroup" class="ps-stack" style="gap:8px">' +
-            choice(true, 'Enters this location') +
-            choice(false, 'Explores here') +
-            choice(false, 'Uses an item here') +
-            choice(
-              false,
-              'Uses a move here',
-              'Headbutt a tree, Strength on a boulder, Rock Smash on a rock. <span class="ps-badge ps-badge--outline">To add to doc 07</span>',
-            ) +
-            choice(
-              false,
-              'Leaves this location',
-              'Runs before they move on, after the exit’s own requirement passes. <span class="ps-badge ps-badge--outline">To add to doc 07</span>',
-            ) +
-            '</div></div>' +
+            '<div class="ps-field"><span class="ps-label">When a player…</span><button class="ps-trigger" aria-haspopup="listbox"><span style="display:flex;gap:10px;align-items:center"><span data-i="door"></span>Enters this location</span><span data-i="chevD"></span></button></div>' +
             '<div class="ps-field"><span class="ps-label">Only when arriving from <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Viridian City<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Viridian City"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Place</button></div></div>' +
             '<div class="ps-field"><span class="ps-label">Only when arriving by <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span>Any way</span><span data-i="chevD"></span></button><p class="ps-help">Walking, or a way of travel like a ferry once transport exists.</p></div>' +
             '<div class="ps-field"><span class="ps-label">Runs</span><div class="ps-seg" role="group"><button aria-pressed="true">Automatically</button><button aria-pressed="false">As a button</button></div><p class="ps-help">Starts as soon as they arrive.</p></div>' +
@@ -314,14 +288,7 @@
         }
         function leaveBody() {
           return (
-            '<div class="ps-field"><span class="ps-label">When a player…</span><div role="radiogroup" class="ps-stack" style="gap:8px">' +
-            choice(false, 'Enters this location') +
-            choice(
-              true,
-              'Leaves this location',
-              'Runs before they move on, after the exit’s own requirement passes.',
-            ) +
-            '</div><button class="ps-btn ps-btn--ghost" style="align-self:flex-start;padding:0 8px">Show all events</button></div>' +
+            '<div class="ps-field"><span class="ps-label">When a player…</span><button class="ps-trigger" aria-haspopup="listbox"><span style="display:flex;gap:10px;align-items:center"><span data-i="door"></span>Leaves this location</span><span data-i="chevD"></span></button></div>' +
             '<div class="ps-field"><span class="ps-label">Only when leaving toward <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Victory Road<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Victory Road"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Exit</button></div></div>' +
             '<div class="ps-callout ps-callout--info"><span data-i="book" data-s="18"></span><span>The player hasn’t left yet. If the script stops them (a wrong answer, an urgent story beat), they stay on Route 22 and Victory Road isn’t marked visited.</span></div>' +
             '<div class="ps-field"><span class="ps-label">Runs</span><div class="ps-seg" role="group"><button aria-pressed="true">Automatically</button><button aria-pressed="false">As a button</button></div></div>' +
@@ -334,6 +301,46 @@
             ' and lets them go</small></span><button class="ps-btn ps-btn--ghost">View</button></div></div>'
           );
         }
+        var EVENTS = [
+          [
+            'door',
+            'Enters this location',
+            'When they arrive, optionally only from chosen places',
+          ],
+          [
+            'route',
+            'Leaves this location',
+            'Before they move on; the script can stop them',
+          ],
+          ['leaf', 'Explores here', 'When they press Explore'],
+          [
+            'bag',
+            'Uses an item here',
+            'Like the Poké Flute on a sleeping Snorlax',
+          ],
+          ['gym', 'Uses a move here', 'Headbutt a tree, Strength on a boulder'],
+        ];
+        var eventPicker =
+          '<div class="ps-scrim" style="z-index:6"></div><div class="ps-sheet" role="dialog" aria-label="When a player…" style="z-index:7"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">When a player…</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+          '<ul class="ps-listbox ps-listbox--flat" role="listbox" style="margin:-8px -8px 0">' +
+          EVENTS.map(function (e, i) {
+            return (
+              '<li class="ps-option' +
+              (i === 0 ? ' is-active' : '') +
+              '" role="option"' +
+              (i === 0 ? ' aria-selected="true"' : '') +
+              '><span class="ps-kind" data-i="' +
+              e[0] +
+              '"></span><span>' +
+              e[1] +
+              '<span class="ps-sub">' +
+              e[2] +
+              '</span></span>' +
+              (i === 0 ? '<span class="ps-check" data-i="check"></span>' : '') +
+              '</li>'
+            );
+          }).join('') +
+          '</ul></div>';
         function sheet(clash) {
           return (
             '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit trigger" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Rival battle<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Route 22 · When a player…</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
@@ -398,6 +405,14 @@
               PS.locTabs('events') +
               empty;
           if (v === 'script') el.innerHTML = script;
+          if (v === 'picker')
+            el.innerHTML =
+              r22 +
+              '<div class="ps-scroll">' +
+              list('r22', 'Route 22') +
+              '</div>' +
+              sheet(false) +
+              eventPicker;
           if (v === 'leave')
             el.innerHTML =
               r22 +
