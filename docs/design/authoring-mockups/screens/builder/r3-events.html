@@ -105,7 +105,8 @@
                 <b>Events</b> are picked from a dropdown: enters this location
                 (optionally only from chosen places or by a way of travel),
                 leaves this location (optionally only toward chosen exits),
-                explores here, uses an item here, uses a move here.
+                explores here, uses an item here. Uses a move here is listed but
+                disabled until later.
               </li>
               <li>
                 <b>Leaving</b> runs after the exit's requirement passes and
@@ -122,9 +123,9 @@
                 method’s total is no longer 100%.
               </li>
               <li>
-                <b>Uses a move here</b> covers field moves at this location
-                (Headbutt trees, Strength boulders, Rock Smash rocks). Obstacles
-                that only block a path stay requirements on the connection.
+                <b>Uses a move here</b> is coming later, shown disabled.
+                Obstacles that block a path stay requirements on the connection,
+                and Headbutt and Rock Smash stay encounter methods.
               </li>
               <li>
                 <b>Runs:</b> Automatically (as soon as the event happens) or As
@@ -229,16 +230,6 @@
               once: true,
               cond: '',
               script: 'snorlax-battle',
-            },
-            {
-              ev: 'Uses Strength here',
-              icon: 'gym',
-              name: 'Push the boulder aside',
-              mode: 'Automatic',
-              once: true,
-              cond: '',
-              script: 'r12-boulder',
-              isNew: true,
             },
           ],
         };
@@ -356,7 +347,7 @@
             'Uses an item here',
             'Like the Poké Flute on a sleeping Snorlax',
           ],
-          ['gym', 'Uses a move here', 'Headbutt a tree, Strength on a boulder'],
+          ['gym', 'Uses a move here', 'Field moves on a spot', 'Coming later'],
         ];
         var eventPicker =
           '<div class="ps-scrim" style="z-index:6"></div><div class="ps-sheet" role="dialog" aria-label="When a player…" style="z-index:7"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">When a player…</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
@@ -367,6 +358,9 @@
               (i === 0 ? ' is-active' : '') +
               '" role="option"' +
               (i === 0 ? ' aria-selected="true"' : '') +
+              (e[3]
+                ? ' aria-disabled="true" style="opacity:.55;cursor:not-allowed"'
+                : '') +
               '><span class="ps-kind" data-i="' +
               e[0] +
               '"></span><span>' +
@@ -375,6 +369,7 @@
               e[2] +
               '</span></span>' +
               (i === 0 ? '<span class="ps-check" data-i="check"></span>' : '') +
+              (e[3] ? '<span class="ps-badge">' + e[3] + '</span>' : '') +
               '</li>'
             );
           }).join('') +

@@ -16,11 +16,12 @@
         >R1 · Hidden items
         <small
           >R1 · Hidden items · where they sit in the Explore tab, the list,
-          add/edit sheet (once or renewable), remove confirm (phone)</small
+          add/edit sheet (once or renewable), adding one where nothing can find
+          it, remove confirm (phone)</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 1720px">
+    <main class="mk-stage" style="min-width: 2140px">
       <div class="ps-root ps-pad" style="background: transparent">
         <div
           class="ps-demos"
@@ -39,6 +40,12 @@
               <div>
                 <p class="ps-frame-label">Edit hidden item (sheet)</p>
                 <div class="ps-phone ps-phone--tall slot" data-v="sheet"></div>
+              </div>
+              <div>
+                <p class="ps-frame-label">
+                  Adding one in a town with no Item row
+                </p>
+                <div class="ps-phone ps-phone--tall slot" data-v="town"></div>
               </div>
               <div>
                 <p class="ps-frame-label">Remove (confirm)</p>
@@ -64,8 +71,17 @@
                 "Hidden items: 3" count scrolls to the section.
               </li>
               <li>
-                <b>Found by Explore:</b> while untaken, a hidden item can turn
-                up on any method whose outcomes include a hidden item.
+                <b>Found by Explore:</b> while available, a hidden item can turn
+                up on any method here whose outcomes include a hidden item.
+              </li>
+              <li>
+                <b>Nothing to find it with:</b> if no method at this location
+                has an Item row (a town with no methods yet), the sheet says so
+                and offers Add Look around.
+              </li>
+              <li>
+                <b>In Discord,</b> a method with nothing left to find hides its
+                button; a renewing item coming back brings it back.
               </li>
               <li>
                 <b>Each item:</b> the item (TMs included), a quantity, an
@@ -133,7 +149,7 @@
           PS.phoneBar('Route 2', 'Route', PS.saved + PS.moreBtn) +
           PS.locTabs('encounters');
         var methods =
-          '<div class="ps-tabs" role="tablist"><button class="ps-tab" role="tab" aria-selected="true"><span data-i="leaf" data-s="16"></span>Walk in the grass <span class="ps-tab-meta">70%</span></button><button class="ps-tab" role="tab"><span data-i="plus" data-s="16"></span>Method</button></div>';
+          '<div class="ps-tabs" role="tablist"><button class="ps-tab" role="tab" aria-selected="true"><span data-i="leaf" data-s="16"></span>Walk in the grass</button><button class="ps-tab" role="tab"><span data-i="plus" data-s="16"></span>Method</button></div>';
         var band = function (n, t) {
           return (
             '<div class="ps-row" style="gap:8px"><span class="ps-priority">' +
@@ -193,6 +209,12 @@
             r('user', 'Trainers on Explore: 1', '1 left to beat', 'NPCs') +
             r('bag', 'Hidden items: 3', '1 renewable', 'Jump to') +
             r(
+              'bolt',
+              'Events on Explore: 0',
+              'Add one on the Events tab',
+              'Events',
+            ) +
+            r(
               'steps',
               'Traversal costs: 1',
               'First time through on 1 exit',
@@ -218,6 +240,18 @@
           '</div>' +
           '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start;color:var(--danger)"><span data-i="trash" data-s="18"></span>Remove hidden item</button>' +
           '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
+        var townSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="New hidden item" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">New hidden item</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+          '<div class="ps-callout ps-callout--warning" style="flex-direction:column;align-items:stretch;gap:8px"><span style="display:flex;gap:10px"><span data-i="alert" data-s="18"></span><span>Nothing here can find this yet.</span></span><button class="ps-btn ps-btn--secondary" style="align-self:flex-start"><span data-i="search" data-s="18"></span>Add Look around</button></div>' +
+          '<div class="ps-pair" style="grid-template-columns:1fr 96px"><div class="ps-field"><span class="ps-label">Item</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="bag"></span>Great Ball</span><span data-i="search"></span></button></div>' +
+          '<div class="ps-field"><label class="ps-label" for="q2">Quantity</label><input class="ps-input" id="q2" type="number" inputmode="numeric" value="1"></div></div>' +
+          '<div class="ps-field"><span class="ps-label">Can be found</span><div class="ps-seg" role="group"><button aria-pressed="true">Once per journey</button><button aria-pressed="false">Again after a while</button></div></div>' +
+          '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+          PS.condSummary('') +
+          '</div>' +
+          '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Add hidden item</button></div></div>';
+        var townBody =
+          '<div class="ps-form"><section class="ps-stack" style="gap:12px"><div class="ps-section-head"><h2 class="t-title-3">Hidden items · 0</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Hidden item</button></div></section></div>';
         var removeSheet =
           '<div class="ps-scrim"></div><div class="ps-sheet" role="alertdialog" aria-labelledby="rm"><div class="ps-grabber"></div><h2 class="t-title-2" id="rm">Remove the hidden Ether?</h2>' +
           '<p class="t-body">Players won’t find it on Route 2 any more. Anyone who already found it keeps it.</p>' +
@@ -226,6 +260,16 @@
           var v = el.getAttribute('data-v');
           if (v === 'whole') {
             el.innerHTML = whole();
+            return;
+          }
+          if (v === 'town') {
+            el.innerHTML =
+              PS.phoneBar('Pewter City', 'Town', PS.saved + PS.moreBtn) +
+              PS.locTabs('encounters') +
+              '<div class="ps-scroll">' +
+              townBody +
+              '</div>' +
+              townSheet;
             return;
           }
           el.innerHTML =

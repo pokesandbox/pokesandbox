@@ -902,6 +902,21 @@ window.PS = (function () {
     },
     {
       sev: 'error',
+      area: 'Explore',
+      title: 'Hidden item Ether on Route 4 can’t be found',
+      why: 'No Explore method here has an Item row. Add one to a method’s outcomes, or add Look around.',
+      path: 'Locations › Route 4 › Explore',
+    },
+    {
+      sev: 'error',
+      area: 'Explore',
+      title:
+        'Bug Catcher Rick is set to battle on Explore, but no method here has a Trainer row',
+      why: 'Players on Route 3 can never meet him. Add a Trainer row to a method’s outcomes, or change how his battle starts.',
+      path: 'Locations › Route 3 › Explore',
+    },
+    {
+      sev: 'error',
       area: 'NPCs',
       title: 'Youngster Ben has no Pokémon',
       why: 'A trainer with an empty party can’t battle. Add at least one Pokémon.',
@@ -932,6 +947,13 @@ window.PS = (function () {
       title: 'Two of the rival’s places can match at once',
       why: 'With One place at a time, places 1 and 2 can both match; the first one wins, so 2 may never be used.',
       path: 'NPCs › {name:rival} › Person › Where they appear › Place 2 › Condition',
+    },
+    {
+      sev: 'info',
+      area: 'Explore',
+      title: 'Super Potion on Route 3 comes back every 6 hours',
+      why: 'It can be sold, so players can farm money.',
+      path: 'Locations › Route 3 › Explore › Hidden items › Super Potion',
     },
     {
       sev: 'info',
