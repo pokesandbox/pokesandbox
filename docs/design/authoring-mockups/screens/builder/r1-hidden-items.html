@@ -58,15 +58,14 @@
             >
               <li>
                 <b>Where it lives:</b> one Explore tab, in this order: the
-                method tabs and the selected method's rate, requirement and
+                method tabs and the selected method's outcomes, requirement and
                 tables; then "Also found by exploring here" (counts that jump to
                 their section); then Hidden items; then Traversal costs. The
                 "Hidden items: 3" count scrolls to the section.
               </li>
               <li>
-                <b>Found by Explore:</b> while untaken, a hidden item is one of
-                the things Explore can turn up on methods that allow trainers
-                and items (grass, cave), never on Surf or the rods.
+                <b>Found by Explore:</b> while untaken, a hidden item can turn
+                up on any method whose outcomes include a hidden item.
               </li>
               <li>
                 <b>Each item:</b> the item (TMs included), a quantity, an
@@ -162,8 +161,12 @@
             head +
             methods +
             '<div class="ps-scroll" style="overflow:visible"><div class="ps-form" style="gap:20px">' +
-            band(1, 'Method: rate, requirement, tables') +
-            '<div class="ps-readonly"><span data-i="leaf" data-s="18"></span><div><b>Wild Pokémon: 70% of explores</b><p class="t-body-sm ps-muted">The rest find trainers and items here while any are left. Region default.</p></div></div>' +
+            band(1, 'Method: outcomes, requirement, tables') +
+            PS.locOutcomes('Walk in the grass', [
+              { k: 'wild', pct: 70 },
+              { k: 'trainer', pct: 20 },
+              { k: 'item', pct: 10 },
+            ]) +
             PS.condSummary('', {
               emptyHint: 'Anyone can walk in the grass here.',
             }) +

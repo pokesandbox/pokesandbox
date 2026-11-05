@@ -312,6 +312,113 @@ window.PS = (function () {
       '</small></span><span data-i="chevR"></span></button>'
     );
   };
+  // Explore outcome table: rows of { k: wild|trainer|item|event, pct, name?, sub? }
+  PS.OUTCOME_KINDS = {
+    wild: ['leaf', 'Wild Pokémon', 'From the encounter tables'],
+    trainer: ['user', 'A trainer', 'Set to battle on Explore'],
+    item: ['bag', 'A hidden item', 'Not yet found here'],
+    event: ['bolt', 'An event', 'An “Explores here” event'],
+  };
+  PS.outcomes = function (rows, o) {
+    o = o || {};
+    var total = rows.reduce(function (a, r) {
+      return a + r.pct;
+    }, 0);
+    var body = rows
+      .map(function (r) {
+        var k = PS.OUTCOME_KINDS[r.k],
+          name = r.name || k[1],
+          sub = r.sub || k[2];
+        var val = o.readOnly
+          ? '<b class="ps-oc-pct">' + r.pct + '%</b>'
+          : '<span class="ps-oc-input"><input class="ps-input" type="number" inputmode="numeric" min="0" max="100" value="' +
+            r.pct +
+            '" aria-label="' +
+            name +
+            ' percent"' +
+            (total !== 100 ? ' aria-invalid="true"' : '') +
+            '><span>%</span></span>' +
+            '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
+            name +
+            '"><span data-i="x" data-s="18"></span></button>';
+        return (
+          '<div class="ps-oc-row"><span class="ps-kind" data-i="' +
+          k[0] +
+          '"></span><span class="ps-row-text"><b>' +
+          name +
+          '</b><span>' +
+          sub +
+          '</span></span>' +
+          val +
+          '</div>'
+        );
+      })
+      .join('');
+    var ok = total === 100;
+    var foot = o.readOnly
+      ? ''
+      : '<div class="ps-oc-foot"><button class="ps-btn ps-btn--ghost" aria-haspopup="menu"><span data-i="plus" data-s="18"></span>Outcome</button><span class="ps-oc-total' +
+        (ok ? '' : ' is-error') +
+        '">Total <b>' +
+        total +
+        '%</b></span></div>' +
+        (ok
+          ? ''
+          : '<p class="ps-error" role="alert"><span data-i="error" data-s="16"></span>Outcomes must add up to 100%. ' +
+            (total > 100 ? 'Remove ' + (total - 100) : 'Add ' + (100 - total)) +
+            '% to save.</p>');
+    var menu = o.menu
+      ? '<ul class="ps-listbox ps-menu" role="menu" style="position:static">' +
+        o.menu
+          .map(function (k) {
+            var d = PS.OUTCOME_KINDS[k];
+            return (
+              '<li class="ps-option" role="menuitem"><span class="ps-kind" data-i="' +
+              d[0] +
+              '"></span><span>' +
+              d[1] +
+              '<span class="ps-sub">' +
+              d[2] +
+              '</span></span></li>'
+            );
+          })
+          .join('') +
+        '</ul>'
+      : '';
+    return '<div class="ps-oc" data-oc>' + body + foot + menu + '</div>';
+  };
+  // A location's outcomes for one method: the region's table, or its own copy
+  PS.locOutcomes = function (method, rows, o) {
+    o = o || {};
+    var always = (o.always || [])
+      .map(function (n) {
+        return (
+          '<div class="ps-link-row"><span data-i="bolt"></span><span>' +
+          n +
+          '<small>Runs first, before the roll, while its condition passes</small></span><button class="ps-btn ps-btn--ghost">Events</button></div>'
+        );
+      })
+      .join('');
+    var head =
+      '<div class="ps-section-head"><span class="ps-label">Outcomes</span>' +
+      (o.custom
+        ? '<span class="ps-badge ps-badge--brand">Customized</span>'
+        : '') +
+      '</div>';
+    var foot = o.custom
+      ? '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Reset to region default</button>'
+      : '<div class="ps-row" style="justify-content:space-between;align-items:center"><a class="ps-link" href="#" style="font-weight:500" aria-label="Region default: ' +
+        method +
+        ' in Settings">Region default</a><button class="ps-btn ps-btn--secondary">Customize</button></div>';
+    return (
+      '<div class="ps-field">' +
+      head +
+      always +
+      PS.outcomes(rows, { readOnly: !o.custom, menu: o.menu }) +
+      foot +
+      '</div>'
+    );
+  };
   PS.moreBtn =
     '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="More actions"><span data-i="more"></span></button>';
 })(window.PS);
@@ -1631,3 +1738,37 @@ window.PS = (function () {
     host.querySelector('.ps-cond-preview p').textContent = PS.ruleReads(st);
   });
 })(window.PS);
+
+document.addEventListener('input', function (e) {
+  var box = e.target.closest && e.target.closest('[data-oc]');
+  if (!box) return;
+  var inputs = box.querySelectorAll('.ps-oc-input input'),
+    total = 0;
+  inputs.forEach(function (i) {
+    total += parseInt(i.value, 10) || 0;
+  });
+  var ok = total === 100;
+  inputs.forEach(function (i) {
+    if (ok) i.removeAttribute('aria-invalid');
+    else i.setAttribute('aria-invalid', 'true');
+  });
+  var t = box.querySelector('.ps-oc-total');
+  t.classList.toggle('is-error', !ok);
+  t.querySelector('b').textContent = total + '%';
+  var err = box.querySelector('.ps-error');
+  if (ok && err) err.remove();
+  if (!ok) {
+    if (!err) {
+      err = document.createElement('p');
+      err.className = 'ps-error';
+      err.setAttribute('role', 'alert');
+      box.querySelector('.ps-oc-foot').after(err);
+    }
+    err.innerHTML =
+      '<span data-i="error" data-s="16"></span>' +
+      'Outcomes must add up to 100%. ' +
+      (total > 100 ? 'Remove ' + (total - 100) : 'Add ' + (100 - total)) +
+      '% to save.';
+    window.PS.mount(err);
+  }
+});

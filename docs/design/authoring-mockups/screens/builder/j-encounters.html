@@ -15,12 +15,13 @@
       ><span
         >J · Explore
         <small
-          >J · Explore tab · methods with rates, slots with live %, other
-          Explore outcomes, empty states · phone, desktop 1440</small
+          >J · Explore tab · methods with their outcomes (region default or
+          customized), slots with live %, other Explore outcomes, empty states ·
+          phone, desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 1500px">
+    <main class="mk-stage" style="min-width: 1720px">
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
@@ -30,8 +31,12 @@
             <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
           </div>
           <div>
-            <p class="ps-frame-label">Route 1 · Old Rod (wild only)</p>
+            <p class="ps-frame-label">Route 1 · Old Rod (region default)</p>
             <div class="ps-phone ps-phone--tall slot" data-v="rod"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Route 12 · customized, with events</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="custom"></div>
           </div>
           <div>
             <p class="ps-frame-label">Route 1 · below the methods</p>
@@ -74,17 +79,26 @@
                 requirement passes.
               </li>
               <li>
-                <b
-                  >The rate is the share of presses that give a wild Pokémon.</b
-                >
-                The rest find this location's trainers and items while any are
-                left; with none left, every press is wild. It defaults to the
-                region's value for the method ("Region default · 70%"), and
-                Override sets this location's own.
+                <b>Outcomes:</b> each method shows what an explore with it can
+                find here, as percentages. By default it's the region's table
+                for that method, read-only, linking to it.
               </li>
               <li>
-                <b>Surf and the rods are wild only</b>, so 100% is normal:
-                "Fishing only finds Pokémon".
+                <b>Customize</b> copies it into this location's own table:
+                change any percentage, add or remove rows, and add events.
+                "Reset to region default" goes back. The total must be 100% to
+                save; other rows never change on their own.
+              </li>
+              <li>
+                <b>Events on Explore:</b> one with a chance is a row in the
+                method's table here. One set to Always isn't in the table: it
+                runs first, before the roll, while its condition passes (Snorlax
+                blocking the path).
+              </li>
+              <li>
+                <b>Running out:</b> beaten trainers, found items and finished
+                events drop out, and their share is spread over the rest. A
+                location can have only trainers, or only wild Pokémon.
               </li>
               <li>
                 <b>No default method.</b> A new location has no Explore until
@@ -123,9 +137,9 @@
         ];
         function methods(active) {
           var M = [
-            ['grass', 'leaf', 'Walk in the grass', '70%'],
-            ['surf', 'water', 'Surf', '100%'],
-            ['rod', 'water', 'Old Rod', '100%'],
+            ['grass', 'leaf', 'Walk in the grass'],
+            ['surf', 'water', 'Surf'],
+            ['rod', 'water', 'Old Rod'],
           ];
           return (
             '<div class="ps-tabs" role="tablist">' +
@@ -137,9 +151,7 @@
                 m[1] +
                 '" data-s="16"></span>' +
                 m[2] +
-                ' <span class="ps-tab-meta">' +
-                m[3] +
-                '</span></button>'
+                '</button>'
               );
             }).join('') +
             '<button class="ps-tab" role="tab"><span data-i="plus" data-s="16"></span>Method</button></div>'
@@ -150,9 +162,32 @@
         function rateRow(kind) {
           var rate =
             kind === 'rod'
-              ? '<div class="ps-readonly"><span data-i="water" data-s="18"></span><div><b>Wild Pokémon: 100% of fishes</b><p class="t-body-sm ps-muted">Fishing only finds Pokémon. Region default · 100%.</p></div></div>'
-              : '<div class="ps-field"><span class="ps-label">Rate</span><div class="ps-readonly" style="align-items:center"><span data-i="leaf" data-s="18"></span><div style="flex:1"><b>Wild Pokémon: 70% of explores</b><p class="t-body-sm ps-muted">The rest find trainers and items here while any are left.</p></div></div>' +
-                '<div class="ps-row" style="justify-content:space-between"><a class="ps-link" href="#" style="font-weight:500">Region default · 70%</a><button class="ps-btn ps-btn--ghost">Override</button></div></div>';
+              ? PS.locOutcomes('Old Rod', [{ k: 'wild', pct: 100 }])
+              : kind === 'custom'
+                ? PS.locOutcomes(
+                    'Walk in the grass',
+                    [
+                      { k: 'wild', pct: 65 },
+                      { k: 'trainer', pct: 20 },
+                      { k: 'item', pct: 10 },
+                      {
+                        k: 'event',
+                        pct: 5,
+                        name: 'A wandering trader',
+                        sub: 'Event · Once',
+                      },
+                    ],
+                    {
+                      custom: true,
+                      always: ['Snorlax blocks the path'],
+                      menu: ['event'],
+                    },
+                  )
+                : PS.locOutcomes('Walk in the grass', [
+                    { k: 'wild', pct: 70 },
+                    { k: 'trainer', pct: 20 },
+                    { k: 'item', pct: 10 },
+                  ]);
           var req =
             '<div class="ps-field"><span class="ps-label">Requirement</span>' +
             (kind === 'rod'
@@ -190,6 +225,12 @@
               'NPCs',
             ) +
             row('bag', 'Hidden items: 1', 'Potion · found once', 'Items') +
+            row(
+              'bolt',
+              'Events on Explore: 0',
+              'Add one on the Events tab',
+              'Events',
+            ) +
             row(
               'steps',
               'Explore 3 times to get through',
@@ -421,6 +462,14 @@
               '<div class="ps-scroll"><div class="ps-form">' +
               rateRow('rod') +
               rodSlots +
+              '</div></div>';
+          if (v === 'custom')
+            el.innerHTML =
+              PS.phoneBar('Route 12', 'Route', PS.saved + PS.moreBtn) +
+              PS.locTabs('encounters') +
+              methods('grass') +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              rateRow('custom') +
               '</div></div>';
           if (v === 'summary')
             el.innerHTML =

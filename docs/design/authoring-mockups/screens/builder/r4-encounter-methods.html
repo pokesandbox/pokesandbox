@@ -15,13 +15,13 @@
       ><span
         >R4 · Encounter methods
         <small
-          >R4 · Encounter methods (Settings) · list with the trainer/item split
-          and how an explore is decided, a land method, a wild-only method, add
-          a custom method, delete confirm; desktop 1440</small
+          >R4 · Encounter methods (Settings) · list, each method’s outcome
+          table, a total over 100%, add a custom method, delete confirm; desktop
+          1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 2140px">
+    <main class="mk-stage" style="min-width: 2560px">
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
@@ -33,8 +33,12 @@
             <div class="ps-phone ps-phone--tall slot" data-v="grass"></div>
           </div>
           <div>
-            <p class="ps-frame-label">Surf (wild only)</p>
+            <p class="ps-frame-label">Surf · adding an outcome</p>
             <div class="ps-phone ps-phone--tall slot" data-v="surf"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Total over 100% (can’t save)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="over"></div>
           </div>
           <div>
             <p class="ps-frame-label">Add a method (sheet)</p>
@@ -57,34 +61,32 @@
           "
         >
           <li>
-            <b>Where:</b> Settings → Encounter methods. "Region default · 70%"
-            on a location's Explore tab links straight to that method.
+            <b>Where:</b> Settings → Encounter methods. A location’s Explore tab
+            links to the method its outcomes come from.
           </li>
           <li>
             <b>The list</b> starts with Walk in the grass, Explore the cave,
             Surf, Old Rod, Good Rod and Super Rod. Each row shows an icon
-            placeholder, the default rate, and the requirement.
+            placeholder, the method’s outcomes, and its requirement.
           </li>
           <li>
-            <b>Each method:</b> the button label players see in Discord, the
-            default rate (the share of explores that find a wild Pokémon),
-            whether trainers and items can turn up too, the requirement, whether
-            Repel affects it, and the locations that use it.
+            <b>Outcomes:</b> each method has its own table of what an explore
+            can find: wild Pokémon, a trainer, or a hidden item, each with a
+            percentage. "+ Outcome" adds a kind the table doesn’t have; any row
+            can be removed, but a method needs at least one.
           </li>
           <li>
-            <b>The rest of each explore:</b> on methods where trainers and items
-            can turn up, what isn't wild is split between a trainer and a hidden
-            item (60/40 by default). When one kind runs out here, the other
-            takes its share; when both do, every explore is wild.
+            <b>The total must be 100%.</b> Edits never change other rows. Over
+            or under 100%, the total turns red, the error says how much to
+            remove or add, and the method can’t be saved.
           </li>
           <li>
-            <b>Order:</b> an "Explores here" event whose condition passes runs
-            first, in place of the roll. Then the rate decides wild or not, then
-            the split.
+            <b>Running out:</b> when a location has no trainers left to beat or
+            items left to find, their share is spread over the remaining rows.
           </li>
           <li>
-            <b>Wild only:</b> with trainers and items off, every press finds a
-            wild Pokémon, so the rate isn't asked for. That's Surf and the rods.
+            <b>Locations</b> use these tables unless they customize their own,
+            which is where events can be added.
           </li>
           <li>
             <b>Custom methods</b> ("Search the tall reeds") work the same as the
@@ -107,7 +109,11 @@
             k: 'grass',
             n: 'Walk in the grass',
             icon: 'leaf',
-            rate: '70%',
+            oc: [
+              ['wild', 70],
+              ['trainer', 20],
+              ['item', 10],
+            ],
             req: 'No requirement',
             locs: 18,
           },
@@ -115,7 +121,11 @@
             k: 'cave',
             n: 'Explore the cave',
             icon: 'dungeon',
-            rate: '70%',
+            oc: [
+              ['wild', 60],
+              ['trainer', 25],
+              ['item', 15],
+            ],
             req: 'No requirement',
             locs: 9,
           },
@@ -123,7 +133,10 @@
             k: 'surf',
             n: 'Surf',
             icon: 'water',
-            rate: 'Wild only',
+            oc: [
+              ['wild', 95],
+              ['item', 5],
+            ],
             req: 'Knows Surf and has the Soul Badge',
             locs: 11,
           },
@@ -131,7 +144,7 @@
             k: 'old',
             n: 'Old Rod',
             icon: 'water',
-            rate: 'Wild only',
+            oc: [['wild', 100]],
             req: 'Has the Old Rod',
             locs: 14,
           },
@@ -139,7 +152,7 @@
             k: 'good',
             n: 'Good Rod',
             icon: 'water',
-            rate: 'Wild only',
+            oc: [['wild', 100]],
             req: 'Has the Good Rod',
             locs: 4,
           },
@@ -147,11 +160,24 @@
             k: 'super',
             n: 'Super Rod',
             icon: 'water',
-            rate: 'Wild only',
+            oc: [['wild', 100]],
             req: 'Has the Super Rod',
             locs: 7,
           },
         ];
+        var SHORT = { wild: 'Wild', trainer: 'Trainer', item: 'Item' };
+        var ocText = function (oc) {
+          return oc
+            .map(function (o) {
+              return SHORT[o[0]] + ' ' + o[1];
+            })
+            .join(' · ');
+        };
+        var ocRows = function (oc) {
+          return oc.map(function (o) {
+            return { k: o[0], pct: o[1] };
+          });
+        };
         function rows(cur) {
           return METHODS.map(function (m) {
             return (
@@ -162,8 +188,8 @@
               '"></span><span class="ps-row-text"><b>' +
               m.n +
               '</b><span>' +
-              m.rate +
-              ' · ' +
+              ocText(m.oc) +
+              '</span><span>' +
               m.req +
               '</span></span><span data-i="chevR"></span></button>'
             );
@@ -212,28 +238,14 @@
           );
         }
         function detail(m) {
-          var wild = m.k !== 'grass' && m.k !== 'cave' && m.k !== 'reeds';
           return (
             '<div class="ps-sprite-row"><span class="ps-sprite" style="width:64px;height:64px">Icon</span><button class="ps-btn ps-btn--secondary">Choose icon</button></div>' +
             '<div class="ps-field"><label class="ps-label">Button label</label><input class="ps-input" value="' +
             (m.label || m.n) +
             '"><p class="ps-help">What players tap in Discord.</p></div>' +
-            sw(
-              !wild,
-              'Trainers and items can turn up too',
-              wild
-                ? 'Off: every press finds a wild Pokémon.'
-                : 'Some explores find a trainer or a hidden item instead, while any are left.',
-            ) +
-            (wild
-              ? '<div class="ps-readonly"><span data-i="' +
-                m.icon +
-                '" data-s="18"></span><div><b>Every press finds a wild Pokémon</b><p class="t-body-sm ps-muted">There’s nothing else to find with this method, so no rate is needed.</p></div></div>'
-              : '<div class="ps-field"><label class="ps-label" for="rt">Default rate</label><div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><input class="ps-input" id="rt" type="number" inputmode="numeric" min="0" max="100" value="' +
-                parseInt(m.rate, 10) +
-                '" style="width:96px"><span class="t-body-sm ps-muted">%</span></div><p class="ps-help">The share of explores that find a wild Pokémon. The other ' +
-                (100 - parseInt(m.rate, 10)) +
-                '% finds a trainer or a hidden item, split as set for all methods. Locations can override the rate.</p></div>') +
+            '<div class="ps-field"><span class="ps-label">Outcomes</span><p class="ps-help" style="margin-top:-4px">What an explore with this method can find.</p>' +
+            PS.outcomes(m.ocRows || ocRows(m.oc), { menu: m.menu }) +
+            '<p class="ps-help">When a location has no trainers left to beat or items left to find, their share goes to the other rows. Locations can customize this.</p></div>' +
             '<div class="ps-field"><span class="ps-label">Requirement</span>' +
             (m.req === 'No requirement'
               ? PS.condSummary('', {
@@ -247,7 +259,7 @@
             sw(
               true,
               'Affected by Repel',
-              'A Repel turns weak wild Pokémon into safe steps.',
+              'Wild Pokémon only. A Repel turns weak ones into safe steps.',
             )
           );
         }
@@ -272,7 +284,10 @@
             k: 'reeds',
             n: 'Search the tall reeds',
             icon: 'leaf',
-            rate: '60%',
+            oc: [
+              ['wild', 60],
+              ['item', 40],
+            ],
             req: 'No requirement',
           }) +
           '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Add method</button></div></div>';
@@ -291,31 +306,6 @@
             .join('') +
           '</div>' +
           '<div class="ps-actions"><button class="ps-btn ps-btn--danger ps-btn--block">Delete method</button><button class="ps-btn ps-btn--ghost ps-btn--block">Cancel</button></div></div>';
-        var pct = function (id, label, v) {
-          return (
-            '<div class="ps-field" style="flex:1;min-width:0"><label class="ps-label" for="' +
-            id +
-            '">' +
-            label +
-            '</label><div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><input class="ps-input" id="' +
-            id +
-            '" type="number" inputmode="numeric" min="0" max="100" value="' +
-            v +
-            '" style="width:80px"><span class="t-body-sm ps-muted">%</span></div></div>'
-          );
-        };
-        var split =
-          '<div class="ps-form" style="border-top:1px solid var(--border);margin-top:8px">' +
-          '<h2 class="t-title-3">When an explore isn’t wild</h2><p class="t-body-sm ps-muted" style="margin-top:-8px">For methods where trainers and items can turn up.</p>' +
-          '<div class="ps-row" style="gap:12px;flex-wrap:nowrap">' +
-          pct('sp-t', 'A trainer', 60) +
-          pct('sp-i', 'A hidden item', 40) +
-          '</div>' +
-          '<p class="ps-help" style="margin-top:-8px">When a location runs out of one, the other takes its share. With neither left, every explore is wild.</p>' +
-          '<h2 class="t-title-3" style="margin-top:8px">How an explore is decided</h2><ol class="ps-steps">' +
-          '<li><span><b>Events</b>An “Explores here” event whose condition passes runs instead.</span></li>' +
-          '<li><span><b>Rate</b>Walk in the grass at 70%: a wild Pokémon 7 times in 10.</span></li>' +
-          '<li><span><b>Split</b>Otherwise a trainer 60% or a hidden item 40%, while any are left.</span></li></ol></div>';
         var listBar = PS.phoneBar(
           'Encounter methods',
           'Settings · Kanto Classic',
@@ -335,7 +325,6 @@
               listBar +
               '<div class="ps-scroll"><p class="t-body-sm ps-muted" style="padding:12px 16px 4px">The ways players can look for wild Pokémon. Each is a button on a location’s Explore.</p>' +
               rows() +
-              split +
               '</div>';
           if (v === 'grass')
             el.innerHTML =
@@ -344,10 +333,34 @@
                 'Encounter method',
                 PS.saved + PS.moreBtn,
               ) + body(detail(METHODS[0]) + grassUsed);
+          if (v === 'over')
+            el.innerHTML =
+              PS.phoneBar(
+                'Walk in the grass',
+                'Encounter method',
+                '<span class="ps-save ps-save--error"><span data-i="error" data-s="16"></span>Not saved</span>' +
+                  PS.moreBtn,
+              ) +
+              body(
+                detail({
+                  k: 'grass',
+                  n: 'Walk in the grass',
+                  icon: 'leaf',
+                  req: 'No requirement',
+                  ocRows: [
+                    { k: 'wild', pct: 70 },
+                    { k: 'trainer', pct: 25 },
+                    { k: 'item', pct: 10 },
+                  ],
+                }),
+              );
           if (v === 'surf')
             el.innerHTML =
               PS.phoneBar('Surf', 'Encounter method', PS.saved + PS.moreBtn) +
-              body(detail(METHODS[2]) + surfUsed);
+              body(
+                detail(Object.assign({ menu: ['trainer'] }, METHODS[2])) +
+                  surfUsed,
+              );
           if (v === 'add')
             el.innerHTML =
               listBar +

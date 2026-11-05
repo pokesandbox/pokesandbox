@@ -17,11 +17,11 @@
         <small
           >R3 · Events tab: When a player… ★ · lists (light, dark), trigger
           sheet, event dropdown, priority clash, empty, read-only script,
-          leaving, desktop 1440</small
+          leaving, exploring with a chance, desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 2140px">
+    <main class="mk-stage" style="min-width: 2560px">
       <div
         class="ps-root ps-pad"
         data-theme="light"
@@ -78,6 +78,12 @@
               <div class="ps-phone ps-phone--tall slot" data-v="leave"></div>
             </div>
           </div>
+          <div>
+            <p class="ps-frame-label">Explores here, with a chance (sheet)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="explore"></div>
+            </div>
+          </div>
           <div style="width: 340px" class="ps-stack" data-notes>
             <p class="ps-frame-label">Notes</p>
             <ul
@@ -106,6 +112,14 @@
                 before the player moves, so its script can stop them: a riddle
                 they get wrong, an urgent story beat. If it does, they stay here
                 and the next location isn't marked visited.
+              </li>
+              <li>
+                <b>Explores here</b> picks the methods it runs on and how often.
+                Always: it runs first, before the roll, whenever its condition
+                passes (Snorlax in the way). A chance: it becomes a row in that
+                method’s outcomes at this location, which is customized if it
+                wasn’t. Nothing else changes, so the sheet warns when that
+                method’s total is no longer 100%.
               </li>
               <li>
                 <b>Uses a move here</b> covers field moves at this location
@@ -191,9 +205,21 @@
               icon: 'leaf',
               name: 'Snorlax blocks the path',
               mode: 'Automatic',
+              filter: 'Always · any method',
               once: false,
               cond: 'Only before ' + mono('snorlax_awake'),
               script: 'snorlax-blocks',
+            },
+            {
+              ev: 'Explores here',
+              icon: 'leaf',
+              name: 'A wandering trader',
+              mode: 'Automatic',
+              filter: 'Walk in the grass · 5%',
+              once: true,
+              cond: '',
+              script: 'r12-trader',
+              isNew: true,
             },
             {
               ev: 'Uses the Poké Flute here',
@@ -280,6 +306,22 @@
             PS.scriptRow('rival-r22', 'Forced Encounter') +
             '' +
             '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--ghost">Pick another script</button><button class="ps-btn ps-btn--ghost">Create from template</button></div></div>'
+          );
+        }
+        function exploreBody() {
+          return (
+            '<div class="ps-field"><span class="ps-label">When a player…</span><button class="ps-trigger" aria-haspopup="listbox"><span style="display:flex;gap:10px;align-items:center"><span data-i="leaf"></span>Explores here</span><span data-i="chevD"></span></button></div>' +
+            '<div class="ps-field"><span class="ps-label">With</span><div class="ps-tags"><span class="ps-tag">Walk in the grass<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Walk in the grass"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Method</button></div><p class="ps-help">Leave empty for any method here.</p></div>' +
+            '<div class="ps-field"><span class="ps-label">How often</span><div class="ps-seg" role="group"><button aria-pressed="false">Always</button><button aria-pressed="true">A chance</button></div>' +
+            '<div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><input class="ps-input" type="number" inputmode="numeric" min="1" max="100" value="5" aria-label="Chance percent" style="width:80px"><span class="t-body-sm ps-muted">% of explores with Walk in the grass</span></div>' +
+            '<p class="ps-help">Added to Walk in the grass’s outcomes on Route 12.</p>' +
+            '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>Walk in the grass on Route 12 now adds up to 105%. Lower another outcome there before saving.</span></div>' +
+            '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start">Open the outcomes</button></div>' +
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Only once</b><span>Once it runs, it leaves the outcomes and its share goes to the rest.</span></span><button class="ps-switch" role="switch" aria-checked="true" aria-label="Only once"></button></label>' +
+            '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+            PS.condSummary('') +
+            '</div>' +
+            '<div class="ps-field"><span class="ps-label">Script</span><div class="ps-link-row"><span data-i="code"></span><span>r12-trader<small>Offers a Moon Stone for ₽3,000</small></span><button class="ps-btn ps-btn--ghost">View</button></div></div>'
           );
         }
         function leaveBody() {
@@ -416,6 +458,15 @@
               list('r22', 'Route 22') +
               '</div><div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit trigger" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">The guard’s riddle<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Route 22 · When a player…</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
               leaveBody() +
+              '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
+          if (v === 'explore')
+            el.innerHTML =
+              PS.phoneBar('Route 12', 'Route', PS.saved + PS.moreBtn) +
+              PS.locTabs('events') +
+              '<div class="ps-scroll">' +
+              list('r12', 'Route 12') +
+              '</div><div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit trigger" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">A wandering trader<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Route 12 · When a player…</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+              exploreBody() +
               '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
           if (v === 'desktop')
             el.innerHTML =
