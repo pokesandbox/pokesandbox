@@ -92,8 +92,11 @@
           </li>
           <li>
             <b>Look around</b> is how towns and buildings offer hidden items and
-            trainers: no requirement, Trainer 50 · Item 50 with no Wild row, and
-            not affected by Repel.
+            trainers: no requirement, Trainer 50 · Item 50 with no Wild row.
+          </li>
+          <li>
+            <b>Affected by Repel</b> only shows when the table has a Wild row;
+            adding one brings it back, switched on.
           </li>
           <li>
             <b>Locations</b> use these tables unless they customize their own,
@@ -185,7 +188,6 @@
             ],
             req: 'No requirement',
             locs: 6,
-            repel: false,
           },
         ];
         var SHORT = { wild: 'Wild', trainer: 'Trainer', item: 'Item' };
@@ -279,13 +281,15 @@
                   'Requires ' + m.req.charAt(0).toLowerCase() + m.req.slice(1),
                 )) +
             '<p class="ps-help">Players only see the button when this passes.</p></div>' +
-            sw(
-              m.repel !== false,
-              'Affected by Repel',
-              m.repel === false
-                ? 'Off: there are no wild Pokémon to avoid.'
-                : 'Wild Pokémon only. A Repel turns weak ones into safe steps.',
-            )
+            ((m.ocRows || ocRows(m.oc)).some(function (o) {
+              return o.k === 'wild';
+            })
+              ? sw(
+                  true,
+                  'Affected by Repel',
+                  'Wild Pokémon only. A Repel turns weak ones into safe steps.',
+                )
+              : '')
           );
         }
         var grassUsed = used(
