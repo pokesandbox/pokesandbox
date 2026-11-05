@@ -20,7 +20,8 @@ const logger = createLoggerFromEnv();
 
 async function start() {
   await connectDb(logger);
-  const TOKEN = process.env.DISCORD_BOT_TOKEN as string;
+  const token = process.env.DISCORD_BOT_TOKEN;
+  if (!token) throw new Error('DISCORD_BOT_TOKEN is not set');
   logger.info('SandBot is initializing');
 
   const client = new BotClient({
@@ -56,7 +57,7 @@ async function start() {
   client.flowcord = flowcord;
 
   await eventsManager(client);
-  await client.login(TOKEN);
+  await client.login(token);
 }
 
 start().catch((error: unknown) => {
