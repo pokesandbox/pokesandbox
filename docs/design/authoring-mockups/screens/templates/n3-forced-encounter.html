@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>N3 · Forced Encounter template · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >N3 · Forced Encounter template
+        <small
+          >N3 · Forced Encounter template · 6 phone steps and the created event,
+          one long form on desktop</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1720px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">1 · Where</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="1"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">2 · Who</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="2"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">3 · When</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="3"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">4 · Battle</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="4"></div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">5 · What they say</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="5"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">6 · Review</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="6"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Done · Route 22's Events tab</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="done"></div>
+          </div>
+          <div style="width: 340px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Same pattern as Gym Leader:</b> short steps on phones with
+                Continue pinned, a review of what it creates, then the created
+                item with "Made with the Forced Encounter template" and Edit as
+                form.
+              </li>
+              <li>
+                <b>Where:</b> the location, plus optionally only when arriving
+                from chosen places.
+              </li>
+              <li>
+                <b>Who:</b> an existing trainer, or Create a trainer, which
+                opens the party editor. The rival shows its three starter-based
+                teams.
+              </li>
+              <li>
+                <b>When:</b> Only once is on by default; an optional condition,
+                like only after Oak's Parcel.
+              </li>
+              <li>
+                <b>Battle:</b> "Players can lose without blacking out" (on for
+                the rival) and whether to heal the party afterwards.
+              </li>
+              <li>
+                <b>Text:</b> before the battle, after a win, after a loss, with
+                the Discord preview filling in sample names.
+              </li>
+              <li>
+                It creates an Enters event on the location and its script, and
+                uses the chosen trainer; it doesn't copy the trainer.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · one long form with a running summary
+        </p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 1300px"
+        ></div>
+      </div>
+      <script>
+        var STEPS = [
+          'Where',
+          'Who',
+          'When',
+          'Battle',
+          'What they say',
+          'Review',
+        ];
+        var mono = function (s) {
+          return '<span class="t-mono">' + s + '</span>';
+        };
+        function stepper(n) {
+          return (
+            '<div class="ps-stepper"><span class="t-body-sm ps-subtle">Step ' +
+            n +
+            ' of 6 · ' +
+            STEPS[n - 1] +
+            '</span><div class="ps-stepper-bar" style="grid-template-columns:repeat(6,1fr)">' +
+            STEPS.map(function (s, i) {
+              return '<i' + (i < n ? ' class="is-done"' : '') + '></i>';
+            }).join('') +
+            '</div></div>'
+          );
+        }
+        var trig = function (icon, txt, end) {
+          return (
+            '<button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="' +
+            icon +
+            '"></span>' +
+            txt +
+            '</span><span data-i="' +
+            (end || 'search') +
+            '"></span></button>'
+          );
+        };
+        var sw = function (on, t, d) {
+          return (
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>' +
+            t +
+            '</b><span>' +
+            d +
+            '</span></span><button class="ps-switch" role="switch" aria-checked="' +
+            on +
+            '" aria-label="' +
+            t +
+            '"></button></label>'
+          );
+        };
+        var hints =
+          '<div class="ps-hint-chips"><span class="t-body-sm ps-subtle">Insert:</span><button class="ps-chip">{name:rival}</button><button class="ps-chip">{name:player}</button></div>';
+        var LINES = {
+          before:
+            '{name:rival}: Hey, {name:player}! Heading to the League already? Not before you get past me.',
+          win: '{name:rival}: What? I lost? Fine. Go on, then. I’ll catch up.',
+          lose: '{name:rival}: Ha! Told you. Go train some more and come back.',
+        };
+        var fill = function (t) {
+          return t
+            .replace(/\{name:rival\}/g, 'Kai')
+            .replace(/\{name:player\}/g, 'Ash');
+        };
+        var passage = function (label, key, h) {
+          return (
+            '<div class="ps-field"><label class="ps-label">' +
+            label +
+            '</label><textarea class="ps-textarea" style="min-height:80px">' +
+            LINES[key] +
+            '</textarea>' +
+            hints +
+            '</div>' +
+            (h
+              ? '<div class="ps-embed"><b>' +
+                h +
+                '</b><span>' +
+                fill(LINES[key]) +
+                '</span></div>'
+              : '')
+          );
+        };
+        var S = {
+          1: function () {
+            return (
+              '<h2 class="t-title-2">Where does it happen?</h2>' +
+              '<div class="ps-field"><span class="ps-label">Location</span>' +
+              trig('route', 'Route 22') +
+              '<p class="ps-help">The battle starts when a player enters it.</p></div>' +
+              '<div class="ps-field"><span class="ps-label">Only when arriving from <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Viridian City<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Viridian City"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Place</button></div><p class="ps-help">Leave empty for any arrival.</p></div>'
+            );
+          },
+          2: function () {
+            return (
+              '<h2 class="t-title-2">Who do they battle?</h2>' +
+              '<div class="ps-seg" role="group"><button aria-pressed="true">Existing trainer</button><button aria-pressed="false">Create a trainer</button></div>' +
+              '<div class="ps-field"><span class="ps-label">Trainer</span>' +
+              trig('swap', mono('{name:rival}') + ' · Rival') +
+              '</div>' +
+              '<div class="ps-field"><span class="ps-label">Their teams</span><p class="ps-help">The first team whose condition matches is used.</p>' +
+              PS.RIVAL.map(function (v, i) {
+                return (
+                  '<div class="ps-link-row"><span class="ps-priority">' +
+                  (i + 1) +
+                  '</span><span>' +
+                  v.name +
+                  '<small>' +
+                  v.mons.length +
+                  ' Pokémon · Lv 15–18</small></span><button class="ps-btn ps-btn--ghost">Edit</button></div>'
+                );
+              }).join('') +
+              '</div>' +
+              '<p class="t-body-sm ps-muted">Edits to the rival’s teams apply everywhere the rival battles.</p>'
+            );
+          },
+          3: function () {
+            return (
+              '<h2 class="t-title-2">When does it happen?</h2>' +
+              sw(
+                true,
+                'Only once',
+                'Never again for that player after it runs.',
+              ) +
+              '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+              PS.condSummary('Only after ' + mono('oak_parcel_delivered')) +
+              '</div>'
+            );
+          },
+          4: function () {
+            return (
+              '<h2 class="t-title-2">The battle</h2>' +
+              sw(
+                true,
+                'Players can lose without blacking out',
+                'A loss doesn’t send them back to heal. The story carries on.',
+              ) +
+              sw(
+                false,
+                'Heal the party afterwards',
+                'Off: they keep any damage from the battle.',
+              )
+            );
+          },
+          5: function () {
+            return (
+              '<h2 class="t-title-2">What they say</h2>' +
+              passage('Before the battle', 'before', 'Kai blocks the path!') +
+              passage('After a win', 'win', 'You defeated Kai!') +
+              passage('After a loss', 'lose', '')
+            );
+          },
+          6: function () {
+            return (
+              '<h2 class="t-title-2">Review</h2>' +
+              '<dl class="ps-review" style="margin:0">' +
+              [
+                ['Where', 'Route 22, arriving from Viridian City', 1],
+                ['Who', '{name:rival} · 3 teams', 2],
+                ['When', 'Once, only after the parcel', 3],
+                ['Battle', 'Can lose without blacking out · no heal', 4],
+                ['Text', 'Before, after a win, after a loss', 5],
+              ]
+                .map(function (r) {
+                  return (
+                    '<div class="ps-review-row"><div><dt>' +
+                    r[0] +
+                    '</dt><dd>' +
+                    r[1].replace('{name:rival}', mono('{name:rival}')) +
+                    '</dd></div><button class="ps-btn ps-btn--ghost">Edit</button></div>'
+                  );
+                })
+                .join('') +
+              '</dl>' +
+              '<div class="ps-callout ps-callout--info"><span data-i="check" data-s="18"></span><span>Creates 1 event and 1 script, and uses trainer Rival.</span></div>'
+            );
+          },
+        };
+        function phone(n) {
+          var bar =
+            '<div class="ps-appbar"><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="' +
+            (n > 1 ? 'Back' : 'Close') +
+            '"><span data-i="' +
+            (n > 1 ? 'back' : 'x') +
+            '"></span></button><h1 class="ps-appbar-title">Forced Encounter<small>New from template</small></h1></div>';
+          return (
+            bar +
+            '<div class="ps-scroll"><div class="ps-page" style="gap:16px">' +
+            stepper(n) +
+            S[n]() +
+            '</div></div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">' +
+            (n === 6 ? 'Create encounter' : 'Continue') +
+            '</button></div>'
+          );
+        }
+        function done() {
+          var row =
+            '<article class="ps-trigger-row"><div class="ps-variant-head"><span class="ps-kind" data-i="door"></span><b>Enters Route 22 → Rival battle</b>' +
+            PS.moreBtn +
+            '</div>' +
+            '<div class="ps-trigger-meta"><span class="ps-badge">Automatic</span><span class="ps-badge">Once</span><span class="ps-badge ps-badge--outline">Arriving from Viridian City</span></div>' +
+            PS.condSummary('Only after ' + mono('oak_parcel_delivered')) +
+            '<div class="ps-link-row"><span data-i="code"></span><span>rival-r22<small><span class="ps-badge ps-badge--accent" style="margin-top:2px">Made with the Forced Encounter template</span></small></span><button class="ps-btn ps-btn--secondary">Edit as form</button></div></article>';
+          return (
+            PS.phoneBar('Route 22', 'Route', PS.saved + PS.moreBtn) +
+            PS.locTabs('events') +
+            '<div class="ps-scroll"><div class="ps-form"><div class="ps-section-head"><h2 class="t-title-3">When a player…</h2><button class="ps-btn ps-btn--secondary"><span data-i="plus" data-s="18"></span>Event</button></div>' +
+            row +
+            '</div></div>' +
+            '<div class="ps-toast-dock"><div class="ps-toast" role="status">' +
+            PS.icon('check') +
+            '<span>Rival battle created</span></div></div>'
+          );
+        }
+        function desktop() {
+          var sec = function (n, inner) {
+            return (
+              '<section class="ps-form-section"><span class="t-caption ps-subtle">' +
+              n +
+              ' · ' +
+              STEPS[n - 1].toUpperCase() +
+              '</span>' +
+              inner +
+              '</section>'
+            );
+          };
+          var summary =
+            '<aside class="ps-card" style="position:sticky;top:24px;gap:8px"><h2 class="t-title-3">Will create</h2>' +
+            [
+              '1 event on Route 22',
+              '1 script · rival-r22',
+              'Uses trainer Rival',
+            ]
+              .map(function (t) {
+                return (
+                  '<span class="t-body-sm" style="display:flex;gap:8px;align-items:center">' +
+                  PS.icon('check', 16) +
+                  t +
+                  '</span>'
+                );
+              })
+              .join('') +
+            '<div class="ps-nav-sep"></div>' +
+            STEPS.slice(0, 5)
+              .map(function (s, i) {
+                return (
+                  '<a class="ps-nav-item" href="#" style="min-height:36px">' +
+                  (i + 1) +
+                  ' · ' +
+                  s +
+                  '</a>'
+                );
+              })
+              .join('') +
+            '<button class="ps-btn ps-btn--primary ps-btn--block" style="margin-top:8px">Create encounter</button></aside>';
+          return (
+            PS.sidebar('locations') +
+            '<div class="ps-main">' +
+            PS.topbar() +
+            '<div class="ps-main-body"><div class="ps-section-head"><h1 class="t-title-1">New forced encounter</h1><button class="ps-btn ps-btn--ghost">Cancel</button></div>' +
+            '<div style="display:grid;grid-template-columns:minmax(0,640px) 280px;gap:32px;align-items:start"><div class="ps-stack" style="gap:24px">' +
+            [1, 2, 3, 4, 5]
+              .map(function (n) {
+                return sec(
+                  n,
+                  S[n]().replace(/<h2 class="t-title-2">[\s\S]*?<\/h2>/, ''),
+                );
+              })
+              .join('') +
+            '</div>' +
+            summary +
+            '</div></div></div>'
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          el.innerHTML =
+            v === 'desktop' ? desktop() : v === 'done' ? done() : phone(+v);
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

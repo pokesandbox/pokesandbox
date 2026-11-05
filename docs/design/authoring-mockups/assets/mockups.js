@@ -1207,3 +1207,416 @@ window.PS = (function () {
   PS.icons.door =
     '<path d="M5 21V4h10v17M15 12h.01M3 21h18"/><path d="M15 4l4 2v15"/>';
 })(window.PS);
+
+/* RuleGroupEditor: an All/Any list of rows and groups (any number of groups, one level deep).
+   Rows and groups have drag handles plus a Move menu, so nothing needs to be removed to move it.
+   Configurations: conditions (facts, Not allowed) and traversal requirements (each type once, no Not). */
+(function (PS) {
+  PS.RULE_TYPES = {
+    traversalFirst: {
+      unique: true,
+      allowNot: false,
+      types: {
+        trainers: {
+          icon: 'user',
+          label: 'Beat these trainers',
+          say: function () {
+            return 'beat Bug Catcher Rick and Bug Catcher Doug';
+          },
+          body: function () {
+            return '<div class="ps-tags"><span class="ps-tag">Bug Catcher Rick<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Rick"><span data-i="x" data-s="16"></span></button></span><span class="ps-tag">Bug Catcher Doug<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Doug"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Trainer</button></div>';
+          },
+        },
+        wild: {
+          icon: 'leaf',
+          label: 'Win wild battles',
+          unit: 'wild battles',
+          say: function (r) {
+            return 'win ' + r.n + ' wild battle' + (r.n === 1 ? '' : 's');
+          },
+        },
+        explores: {
+          icon: 'steps',
+          label: 'Explore',
+          unit: 'times',
+          say: function (r) {
+            return 'explore ' + r.n + ' time' + (r.n === 1 ? '' : 's');
+          },
+        },
+      },
+    },
+    traversalEvery: {
+      unique: true,
+      allowNot: false,
+      types: {
+        explores: {
+          icon: 'steps',
+          label: 'Explore',
+          unit: 'times',
+          say: function (r) {
+            return 'explore ' + r.n + ' time' + (r.n === 1 ? '' : 's');
+          },
+        },
+        encounters: {
+          icon: 'leaf',
+          label: 'Wild encounters',
+          unit: 'encounters',
+          help: 'Ones a Repel avoids count too.',
+          say: function (r) {
+            return 'have ' + r.n + ' wild encounter' + (r.n === 1 ? '' : 's');
+          },
+        },
+      },
+    },
+    condition: {
+      unique: false,
+      allowNot: true,
+      types: {
+        badge: {
+          icon: 'gym',
+          label: 'Has badge',
+          value: 'Boulder Badge',
+          say: function (r) {
+            return 'the ' + r.value;
+          },
+        },
+        move: {
+          icon: 'user',
+          label: 'Party knows move',
+          value: 'Cut',
+          say: function (r) {
+            return 'a Pokémon that knows ' + r.value;
+          },
+        },
+        item: {
+          icon: 'bag',
+          label: 'Has item',
+          value: 'Bike Voucher',
+          say: function (r) {
+            return 'a ' + r.value;
+          },
+        },
+      },
+    },
+  };
+  PS.RULES = {};
+  var join = function (parts, mode) {
+    return parts.length < 2
+      ? parts[0] || ''
+      : parts.slice(0, -1).join(', ') +
+          (mode === 'all' ? ' and ' : ' or ') +
+          parts[parts.length - 1];
+  };
+  var cap = function (x) {
+    var i = x.charAt(0) === '(' ? 1 : 0;
+    return x.slice(0, i) + x.charAt(i).toUpperCase() + x.slice(i + 1);
+  };
+  function cfg(st) {
+    return PS.RULE_TYPES[st.kind];
+  }
+  function phrase(st, r) {
+    var s = cfg(st).types[r.t].say(r);
+    return r.not ? 'not ' + s : s;
+  }
+  PS.ruleReads = function (st) {
+    var parts = st.items
+      .map(function (it) {
+        if (it.group) {
+          var g = it.rows.map(function (r) {
+            return phrase(st, r);
+          });
+          return g.length > 1 ? '(' + join(g, it.mode) + ')' : g[0];
+        }
+        return phrase(st, it);
+      })
+      .filter(Boolean);
+    var s = join(parts, st.mode);
+    return s ? cap(s) + '.' : 'Nothing required yet.';
+  };
+  function used(st) {
+    var u = [];
+    st.items.forEach(function (it) {
+      (it.group ? it.rows : [it]).forEach(function (r) {
+        u.push(r.t);
+      });
+    });
+    return u;
+  }
+  function free(st) {
+    var c = cfg(st),
+      u = used(st);
+    return Object.keys(c.types).filter(function (t) {
+      return !c.unique || u.indexOf(t) < 0;
+    });
+  }
+  var segH = function (m, path) {
+    return (
+      '<div class="ps-seg" role="group"><button data-re-mode="' +
+      path +
+      ':all" aria-pressed="' +
+      (m === 'all') +
+      '">All of these</button><button data-re-mode="' +
+      path +
+      ':any" aria-pressed="' +
+      (m === 'any') +
+      '">Any of these</button></div>'
+    );
+  };
+  var joinW = function (m) {
+    return (
+      '<div class="ps-cond-join">' + (m === 'all' ? 'and' : 'or') + '</div>'
+    );
+  };
+  function groupNames(st) {
+    var n = 0,
+      out = [];
+    st.items.forEach(function (it, i) {
+      if (it.group) out.push([i, 'Group ' + ++n]);
+    });
+    return out;
+  }
+  function menuHTML(st, path) {
+    var opts = [
+        ['up', 'Move up'],
+        ['down', 'Move down'],
+      ],
+      inGroup = path.indexOf('.') > -1;
+    if (inGroup) opts.push(['top', 'Move to top level']);
+    groupNames(st).forEach(function (g) {
+      if (!inGroup || String(g[0]) !== path.split('.')[0])
+        opts.push(['g' + g[0], 'Move to ' + g[1]]);
+    });
+    opts.push(['new', 'Move to a new group']);
+    return (
+      '<ul class="ps-listbox ps-menu ps-re-menu" role="menu">' +
+      opts
+        .map(function (o) {
+          return (
+            '<li class="ps-option" role="menuitem" data-re-to="' +
+            path +
+            '|' +
+            o[0] +
+            '">' +
+            o[1] +
+            '</li>'
+          );
+        })
+        .join('') +
+      '</ul>'
+    );
+  }
+  function rowHTML(st, r, path) {
+    var c = cfg(st),
+      ty = c.types[r.t],
+      open = st.menu === path;
+    var body = ty.body
+      ? ty.body(r)
+      : ty.unit
+        ? '<div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><input class="ps-input" type="number" inputmode="numeric" min="1" value="' +
+          r.n +
+          '" style="width:88px" aria-label="' +
+          ty.unit +
+          '" data-re-n="' +
+          path +
+          '"><span class="t-body-sm ps-muted">' +
+          ty.unit +
+          '</span></div>' +
+          (ty.help ? '<p class="ps-help">' + ty.help + '</p>' : '')
+        : '<button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="' +
+          ty.icon +
+          '"></span>' +
+          r.value +
+          '</span><span data-i="search"></span></button>';
+    return (
+      '<div class="ps-cond-row ps-re-item' +
+      (st.dragging === path ? ' ps-re-dragging' : '') +
+      '"><div class="ps-re-row-head"><button class="ps-handle" aria-label="Drag ' +
+      ty.label +
+      '"><span data-i="grip"></span></button><b><span data-i="' +
+      ty.icon +
+      '" data-s="18"></span>' +
+      ty.label +
+      '</b>' +
+      (c.allowNot
+        ? '<button class="ps-chip ps-chip--not" aria-pressed="' +
+          !!r.not +
+          '" data-re-not="' +
+          path +
+          '">Not</button>'
+        : '') +
+      '<button class="ps-btn ps-btn--ghost" style="padding:0 8px" aria-haspopup="menu" aria-expanded="' +
+      open +
+      '" data-re-menu="' +
+      path +
+      '">Move</button><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
+      ty.label +
+      '" data-re-rm="' +
+      path +
+      '"><span data-i="x"></span></button></div>' +
+      '<div class="ps-cond-row-body" style="padding-left:44px">' +
+      body +
+      '</div>' +
+      (open ? menuHTML(st, path) : '') +
+      '</div>'
+    );
+  }
+  PS.ruleEditorHTML = function (key) {
+    var st = PS.RULES[key],
+      names = groupNames(st),
+      nameOf = function (i) {
+        return (names.filter(function (g) {
+          return g[0] === i;
+        })[0] || [0, 'Group'])[1];
+      };
+    var parts = st.items.map(function (it, i) {
+      if (!it.group)
+        return (
+          (st.dropAt === i
+            ? '<div class="ps-re-drop" aria-hidden="true"></div>'
+            : '') + rowHTML(st, it, String(i))
+        );
+      var rows = it.rows.map(function (r, j) {
+        return rowHTML(st, r, i + '.' + j);
+      });
+      return (
+        '<div class="ps-cond-group ps-re-item"><div class="ps-cond-group-head"><button class="ps-handle" aria-label="Drag ' +
+        nameOf(i) +
+        '"><span data-i="grip"></span></button><span class="ps-re-group-title">' +
+        nameOf(i) +
+        '</span>' +
+        segH(it.mode, String(i)) +
+        '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove ' +
+        nameOf(i) +
+        '" data-re-rmgroup="' +
+        i +
+        '"><span data-i="trash"></span></button></div>' +
+        (rows.length
+          ? rows.join(joinW(it.mode))
+          : '<p class="ps-help">Empty. Move requirements in, or add one.</p>') +
+        (free(st).length
+          ? '<button class="ps-btn ps-btn--ghost" data-re-add="' +
+            i +
+            '" style="align-self:flex-start"><span data-i="plus" data-s="18"></span>Add to ' +
+            nameOf(i) +
+            '</button>'
+          : '') +
+        '</div>'
+      );
+    });
+    return (
+      '<div class="ps-field"><span class="ps-label">' +
+      (st.label || 'Players need') +
+      '</span>' +
+      segH(st.mode, 'top') +
+      '<div class="ps-cond-rows">' +
+      (parts.join(joinW(st.mode)) || '<p class="ps-help">Nothing yet.</p>') +
+      '</div>' +
+      '<div class="ps-row" style="gap:8px">' +
+      (free(st).length
+        ? '<button class="ps-btn ps-btn--secondary" data-re-add="top"><span data-i="plus" data-s="18"></span>' +
+          (st.addLabel || 'Requirement') +
+          '</button>'
+        : '') +
+      '<button class="ps-btn ps-btn--ghost" data-re-addgroup><span data-i="plus" data-s="18"></span>Group</button></div></div>' +
+      '<div class="ps-cond-preview"><span>Reads as</span><p>' +
+      PS.ruleReads(st) +
+      '</p></div>'
+    );
+  };
+  PS.ruleEditor = function (key) {
+    return '<div data-re="' + key + '">' + PS.ruleEditorHTML(key) + '</div>';
+  };
+  function get(st, path) {
+    var p = path.split('.');
+    return p.length === 1
+      ? { list: st.items, i: +p[0] }
+      : { list: st.items[+p[0]].rows, i: +p[1] };
+  }
+  function take(st, path) {
+    var g = get(st, path);
+    return g.list.splice(g.i, 1)[0];
+  }
+  function redraw(key) {
+    document.querySelectorAll('[data-re="' + key + '"]').forEach(function (el) {
+      el.innerHTML = PS.ruleEditorHTML(key);
+      PS.mount(el);
+    });
+  }
+  function newRow(st, t) {
+    var ty = cfg(st).types[t];
+    return { t: t, n: ty.unit ? 1 : undefined, value: ty.value };
+  }
+  document.addEventListener('click', function (e) {
+    var host = e.target.closest('[data-re]');
+    if (!host) return;
+    var key = host.getAttribute('data-re'),
+      st = PS.RULES[key],
+      b = e.target.closest(
+        '[data-re-menu],[data-re-to],[data-re-rm],[data-re-rmgroup],[data-re-add],[data-re-addgroup],[data-re-mode],[data-re-not]',
+      );
+    if (!b) return;
+    var a = function (n) {
+      return b.getAttribute(n);
+    };
+    if (b.hasAttribute('data-re-menu')) {
+      st.menu = st.menu === a('data-re-menu') ? null : a('data-re-menu');
+    } else if (b.hasAttribute('data-re-to')) {
+      var parts = a('data-re-to').split('|'),
+        path = parts[0],
+        to = parts[1],
+        p = path.split('.'),
+        g = get(st, path);
+      if (to === 'up' || to === 'down') {
+        var j = g.i + (to === 'up' ? -1 : 1);
+        if (j >= 0 && j < g.list.length) {
+          var tmp = g.list[g.i];
+          g.list[g.i] = g.list[j];
+          g.list[j] = tmp;
+        }
+      } else {
+        var row = take(st, path);
+        if (to === 'top') st.items.splice(+p[0] + 1, 0, row);
+        else if (to === 'new')
+          st.items.push({ group: true, mode: 'all', rows: [row] });
+        else st.items[+to.slice(1)].rows.push(row);
+        if (p.length === 2 && !st.items[+p[0]].rows.length && to !== 'top') {
+          /* keep the now-empty group */
+        }
+      }
+      st.menu = null;
+    } else if (b.hasAttribute('data-re-rm')) {
+      take(st, a('data-re-rm'));
+      st.menu = null;
+    } else if (b.hasAttribute('data-re-rmgroup')) {
+      var gi = +a('data-re-rmgroup'),
+        grp = st.items[gi];
+      st.items.splice.apply(st.items, [gi, 1].concat(grp.rows));
+    } else if (b.hasAttribute('data-re-add')) {
+      var t = free(st)[0];
+      if (t) {
+        var r = newRow(st, t);
+        if (a('data-re-add') === 'top') st.items.push(r);
+        else st.items[+a('data-re-add')].rows.push(r);
+      }
+    } else if (b.hasAttribute('data-re-addgroup'))
+      st.items.push({ group: true, mode: 'all', rows: [] });
+    else if (b.hasAttribute('data-re-mode')) {
+      var m = a('data-re-mode').split(':');
+      if (m[0] === 'top') st.mode = m[1];
+      else st.items[+m[0]].mode = m[1];
+    } else if (b.hasAttribute('data-re-not')) {
+      var gg = get(st, a('data-re-not'));
+      gg.list[gg.i].not = !gg.list[gg.i].not;
+    }
+    redraw(key);
+  });
+  document.addEventListener('input', function (e) {
+    var host = e.target.closest('[data-re]'),
+      path = e.target.getAttribute('data-re-n');
+    if (!host || path === null) return;
+    var st = PS.RULES[host.getAttribute('data-re')],
+      g = get(st, path);
+    g.list[g.i].n = Math.max(1, parseInt(e.target.value, 10) || 1);
+    host.querySelector('.ps-cond-preview p').textContent = PS.ruleReads(st);
+  });
+})(window.PS);

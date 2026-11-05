@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rule-group editor · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../assets/tokens.css" />
+    <link rel="stylesheet" href="../assets/mockups.css" />
+    <link rel="stylesheet" href="../assets/page.css" />
+    <script src="../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../index.html">All mockups</a
+      ><span
+        >Rule-group editor
+        <small
+          >Rule-group editor · All/Any lists with any number of groups, drag and
+          Move menu · live, Move menu, dragging, condition setup</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1760px">
+      <div class="ps-root ps-pad">
+        <div
+          class="ps-demos"
+          style="flex-wrap: nowrap; align-items: flex-start"
+        >
+          <div style="width: 400px">
+            <p class="ps-demo-label">Live · try Move, Add, + Group</p>
+            <div class="ps-card" data-slot="live"></div>
+          </div>
+          <div style="width: 400px">
+            <p class="ps-demo-label">Move menu open</p>
+            <div class="ps-card" data-slot="menu"></div>
+          </div>
+          <div style="width: 400px">
+            <p class="ps-demo-label">Dragging a row</p>
+            <div class="ps-card" data-slot="drag"></div>
+          </div>
+          <div style="width: 400px">
+            <p class="ps-demo-label">Set up for conditions (with Not)</p>
+            <div class="ps-card" data-slot="cond"></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        PS.RULES.live = {
+          kind: 'traversalFirst',
+          mode: 'any',
+          items: [
+            {
+              group: true,
+              mode: 'all',
+              rows: [{ t: 'trainers' }, { t: 'explores', n: 5 }],
+            },
+            { group: true, mode: 'all', rows: [{ t: 'wild', n: 3 }] },
+          ],
+        };
+        PS.RULES.menu = {
+          kind: 'traversalFirst',
+          mode: 'any',
+          menu: '0.1',
+          items: [
+            {
+              group: true,
+              mode: 'all',
+              rows: [{ t: 'trainers' }, { t: 'explores', n: 5 }],
+            },
+            { group: true, mode: 'all', rows: [{ t: 'wild', n: 3 }] },
+          ],
+        };
+        PS.RULES.drag = {
+          kind: 'traversalFirst',
+          mode: 'any',
+          dragging: '1',
+          dropAt: 1,
+          items: [
+            { group: true, mode: 'all', rows: [{ t: 'trainers' }] },
+            { t: 'explores', n: 5 },
+            { t: 'wild', n: 3 },
+          ],
+        };
+        PS.RULES.cond = {
+          kind: 'condition',
+          mode: 'all',
+          label: 'Requires',
+          addLabel: 'Condition',
+          items: [
+            { t: 'badge', value: 'Boulder Badge' },
+            {
+              group: true,
+              mode: 'any',
+              rows: [
+                { t: 'move', value: 'Cut' },
+                { t: 'item', value: 'Bike Voucher', not: true },
+              ],
+            },
+          ],
+        };
+        document.querySelectorAll('[data-slot]').forEach(function (el) {
+          el.innerHTML = PS.ruleEditor(el.getAttribute('data-slot'));
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../assets/page.js"></script>
+  </body>
+</html>
