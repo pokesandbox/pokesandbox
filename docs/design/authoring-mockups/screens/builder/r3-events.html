@@ -95,6 +95,18 @@
                 script.
               </li>
               <li>
+                <b>Proposed events, not in doc 07 yet:</b>
+                <b>Uses a move here</b> (a Pokémon in the party uses a field
+                move at this location, like "uses an item here" for Headbutt
+                trees, Strength boulders and Rock Smash rocks; obstacles that
+                only block a path stay requirements on the connection) and
+                <b>Leaves this location</b> (runs after the exit's requirement
+                passes and before the player moves; being stopped at an exit is
+                already an attemptable gate plus
+                <span class="t-mono">gateBlocked</span>). Both need a maintainer
+                decision.
+              </li>
+              <li>
                 <b>Runs:</b> Automatically (forced: it starts as soon as the
                 event happens) or As a button (offered: players see the label,
                 e.g. "Talk to the old man").
@@ -247,6 +259,16 @@
             choice(true, 'Enters this location') +
             choice(false, 'Explores here') +
             choice(false, 'Uses an item here') +
+            choice(
+              false,
+              'Uses a move here',
+              'Headbutt a tree, Strength on a boulder, Rock Smash on a rock. <span class="ps-badge ps-badge--outline">Proposal</span>',
+            ) +
+            choice(
+              false,
+              'Leaves this location',
+              'Runs before they move on, after the exit’s own requirement passes. <span class="ps-badge ps-badge--outline">Proposal</span>',
+            ) +
             '</div></div>' +
             '<div class="ps-field"><span class="ps-label">Only when arriving from <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Viridian City<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Viridian City"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Place</button></div></div>' +
             '<div class="ps-field"><span class="ps-label">Only when arriving by <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span>Any way</span><span data-i="chevD"></span></button><p class="ps-help">Walking, or a way of travel like a ferry once transport exists.</p></div>' +
