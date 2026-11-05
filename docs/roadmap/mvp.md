@@ -162,7 +162,7 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 **Epic: Conditions & Effects** (Q17)
 
 - [ ] Condition tree (`all/any/not`) + fact/operator registry (evaluate/explain/validate/references) + scoped evaluation context (M)
-- [ ] MVP facts: `milestone.has`, `milestone.count`, `choice.value`, `flag`, `bag.count`, `visited` (incl. `$target`), `party.knowsMove`, `party.hasSpecies`, `dex.caughtCount`, `progression.value`, `location.cleared`, `location.visit.*`, `location.trainersDefeated` (L)
+- [ ] MVP facts: `milestone.has`, `milestone.count`, `choice.value`, `flag`, `bag.count`, `visited` (incl. `$target`), `party.knowsMove`, `party.hasSpecies`, `dex.caughtCount`, `progression.value`, `location.lifetime.*`, `location.visit.*` (incl. `encounters`), `trainers.defeated`, `location.trainersDefeated` (L)
 - [ ] Gate envelope (`presentation`, `latch`, `cost`) + `checkGate` + `gateBlocked` event (M)
 - [ ] Effect union + registry + atomic executor with idempotency (L)
 - [ ] MVP effects: currency, item, progression, milestone (grant/revoke), choice, flag, setRespawn, `teleport: respawn` (Escape Rope / Dig / Teleport), random (L). `givePokemon` (PC + swap offer) and `heal` land in CP0a with `PokemonInstance`.
@@ -294,8 +294,8 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Fork patch: external choice hook (bag/catch/run consume the turn) + `caught`/`ran` end reasons (L)
 - [ ] ItemDefinition model + Gen 1 item seed (pockets, prices, field/battle handlers) (L)
 - [ ] Gen 1 catch and escape formulas, with test vectors (S)
-- [ ] Encounter method registry + conditioned encounter tables (engine side; the builder screen is CP1) (M)
-- [ ] Explore action: the weighted outcome table with `wild` outcomes (trainer and item outcomes arrive in CP1) (S)
+- [ ] Encounter method registry (label, icon, requirement, Repel, per-method outcome table; canon defaults incl. Look around) + conditioned encounter tables (engine side; the builder screen is CP1) (M)
+- [ ] Explore action: roll the method's outcome table (percent rows, location override) with `wild` outcomes (trainer and item rows arrive in CP1) (S)
 - [ ] Wild battles: catch, run odds, bag in battle (via the hook), Script VM `wildBattle` step; the default intro line, with the encounter start event carrying `firstSighting` and a resolved `intro` reference so authored intros can be added later ([10](../architecture/concepts/10-encounters.md#encounter-intros-decided-nov-2026-post-mvp-the-mvp-shows-the-default-line)) (L)
 - [ ] Bag: pockets, use outside battle, key items (Oak's Parcel) (M)
 - [ ] Shops: buy/sell (the Viridian Mart), Script VM `shop` step; money never below 0 (S)
@@ -309,10 +309,11 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width; blocked by [#202](https://github.com/pokesandbox/pokesandbox/issues/202) and [#203](https://github.com/pokesandbox/pokesandbox/issues/203) ([#204](https://github.com/pokesandbox/pokesandbox/issues/204)) (M)
 - [ ] "Your servers" home with builder access ([#263](https://github.com/pokesandbox/pokesandbox/issues/263)) (M)
 - [ ] Open in builder links from `/region` (plain URLs, Discord OAuth sign-in) (S)
-- [ ] Shared condition builder component (flat "all of" + one nesting level + templates) (L)
+- [ ] Shared rule-group editor for conditions and traversal costs (All of / Any of + one level of groups, per-use configs, templates) ([#265](https://github.com/pokesandbox/pokesandbox/issues/265)) (L)
 - [ ] Region config screen: currency object, starting location, respawn, rules preset (M)
 - [ ] Location screens: kinds, grouping (`parentKey`), description and conditioned `descriptionVariants` as `Passage`s (Q37), services, tags; connections with the two-way toggle and labels; list/detail region map (L)
-- [ ] Encounter table grid (M)
+- [ ] Explore tab: method outcome tables (region default, Customize, Reset), encounter table grid, hidden items (once or renewing), per-exit traversal costs with the locked-message preview; Settings → Encounter methods (L)
+- [ ] Location Events tab: "When a player…" triggers (enter, leave, explore with methods and Always/chance, use item), the shared trigger sheet (also the NPC Talk row), priority warnings (M)
 - [ ] Trainer party editor with conditioned variants (unset moves default to the last 4 level-up moves from the region's learnsets) and the "Lines" tab (M)
 - [ ] Validator Tier 1 + basic Tier 2 + Region Health (webapp view, plus a `/region` summary in Discord) (L)
 - [ ] Region Health: dismiss warnings ([#259](https://github.com/pokesandbox/pokesandbox/issues/259)) (M)
@@ -326,10 +327,10 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 **Adventure**
 
-- [ ] Explore outcomes `trainer` and `item`, trainer engagement (`onTalk`, `onExplore`, `onEnter`), hidden items (M)
-- [ ] Trigger events `battleEnd` and `explore` (S)
-- [ ] Traversal requirements: location progress counters (lifetime/visit), one-time + permanent costs, compiled exit gates with explanations (M)
-- [ ] Templates: Gym Leader, Forced Encounter (the Route 22 rival), Gift NPC (M)
+- [ ] Explore outcome rows `trainer`, `item` and `event` with renormalizing and hidden buttons, trainer engagement (`onTalk`, `onExplore`, `onEnter`), hidden items with `Journey.pickups` and renewal (M)
+- [ ] Trigger events `battleEnd`, `explore` (methods, `always` / `chance`) and `leaveLocation` (with the `stay` step) (M)
+- [ ] Traversal requirements: location progress counters (lifetime/visit, incl. encounters), per-exit first-time + every-time costs, compiled exit gates (`traversal:<edge>:passed`) with explanations (M)
+- [ ] Templates: Gym Leader, Forced Encounter (the Route 22 rival; enter, leave or explore), Gift NPC (items or a Pokémon) (M)
 - [ ] TM/HM lists ([#196](https://github.com/pokesandbox/pokesandbox/issues/196)) and teaching a TM from the bag (M)
 - [ ] Post-battle level evolution (S)
 - [ ] AI trainer item use ([#176](https://github.com/pokesandbox/pokesandbox/issues/176)) (S)
@@ -366,7 +367,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 - [ ] Fly network (template, HM02), Fly destination lists grouped and paginated (S)
 - [ ] Region map canvas for wide screens (directional/two-way edges, grouping, gate badges) (L)
-- [ ] Scripted static encounters (Snorlax), Card Key gates, gifts with a full party (Lapras) (S)
+- [ ] Scripted static encounters (Snorlax, with the `useItem` trigger for the Poké Flute), Card Key gates, gifts with a full party (Lapras) (S)
 
 ## CP6: Volcano & Earth (8 badges)
 

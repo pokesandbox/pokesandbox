@@ -40,7 +40,10 @@ Trigger {
     | { event: 'battleEnd'; trainer: ContentKey; result: 'win' | 'lose' }
     | { event: 'journeyStarted'; newCharacter?: boolean; carriedPokemon?: number }   // onboarding; payload lets scripts branch ("Welcome back, Ash"). MVP: always a new character, nothing carried. Creating a character is a platform action, not a content trigger.
     | { event: 'useItem'; item: ItemId; location?: ContentKey }
-    | { event: 'explore'; location: ContentKey }         // e.g. Snorlax blocks Route 12
+    | { event: 'leaveLocation'; location: ContentKey; toward?: ContentKey[] }   // after the exit gate passes, before moving; a `stay` step keeps the player here (Nov 2026)
+    | { event: 'explore'; location: ContentKey; methods?: EncounterMethodId[];   // empty: any method
+        frequency: 'always' | 'chance' }               // always: runs before the roll (Snorlax blocks Route 12); chance: an event row in each method's outcome table (10)
+    | { event: 'useMove'; move: MoveId; location: ContentKey }   // POST-MVP: field moves on a spot (Headbutt a tree, push a boulder)
     | { event: 'gateBlocked'; gate: GateOwnerRef }       // player attempted an 'attemptable' gate and failed (see 05 §4)
   condition?: Condition;       // e.g. not flag script:rival-r22:done, milestone badges≥…
   once: boolean;               // engine writes flag script:<key>:done
@@ -63,6 +66,7 @@ type Step =
   | { npcTrade: { want: SpeciesId; give: { species: SpeciesId; nickname?: string; ot: { name: string; id: number }; moves?: MoveId[] };
                 onTrade?: Label; onDecline?: Label; onNoMatch?: Label } }   // in-game trade (MVP)
   | { shop: ContentKey } | { heal: {} } | { travel: LocationRef }
+  | { stay: {} }                                                     // leaveLocation scripts only: cancel the pending move (Nov 2026)
   | { label: Label } | { goto: Label } | { end: {} };
 ```
 
@@ -117,7 +121,7 @@ PassageBlock = { id: string } & (     // stable id: translations and flavor pick
 
 ### Mitigating the authoring cost of option B
 
-1. **Templates** generate whole scripts from forms: "Gym Leader" (name, party, badge, TM, intro/defeat text), "Starter Gift" (N options), "Forced Rival Encounter", "Item Gift NPC", "Gauntlet". Most admins never see a raw step list, so the friendly builder UIs from option A survive _as templates over B_.
+1. **Templates** generate whole scripts from forms: "Gym Leader" (name, party, badge, TM, intro/defeat text), "Starter Gift" (N options), "Forced Encounter", "Gift NPC", "Gauntlet". Most admins never see a raw step list, so the friendly builder UIs from option A survive _as templates over B_.
 2. A **webapp step editor**, mobile-first, for everything templates don't cover: reorder, insert, edit steps and passages with a Discord preview (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)). A Discord step-list editor for small edits is post-MVP.
 3. **JSON/YAML import** for power users.
 
@@ -129,7 +133,7 @@ PassageBlock = { id: string } & (     // stable id: translations and flavor pick
 
 ## MVP scope
 
-- Trigger events: `journeyStarted`, `enterLocation`, `interact`, `battleEnd`, `explore`.
+- Trigger events: `journeyStarted`, `enterLocation`, `leaveLocation`, `interact`, `battleEnd`, `explore`, and `useItem` (the Poké Flute on Snorlax). `useMove` is post-MVP.
 - Steps: `passage` (with `say` as shorthand), `choice`, `if`, `effects`, `battle`, `wildBattle`, `npcTrade`, `askName`, `heal`, `shop`, `travel`, `goto/label/end`. `{name:<slot>}` text placeholders.
 - Templates: Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet, Simple Talker.
 
@@ -142,8 +146,15 @@ Option B was adopted: one Script + Trigger system, **on the condition that build
 3. **Authoring surface (revised Oct 2026, Q36):** scripts are authored in the **webapp**, mobile-first, on top of templates ([28](28-webapp-authoring-and-mobile-first-ux.md)). This replaces the earlier Discord-complete principle. Because the step editor is a client of `libs/authoring` commands, a Discord **step-list editor** (list steps, add/insert/move/delete, edit a step via modal, Components v2 sections with per-step edit accessories) can still be added post-MVP for creators who prefer Discord.
 4. **Guardrails:** confirmed. No script-calls-script in MVP (add `call` later with a depth limit), and a step cap per dispatch so a bad `goto` can't loop forever.
 
-5. **Template provenance (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)):** a script a template generated remembers it, `Script.template?: { id: TemplateId; version: number; inputs: unknown }`. **Edit as form** reopens the template's form with the stored inputs and regenerates the script in place. Keys stay stable, and so do the NPC and trainer the template made. Editing any step by hand in the step editor first asks to confirm ("This script will no longer be editable as a Gym Leader form") and then clears `template`. The version lets a later template change migrate old inputs.
+5. **Template provenance (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)):** a script a template generated remembers it, `Script.template?: { id: TemplateId; version: number; inputs: unknown }`. Tapping a template-made script opens its form with the stored inputs (**Edit as form**), and saving regenerates the script in place. Keys stay stable, and so do the NPC and trainer the template made. Editing any step by hand in the step editor first asks to confirm ("This script will no longer be editable as a Gym Leader form") and then clears `template`. The version lets a later template change migrate old inputs.
 6. **Name placeholders (decided Nov 2026):** `{name:player}` is always available and resolves to the character's name. Other slots (`{name:rival}`) are journey name slots filled by `askName` ([23](23-players-characters-journeys-and-scopes.md)).
+
+7. **Location events and new trigger events (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)):**
+   - **Events tab:** each location lists its triggers as "When a player…" rows (event, Automatic or the button label, Once, condition, script). An NPC's Talk row opens the same sheet with the event fixed to `interact`. Priority shows only when two triggers can match at once, which is also a Region Health warning naming the other trigger. Scripts not made from a template open read-only until the step editor exists.
+   - **`leaveLocation`** (MVP): the travel action checks the exit's gate, then runs a matching leave trigger (forced only) with the pending move held in the mode. When the script ends the player moves, unless it ran `stay`: then they remain, and the destination isn't marked visited.
+   - **`explore`** picks its methods and a frequency. `always` runs first, before the roll, whenever its condition passes. `chance` lives only as an event row in each listed method's outcome table at that location, so the percent is stored once; one authoring command writes the trigger and its rows together. Adding a chance never lowers other rows: the builder warns that the table no longer sums to 100. A `once` event leaves the table after it runs. So explore events don't need the `chance` predicate ([05](05-requirements.md)).
+   - **`useMove`** is post-MVP. Obstacles that only block a path stay as requirements on the connection, and Headbutt and Rock Smash stay encounter methods ([10](10-encounters.md)).
+   - **Templates:** Forced Encounter starts on enter, leave or explore, uses an existing or new trainer without copying it, and has `canLose` and heal-after options. Gift NPC gives items or a Pokémon once per journey; a full party sends the Pokémon to the PC per the region's rules. Every template's text step is called "Text".
 
 ## Open questions
 

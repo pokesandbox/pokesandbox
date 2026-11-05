@@ -47,8 +47,10 @@ With option B, engine-managed flags use reserved prefixes:
 
 - `trainer:<key>:defeated`
 - `script:<key>:done`
-- `pickup:<key>:taken`
+- `traversal:<edge>:passed` (first-time traversal cost met, [10](10-encounters.md#traversal-requirements-mvp-decided-oct-2026))
 - `gift:<key>:claimed`
+
+Hidden items aren't flags: they can renew, so the journey stores when each was found (`Journey.pickups`, [10](10-encounters.md#hidden-items-decided-nov-2026); replaces `pickup:<key>:taken`, Nov 2026).
 
 Admin-authored flags are free-form (`rocket_hideout_cleared`). Conditions can test either (`{ flag: 'trainer:brock:defeated' }`). The builder can offer flags from a dropdown of "flags written anywhere in this region" (computed by the validator), which gives discoverability without definitions.
 
@@ -70,7 +72,7 @@ Admin-authored flags are free-form (`rocket_hideout_cleared`). Conditions can te
 
 ## Decisions (Oct 2026, Q21)
 
-Option B (two layers) adopted: curated **progressions** (displayable) + open **flags** (engine-reserved prefixes `trainer:`, `script:`, `pickup:`, `gift:`, `gate:`, `visited:`, plus author flags created inline). The builder offers a dropdown of every flag used in the region, and a "Promote to progression" action for flags that turn out to matter to players.
+Option B (two layers) adopted: curated **progressions** (displayable) + open **flags** (engine-reserved prefixes `trainer:`, `script:`, `traversal:`, `gift:`, `gate:`, `visited:`, plus author flags created inline). The builder offers a dropdown of every flag used in the region, and a "Promote to progression" action for flags that turn out to matter to players.
 
 ## Related
 

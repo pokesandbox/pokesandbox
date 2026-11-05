@@ -81,7 +81,8 @@ registerPredicate('milestone', {
 ## Authoring UX (so option C stays friendly)
 
 - The builder **defaults to a flat "all of these" list**, which covers about 90% of cases and looks just like today's buckets.
-- "Advanced" adds any/not groups. The condition builder is a webapp component (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)) built for phones first; very deep trees are easier on wide screens or by JSON import.
+- **Rule-group editor (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250); built in [#265](https://github.com/pokesandbox/pokesandbox/issues/265)):** the top level is All of or Any of, with any number of groups one level deep, each with its own All of / Any of. Rows move by drag or a menu (up, down, out of group, to group N, to a new group); removing a group puts its rows back in its place. A "Reads as" sentence (the explainer) brackets groups. Each use configures its row types, whether Not is allowed, and whether a type can repeat: conditions allow both, traversal costs neither. Deeper trees (from import or templates) open read-only.
+- "Advanced" adds Not on a row. The condition builder is a webapp component (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)) built for phones first; very deep trees are easier on wide screens or by JSON import.
 - **Templates:** "Requires badge…", "Requires HM move…", "Only once", "Only before flag…", "Requires item…".
 
 ## Contextual targets (resolves the Fly debate)
@@ -142,7 +143,7 @@ Gate = {
 }
 ```
 
-**Live by default, latch optionally (decided Oct 2026).** Gates are evaluated against **current** state. If a badge is revoked or a numeric progression drops, access is genuinely lost again. That's the simple, predictable default. For "once cleared, always cleared", set `latch: true`: the first time the gate passes, the engine writes the reserved flag `gate:<ownerRef>:passed`, and from then on the gate passes without re-checking its condition (costs still apply if the gate has them). It's one check in `checkGate` plus a flag, with no milestone history to track. It's the same pattern `location.cleared` uses for traversal.
+**Live by default, latch optionally (decided Oct 2026).** Gates are evaluated against **current** state. If a badge is revoked or a numeric progression drops, access is genuinely lost again. That's the simple, predictable default. For "once cleared, always cleared", set `latch: true`: the first time the gate passes, the engine writes the reserved flag `gate:<ownerRef>:passed`, and from then on the gate passes without re-checking its condition (costs still apply if the gate has them). It's one check in `checkGate` plus a flag, with no milestone history to track. Traversal costs use the same pattern with their own flag, `traversal:<edge>:passed`, latching only the first-time part ([10](10-encounters.md#traversal-requirements-mvp-decided-oct-2026)).
 
 | Presentation           | Player sees                                               | On attempt                                                                                                                                              | Typical use                                                                         |
 | ---------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
@@ -195,23 +196,24 @@ The condition is the same everywhere. What differs is how the caller uses the re
 
 ## MVP scope
 
-- `all` / `any` / `not` with at least one level of grouping in the condition builder (webapp, Q36). RBY needs both: _knows Cut **and** has the Cascade Badge_, and the Saffron gate guards accept _Fresh Water **or** Soda Pop **or** Lemonade_.
+- `all` / `any` / `not` with one level of grouping (any number of groups) in the rule-group editor (webapp, Q36). RBY needs both: _knows Cut **and** has the Cascade Badge_, and the Saffron gate guards accept _Fresh Water **or** Soda Pop **or** Lemonade_.
 - **MVP facts (decided Oct 2026, scoped to a Red/Blue/Yellow Kanto):**
 
-  | Fact                                            | RBY use                                                                                                                                      |
-  | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-  | `milestone.has`                                 | Badge needed to use each HM outside battle, Route 23 badge guards                                                                            |
-  | `milestone.count`                               | Viridian Gym locked until 7 badges                                                                                                           |
-  | `choice.value`                                  | Rival team keyed off the starter                                                                                                             |
-  | `flag`                                          | Oak's Parcel, trainers defeated, Snorlax, Silph Co., S.S. Anne departure, gifts claimed                                                      |
-  | `bag.count`                                     | S.S. Ticket, Bicycle, Silph Scope, Poké Flute, Card Key, Lift Key, Secret Key, gate drinks                                                   |
-  | `visited` (incl. `$target`)                     | Fly destinations                                                                                                                             |
-  | `party.knowsMove`                               | Cut / Surf / Strength / Flash obstacles, using Fly                                                                                           |
-  | `party.hasSpecies`                              | In-game trades ("Do you have an Abra?"), branching dialogue before an `npcTrade` step                                                        |
-  | `dex.caughtCount`                               | Oak's aides (HM05 Flash at 10, Itemfinder at 30, Exp. All at 50)                                                                             |
-  | `progression.value`                             | Not required by RBY, but admins will gate on numeric and boolean progressions they define                                                    |
-  | `location.cleared` / `location.visit.<counter>` | Traversal requirements: unavoidable route trainers, cave step costs (see [10](10-encounters.md#traversal-requirements-mvp-decided-oct-2026)) |
-  | `location.trainersDefeated`                     | Gym leader appears/unlocks after N gym trainers are beaten (see [11](11-npcs-trainers-and-battle-definitions.md#decisions-oct-2026-q4))      |
+  | Fact                                                       | RBY use                                                                                                                                                                               |
+  | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | `milestone.has`                                            | Badge needed to use each HM outside battle, Route 23 badge guards                                                                                                                     |
+  | `milestone.count`                                          | Viridian Gym locked until 7 badges                                                                                                                                                    |
+  | `choice.value`                                             | Rival team keyed off the starter                                                                                                                                                      |
+  | `flag`                                                     | Oak's Parcel, trainers defeated, Snorlax, Silph Co., S.S. Anne departure, gifts claimed                                                                                               |
+  | `bag.count`                                                | S.S. Ticket, Bicycle, Silph Scope, Poké Flute, Card Key, Lift Key, Secret Key, gate drinks                                                                                            |
+  | `visited` (incl. `$target`)                                | Fly destinations                                                                                                                                                                      |
+  | `party.knowsMove`                                          | Cut / Surf / Strength / Flash obstacles, using Fly                                                                                                                                    |
+  | `party.hasSpecies`                                         | In-game trades ("Do you have an Abra?"), branching dialogue before an `npcTrade` step                                                                                                 |
+  | `dex.caughtCount`                                          | Oak's aides (HM05 Flash at 10, Itemfinder at 30, Exp. All at 50)                                                                                                                      |
+  | `progression.value`                                        | Not required by RBY, but admins will gate on numeric and boolean progressions they define                                                                                             |
+  | `location.lifetime.<counter>` / `location.visit.<counter>` | Traversal requirements: wild battles and explores on the first pass, cave step or encounter costs every pass (see [10](10-encounters.md#traversal-requirements-mvp-decided-oct-2026)) |
+  | `trainers.defeated` (a list; true when all are beaten)     | Traversal: "Beat these trainers" (unavoidable route trainers)                                                                                                                         |
+  | `location.trainersDefeated`                                | Gym leader appears/unlocks after N gym trainers are beaten (see [11](11-npcs-trainers-and-battle-definitions.md#decisions-oct-2026-q4))                                               |
 
 - **Deferred:**
   - `money`: affordability is already handled by the cost check before effects apply.
@@ -221,7 +223,7 @@ The condition is the same everywhere. What differs is how the caller uses the re
   - Script `var`: MVP branching uses choice labels.
   - `dex.caught`; plus everything already listed as post-MVP (quest vars, region/server state, single-Pokémon facts, weekday, weather, `party.maxLevel`).
 - **Not a fact: the blackout/respawn point.** It's journey _state_ (`Journey.location.respawn`), written by the `setRespawn` effect and automatically by using a `heal` service. The engine reads it directly on whiteout, per `RegionRules.whiteout`. It only becomes a fact if some condition ever needs to ask "where is my respawn?", which no known content does.
-- Evaluator, explainer, validator, and builder (flat list + one nesting level).
+- Evaluator, explainer, validator, and the rule-group editor (top-level All of / Any of + one level of groups).
 
 ## Open questions
 

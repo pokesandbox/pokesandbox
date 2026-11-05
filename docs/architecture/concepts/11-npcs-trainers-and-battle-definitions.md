@@ -85,7 +85,7 @@ In the games, line of sight forces battles. Options:
 
 **Engagement modes** are set per trainer NPC: `onExplore` (default for route trainers), `onEnter`, `onTalk`.
 
-**Every trainer battle in a location counts toward its traversal costs**, however it started (explore, entry, talk, or a script). Location progress counters are fed by "trainer defeated _here_" events, not by engagement mode. Named trainers in `traversal.firstPass.trainers` count whenever they're beaten.
+**Every trainer battle in a location counts toward its traversal costs**, however it started (explore, entry, talk, or a script). Location progress counters are fed by "trainer defeated _here_" events, not by engagement mode. Named trainers in a first-time traversal cost (`trainers.defeated`) count whenever they're beaten.
 
 **Several `onEnter` trainers = back-to-back battles, i.e. a gauntlet.** Entering a location with undefeated `onEnter` trainers runs them **in sequence** (by NPC ordinal), with no healing between. A loss whites you out as usual, and trainers already beaten stay beaten. Under the hood this is the same thing as an authored gauntlet: the engine generates an entry-trigger script of consecutive `battle` steps. Authors who want more control (dialogue between battles, different loss rules) write the gauntlet explicitly as a script.
 
