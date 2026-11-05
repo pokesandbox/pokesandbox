@@ -59,3 +59,13 @@ export async function getServerFeatures(
   }
   return features;
 }
+
+export async function getServerIdsWithFeatureOverrides(): Promise<string[]> {
+  const servers = await Server.find()
+    .where('settings.features')
+    .exists(true)
+    .nin([null, {}])
+    .select('serverId')
+    .lean();
+  return servers.map((server) => server.serverId);
+}

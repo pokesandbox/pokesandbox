@@ -19,6 +19,8 @@ import type {
   UserSelectMenuInteraction,
 } from 'discord.js';
 
+import type { FlagKey } from '@core/flags';
+
 import type { BotClient } from '@bot/classes';
 
 export interface IBaseCommand {
@@ -59,6 +61,8 @@ export interface IButtonCommand extends IBaseCommand {
 }
 
 export interface IMessageContextCommand extends IBaseCommand {
+  /** Hides the command until released (registration + handler gate). */
+  flag?: FlagKey;
   command: ContextMenuCommandBuilder;
   execute: (
     client: BotClient,
@@ -79,6 +83,8 @@ export interface IRoleSelectMenu extends IBaseCommand {
 }
 
 export interface ISlashCommand extends IBaseCommand {
+  /** Hides the command until released (registration + handler gate). */
+  flag?: FlagKey;
   autocomplete?: (
     client: BotClient,
     interaction: AutocompleteInteraction,
@@ -101,6 +107,8 @@ export interface IStringSelectMenu extends IBaseCommand {
 }
 
 export interface IUserContextCommand extends IBaseCommand {
+  /** Hides the command until released (registration + handler gate). */
+  flag?: FlagKey;
   /* eslint-disable @typescript-eslint/no-explicit-any */
   command: ContextMenuCommandBuilder | any;
   execute: (

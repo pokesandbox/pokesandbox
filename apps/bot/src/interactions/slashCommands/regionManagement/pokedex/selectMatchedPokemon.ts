@@ -22,6 +22,7 @@ const selectMatchedPokemonCommandOptionsSchema = z.object({
 
 export const SelectMatchedPokemonCommand: ISlashCommand = {
   name: COMMAND_NAME,
+  flag: 'discord.authoring',
   anyUserPermissions: ['Administrator'],
   ignore: true,
   onlyRoles: onlyAdminRoles,

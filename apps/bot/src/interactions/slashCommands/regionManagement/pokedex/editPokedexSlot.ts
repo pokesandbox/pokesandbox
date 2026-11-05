@@ -32,6 +32,7 @@ export const EDIT_POKEDEX_SLOT_COMMAND_NAME = COMMAND_NAME;
 
 export const EditPokedexSlotCommand: ISlashCommand = {
   name: COMMAND_NAME,
+  flag: 'discord.authoring',
   anyUserPermissions: ['Administrator'],
   onlyRoles: onlyAdminRoles,
   onlyRolesOrAnyUserPermissions: true,

@@ -38,7 +38,9 @@ connectDb().then(async () => {
   await buttonsManager(client);
   await modalFormsManager(client);
   await roleSelectMenusManager(client);
-  await slashCommandsManager(client, { env: readFlagEnv().env });
+  const flagEnv = readFlagEnv();
+  client.flagEnv = flagEnv;
+  await slashCommandsManager(client, { flagEnv });
   await stringSelectMenusManager(client);
   await userSelectMenusManager(client);
 

@@ -12,6 +12,7 @@ import {
 import type { BotClient } from '@bot/classes';
 import { commandOptionsProcessor } from '@bot/structures/commandOptions/processor';
 import type {
+  ChatInputCommand,
   IBotEvent,
   IButtonCommand,
   IMessageContextCommand,
@@ -22,6 +23,10 @@ import type {
   IUserContextCommand,
   IUserSelectMenu,
 } from '@bot/structures/interfaces';
+import {
+  canRunCommand,
+  COMMAND_UNAVAILABLE_REPLY,
+} from '@bot/structures/managers/commandGate';
 
 export const InteractionCreate: IBotEvent = {
   name: 'interactionCreate',
@@ -53,6 +58,12 @@ const handleAutocompleteInteraction = async (
   );
 
   if (!slashCommand?.autocomplete) return;
+  if (
+    !(await canRunCommand(slashCommand, client.flagEnv, interaction.guildId))
+  ) {
+    await interaction.respond([]);
+    return;
+  }
 
   try {
     await slashCommand.autocomplete(client, interaction);
@@ -77,6 +88,8 @@ const handleApplicationCommandInteraction = async (
       });
       return;
     }
+
+    if (!(await replyIfUnavailable(client, interaction, slashCommand))) return;
 
     const authenticatedCMDOptions = await commandOptionsProcessor(
       client,
@@ -125,6 +138,15 @@ const handleApplicationCommandInteraction = async (
       return;
     }
 
+    if (
+      !(await replyIfUnavailable(
+        client,
+        interaction,
+        messageContextMenuCommand,
+      ))
+    )
+      return;
+
     const authenticatedCMDOptions = await commandOptionsProcessor(
       client,
       interaction,
@@ -150,6 +172,11 @@ const handleApplicationCommandInteraction = async (
       return;
     }
 
+    if (
+      !(await replyIfUnavailable(client, interaction, userContextMenuCommand))
+    )
+      return;
+
     const authenticatedCMDOptions = await commandOptionsProcessor(
       client,
       interaction,
@@ -162,6 +189,22 @@ const handleApplicationCommandInteraction = async (
       return userContextMenuCommand.execute(client, interaction);
     }
   }
+};
+
+// Returns whether the command may run.
+const replyIfUnavailable = async (
+  client: BotClient,
+  interaction: CommandInteraction,
+  command: ChatInputCommand,
+): Promise<boolean> => {
+  if (await canRunCommand(command, client.flagEnv, interaction.guildId)) {
+    return true;
+  }
+  await interaction.reply({
+    content: COMMAND_UNAVAILABLE_REPLY,
+    ephemeral: true,
+  });
+  return false;
 };
 
 const handleMessageComponentInteraction = async (

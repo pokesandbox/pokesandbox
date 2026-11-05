@@ -27,6 +27,7 @@ const REGION_NAME_FIELD_ID = 'region-name';
 
 export const RegionsCommand: ISlashCommand = {
   name: COMMAND_NAME,
+  flag: 'discord.authoring',
   anyUserPermissions: ['Administrator'],
   onlyRoles: onlyAdminRoles,
   onlyRolesOrAnyUserPermissions: true,

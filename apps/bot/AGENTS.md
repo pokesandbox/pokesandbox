@@ -17,11 +17,15 @@ Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/inter
 
 ## Commands and registration
 
-- One command set: `src/interactions/slashCommands/`, `messageContextCommands/`, and `userContextCommands/`. `structures/managers/slashCommands.ts` loads them all and registers them in one `rest.put`; the planning (`commandRegistration.ts`) is pure and tested.
+- One command set: `src/interactions/slashCommands/`, `messageContextCommands/`, and `userContextCommands/`. `structures/managers/slashCommands.ts` loads them all and registers them; the planning (`commandRegistration.ts`) is pure and tested.
 - The scope follows the environment from `readFlagEnv()` (`@shared/flags`): `NODE_ENV=production` registers globally; anything else, including unset, registers to `DEV_GUILD_ID`, and startup fails if it's missing.
 - A slash command with `ignore: true` is loaded (so FlowCord can open its menu from another menu) but not registered with Discord.
 - `rest.put` only replaces the commands of the scope it targets. A guild that switches from dev to production keeps its old guild commands until they're cleared: `rest.put(Routes.applicationGuildCommands(appId, guildId), { body: [] })`.
-- Don't deploy with `NODE_ENV=production` until #108 hides `/region` behind `discord.authoring`: until then, production registration exposes the admin commands.
+- **Unreleased commands declare a `flag`** (e.g. `flag: 'discord.authoring'` on every `/region` builder). Registration and the interaction handler both follow it:
+  - development: one put to `DEV_GUILD_ID` with every command the flags enable there;
+  - production: released commands register globally; a flagged command that's off by default registers only as a guild command on servers whose `settings.features` turns it on;
+  - the handler checks the flag before running a command (`commandGate.ts`), so a stale registration replies "This command isn't available on this server yet." instead of running.
+- **`client.syncGuildCommands(guildId)` is the only way to rewrite a server's guild commands** in production. It runs at startup for every server with overrides. Code that changes a server's `settings.features` must call it after the write. Today overrides are set by hand in the database, so a change needs a restart; removing a server's last override leaves its guild commands registered (but blocked by the handler) until that server is synced.
 
 ## Rules
 

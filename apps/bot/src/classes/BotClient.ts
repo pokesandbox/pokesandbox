@@ -1,6 +1,8 @@
 import type { FlowCord } from '@flowcord/core';
 import { Client, Collection } from 'discord.js';
 
+import type { FlagEnv } from '@shared/flags';
+
 import type {
   IBotEvent,
   IButtonCommand,
@@ -24,4 +26,7 @@ export class BotClient extends Client {
   stringSelectMenus = new Collection<string, IStringSelectMenu>();
   userContextCommands = new Collection<string, IUserContextCommand>();
   userSelectMenus = new Collection<string, IUserSelectMenu>();
+  flagEnv?: FlagEnv;
+  // No-op in dev, where the single dev guild put covers every command.
+  syncGuildCommands: (guildId: string) => Promise<void> = async () => undefined;
 }
