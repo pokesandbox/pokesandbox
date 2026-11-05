@@ -74,8 +74,8 @@
                 <b>Design proposal, not in the docs yet:</b> the item (TMs
                 included), a quantity, an optional condition (K1), and
                 <b>Can be found</b>: Once per journey (default), or Again after
-                a while for berries and gems. Renewable items wait at least a
-                day, so they can't be farmed and sold in one sitting. Renewable
+                a while for berries and gems, every N hours or days. The cadence
+                is the server's call; there's no built-in minimum. Renewable
                 pickups would store when they were taken, not just a flag.
               </li>
               <li>
@@ -104,7 +104,7 @@
             icon: 'leaf',
             qty: 2,
             cond: '',
-            again: 'Again every day',
+            again: 'Again every 2 hours',
           },
         ];
         function row(h) {
@@ -212,8 +212,8 @@
           '<div class="ps-pair" style="grid-template-columns:1fr 96px"><div class="ps-field"><span class="ps-label">Item</span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="leaf"></span>Oran Berry</span><span data-i="search"></span></button></div>' +
           '<div class="ps-field"><label class="ps-label" for="q">Quantity</label><input class="ps-input" id="q" type="number" inputmode="numeric" value="2"></div></div>' +
           '<div class="ps-field"><span class="ps-label">Can be found</span><div class="ps-seg" role="group"><button aria-pressed="false">Once per journey</button><button aria-pressed="true">Again after a while</button></div>' +
-          '<div class="ps-row" style="gap:8px;align-items:center"><span class="t-body-sm">Comes back every</span><input class="ps-input" type="number" inputmode="numeric" min="1" value="1" style="width:80px" aria-label="Days"><span class="t-body-sm">day</span></div>' +
-          '<p class="ps-help">At least a day, so it can’t be farmed and sold in one sitting. Each player has their own timer.</p></div>' +
+          '<div class="ps-row" style="gap:8px;align-items:center;flex-wrap:nowrap"><span class="t-body-sm" style="white-space:nowrap">Comes back every</span><input class="ps-input" type="number" inputmode="numeric" min="1" value="2" style="width:72px" aria-label="How often"><button class="ps-trigger" style="width:auto;min-width:112px"><span>hours</span><span data-i="chevD"></span></button></div>' +
+          '<p class="ps-help">Hours or days, whatever suits your server. Each player has their own timer.</p></div>' +
           '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
           PS.condSummary('') +
           '</div>' +

@@ -65,7 +65,13 @@
               <div class="ps-phone ps-phone--tall slot" data-v="script"></div>
             </div>
           </div>
-          <div style="width: 760px" class="ps-stack">
+          <div>
+            <p class="ps-frame-label">Leaves this location (sheet)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="leave"></div>
+            </div>
+          </div>
+          <div style="width: 340px" class="ps-stack">
             <p class="ps-frame-label">Notes</p>
             <ul
               class="t-body-sm ps-muted"
@@ -95,16 +101,15 @@
                 script.
               </li>
               <li>
-                <b>Proposed events, not in doc 07 yet:</b>
-                <b>Uses a move here</b> (a Pokémon in the party uses a field
-                move at this location, like "uses an item here" for Headbutt
-                trees, Strength boulders and Rock Smash rocks; obstacles that
-                only block a path stay requirements on the connection) and
-                <b>Leaves this location</b> (runs after the exit's requirement
-                passes and before the player moves; being stopped at an exit is
-                already an attemptable gate plus
-                <span class="t-mono">gateBlocked</span>). Both need a maintainer
-                decision.
+                <b>New events, decided in review (doc 07 to update):</b>
+                <b>Uses a move here</b> (a field move at this location: Headbutt
+                trees, Strength boulders, Rock Smash rocks; obstacles that only
+                block a path stay requirements on the connection) and
+                <b>Leaves this location</b>, optionally only toward chosen
+                exits. A leave event runs after the exit's requirement passes
+                and before the player moves, so a script can stop them: a riddle
+                they get wrong, or an urgent story beat. If it does, they stay
+                here and the next location isn't marked visited.
               </li>
               <li>
                 <b>Runs:</b> Automatically (forced: it starts as soon as the
@@ -177,6 +182,16 @@
               cond: '',
               script: 'r22-old-man',
             },
+            {
+              ev: 'Leaves toward Victory Road',
+              icon: 'route',
+              name: 'The guard’s riddle',
+              mode: 'Automatic',
+              once: false,
+              cond: 'Only before ' + mono('riddle_solved'),
+              script: 'r22-riddle',
+              isNew: true,
+            },
           ],
           r12: [
             {
@@ -197,6 +212,16 @@
               cond: '',
               script: 'snorlax-battle',
             },
+            {
+              ev: 'Uses Strength here',
+              icon: 'gym',
+              name: 'Push the boulder aside',
+              mode: 'Automatic',
+              once: true,
+              cond: '',
+              script: 'r12-boulder',
+              isNew: true,
+            },
           ],
         };
         function row(t) {
@@ -213,6 +238,9 @@
             '<div class="ps-trigger-meta"><span class="ps-badge">' +
             t.mode +
             '</span>' +
+            (t.isNew
+              ? '<span class="ps-badge ps-badge--outline">New event · doc 07</span>'
+              : '') +
             (t.once ? '<span class="ps-badge">Once</span>' : '') +
             (t.filter
               ? '<span class="ps-badge ps-badge--outline">' +
@@ -262,12 +290,12 @@
             choice(
               false,
               'Uses a move here',
-              'Headbutt a tree, Strength on a boulder, Rock Smash on a rock. <span class="ps-badge ps-badge--outline">Proposal</span>',
+              'Headbutt a tree, Strength on a boulder, Rock Smash on a rock. <span class="ps-badge ps-badge--outline">To add to doc 07</span>',
             ) +
             choice(
               false,
               'Leaves this location',
-              'Runs before they move on, after the exit’s own requirement passes. <span class="ps-badge ps-badge--outline">Proposal</span>',
+              'Runs before they move on, after the exit’s own requirement passes. <span class="ps-badge ps-badge--outline">To add to doc 07</span>',
             ) +
             '</div></div>' +
             '<div class="ps-field"><span class="ps-label">Only when arriving from <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Viridian City<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Viridian City"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Place</button></div></div>' +
@@ -282,6 +310,28 @@
               : '') +
             '<div class="ps-field"><span class="ps-label">Script</span><div class="ps-link-row"><span data-i="code"></span><span>rival-r22<small><span class="ps-badge ps-badge--accent" style="margin-top:2px">Made with the Forced Encounter template</span></small></span><button class="ps-btn ps-btn--secondary">Edit as form</button></div>' +
             '<div class="ps-row" style="gap:8px"><button class="ps-btn ps-btn--ghost">Pick another script</button><button class="ps-btn ps-btn--ghost">Create from template</button></div></div>'
+          );
+        }
+        function leaveBody() {
+          return (
+            '<div class="ps-field"><span class="ps-label">When a player…</span><div role="radiogroup" class="ps-stack" style="gap:8px">' +
+            choice(false, 'Enters this location') +
+            choice(
+              true,
+              'Leaves this location',
+              'Runs before they move on, after the exit’s own requirement passes.',
+            ) +
+            '</div><button class="ps-btn ps-btn--ghost" style="align-self:flex-start;padding:0 8px">Show all events</button></div>' +
+            '<div class="ps-field"><span class="ps-label">Only when leaving toward <span class="ps-opt">(optional)</span></span><div class="ps-tags"><span class="ps-tag">Victory Road<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Remove Victory Road"><span data-i="x" data-s="16"></span></button></span><button class="ps-chip"><span data-i="plus" data-s="16"></span>Exit</button></div></div>' +
+            '<div class="ps-callout ps-callout--info"><span data-i="book" data-s="18"></span><span>The player hasn’t left yet. If the script stops them (a wrong answer, an urgent story beat), they stay on Route 22 and Victory Road isn’t marked visited.</span></div>' +
+            '<div class="ps-field"><span class="ps-label">Runs</span><div class="ps-seg" role="group"><button aria-pressed="true">Automatically</button><button aria-pressed="false">As a button</button></div></div>' +
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>Only once</b><span>Off: asks again every time until solved.</span></span><button class="ps-switch" role="switch" aria-checked="false" aria-label="Only once"></button></label>' +
+            '<div class="ps-field"><span class="ps-label">Condition <span class="ps-opt">(optional)</span></span>' +
+            PS.condSummary('Only before ' + mono('riddle_solved')) +
+            '</div>' +
+            '<div class="ps-field"><span class="ps-label">Script</span><div class="ps-link-row"><span data-i="code"></span><span>r22-riddle<small>Asks the riddle; a right answer sets ' +
+            mono('riddle_solved') +
+            ' and lets them go</small></span><button class="ps-btn ps-btn--ghost">View</button></div></div>'
           );
         }
         function sheet(clash) {
@@ -348,6 +398,14 @@
               PS.locTabs('events') +
               empty;
           if (v === 'script') el.innerHTML = script;
+          if (v === 'leave')
+            el.innerHTML =
+              r22 +
+              '<div class="ps-scroll">' +
+              list('r22', 'Route 22') +
+              '</div><div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Edit trigger" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">The guard’s riddle<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Route 22 · When a player…</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+              leaveBody() +
+              '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
           if (v === 'desktop')
             el.innerHTML =
               PS.sidebar('locations') +
