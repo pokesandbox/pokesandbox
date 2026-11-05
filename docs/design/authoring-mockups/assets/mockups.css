@@ -2713,3 +2713,69 @@
 .ps-oc .ps-menu {
   margin: 0 4px 4px;
 }
+
+/* Step editor */
+.ps-steplist .ps-step-row {
+  min-height: 56px;
+}
+.ps-steplist .ps-step-row:first-child {
+  border-top: 0;
+}
+.ps-step-open {
+  border: 0;
+  background: none;
+  padding: 6px 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.ps-step-sum {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ps-step-sum > b {
+  font: 500 15px/20px var(--font-sans);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ps-step-issue {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 0;
+  font: 500 13px/18px var(--font-sans);
+  white-space: normal;
+}
+.ps-step-issue.is-error {
+  color: var(--danger);
+}
+.ps-step-issue.is-warning {
+  color: var(--warning);
+}
+.ps-step-row.has-error {
+  box-shadow: inset 3px 0 0 var(--danger);
+}
+.ps-step-row.has-warning {
+  box-shadow: inset 3px 0 0 var(--warning);
+}
+.ps-step-row.is-readonly {
+  padding-left: var(--space-3);
+}
+.ps-step-row.is-indent {
+  padding-left: 44px;
+  background: var(--bg);
+}
+.ps-usedby {
+  text-decoration: none;
+  color: inherit;
+  align-items: center;
+}
+.ps-usedby > div {
+  flex: 1;
+  min-width: 0;
+}

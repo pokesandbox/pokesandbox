@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>S1 · Basic step editor ★ · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >S1 · Basic step editor ★
+        <small
+          >S1 · Basic step editor ★ · steps list (light, dark), row menu,
+          dragging, add a step, each step&#x27;s sheet, validation, empty,
+          read-only; desktop 1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 2140px">
+      <div
+        class="ps-root ps-pad"
+        data-theme="light"
+        style="background: transparent"
+      >
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">Steps · light</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Steps · dark</p>
+            <div data-theme="dark">
+              <div class="ps-phone ps-phone--tall slot" data-v="list"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Row menu, saving</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="menu"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Dragging a step</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="drag"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Add step (sheet)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="add"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">Text</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="text"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Ask for a name</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="name"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Give · a Pokémon</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="give"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Take</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="take"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Set · a flag, created inline</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="set"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">Battle a trainer</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="battle"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Heal</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="heal"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Move the player</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="move"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Validation: a warning and an error</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="issues"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">New script (empty)</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="empty"></div>
+            </div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">Read-only: made with a template</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="tpl"></div>
+            </div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Read-only: has choices</p>
+            <div data-theme="light">
+              <div class="ps-phone ps-phone--tall slot" data-v="choices"></div>
+            </div>
+          </div>
+          <div style="width: 760px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>A script is a list of steps</b> that run in order. This
+                editor has no choices, branches, labels or gotos; those come
+                with the full editor.
+              </li>
+              <li>
+                <b>Header:</b> the script's name and key, the saved / saving
+                indicator, and Used by: the events and Talk rows that run it,
+                each opening where it's set.
+              </li>
+              <li>
+                <b>Each step</b> is an icon and a one-line summary. Tap it to
+                edit in a sheet. Reorder by the drag handle, or with Move up /
+                Move down in the ⋯ menu, which also has Duplicate and Delete.
+              </li>
+              <li>
+                <b>Add step</b> picks one of eight types: Text and Ask for a
+                name; Give and Take; Set a flag, progression or badge; Battle a
+                trainer and Heal; Move the player.
+              </li>
+              <li>
+                <b>Text</b> is the passage editor, with
+                <span class="t-mono">{name:player}</span> and
+                <span class="t-mono">{name:rival}</span> inserts and a Discord
+                preview that fills in sample names.
+              </li>
+              <li>
+                <b>Take:</b> if they don't have it, the script stops there.
+                That's fixed, so the step says so instead of offering a choice.
+              </li>
+              <li>
+                <b>Set</b> creates a flag inline when the name doesn't exist
+                yet. A progression takes a value; a badge is just picked.
+              </li>
+              <li>
+                <b>Validation sits on the row:</b> a warning when a Take step's
+                item isn't checked for by anything that runs the script, and an
+                error when a step points at a deleted trainer or location. Both
+                also appear in Region Health.
+              </li>
+              <li>
+                <b>Read-only:</b> a script made with a template opens its form
+                instead ("Edit as form"); a script with choices or branches
+                shows its steps but can't be edited until the full editor
+                arrives.
+              </li>
+              <li>
+                <b>New script:</b> one step to start, "Add the first step".
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · steps beside the step being edited
+        </p>
+        <div data-theme="light">
+          <div
+            class="ps-desktop slot"
+            data-v="desktop"
+            style="height: 900px; position: relative"
+          ></div>
+        </div>
+      </div>
+      <script>
+        var mono = function (s) {
+          return '<span class="t-mono">' + s + '</span>';
+        };
+        var PARCEL = [
+          {
+            t: 'text',
+            sum:
+              'Text · Oak: “Ah, ' +
+              mono('{name:player}') +
+              '! How is my old Pokémon? …”',
+          },
+          { t: 'take', sum: 'Take 1× Oak’s Parcel' },
+          { t: 'give', sum: 'Give 1× Pokédex' },
+          { t: 'set', sum: 'Set flag ' + mono('oak_parcel_delivered') },
+          { t: 'text', sum: 'Text · Oak: “This is the Pokédex. It records …”' },
+        ];
+        var USED = PS.usedBy([
+          ['user', 'Professor Oak · Talk', 'When the player has Oak’s Parcel'],
+        ]);
+        var trig = function (icon, txt, end) {
+          return (
+            '<button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center">' +
+            (icon ? '<span data-i="' + icon + '"></span>' : '') +
+            txt +
+            '</span><span data-i="' +
+            (end || 'search') +
+            '"></span></button>'
+          );
+        };
+        var sw = function (on, t, d) {
+          return (
+            '<label class="ps-switch-row" style="padding:0"><span class="ps-switch-text"><b>' +
+            t +
+            '</b><span>' +
+            d +
+            '</span></span><button class="ps-switch" role="switch" aria-checked="' +
+            on +
+            '" aria-label="' +
+            t +
+            '"></button></label>'
+          );
+        };
+        var hints =
+          '<div class="ps-hint-chips"><span class="t-body-sm ps-subtle">Insert:</span><button class="ps-chip">{name:player}</button><button class="ps-chip">{name:rival}</button></div>';
+        function bar(title, key, right) {
+          return PS.phoneBar(
+            title,
+            'Script · ' + key,
+            (right || PS.saved) + PS.moreBtn,
+          );
+        }
+        function page(head, list) {
+          return (
+            '<div class="ps-scroll"><div class="ps-form">' +
+            head +
+            '<div class="ps-section-head"><h2 class="t-title-3">Steps</h2><span class="t-body-sm ps-subtle">Run in order</span></div>' +
+            list +
+            '</div></div>'
+          );
+        }
+        function parcel(o) {
+          return (
+            bar(
+              'Deliver the parcel',
+              'oak-deliver-parcel',
+              o && o.saving
+                ? '<span class="ps-save ps-save--busy"><span class="ps-spinner"></span>Saving…</span>'
+                : '',
+            ) + page(USED, PS.stepList(PARCEL, o))
+          );
+        }
+        function sheet(title, step, body, save) {
+          return (
+            '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="' +
+            title +
+            '" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">' +
+            title +
+            (step
+              ? '<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">' +
+                step +
+                '</small>'
+              : '') +
+            '</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            '<div class="ps-sheet-scroll">' +
+            body +
+            '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">' +
+            (save || 'Save') +
+            '</button></div></div>'
+          );
+        }
+        var GROUPS = [
+          ['Say', ['text', 'name']],
+          ['Items and Pokémon', ['give', 'take']],
+          ['Progress', ['set']],
+          ['Battle and party', ['battle', 'heal']],
+          ['Place', ['move']],
+        ];
+        var addSheet =
+          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Add step" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Add step<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">After step 5</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+          '<div class="ps-sheet-scroll" style="gap:0"><ul class="ps-listbox ps-listbox--flat" role="listbox">' +
+          GROUPS.map(function (g) {
+            return (
+              '<li class="ps-group-label" role="presentation">' +
+              g[0] +
+              '</li>' +
+              g[1]
+                .map(function (k) {
+                  var d = PS.STEP_TYPES[k];
+                  return (
+                    '<li class="ps-option" role="option"><span class="ps-kind" data-i="' +
+                    d[0] +
+                    '"></span><span>' +
+                    d[1] +
+                    '<span class="ps-sub">' +
+                    d[2] +
+                    '</span></span></li>'
+                  );
+                })
+                .join('')
+            );
+          }).join('') +
+          '</ul></div></div>';
+        var TEXT =
+          'Ah, {name:player}! How is my old Pokémon? Well, it seems to like you a lot. You must be talented as a trainer! What? You have something for me?';
+        var textBody =
+          '<div class="ps-field"><span class="ps-label">Speaker <span class="ps-opt">(optional)</span></span>' +
+          trig('user', 'Professor Oak', 'chevD') +
+          '<p class="ps-help">Leave empty for narration.</p></div>' +
+          '<div class="ps-field"><label class="ps-label">Text</label><textarea class="ps-textarea" style="min-height:120px">' +
+          TEXT +
+          '</textarea>' +
+          hints +
+          '</div>' +
+          '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">How it looks in Discord</span><span class="t-body-sm ps-subtle">Sample name: Ash</span></div><div class="ps-embed"><b>Professor Oak</b><span>' +
+          TEXT.replace('{name:player}', 'Ash') +
+          '</span><div class="ps-embed-buttons"><span>Next</span></div></div></div>';
+        var nameBody =
+          '<div class="ps-field"><label class="ps-label" for="slot">Name slot</label><input class="ps-input t-mono" id="slot" value="rival"><p class="ps-help">Use it in text as ' +
+          mono('{name:rival}') +
+          '.</p></div>' +
+          '<div class="ps-field"><label class="ps-label">Prompt</label><textarea class="ps-textarea" style="min-height:72px">This is my grandson. He’s been your rival since you were a baby. …Erm, what was his name now?</textarea></div>' +
+          '<div class="ps-field"><label class="ps-label" for="def">Default name</label><input class="ps-input" id="def" value="Gary"><p class="ps-help">Used if they leave it empty.</p></div>' +
+          '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">How it looks in Discord</span></div><div class="ps-embed"><b>Professor Oak</b><span>This is my grandson. He’s been your rival since you were a baby. …Erm, what was his name now?</span><div class="ps-embed-buttons"><span>Type a name</span><span>Use “Gary”</span></div></div></div>';
+        var giveBody =
+          '<div class="ps-seg" role="group"><button aria-pressed="false">An item</button><button aria-pressed="true">A Pokémon</button></div>' +
+          '<div class="ps-pair" style="grid-template-columns:1fr 96px"><div class="ps-field"><span class="ps-label">Species</span>' +
+          trig(
+            '',
+            '<span class="ps-thumb" style="width:24px;height:24px"></span>Eevee',
+          ) +
+          '</div>' +
+          '<div class="ps-field"><label class="ps-label" for="lv">Level</label><input class="ps-input" id="lv" type="number" inputmode="numeric" value="25"></div></div>' +
+          '<div class="ps-field"><label class="ps-label" for="nick">Nickname <span class="ps-opt">(optional)</span></label><input class="ps-input" id="nick" placeholder="Eevee"></div>' +
+          '<div class="ps-field"><span class="ps-label">Held item <span class="ps-opt">(optional)</span></span>' +
+          trig('bag', '<span class="ps-subtle">None</span>') +
+          '</div>' +
+          '<p class="t-body-sm ps-muted">If the party is full, it goes to the PC, as the region’s rules say.</p>';
+        var takeBody =
+          '<div class="ps-pair" style="grid-template-columns:1fr 96px"><div class="ps-field"><span class="ps-label">Item</span>' +
+          trig('bag', 'Oak’s Parcel') +
+          '</div>' +
+          '<div class="ps-field"><label class="ps-label" for="tq">Quantity</label><input class="ps-input" id="tq" type="number" inputmode="numeric" value="1"></div></div>' +
+          '<div class="ps-field"><span class="ps-label">If they don’t have it</span><div class="ps-readonly"><span data-i="lock" data-s="18"></span><div><b>Stop the script</b><p class="t-body-sm ps-muted">Nothing after this step runs. To avoid it, make what runs this script check for the item.</p></div></div></div>';
+        var setBody =
+          '<div class="ps-seg" role="group"><button aria-pressed="true">A flag</button><button aria-pressed="false">A progression</button><button aria-pressed="false">A badge</button></div>' +
+          '<div class="ps-field"><label class="ps-label" for="fl">Flag</label><div class="ps-input-wrap"><span class="ps-lead" data-i="flag"></span><input class="ps-input t-mono" id="fl" role="combobox" aria-expanded="true" value="oak_parcel_delivered"></div>' +
+          '<ul class="ps-listbox" role="listbox" style="margin-top:4px"><li class="ps-option is-active" role="option" aria-selected="true"><span class="ps-kind" data-i="plus"></span><span>Create flag ' +
+          mono('oak_parcel_delivered') +
+          '<span class="ps-sub">New in this region</span></span></li>' +
+          '<li class="ps-option" role="option"><span class="ps-kind" data-i="flag"></span><span>' +
+          mono('oak_parcel_received') +
+          '<span class="ps-sub">Used by 2 scripts</span></span></li></ul>' +
+          '<p class="ps-help">Turns the flag on. Conditions can then check it.</p></div>' +
+          '<p class="t-body-sm ps-muted">A progression asks for its value (e.g. Starter → Charmander). A badge is picked from the region’s badges.</p>';
+        var battleBody =
+          '<div class="ps-field"><span class="ps-label">Trainer</span>' +
+          trig('swap', mono('{name:rival}') + ' · Rival') +
+          '<p class="ps-help">The first of their teams whose condition matches is used.</p></div>' +
+          sw(
+            true,
+            'Players can lose without blacking out',
+            'A loss doesn’t send them back to heal. The script carries on.',
+          ) +
+          sw(
+            false,
+            'Heal the party afterwards',
+            'Off: they keep any damage from the battle.',
+          );
+        var healBody =
+          '<div class="ps-readonly"><span data-i="heart" data-s="18"></span><div><b>Restores the whole party</b><p class="t-body-sm ps-muted">HP, PP and status, like a Pokémon Center. There’s nothing to set.</p></div></div>';
+        var moveBody =
+          '<div class="ps-field"><span class="ps-label">Location</span>' +
+          trig(
+            'building',
+            'Your House 2F <span class="ps-subtle" style="font-weight:400">· Pallet Town</span>',
+          ) +
+          '<p class="ps-help">They’re moved there straight away, without travelling.</p></div>';
+        var ISSUES = [
+          {
+            t: 'text',
+            sum: 'Text · Curator: “Admission is one Museum Ticket.”',
+          },
+          {
+            t: 'take',
+            sum: 'Take 1× Museum Ticket',
+            issue: {
+              sev: 'warning',
+              text: 'Nothing that runs this script checks for a Museum Ticket, so players without one stop here.',
+            },
+          },
+          {
+            t: 'move',
+            sum: 'Move to Pewter Museum 2F',
+            issue: {
+              sev: 'error',
+              text: 'Pewter Museum 2F was deleted. Pick another location.',
+            },
+          },
+          { t: 'text', sum: 'Text · “The fossils on display are …”' },
+        ];
+        var empty =
+          '<div class="ps-center" style="align-items:center;text-align:center"><div class="ps-center-icon"><span data-i="code" data-s="28"></span></div><h2 class="t-title-2">No steps yet</h2>' +
+          '<p class="t-body ps-muted">Steps run in order when this script starts: text, items, flags, battles and more.</p>' +
+          '<button class="ps-btn ps-btn--primary ps-btn--block"><span data-i="plus" data-s="18"></span>Add the first step</button></div>';
+        var GIFT = [
+          { t: 'text', sum: 'Text · Fishing Guru: “I’m the Fishing Guru! …”' },
+          { t: 'give', sum: 'Give 1× Old Rod' },
+          {
+            t: 'text',
+            sum: 'Text · Fishing Guru: “Fish aren’t found in every …”',
+          },
+        ];
+        var tplNote =
+          '<div class="ps-callout ps-callout--info" style="flex-direction:column;align-items:stretch;gap:8px"><span class="ps-badge ps-badge--accent" style="align-self:flex-start;background:var(--surface)">Made with the Gift NPC template</span><span>Change it with the form; saving updates these steps.</span><button class="ps-btn ps-btn--secondary" style="align-self:flex-start">Edit as form</button></div>';
+        var CHOICES = [
+          { t: 'text', sum: 'Text · Bill: “Hiya! I’m a Pokémon … No! Wait!”' },
+          { t: 'choice', sum: 'Choice · “Help Bill?”' },
+          {
+            t: 'set',
+            sum: 'Yes → Text, Set flag ' + mono('bill_helped'),
+            indent: true,
+          },
+          { t: 'text', sum: 'No → Text · Bill: “Please? …”', indent: true },
+          { t: 'give', sum: 'Give 1× S.S. Ticket' },
+        ];
+        var choiceNote =
+          '<div class="ps-callout ps-callout--info"><span data-i="lock" data-s="18"></span><span>This script uses choices or branches. They can be edited when the full editor arrives.</span></div>';
+        function desktop() {
+          var panel =
+            '<div class="ps-scrim" style="z-index:2"></div><aside class="ps-sidepanel" role="dialog" aria-label="Edit step 1"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title">Text<small>Step 1 of 5</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            '<div class="ps-scroll"><div class="ps-form">' +
+            textBody +
+            '</div></div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></aside>';
+          return (
+            PS.sidebar('npcs') +
+            '<div class="ps-main">' +
+            PS.topbar() +
+            '<div class="ps-main-body"><div class="ps-section-head"><div><span class="t-body-sm ps-subtle">NPCs › Professor Oak › Talk</span><h1 class="t-title-1">Deliver the parcel</h1><span class="t-body-sm ps-subtle">Script · ' +
+            mono('oak-deliver-parcel') +
+            '</span></div>' +
+            PS.moreBtn +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:minmax(0,640px) 1fr;gap:32px;align-items:start"><div class="ps-stack" style="gap:16px">' +
+            PS.stepList(PARCEL, {}) +
+            '</div><div>' +
+            USED +
+            '</div></div></div></div>' +
+            panel
+          );
+        }
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          var under = parcel();
+          if (v === 'list') el.innerHTML = parcel();
+          if (v === 'menu') el.innerHTML = parcel({ menu: 1, saving: true });
+          if (v === 'drag') el.innerHTML = parcel({ dragging: 3, dropAt: 1 });
+          if (v === 'add') el.innerHTML = under + addSheet;
+          if (v === 'text')
+            el.innerHTML = under + sheet('Text', 'Step 1 of 5', textBody);
+          if (v === 'name')
+            el.innerHTML =
+              bar('New game', 'new-game') +
+              page(
+                '',
+                PS.stepList(
+                  [
+                    {
+                      t: 'text',
+                      sum: 'Text · Oak: “Hello there! Welcome to the …”',
+                    },
+                    { t: 'name', sum: 'Ask for a name · ' + mono('rival') },
+                  ],
+                  {},
+                ),
+              ) +
+              sheet('Ask for a name', 'Step 2 of 4', nameBody);
+          if (v === 'give')
+            el.innerHTML =
+              under +
+              sheet('Give', 'New step · after step 5', giveBody, 'Add step');
+          if (v === 'take')
+            el.innerHTML = under + sheet('Take', 'Step 2 of 5', takeBody);
+          if (v === 'set')
+            el.innerHTML = under + sheet('Set', 'Step 4 of 5', setBody);
+          if (v === 'battle')
+            el.innerHTML =
+              under +
+              sheet(
+                'Battle a trainer',
+                'New step · after step 5',
+                battleBody,
+                'Add step',
+              );
+          if (v === 'heal')
+            el.innerHTML =
+              under +
+              sheet('Heal', 'New step · after step 5', healBody, 'Add step');
+          if (v === 'move')
+            el.innerHTML =
+              bar('New game', 'new-game') +
+              page(
+                '',
+                PS.stepList(
+                  [
+                    { t: 'text', sum: 'Text · Oak: “Hello there! …”' },
+                    { t: 'name', sum: 'Ask for a name · ' + mono('rival') },
+                    {
+                      t: 'text',
+                      sum:
+                        'Text · Oak: “' +
+                        mono('{name:rival}') +
+                        '! That’s right …”',
+                    },
+                    { t: 'move', sum: 'Move to Your House 2F' },
+                  ],
+                  {},
+                ),
+              ) +
+              sheet('Move the player', 'Step 4 of 4', moveBody);
+          if (v === 'issues')
+            el.innerHTML =
+              bar('Museum entry', 'museum-entry') +
+              page(
+                PS.usedBy([
+                  ['building', 'Pewter Museum · Enters', 'Automatic'],
+                ]),
+                PS.stepList(ISSUES, {}),
+              );
+          if (v === 'empty')
+            el.innerHTML =
+              bar('Old man’s tip', 'r22-old-man') +
+              '<div class="ps-scroll"><div class="ps-form">' +
+              PS.usedBy([
+                ['route', 'Route 22 · Enters', 'Button: Talk to the old man'],
+              ]) +
+              '</div>' +
+              empty +
+              '</div>';
+          if (v === 'tpl')
+            el.innerHTML =
+              PS.phoneBar(
+                'Fishing Guru’s gift',
+                'Script · fishing-guru-gift',
+                PS.moreBtn,
+              ) +
+              page(
+                tplNote +
+                  PS.usedBy([['user', 'Fishing Guru · Talk', 'Always']]),
+                PS.stepList(GIFT, { readOnly: true }),
+              );
+          if (v === 'choices')
+            el.innerHTML =
+              PS.phoneBar(
+                'Bill’s request',
+                'Script · bill-cottage',
+                PS.moreBtn,
+              ) +
+              page(
+                choiceNote +
+                  PS.usedBy([
+                    [
+                      'user',
+                      'Bill · Talk',
+                      'Only before ' + mono('bill_helped'),
+                    ],
+                  ]),
+                PS.stepList(CHOICES, { readOnly: true }),
+              );
+          if (v === 'desktop') el.innerHTML = desktop();
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

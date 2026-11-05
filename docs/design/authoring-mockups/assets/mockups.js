@@ -1352,6 +1352,132 @@ window.PS = (function () {
     '<path d="M5 21V4h10v17M15 12h.01M3 21h18"/><path d="M15 4l4 2v15"/>';
 })(window.PS);
 
+/* Round 4: step editor icons and helpers. */
+(function (PS) {
+  PS.icons.pen = '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>';
+  PS.icons.gift =
+    '<path d="M4 11h16v10H4zM3 7h18v4H3zM12 7v14"/><path d="M12 7c-1-3-5-4-5-1.5S10 7 12 7zM12 7c1-3 5-4 5-1.5S14 7 12 7z"/>';
+  PS.icons.take =
+    '<path d="M5 8h14l-1 13H6z"/><path d="M12 17V4M8 7l4-4 4 4"/>';
+  PS.icons.flag = '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>';
+  PS.icons.branch =
+    '<path d="M6 3v12M18 9a3 3 0 1 0 0-.01M6 21a3 3 0 1 0 0-.01M18 12c0 4-6 3-12 6"/>';
+  PS.STEP_TYPES = {
+    text: ['chat', 'Text', 'Dialogue, narration, or both. Waits for Next.'],
+    name: ['pen', 'Ask for a name', 'Players type a name, like the rival’s'],
+    give: ['gift', 'Give', 'An item or a Pokémon'],
+    take: ['take', 'Take', 'An item from the bag'],
+    set: ['flag', 'Set', 'A flag, a progression or a badge'],
+    battle: [
+      'swap',
+      'Battle a trainer',
+      'A trainer battle, which can be losable',
+    ],
+    heal: ['heart', 'Heal', 'Restore the whole party'],
+    move: ['pin', 'Move the player', 'Send them to a location'],
+    choice: ['branch', 'Choice', 'Comes with the full editor'],
+  };
+  // A step list. steps: [{ t, sum, issue?: { sev, text } , indent? }]; o: { readOnly, menu: index, dragging: index, dropAt: index }
+  PS.stepList = function (steps, o) {
+    o = o || {};
+    var rows = steps
+      .map(function (st, i) {
+        var k = PS.STEP_TYPES[st.t];
+        var menu =
+          o.menu === i
+            ? '<ul class="ps-listbox ps-menu" role="menu" style="right:8px;top:52px">' +
+              '<li class="ps-option" role="menuitem"' +
+              (i === 0 ? ' aria-disabled="true" style="opacity:.45"' : '') +
+              '><span data-i="up" data-s="18"></span>Move up</li>' +
+              '<li class="ps-option" role="menuitem"' +
+              (i === steps.length - 1
+                ? ' aria-disabled="true" style="opacity:.45"'
+                : '') +
+              '><span data-i="down" data-s="18"></span>Move down</li>' +
+              '<li class="ps-option" role="menuitem"><span data-i="plus" data-s="18"></span>Duplicate</li>' +
+              '<li class="ps-option ps-option--danger" role="menuitem"><span data-i="trash" data-s="18"></span>Delete</li></ul>'
+            : '';
+        var issue = st.issue
+          ? '<p class="ps-step-issue is-' +
+            st.issue.sev +
+            '"><span data-i="' +
+            (st.issue.sev === 'error' ? 'error' : 'alert') +
+            '" data-s="16"></span>' +
+            st.issue.text +
+            '</p>'
+          : '';
+        var main =
+          '<span class="ps-kind" data-i="' +
+          k[0] +
+          '"></span><span class="ps-step-sum"><b>' +
+          st.sum +
+          '</b>' +
+          issue +
+          '</span>';
+        var drop =
+          o.dropAt === i
+            ? '<li class="ps-drop-slot" aria-hidden="true"></li>'
+            : '';
+        if (o.readOnly)
+          return (
+            '<li class="ps-sort-row ps-step-row is-readonly' +
+            (st.indent ? ' is-indent' : '') +
+            '"><div class="ps-sort-main">' +
+            main +
+            '</div></li>'
+          );
+        return (
+          drop +
+          '<li class="ps-sort-row ps-step-row' +
+          (o.dragging === i ? ' is-dragging' : '') +
+          (st.issue ? ' has-' + st.issue.sev : '') +
+          '"><button class="ps-handle" aria-label="Reorder step ' +
+          (i + 1) +
+          '"><span data-i="grip"></span></button>' +
+          '<button class="ps-sort-main ps-step-open" aria-label="Edit step ' +
+          (i + 1) +
+          '">' +
+          main +
+          '</button>' +
+          '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Actions for step ' +
+          (i + 1) +
+          '" aria-haspopup="menu"><span data-i="more"></span></button>' +
+          menu +
+          '</li>'
+        );
+      })
+      .join('');
+    return (
+      '<ol class="ps-sortable ps-steplist">' +
+      rows +
+      '</ol>' +
+      (o.readOnly
+        ? ''
+        : '<button class="ps-btn ps-btn--secondary ps-btn--block"><span data-i="plus" data-s="18"></span>Add step</button>')
+    );
+  };
+  // "Used by": the triggers and Talk rows that run a script
+  PS.usedBy = function (rows) {
+    return (
+      '<div class="ps-field"><span class="ps-label">Used by</span><div class="ps-review">' +
+      rows
+        .map(function (r) {
+          return (
+            '<a class="ps-review-row ps-usedby" href="#"><span class="ps-kind" data-i="' +
+            r[0] +
+            '"></span><div><dd>' +
+            r[1] +
+            '</dd><dt style="font-weight:400">' +
+            r[2] +
+            '</dt></div><span data-i="chevR"></span></a>'
+          );
+        })
+        .join('') +
+      '</div></div>'
+    );
+  };
+})(window.PS);
+
 /* RuleGroupEditor: an All/Any list of rows and groups (any number of groups, one level deep).
    Rows and groups have drag handles; each row's More menu also moves it (for touch and keyboard), so nothing needs removing to move it.
    Configurations: conditions (facts, Not allowed) and traversal requirements (each type once, no Not). */

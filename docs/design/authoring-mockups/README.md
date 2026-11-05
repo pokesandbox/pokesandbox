@@ -8,6 +8,7 @@ Mid-fidelity mockups for the webapp's public pages and region builder (issue #25
 - `screens/builder/`: F–J, the save/conflict states, and round 3's location authoring (R1 hidden items, R2 traversal costs, R3 events) and encounter methods (R4).
 - `screens/conditions/`, `screens/people/`, `screens/templates/`: round 2 (where conditions appear; the one NPCs list with trainers folded in; templates).
 - `screens/publishing/`, `screens/content/`: round 2 group 4 (Region Health and publishing; TMs & HMs, Pokédex, progressions).
+- `screens/scripts/`: round 4 (S1 the basic step editor).
 - `screens/player/`: player-facing pages (canon species page, region Pokédex with seen and caught).
 - `screens/archive/`: superseded designs kept in case we revert (the separate Trainers and NPCs lists).
 
