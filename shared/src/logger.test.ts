@@ -2,7 +2,14 @@ import { createLogger, createLoggerFromEnv, resolveLogLevel } from './logger';
 
 function capture() {
   const lines: string[] = [];
-  return { lines, write: (line: string) => lines.push(line) };
+  return {
+    lines,
+    destination: {
+      write: (line: string) => {
+        lines.push(line);
+      },
+    },
+  };
 }
 
 describe('logger', () => {
@@ -22,8 +29,8 @@ describe('logger', () => {
   });
 
   it('writes JSON lines with level, message and correlation fields', () => {
-    const { lines, write } = capture();
-    createLogger({ level: 'debug', write }).info('hello', {
+    const { lines, destination } = capture();
+    createLogger({ level: 'debug', destination }).info('hello', {
       journeyId: 'j1',
       battleId: 'b1',
     });
@@ -37,8 +44,8 @@ describe('logger', () => {
   });
 
   it('drops records below the configured level', () => {
-    const { lines, write } = capture();
-    const logger = createLogger({ level: 'warn', write });
+    const { lines, destination } = capture();
+    const logger = createLogger({ level: 'warn', destination });
     logger.debug('a');
     logger.info('b');
     logger.warn('c');
@@ -47,8 +54,8 @@ describe('logger', () => {
   });
 
   it('child loggers add fields to every record', () => {
-    const { lines, write } = capture();
-    const child = createLogger({ level: 'debug', write })
+    const { lines, destination } = capture();
+    const child = createLogger({ level: 'debug', destination })
       .child({ regionId: 'r1' })
       .child({ actionId: 'a1' });
     child.debug('x', { journeyId: 'j' });
@@ -60,18 +67,27 @@ describe('logger', () => {
   });
 
   it('createLoggerFromEnv tags env and applies the level', () => {
-    const { lines, write } = capture();
-    const logger = createLoggerFromEnv({ NODE_ENV: 'production' }, write);
+    const { lines, destination } = capture();
+    const logger = createLoggerFromEnv({ NODE_ENV: 'production' }, destination);
     logger.debug('hidden');
     logger.info('shown');
     expect(lines).toHaveLength(1);
     expect(JSON.parse(lines[0])).toMatchObject({ env: 'prod' });
   });
 
-  it('defaults to console.log', () => {
-    const spy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
-    createLogger({ level: 'info' }).info('via console');
-    expect(spy).toHaveBeenCalledTimes(1);
-    spy.mockRestore();
+  it('serializes errors with their message and stack', () => {
+    const { lines, destination } = capture();
+    createLogger({ level: 'info', destination }).error('boom', {
+      err: new Error('bad'),
+    });
+    const record = JSON.parse(lines[0]);
+    expect(record.err).toMatchObject({ type: 'Error', message: 'bad' });
+    expect(record.err.stack).toContain('Error: bad');
+  });
+
+  it('writes to stdout when no destination is given', () => {
+    expect(() =>
+      createLoggerFromEnv({ LOG_LEVEL: 'error' }).debug('dropped'),
+    ).not.toThrow();
   });
 });

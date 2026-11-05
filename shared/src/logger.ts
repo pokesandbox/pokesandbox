@@ -1,6 +1,7 @@
+import pino, { type DestinationStream } from 'pino';
+
 import {
   isLogLevel,
-  shouldLog,
   type LogFields,
   type Logger,
   type LogLevel,
@@ -11,8 +12,8 @@ import { appEnvFromNodeEnv } from './flags';
 export interface LoggerOptions {
   level: LogLevel;
   fields?: LogFields;
-  /** Receives one JSON line per record. */
-  write?: (line: string) => void;
+  /** Where JSON lines go; stdout when omitted. */
+  destination?: DestinationStream;
 }
 
 /** Default: `debug` outside production, `info` in production. */
@@ -24,42 +25,39 @@ export function resolveLogLevel(
   return appEnvFromNodeEnv(processEnv.NODE_ENV) === 'prod' ? 'info' : 'debug';
 }
 
-/** Structured JSON logger. Apps call this once at startup. */
-export function createLogger(options: LoggerOptions): Logger {
-  const { level: threshold, fields: base = {} } = options;
-  const write = options.write ?? ((line: string) => console.log(line));
-
-  const emit = (level: LogLevel, message: string, fields?: LogFields) => {
-    if (!shouldLog(level, threshold)) return;
-    write(
-      JSON.stringify({
-        level,
-        time: new Date().toISOString(),
-        message,
-        ...base,
-        ...fields,
-      }),
-    );
-  };
-
+function wrap(instance: pino.Logger): Logger {
   return {
-    debug: (message, fields) => emit('debug', message, fields),
-    info: (message, fields) => emit('info', message, fields),
-    warn: (message, fields) => emit('warn', message, fields),
-    error: (message, fields) => emit('error', message, fields),
-    child: (fields) =>
-      createLogger({ ...options, fields: { ...base, ...fields } }),
+    debug: (message, fields) => instance.debug(fields ?? {}, message),
+    info: (message, fields) => instance.info(fields ?? {}, message),
+    warn: (message, fields) => instance.warn(fields ?? {}, message),
+    error: (message, fields) => instance.error(fields ?? {}, message),
+    child: (fields) => wrap(instance.child(fields)),
   };
+}
+
+/** Structured JSON logger backed by pino. Apps call this once at startup. */
+export function createLogger(options: LoggerOptions): Logger {
+  const instance = pino(
+    {
+      level: options.level,
+      base: options.fields ?? {},
+      messageKey: 'message',
+      timestamp: pino.stdTimeFunctions.isoTime,
+      formatters: { level: (label) => ({ level: label }) },
+    },
+    options.destination ?? pino.destination(1),
+  );
+  return wrap(instance);
 }
 
 /** Logger configured from `NODE_ENV` and `LOG_LEVEL`, tagged with `env`. */
 export function createLoggerFromEnv(
   processEnv: Record<string, string | undefined> = process.env,
-  write?: (line: string) => void,
+  destination?: DestinationStream,
 ): Logger {
   return createLogger({
     level: resolveLogLevel(processEnv),
     fields: { env: appEnvFromNodeEnv(processEnv.NODE_ENV) },
-    write,
+    destination,
   });
 }
