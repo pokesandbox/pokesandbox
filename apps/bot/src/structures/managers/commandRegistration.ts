@@ -13,10 +13,6 @@ import type {
 export type RegistrationTarget =
   { scope: 'guild'; guildId: string } | { scope: 'global' };
 
-/**
- * Where the bot registers its commands: production registers globally; every
- * other environment registers to the developer's test server (`DEV_GUILD_ID`).
- */
 export function registrationTarget(
   env: AppEnv,
   devGuildId: string | undefined,
@@ -48,16 +44,11 @@ export interface CommandSet {
 }
 
 export interface CollectedCommands extends CommandSet {
-  /** The commands registered with Discord, in registration order. */
   registrable: ChatInputCommand[];
 }
 
-/**
- * Picks the commands the bot loads and the ones it registers. Incomplete or
- * ignored context commands are skipped. An ignored slash command is still
- * loaded, so FlowCord can open its menu from another menu, but isn't
- * registered with Discord.
- */
+// An ignored slash command still loads, so other menus can open it, but
+// isn't registered with Discord.
 export function collectCommands(commands: CommandSet): CollectedCommands {
   const collected: CollectedCommands = {
     messageContextCommands: [],
@@ -88,11 +79,6 @@ export function collectCommands(commands: CommandSet): CollectedCommands {
   return collected;
 }
 
-/**
- * Whether a command may be shown and run: always without a flag, otherwise
- * by `isEnabled` (`FEATURE_FLAGS`, then the server's overrides, then the
- * environment's default).
- */
 export function isCommandEnabled(
   command: Pick<ChatInputCommand, 'flag'>,
   flagEnv: FlagEnv,
@@ -103,16 +89,12 @@ export function isCommandEnabled(
 }
 
 export interface RegistrationPlan {
-  /** Enabled without any server override: registered globally. */
   global: ChatInputCommand[];
-  /** Hidden by default: registered per server, only where enabled. */
   guildOnly: ChatInputCommand[];
 }
 
-/**
- * Splits the production commands: Discord can't hide a global command from
- * one server, so a hidden command is registered only on servers that enable it.
- */
+// Discord can't hide a global command per server, so hidden commands
+// register per guild instead.
 export function planRegistration(
   registrable: ChatInputCommand[],
   flagEnv: FlagEnv,
@@ -125,10 +107,7 @@ export function planRegistration(
   return plan;
 }
 
-/**
- * The `toJSON()` bodies of the commands one server enables. Empty when it
- * enables none: putting it clears the server's guild commands.
- */
+// Empty when the server enables none; putting it clears the server's commands.
 export function guildCommandBody(
   commands: ChatInputCommand[],
   flagEnv: FlagEnv,

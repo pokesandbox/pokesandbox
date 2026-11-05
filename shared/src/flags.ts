@@ -60,11 +60,6 @@ export async function getServerFeatures(
   return features;
 }
 
-/**
- * Discord IDs of the servers with any feature flag override, so the bot can
- * register their hidden commands at startup. Read each server's values with
- * `getServerFeatures`.
- */
 export async function getServerIdsWithFeatureOverrides(): Promise<string[]> {
   const servers = await Server.find()
     .where('settings.features')

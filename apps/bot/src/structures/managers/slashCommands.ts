@@ -31,15 +31,8 @@ export interface SlashCommandsManagerOptions {
   listServersWithOverrides?: () => Promise<string[]>;
 }
 
-/**
- * Loads the bot's commands into the client and registers them with Discord.
- *
- * - Development: one put to the `DEV_GUILD_ID` test server with every command
- *   its flags enable.
- * - Production: one global put with the released commands, then a guild put
- *   for each server with flag overrides, holding the hidden commands it
- *   enables. `client.syncGuildCommands` re-runs that guild put for one server.
- */
+// Dev: one put to DEV_GUILD_ID. Prod: a global put of released commands,
+// then a guild put of hidden commands per server with overrides.
 export const slashCommandsManager = async (
   client: BotClient,
   {
@@ -76,8 +69,7 @@ export const slashCommandsManager = async (
   };
 
   if (target.scope === 'guild') {
-    // One put for the whole dev guild: a second put to the same scope would
-    // replace the first. Guild syncs aren't needed here.
+    // One put only: a second put to the same guild would replace this one.
     const body = guildCommandBody(
       collected.registrable,
       flagEnv,

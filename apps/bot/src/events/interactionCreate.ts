@@ -191,10 +191,7 @@ const handleApplicationCommandInteraction = async (
   }
 };
 
-/**
- * Replies with the unavailable message when the command's flag is off here.
- * Returns whether the command may run.
- */
+// Returns whether the command may run.
 const replyIfUnavailable = async (
   client: BotClient,
   interaction: CommandInteraction,
