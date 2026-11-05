@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>O1 · Region Health · PokeSandbox mockups</title>
+    <link rel="stylesheet" href="../../assets/tokens.css" />
+    <link rel="stylesheet" href="../../assets/mockups.css" />
+    <link rel="stylesheet" href="../../assets/page.css" />
+    <script src="../../assets/mockups.js"></script>
+  </head>
+  <body>
+    <header class="mk-bar">
+      <a href="../../index.html">All mockups</a
+      ><span
+        >O1 · Region Health
+        <small
+          >O1 · Region Health · phone (by severity, by area), all clear, desktop
+          1440</small
+        ></span
+      ><button id="mk-theme" type="button">Dark mode</button>
+    </header>
+    <main class="mk-stage" style="min-width: 1500px">
+      <div class="ps-root ps-pad" style="background: transparent">
+        <div class="ps-demos" style="flex-wrap: nowrap">
+          <div>
+            <p class="ps-frame-label">By severity</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="sev"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">By area</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="area"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">All clear</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="clear"></div>
+          </div>
+        </div>
+        <ul
+          class="t-body-sm ps-muted"
+          style="
+            margin: 24px 0 0;
+            padding-left: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 1300px;
+          "
+        >
+          <li>
+            <b>Two groupings, one list:</b> By severity (default) puts Errors
+            first, then Warnings; By area groups by Locations, Encounters, NPCs.
+            Each group heading says what it means: errors block publish,
+            warnings don't.
+          </li>
+          <li>
+            <b>Each item:</b> what's wrong in plain English, why it matters and
+            what to do, the path to the field, and Fix, which opens that exact
+            field (the same deep link Discord's "Open in builder" uses).
+          </li>
+          <li>
+            <b>Checks</b> run on every save and on publish. The header shows
+            when they last ran; "Re-run checks" is there for after big imports.
+            While running, the button shows a spinner and the list stays
+            visible.
+          </li>
+          <li><b>All clear</b> says so plainly and points to Publish.</li>
+          <li>
+            Region Health is now in the builder sidebar, with its item count.
+          </li>
+        </ul>
+        <p class="ps-frame-label" style="margin-top: 32px">Desktop 1440</p>
+        <div
+          class="ps-desktop slot"
+          data-v="desktop"
+          style="height: 960px"
+        ></div>
+      </div>
+      <script>
+        function item(h) {
+          var err = h.sev === 'error';
+          return (
+            '<article class="ps-card" style="gap:8px;padding:12px 12px 8px 16px"><div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--' +
+            (err ? 'danger' : 'warning') +
+            ');margin-top:1px" data-i="' +
+            (err ? 'error' : 'alert') +
+            '"></span>' +
+            '<div style="flex:1;min-width:0"><b class="t-title-3" style="font-size:15px;display:block">' +
+            h.title.replace(
+              '{name:rival}',
+              '<span class="t-mono">{name:rival}</span>',
+            ) +
+            '</b><p class="t-body-sm ps-muted" style="margin-top:2px">' +
+            h.why +
+            '</p>' +
+            '<p class="t-body-sm ps-subtle" style="margin-top:4px">' +
+            h.path.replace(
+              '{name:rival}',
+              '<span class="t-mono">{name:rival}</span>',
+            ) +
+            '</p></div></div>' +
+            '<div style="display:flex;justify-content:flex-end"><button class="ps-btn ps-btn--' +
+            (err ? 'primary' : 'secondary') +
+            '">Fix<span data-i="chevR" data-s="18"></span></button></div></article>'
+          );
+        }
+        function group(title, note, items) {
+          return (
+            '<section class="ps-stack" style="gap:8px"><div><h2 class="t-title-3">' +
+            title +
+            '</h2><p class="t-body-sm ps-subtle">' +
+            note +
+            '</p></div>' +
+            items.map(item).join('') +
+            '</section>'
+          );
+        }
+        var errs = PS.HEALTH.filter(function (h) {
+            return h.sev === 'error';
+          }),
+          warns = PS.HEALTH.filter(function (h) {
+            return h.sev === 'warning';
+          });
+        function header(grouping, clear) {
+          return (
+            '<div class="ps-region-head"><div class="ps-row" style="gap:8px">' +
+            (clear
+              ? '<span class="ps-badge ps-badge--success"><span data-i="check" data-s="14"></span>All clear</span>'
+              : '<span class="ps-badge ps-badge--danger"><span data-i="error" data-s="14"></span>3 errors</span><span class="ps-badge ps-badge--warning"><span data-i="alert" data-s="14"></span>3 warnings</span>') +
+            '</div>' +
+            '<div class="ps-row" style="justify-content:space-between"><span class="t-body-sm ps-subtle">Checked 2 minutes ago</span><button class="ps-btn ps-btn--secondary"><span data-i="refresh" data-s="18"></span>Re-run checks</button></div>' +
+            (clear
+              ? ''
+              : '<div class="ps-seg" role="group" aria-label="Group by"><button aria-pressed="' +
+                (grouping === 'sev') +
+                '">By severity</button><button aria-pressed="' +
+                (grouping === 'area') +
+                '">By area</button></div>') +
+            '</div>'
+          );
+        }
+        function bySeverity() {
+          return (
+            group('Errors · 3', 'These block publishing.', errs) +
+            group(
+              'Warnings · 3',
+              'Worth a look. They don’t block publishing.',
+              warns,
+            )
+          );
+        }
+        function byArea() {
+          return ['Locations', 'Encounters', 'NPCs']
+            .map(function (a) {
+              var list = PS.HEALTH.filter(function (h) {
+                return h.area === a;
+              });
+              var e = list.filter(function (h) {
+                  return h.sev === 'error';
+                }).length,
+                w = list.length - e;
+              return group(
+                a + ' · ' + list.length,
+                [
+                  e ? e + ' error' + (e > 1 ? 's' : '') : '',
+                  w ? w + ' warning' + (w > 1 ? 's' : '') : '',
+                ]
+                  .filter(Boolean)
+                  .join(', '),
+                list,
+              );
+            })
+            .join('');
+        }
+        var clearBody =
+          '<div class="ps-center" style="align-items:center;text-align:center;padding-top:40px"><div class="ps-center-icon" style="background:var(--success-soft);color:var(--success)"><span data-i="check" data-s="28"></span></div><h2 class="t-title-2">All clear</h2><p class="t-body ps-muted">No errors or warnings in Kanto Classic. You can publish whenever you’re ready.</p><button class="ps-btn ps-btn--primary ps-btn--block">Review and publish</button></div>';
+        document.querySelectorAll('.slot').forEach(function (el) {
+          var v = el.getAttribute('data-v');
+          if (v === 'sev')
+            el.innerHTML =
+              PS.phoneBar('Region Health', 'Kanto Classic · Draft') +
+              '<div class="ps-scroll">' +
+              header('sev') +
+              '<div class="ps-page" style="gap:24px">' +
+              bySeverity() +
+              '</div></div>';
+          if (v === 'area')
+            el.innerHTML =
+              PS.phoneBar('Region Health', 'Kanto Classic · Draft') +
+              '<div class="ps-scroll">' +
+              header('area') +
+              '<div class="ps-page" style="gap:24px">' +
+              byArea() +
+              '</div></div>';
+          if (v === 'clear')
+            el.innerHTML =
+              PS.phoneBar('Region Health', 'Kanto Classic · Draft') +
+              '<div class="ps-scroll">' +
+              header('sev', true) +
+              clearBody +
+              '</div>';
+          if (v === 'desktop')
+            el.innerHTML =
+              PS.sidebar('health') +
+              '<div class="ps-main">' +
+              PS.topbar() +
+              '<div class="ps-main-body"><div class="ps-section-head"><div><h1 class="t-title-1">Region Health</h1><p class="t-body-sm ps-subtle">Checked 2 minutes ago</p></div><div class="ps-row"><div class="ps-seg" role="group" style="width:280px"><button aria-pressed="true">By severity</button><button aria-pressed="false">By area</button></div><button class="ps-btn ps-btn--secondary"><span data-i="refresh" data-s="18"></span>Re-run checks</button></div></div>' +
+              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">' +
+              group('Errors · 3', 'These block publishing.', errs) +
+              group(
+                'Warnings · 3',
+                'Worth a look. They don’t block publishing.',
+                warns,
+              ) +
+              '</div></div></div>';
+        });
+        PS.mount(document);
+      </script>
+    </main>
+    <script src="../../assets/page.js"></script>
+  </body>
+</html>

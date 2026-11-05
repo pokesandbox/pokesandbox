@@ -96,7 +96,7 @@
         ];
         function health() {
           return (
-            '<section class="ps-card ps-health" aria-label="Region Health"><div class="ps-health-head"><h2 class="t-title-2" style="flex:1">Region Health</h2><span class="ps-badge ps-badge--danger"><span data-i="error" data-s="14"></span>2 errors</span><span class="ps-badge ps-badge--warning"><span data-i="alert" data-s="14"></span>3 warnings</span></div>' +
+            '<section class="ps-card ps-health" aria-label="Region Health"><div class="ps-health-head"><h2 class="t-title-2" style="flex:1">Region Health</h2><span class="ps-badge ps-badge--danger"><span data-i="error" data-s="14"></span>3 errors</span><span class="ps-badge ps-badge--warning"><span data-i="alert" data-s="14"></span>3 warnings</span></div>' +
             HEALTH.map(function (h) {
               return (
                 '<div class="ps-health-item"><span class="is-' +
@@ -110,13 +110,15 @@
                 '</span></span><button class="ps-btn ps-btn--ghost">Open</button></div>'
               );
             }).join('') +
-            '<div class="ps-health-foot"><button class="ps-btn ps-btn--ghost" style="padding:0 8px">View all 5 items</button></div></section>'
+            '<div class="ps-health-foot"><button class="ps-btn ps-btn--ghost" style="padding:0 8px">View all 6 items</button></div></section>'
           );
         }
         function sectionNav() {
           return (
             '<nav class="ps-section-nav" aria-label="Builder sections">' +
-            PS.NAV.slice(1)
+            PS.NAV.filter(function (n) {
+              return n[2] !== 'home' && n[2] !== 'health';
+            })
               .map(function (n) {
                 var dot =
                   n[2] === 'locations' || n[2] === 'encounters'
@@ -150,7 +152,7 @@
           return (
             PS.phoneBar('Builder', 'Pallet Town League', PS.moreBtn) +
             '<div class="ps-scroll"><div class="ps-region-head"><div class="ps-row" style="gap:8px"><h1 class="t-title-1">Kanto Classic</h1><span class="ps-badge ps-badge--draft">Draft</span></div>' +
-            '<p class="t-body-sm ps-subtle">Published v7 · 3 unpublished changes</p><button class="ps-btn ps-btn--primary ps-btn--block">Publish</button></div>' +
+            '<p class="t-body-sm ps-subtle">Published v7 · 6 unpublished changes</p><button class="ps-btn ps-btn--primary ps-btn--block">Publish</button></div>' +
             '<div class="ps-page" style="gap:16px">' +
             health() +
             '<h2 class="ps-list-group" style="padding:8px 0 0">Sections</h2>' +
@@ -159,7 +161,9 @@
           );
         }
         function desktop() {
-          var cards = PS.NAV.slice(1)
+          var cards = PS.NAV.filter(function (n) {
+            return n[2] !== 'home' && n[2] !== 'health';
+          })
             .map(function (n) {
               var err = n[2] === 'locations' || n[2] === 'encounters';
               return (

@@ -136,7 +136,7 @@ window.PS = (function () {
   };
   PS.topbar = function (saved) {
     return (
-      '<header class="ps-topbar"><h1 class="t-title-3">Kanto Classic</h1><span class="ps-badge ps-badge--draft">Draft</span><span class="t-body-sm ps-subtle" style="flex:1">Published v7 · 3 unpublished changes</span>' +
+      '<header class="ps-topbar"><h1 class="t-title-3">Kanto Classic</h1><span class="ps-badge ps-badge--draft">Draft</span><span class="t-body-sm ps-subtle" style="flex:1">Published v7 · 6 unpublished changes</span>' +
       (saved === false
         ? ''
         : '<span class="ps-save ps-save--ok"><span data-i="check" data-s="16"></span>Saved</span>') +
@@ -733,4 +733,76 @@ window.PS = (function () {
       );
     return PS.tabs(t, active);
   };
+})(window.PS);
+
+/* Group 4: Region Health and TMs & HMs in the builder nav. */
+(function (PS) {
+  PS.icons.disc =
+    '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>';
+  PS.icons.pulse = '<path d="M3 12h4l3-7 4 14 3-7h4"/>';
+  PS.icons.refresh =
+    '<path d="M20 11a8 8 0 0 0-14.9-3M4 13a8 8 0 0 0 14.9 3"/><path d="M5 3v5h5M19 21v-5h-5"/>';
+  PS.icons.upload = '<path d="M12 16V4M6 10l6-6 6 6M4 20h16"/>';
+  if (
+    !PS.NAV.some(function (n) {
+      return n[2] === 'health';
+    })
+  )
+    PS.NAV.splice(1, 0, ['Region Health', 'pulse', 'health', '6']);
+  if (
+    !PS.NAV.some(function (n) {
+      return n[2] === 'tms';
+    })
+  )
+    PS.NAV.splice(
+      PS.NAV.findIndex(function (n) {
+        return n[2] === 'pokedex';
+      }) + 1,
+      0,
+      ['TMs & HMs', 'disc', 'tms', '55'],
+    );
+  PS.HEALTH = [
+    {
+      sev: 'error',
+      area: 'Locations',
+      title: 'Route 2 has no connections',
+      why: 'Players can’t reach it or leave it. Add a connection to Viridian City or Pewter City.',
+      path: 'Locations › Route 2 › Connections',
+    },
+    {
+      sev: 'error',
+      area: 'Encounters',
+      title: 'Mt. Moon B1F has a slot with no species',
+      why: 'An empty slot can’t be rolled. Pick a species or remove the slot.',
+      path: 'Locations › Mt. Moon B1F › Encounters › Walk in cave',
+    },
+    {
+      sev: 'error',
+      area: 'NPCs',
+      title: 'Youngster Ben has no Pokémon',
+      why: 'A trainer with an empty party can’t battle. Add at least one Pokémon.',
+      path: 'NPCs › Youngster Ben › Party',
+    },
+    {
+      sev: 'warning',
+      area: 'Locations',
+      title: 'Route 22 has only one connection',
+      why: 'That’s fine for a dead end, but check players aren’t meant to pass through.',
+      path: 'Locations › Route 22 › Connections',
+    },
+    {
+      sev: 'warning',
+      area: 'NPCs',
+      title: 'The rival has no fallback party',
+      why: 'If no variant matches, the battle can’t start. Add a variant with no condition at the end.',
+      path: 'NPCs › {name:rival} › Party',
+    },
+    {
+      sev: 'warning',
+      area: 'NPCs',
+      title: 'Two of the rival’s places can match at once',
+      why: 'Placements 1 and 2 can both be true; the first wins, so 2 may never be used.',
+      path: 'NPCs › {name:rival} › Person',
+    },
+  ];
 })(window.PS);
