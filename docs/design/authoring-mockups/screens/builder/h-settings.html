@@ -15,12 +15,12 @@
       ><span
         >H · Region settings
         <small
-          >H · Region settings · phone with New game, the New game script and
-          its welcome text, desktop 1440</small
+          >H · Region settings · phone with New game, the New game script, its
+          welcome text and starting money, desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 2140px">
+    <main class="mk-stage" style="min-width: 2560px">
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
@@ -36,6 +36,10 @@
               Step 1 · Oak’s welcome (several passages)
             </p>
             <div class="ps-phone ps-phone--tall slot" data-v="welcome"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Step 4 · Starting money</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="money"></div>
           </div>
           <div style="width: 420px" class="ps-stack">
             <p class="ps-frame-label">Notes</p>
@@ -57,7 +61,11 @@
                 <b>New game</b> is the script that runs when a player starts
                 this region. The row shows its step count and opens it in the
                 step editor. Kanto Classic starts with Oak’s welcome, naming the
-                rival, and the move to Your House 2F.
+                rival, ₽3,000, and the move to Your House 2F.
+              </li>
+              <li>
+                <b>Starting money</b> is a Give money step in the New game
+                script, so there's no separate field for it.
               </li>
               <li>
                 <b>Starting location</b> is where a player lands if the New game
@@ -115,7 +123,7 @@
             '<section class="ps-form-section"><h2 class="t-title-2">Currency</h2>' +
             '<div class="ps-pair"><div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Poké Dollars"></div><div class="ps-field"><label class="ps-label">Symbol</label><input class="ps-input" value="₽"></div></div>' +
             '<p class="ps-help" style="margin-top:-8px">Prices show as <b style="color:var(--ink)">₽500</b>.</p></section>' +
-            '<section class="ps-form-section"><h2 class="t-title-2">New game</h2><div class="ps-link-row"><span data-i="code"></span><span>New game<small>The script that runs when a player starts this region · 4 steps</small></span><button class="ps-btn ps-btn--ghost">Open</button></div></section>' +
+            '<section class="ps-form-section"><h2 class="t-title-2">New game</h2><div class="ps-link-row"><span data-i="code"></span><span>New game<small>The script that runs when a player starts this region · 5 steps</small></span><button class="ps-btn ps-btn--ghost">Open</button></div></section>' +
             '<section class="ps-form-section"><h2 class="t-title-2">Locations</h2>' +
             loc(
               'Starting location',
@@ -153,6 +161,7 @@
             t: 'text',
             sum: 'Text · Oak: “' + mono('{name:rival}') + '! That’s right …”',
           },
+          { t: 'give', sum: 'Give ₽3,000' },
           { t: 'move', sum: 'Move to Your House 2F · Pallet Town' },
         ];
         var newgame =
@@ -175,7 +184,7 @@
         ];
         var welcome =
           newgame +
-          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Text" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Text<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Step 1 of 4</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Text" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Text<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Step 1 of 5</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
           '<div class="ps-field"><span class="ps-label">Speaker <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="user"></span>Professor Oak</span><span data-i="chevD"></span></button></div>' +
           PASS.map(function (t, i) {
             return (
@@ -193,6 +202,13 @@
           PASS[0] +
           '</span><div class="ps-embed-buttons"><span>Next</span></div></div></div>' +
           '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
+        var money =
+          newgame +
+          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Give" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Give<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Step 4 of 5</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+          '<div class="ps-seg" role="group"><button aria-pressed="false">An item</button><button aria-pressed="false">A Pokémon</button><button aria-pressed="true">Money</button></div>' +
+          '<div class="ps-field"><label class="ps-label" for="amt">Amount</label><div class="ps-input-wrap" style="max-width:200px"><span class="ps-lead" style="font:600 15px/1 var(--font-sans);display:flex;align-items:center">₽</span><input class="ps-input" id="amt" type="number" inputmode="numeric" min="1" value="3000"></div><p class="ps-help">In Poké Dollars, the region’s currency. Shows as <b style="color:var(--ink)">₽3,000</b>.</p></div>' +
+          '<p class="t-body-sm ps-muted">In New game, this is how much money players start with.</p>' +
+          '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
         document.querySelectorAll('.slot').forEach(function (el) {
           if (el.getAttribute('data-v') === 'newgame') {
             el.innerHTML = newgame;
@@ -200,6 +216,10 @@
           }
           if (el.getAttribute('data-v') === 'welcome') {
             el.innerHTML = welcome;
+            return;
+          }
+          if (el.getAttribute('data-v') === 'money') {
+            el.innerHTML = money;
             return;
           }
           if (el.getAttribute('data-v') === 'phone')

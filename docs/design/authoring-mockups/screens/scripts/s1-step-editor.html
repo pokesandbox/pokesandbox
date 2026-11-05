@@ -178,8 +178,9 @@
               </li>
               <li>
                 <b>Add step</b> picks one of eight types: Text and Ask for a
-                name; Give and Take; Set a flag, progression or badge; Battle a
-                trainer and Heal; Move the player.
+                name; Give and Take (items, money, and for Give a Pokémon); Set
+                a flag, progression or badge; Battle a trainer and Heal; Move
+                the player.
               </li>
               <li>
                 <b>Text</b> holds one or more passages, each shown with Next (+
@@ -189,8 +190,13 @@
                 preview that fills in sample names.
               </li>
               <li>
-                <b>Take:</b> if they don't have it, the script stops there.
-                That's fixed, so the step says so instead of offering a choice.
+                <b>Give and Take money:</b> an amount in the region's currency
+                ("Give ₽3,000" in New game). Money never goes below zero.
+              </li>
+              <li>
+                <b>Take:</b> if they don't have it (or can't pay), the script
+                stops there. That's fixed, so the step says so instead of
+                offering a choice.
               </li>
               <li>
                 <b>Set</b> creates a flag inline when the name doesn't exist
@@ -381,7 +387,7 @@
           '<div class="ps-field"><label class="ps-label" for="def">Default name</label><input class="ps-input" id="def" value="Gary"><p class="ps-help">Used if they leave it empty.</p></div>' +
           '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">How it looks in Discord</span></div><div class="ps-embed"><b>Professor Oak</b><span>This is my grandson. He’s been your rival since you were a baby. …Erm, what was his name now?</span><div class="ps-embed-buttons"><span>Type a name</span><span>Use “Gary”</span></div></div></div>';
         var giveBody =
-          '<div class="ps-seg" role="group"><button aria-pressed="false">An item</button><button aria-pressed="true">A Pokémon</button></div>' +
+          '<div class="ps-seg" role="group"><button aria-pressed="false">An item</button><button aria-pressed="true">A Pokémon</button><button aria-pressed="false">Money</button></div>' +
           '<div class="ps-pair" style="grid-template-columns:1fr 96px"><div class="ps-field"><span class="ps-label">Species</span>' +
           trig(
             '',
@@ -395,11 +401,12 @@
           '</div>' +
           '<p class="t-body-sm ps-muted">If the party is full, it goes to the PC, as the region’s rules say.</p>';
         var takeBody =
+          '<div class="ps-seg" role="group"><button aria-pressed="true">An item</button><button aria-pressed="false">Money</button></div>' +
           '<div class="ps-pair" style="grid-template-columns:1fr 96px"><div class="ps-field"><span class="ps-label">Item</span>' +
           trig('bag', 'Oak’s Parcel') +
           '</div>' +
           '<div class="ps-field"><label class="ps-label" for="tq">Quantity</label><input class="ps-input" id="tq" type="number" inputmode="numeric" value="1"></div></div>' +
-          '<div class="ps-field"><span class="ps-label">If they don’t have it</span><div class="ps-readonly"><span data-i="lock" data-s="18"></span><div><b>Stop the script</b><p class="t-body-sm ps-muted">Nothing after this step runs. To avoid it, make what runs this script check for the item.</p></div></div></div>';
+          '<div class="ps-field"><span class="ps-label">If they don’t have it</span><div class="ps-readonly"><span data-i="lock" data-s="18"></span><div><b>Stop the script</b><p class="t-body-sm ps-muted">Nothing after this step runs. To avoid it, make what runs this script check for the item. Money works the same: if they can’t pay, it stops.</p></div></div></div>';
         var setBody =
           '<div class="ps-seg" role="group"><button aria-pressed="true">A flag</button><button aria-pressed="false">A progression</button><button aria-pressed="false">A badge</button></div>' +
           '<div class="ps-field"><label class="ps-label" for="fl">Flag</label><div class="ps-input-wrap"><span class="ps-lead" data-i="flag"></span><input class="ps-input t-mono" id="fl" role="combobox" aria-expanded="true" value="oak_parcel_delivered"></div>' +
@@ -497,7 +504,7 @@
             '3 steps · Viridian Mart · Enters',
             '',
           ],
-          ['New game', 'new-game', '4 steps · Region settings', ''],
+          ['New game', 'new-game', '5 steps · Region settings', ''],
           [
             'Fishing Guru’s gift',
             'fishing-guru-gift',
@@ -676,7 +683,7 @@
                   {},
                 ),
               ) +
-              sheet('Ask for a name', 'Step 2 of 4', nameBody);
+              sheet('Ask for a name', 'Step 2 of 5', nameBody);
           if (v === 'give')
             el.innerHTML =
               under +
@@ -714,12 +721,13 @@
                         mono('{name:rival}') +
                         '! That’s right …”',
                     },
+                    { t: 'give', sum: 'Give ₽3,000' },
                     { t: 'move', sum: 'Move to Your House 2F' },
                   ],
                   {},
                 ),
               ) +
-              sheet('Move the player', 'Step 4 of 4', moveBody);
+              sheet('Move the player', 'Step 5 of 5', moveBody);
           if (v === 'issues')
             el.innerHTML =
               bar('Museum entry', 'museum-entry') +

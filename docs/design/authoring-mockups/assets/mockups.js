@@ -1391,8 +1391,8 @@ window.PS = (function () {
   PS.STEP_TYPES = {
     text: ['chat', 'Text', 'Dialogue, narration, or both. Waits for Next.'],
     name: ['pen', 'Ask for a name', 'Players type a name, like the rival’s'],
-    give: ['gift', 'Give', 'An item or a Pokémon'],
-    take: ['take', 'Take', 'An item from the bag'],
+    give: ['gift', 'Give', 'An item, a Pokémon or money'],
+    take: ['take', 'Take', 'An item or money'],
     set: ['flag', 'Set', 'A flag, a progression or a badge'],
     battle: [
       'swap',
