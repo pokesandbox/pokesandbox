@@ -136,7 +136,7 @@ window.PS = (function () {
   };
   PS.topbar = function (saved) {
     return (
-      '<header class="ps-topbar"><h1 class="t-title-3">Kanto Classic</h1><span class="ps-badge ps-badge--draft">Draft</span><span class="t-body-sm ps-subtle" style="flex:1">Published v7 · 6 unpublished changes</span>' +
+      '<header class="ps-topbar"><h1 class="t-title-3">Kanto Classic</h1><span class="ps-badge ps-badge--draft">Draft</span><span class="t-body-sm ps-subtle" style="flex:1">Published v7 · 8 unpublished changes</span>' +
       (saved === false
         ? ''
         : '<span class="ps-save ps-save--ok"><span data-i="check" data-s="16"></span>Saved</span>') +
@@ -161,7 +161,6 @@ window.PS = (function () {
       n: 'Route 22',
       kind: 'route',
       meta: 'Route · 1 connection',
-      warn: true,
     },
     {
       k: 'viridian-city',
@@ -748,7 +747,7 @@ window.PS = (function () {
       return n[2] === 'health';
     })
   )
-    PS.NAV.splice(1, 0, ['Region Health', 'pulse', 'health', '6']);
+    PS.NAV.splice(1, 0, ['Region Health', 'pulse', 'health', '5']);
   if (
     !PS.NAV.some(function (n) {
       return n[2] === 'tms';
@@ -789,6 +788,11 @@ window.PS = (function () {
       title: 'Route 22 has only one connection',
       why: 'That’s fine for a dead end, but check players aren’t meant to pass through.',
       path: 'Locations › Route 22 › Connections',
+      dismissed: {
+        by: 'Misty',
+        when: 'Nov 3',
+        reason: 'Dead end on purpose. It leads to the League later.',
+      },
     },
     {
       sev: 'warning',

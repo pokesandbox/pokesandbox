@@ -15,8 +15,8 @@
       ><span
         >O1 · Region Health
         <small
-          >O1 · Region Health · phone (by severity, by area), all clear, desktop
-          1440</small
+          >O1 · Region Health · open (live: try Dismiss), by area, dismiss
+          sheet, Dismissed view, all clear, desktop 1440</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
@@ -24,135 +24,246 @@
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
-            <p class="ps-frame-label">By severity</p>
+            <p class="ps-frame-label">Open · by severity (live)</p>
             <div class="ps-phone ps-phone--tall slot" data-v="sev"></div>
           </div>
           <div>
-            <p class="ps-frame-label">By area</p>
+            <p class="ps-frame-label">Open · by area</p>
             <div class="ps-phone ps-phone--tall slot" data-v="area"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">Dismiss a warning (sheet)</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="sheet"></div>
+          </div>
+        </div>
+        <div class="ps-demos" style="flex-wrap: nowrap; margin-top: 32px">
+          <div>
+            <p class="ps-frame-label">Dismissed view</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="dismissed"></div>
           </div>
           <div>
             <p class="ps-frame-label">All clear</p>
             <div class="ps-phone ps-phone--tall slot" data-v="clear"></div>
           </div>
+          <div style="width: 400px" class="ps-stack">
+            <p class="ps-frame-label">Notes</p>
+            <ul
+              class="t-body-sm ps-muted"
+              style="
+                margin: 0;
+                padding-left: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+              "
+            >
+              <li>
+                <b>Open and Dismissed</b> are tabs under the header. Open is the
+                default and is what every count uses: the badges here, the
+                builder home card, the sidebar badge, and the dots on rows.
+              </li>
+              <li>
+                <b>Groupings:</b> By severity (Errors, then Warnings) or By area
+                (Locations, Encounters, NPCs). Errors block publish; warnings
+                don't.
+              </li>
+              <li>
+                <b>Each item:</b> what's wrong, why it matters and what to do,
+                the path to the field, and Fix (the same deep link as Discord's
+                "Open in builder").
+              </li>
+              <li>
+                <b>Only warnings can be dismissed.</b> Dismiss asks for an
+                optional reason, then shows an Undo toast. It hides that one
+                warning, not the whole check.
+              </li>
+              <li>
+                <b>A dismissal comes back on its own</b> when the facts behind
+                it change (Route 22 gains or loses a connection), and the item
+                returns to Open as new.
+              </li>
+              <li>
+                <b>Dismissed</b> lists who dismissed each warning, when and why,
+                with Restore. Dismissals are shared by everyone editing the
+                region.
+              </li>
+              <li>
+                <b>Checks</b> run on every save and on publish; Re-run checks is
+                there after big imports.
+              </li>
+              <li>
+                <b>All clear</b> means no open items; it still mentions
+                dismissed warnings so they're never invisible.
+              </li>
+            </ul>
+          </div>
         </div>
-        <ul
-          class="t-body-sm ps-muted"
-          style="
-            margin: 24px 0 0;
-            padding-left: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-width: 1300px;
-          "
-        >
-          <li>
-            <b>Two groupings, one list:</b> By severity (default) puts Errors
-            first, then Warnings; By area groups by Locations, Encounters, NPCs.
-            Each group heading says what it means: errors block publish,
-            warnings don't.
-          </li>
-          <li>
-            <b>Each item:</b> what's wrong in plain English, why it matters and
-            what to do, the path to the field, and Fix, which opens that exact
-            field (the same deep link Discord's "Open in builder" uses).
-          </li>
-          <li>
-            <b>Checks</b> run on every save and on publish. The header shows
-            when they last ran; "Re-run checks" is there for after big imports.
-            While running, the button shows a spinner and the list stays
-            visible.
-          </li>
-          <li><b>All clear</b> says so plainly and points to Publish.</li>
-          <li>
-            Region Health is now in the builder sidebar, with its item count.
-          </li>
-        </ul>
         <p class="ps-frame-label" style="margin-top: 32px">Desktop 1440</p>
         <div
           class="ps-desktop slot"
           data-v="desktop"
-          style="height: 960px"
+          style="height: 1000px"
         ></div>
       </div>
       <script>
-        function item(h) {
+        var rival = function (t) {
+          return t.replace(
+            '{name:rival}',
+            '<span class="t-mono">{name:rival}</span>',
+          );
+        };
+        function idx(h) {
+          return PS.HEALTH.indexOf(h);
+        }
+        function item(h, mode) {
           var err = h.sev === 'error';
+          var actions =
+            mode === 'dismissed'
+              ? '<button class="ps-btn ps-btn--secondary" data-restore="' +
+                idx(h) +
+                '">Restore</button>'
+              : (err
+                  ? ''
+                  : '<button class="ps-btn ps-btn--ghost" data-dismiss="' +
+                    idx(h) +
+                    '">Dismiss</button>') +
+                '<button class="ps-btn ps-btn--' +
+                (err ? 'primary' : 'secondary') +
+                '">Fix<span data-i="chevR" data-s="18"></span></button>';
+          var meta =
+            mode === 'dismissed'
+              ? '<p class="t-body-sm ps-subtle" style="margin-top:6px">Dismissed by ' +
+                h.dismissed.by +
+                ' · ' +
+                h.dismissed.when +
+                (h.dismissed.reason ? '<br>“' + h.dismissed.reason + '”' : '') +
+                '</p>'
+              : '';
           return (
-            '<article class="ps-card" style="gap:8px;padding:12px 12px 8px 16px"><div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--' +
-            (err ? 'danger' : 'warning') +
+            '<article class="ps-card" style="gap:8px;padding:12px 12px 8px 16px' +
+            (mode === 'dismissed' ? ';background:var(--bg)' : '') +
+            '"><div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--' +
+            (mode === 'dismissed' ? 'ink-subtle' : err ? 'danger' : 'warning') +
             ');margin-top:1px" data-i="' +
             (err ? 'error' : 'alert') +
             '"></span>' +
             '<div style="flex:1;min-width:0"><b class="t-title-3" style="font-size:15px;display:block">' +
-            h.title.replace(
-              '{name:rival}',
-              '<span class="t-mono">{name:rival}</span>',
-            ) +
+            rival(h.title) +
             '</b><p class="t-body-sm ps-muted" style="margin-top:2px">' +
             h.why +
             '</p>' +
             '<p class="t-body-sm ps-subtle" style="margin-top:4px">' +
-            h.path.replace(
-              '{name:rival}',
-              '<span class="t-mono">{name:rival}</span>',
-            ) +
-            '</p></div></div>' +
-            '<div style="display:flex;justify-content:flex-end"><button class="ps-btn ps-btn--' +
-            (err ? 'primary' : 'secondary') +
-            '">Fix<span data-i="chevR" data-s="18"></span></button></div></article>'
+            rival(h.path) +
+            '</p>' +
+            meta +
+            '</div></div>' +
+            '<div style="display:flex;justify-content:flex-end;gap:8px">' +
+            actions +
+            '</div></article>'
           );
         }
-        function group(title, note, items) {
-          return (
-            '<section class="ps-stack" style="gap:8px"><div><h2 class="t-title-3">' +
-            title +
-            '</h2><p class="t-body-sm ps-subtle">' +
-            note +
-            '</p></div>' +
-            items.map(item).join('') +
-            '</section>'
-          );
+        function group(title, note, items, mode) {
+          return items.length
+            ? '<section class="ps-stack" style="gap:8px"><div><h2 class="t-title-3">' +
+                title +
+                '</h2><p class="t-body-sm ps-subtle">' +
+                note +
+                '</p></div>' +
+                items
+                  .map(function (h) {
+                    return item(h, mode);
+                  })
+                  .join('') +
+                '</section>'
+            : '';
         }
-        var errs = PS.HEALTH.filter(function (h) {
-            return h.sev === 'error';
-          }),
-          warns = PS.HEALTH.filter(function (h) {
-            return h.sev === 'warning';
+        function open() {
+          return PS.HEALTH.filter(function (h) {
+            return !h.dismissed;
           });
-        function header(grouping, clear) {
+        }
+        function dismissed() {
+          return PS.HEALTH.filter(function (h) {
+            return h.dismissed;
+          });
+        }
+        function counts() {
+          var o = open(),
+            e = o.filter(function (h) {
+              return h.sev === 'error';
+            }).length;
+          return {
+            e: e,
+            w: o.length - e,
+            d: dismissed().length,
+            open: o.length,
+          };
+        }
+        function header(grouping, tab, clear) {
+          var c = counts();
+          var badges = clear
+            ? '<span class="ps-badge ps-badge--success"><span data-i="check" data-s="14"></span>All clear</span>'
+            : '<span class="ps-badge ps-badge--danger"><span data-i="error" data-s="14"></span>' +
+              c.e +
+              ' errors</span><span class="ps-badge ps-badge--warning"><span data-i="alert" data-s="14"></span>' +
+              c.w +
+              ' warnings</span>';
           return (
             '<div class="ps-region-head"><div class="ps-row" style="gap:8px">' +
-            (clear
-              ? '<span class="ps-badge ps-badge--success"><span data-i="check" data-s="14"></span>All clear</span>'
-              : '<span class="ps-badge ps-badge--danger"><span data-i="error" data-s="14"></span>3 errors</span><span class="ps-badge ps-badge--warning"><span data-i="alert" data-s="14"></span>3 warnings</span>') +
+            badges +
+            (c.d
+              ? '<span class="t-body-sm ps-subtle">' + c.d + ' dismissed</span>'
+              : '') +
             '</div>' +
             '<div class="ps-row" style="justify-content:space-between"><span class="t-body-sm ps-subtle">Checked 2 minutes ago</span><button class="ps-btn ps-btn--secondary"><span data-i="refresh" data-s="18"></span>Re-run checks</button></div>' +
-            (clear
-              ? ''
-              : '<div class="ps-seg" role="group" aria-label="Group by"><button aria-pressed="' +
+            (tab === 'open' && !clear
+              ? '<div class="ps-seg" role="group" aria-label="Group by"><button aria-pressed="' +
                 (grouping === 'sev') +
                 '">By severity</button><button aria-pressed="' +
                 (grouping === 'area') +
-                '">By area</button></div>') +
-            '</div>'
+                '">By area</button></div>'
+              : '') +
+            '</div>' +
+            PS.tabs(
+              [
+                [
+                  'open',
+                  'Open <span class="ps-tab-meta">' +
+                    (clear ? 0 : c.open) +
+                    '</span>',
+                ],
+                [
+                  'dismissed',
+                  'Dismissed <span class="ps-tab-meta">' + c.d + '</span>',
+                ],
+              ],
+              tab,
+            )
           );
         }
         function bySeverity() {
+          var o = open();
           return (
-            group('Errors · 3', 'These block publishing.', errs) +
             group(
-              'Warnings · 3',
+              'Errors · ' + counts().e,
+              'These block publishing.',
+              o.filter(function (h) {
+                return h.sev === 'error';
+              }),
+            ) +
+            group(
+              'Warnings · ' + counts().w,
               'Worth a look. They don’t block publishing.',
-              warns,
+              o.filter(function (h) {
+                return h.sev === 'warning';
+              }),
             )
           );
         }
         function byArea() {
           return ['Locations', 'Encounters', 'NPCs']
             .map(function (a) {
-              var list = PS.HEALTH.filter(function (h) {
+              var list = open().filter(function (h) {
                 return h.area === a;
               });
               var e = list.filter(function (h) {
@@ -172,49 +283,186 @@
             })
             .join('');
         }
-        var clearBody =
-          '<div class="ps-center" style="align-items:center;text-align:center;padding-top:40px"><div class="ps-center-icon" style="background:var(--success-soft);color:var(--success)"><span data-i="check" data-s="28"></span></div><h2 class="t-title-2">All clear</h2><p class="t-body ps-muted">No errors or warnings in Kanto Classic. You can publish whenever you’re ready.</p><button class="ps-btn ps-btn--primary ps-btn--block">Review and publish</button></div>';
-        document.querySelectorAll('.slot').forEach(function (el) {
-          var v = el.getAttribute('data-v');
+        function dismissedBody() {
+          var d = dismissed();
+          return d.length
+            ? '<p class="t-body-sm ps-muted">Hidden from counts and from Open. Each comes back on its own if what it’s about changes.</p>' +
+                d
+                  .map(function (h) {
+                    return item(h, 'dismissed');
+                  })
+                  .join('')
+            : '<div class="ps-empty"><span data-i="check" data-s="28"></span><b class="t-title-3" style="color:var(--ink)">Nothing dismissed</b><span class="t-body-sm">Warnings you dismiss show up here, with Restore.</span></div>';
+        }
+        function sheet() {
+          var h = PS.HEALTH.filter(function (x) {
+            return x.title.indexOf('Route 22') === 0;
+          })[0];
+          return (
+            '<div class="ps-scrim"></div><div class="ps-sheet" role="dialog" aria-label="Dismiss warning"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">Dismiss this warning?</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
+            '<div class="ps-context"><span style="color:var(--warning)" data-i="alert"></span><div style="flex:1"><b class="t-title-3" style="font-size:15px">' +
+            h.title +
+            '</b><p class="t-body-sm ps-subtle">' +
+            h.path +
+            '</p></div></div>' +
+            '<div class="ps-field"><label class="ps-label" for="why">Reason <span class="ps-opt">(optional)</span></label><input class="ps-input" id="why" value="Dead end on purpose. It leads to the League later."><p class="ps-help">Shown to other editors in Dismissed.</p></div>' +
+            '<p class="t-body-sm ps-muted">It comes back if Route 22’s connections change.</p>' +
+            '<div class="ps-actions"><button class="ps-btn ps-btn--primary ps-btn--block">Dismiss warning</button><button class="ps-btn ps-btn--ghost ps-btn--block">Cancel</button></div></div>'
+          );
+        }
+        function phone(v) {
+          var top = PS.phoneBar('Region Health', 'Kanto Classic · Draft');
           if (v === 'sev')
-            el.innerHTML =
-              PS.phoneBar('Region Health', 'Kanto Classic · Draft') +
+            return (
+              top +
               '<div class="ps-scroll">' +
-              header('sev') +
+              header('sev', 'open') +
               '<div class="ps-page" style="gap:24px">' +
               bySeverity() +
-              '</div></div>';
+              '</div></div><div class="ps-toast-dock" data-toast></div>'
+            );
           if (v === 'area')
-            el.innerHTML =
-              PS.phoneBar('Region Health', 'Kanto Classic · Draft') +
+            return (
+              top +
               '<div class="ps-scroll">' +
-              header('area') +
+              header('area', 'open') +
               '<div class="ps-page" style="gap:24px">' +
               byArea() +
-              '</div></div>';
-          if (v === 'clear')
-            el.innerHTML =
-              PS.phoneBar('Region Health', 'Kanto Classic · Draft') +
+              '</div></div>'
+            );
+          if (v === 'sheet') {
+            var r22 = PS.HEALTH.filter(function (x) {
+                return x.title.indexOf('Route 22') === 0;
+              })[0],
+              keep = r22.dismissed;
+            r22.dismissed = null;
+            var out =
+              top +
               '<div class="ps-scroll">' +
-              header('sev', true) +
-              clearBody +
-              '</div>';
-          if (v === 'desktop')
-            el.innerHTML =
-              PS.sidebar('health') +
-              '<div class="ps-main">' +
-              PS.topbar() +
-              '<div class="ps-main-body"><div class="ps-section-head"><div><h1 class="t-title-1">Region Health</h1><p class="t-body-sm ps-subtle">Checked 2 minutes ago</p></div><div class="ps-row"><div class="ps-seg" role="group" style="width:280px"><button aria-pressed="true">By severity</button><button aria-pressed="false">By area</button></div><button class="ps-btn ps-btn--secondary"><span data-i="refresh" data-s="18"></span>Re-run checks</button></div></div>' +
-              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">' +
-              group('Errors · 3', 'These block publishing.', errs) +
-              group(
-                'Warnings · 3',
-                'Worth a look. They don’t block publishing.',
-                warns,
-              ) +
-              '</div></div></div>';
+              header('sev', 'open') +
+              '<div class="ps-page" style="gap:24px">' +
+              bySeverity() +
+              '</div></div>' +
+              sheet();
+            r22.dismissed = keep;
+            return out;
+          }
+          if (v === 'sheet-unused')
+            return (
+              top +
+              '<div class="ps-scroll">' +
+              header('sev', 'open') +
+              '<div class="ps-page" style="gap:24px">' +
+              bySeverity() +
+              '</div></div>' +
+              sheet()
+            );
+          if (v === 'dismissed')
+            return (
+              top +
+              '<div class="ps-scroll">' +
+              header('sev', 'dismissed') +
+              '<div class="ps-page" style="gap:12px">' +
+              dismissedBody() +
+              '</div></div>'
+            );
+          if (v === 'clear')
+            return (
+              top +
+              '<div class="ps-scroll">' +
+              header('sev', 'open', true) +
+              '<div class="ps-center" style="align-items:center;text-align:center;padding-top:40px"><div class="ps-center-icon" style="background:var(--success-soft);color:var(--success)"><span data-i="check" data-s="28"></span></div><h2 class="t-title-2">All clear</h2><p class="t-body ps-muted">No open errors or warnings in Kanto Classic. ' +
+              counts().d +
+              ' dismissed warning is still listed under Dismissed.</p><button class="ps-btn ps-btn--primary ps-btn--block">Review and publish</button></div></div>'
+            );
+        }
+        function desktop() {
+          var o = open();
+          return (
+            PS.sidebar('health') +
+            '<div class="ps-main">' +
+            PS.topbar() +
+            '<div class="ps-main-body"><div class="ps-section-head"><div><h1 class="t-title-1">Region Health</h1><p class="t-body-sm ps-subtle">Checked 2 minutes ago</p></div><div class="ps-row"><div class="ps-seg" role="group" style="width:280px"><button aria-pressed="true">By severity</button><button aria-pressed="false">By area</button></div><button class="ps-btn ps-btn--secondary"><span data-i="refresh" data-s="18"></span>Re-run checks</button></div></div>' +
+            PS.tabs(
+              [
+                [
+                  'open',
+                  'Open <span class="ps-tab-meta">' + o.length + '</span>',
+                ],
+                [
+                  'dismissed',
+                  'Dismissed <span class="ps-tab-meta">' +
+                    dismissed().length +
+                    '</span>',
+                ],
+              ],
+              'open',
+            ).replace(
+              'ps-tabs"',
+              'ps-tabs" style="background:transparent;padding:0"',
+            ) +
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">' +
+            group(
+              'Errors · ' + counts().e,
+              'These block publishing.',
+              o.filter(function (h) {
+                return h.sev === 'error';
+              }),
+            ) +
+            '<div class="ps-stack" style="gap:24px">' +
+            group(
+              'Warnings · ' + counts().w,
+              'Worth a look. They don’t block publishing.',
+              o.filter(function (h) {
+                return h.sev === 'warning';
+              }),
+            ) +
+            '<p class="t-body-sm ps-subtle">' +
+            dismissed().length +
+            ' dismissed warning hidden. <a class="ps-link" href="#">Show dismissed</a></p></div></div></div></div>'
+          );
+        }
+        var lastToast = null;
+        function draw() {
+          document.querySelectorAll('.slot').forEach(function (el) {
+            var v = el.getAttribute('data-v');
+            el.innerHTML = v === 'desktop' ? desktop() : phone(v);
+          });
+          if (lastToast)
+            document.querySelector('[data-toast]').innerHTML = lastToast;
+          PS.mount(document);
+        }
+        document.addEventListener('click', function (e) {
+          var d = e.target.closest('[data-dismiss]'),
+            r = e.target.closest('[data-restore]'),
+            u = e.target.closest('[data-undo]');
+          if (d && d.closest('[data-v="sev"]')) {
+            var i = +d.getAttribute('data-dismiss');
+            PS.HEALTH[i].dismissed = {
+              by: 'You',
+              when: 'just now',
+              reason: '',
+            };
+            lastToast =
+              '<div class="ps-toast" role="status">' +
+              PS.icon('check') +
+              '<span>Warning dismissed</span><button class="ps-btn" data-undo="' +
+              i +
+              '">Undo</button></div>';
+            draw();
+          }
+          if (u) {
+            PS.HEALTH[+u.getAttribute('data-undo')].dismissed = null;
+            lastToast = null;
+            draw();
+          }
+          if (r) {
+            PS.HEALTH[+r.getAttribute('data-restore')].dismissed = null;
+            lastToast = null;
+            draw();
+          }
         });
-        PS.mount(document);
+        draw();
       </script>
     </main>
     <script src="../../assets/page.js"></script>

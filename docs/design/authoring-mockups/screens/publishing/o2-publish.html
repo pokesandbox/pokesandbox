@@ -59,8 +59,15 @@
             >
               <li>
                 <b>Publish</b> in the builder's top bar opens this review. It
-                compares the draft with the last release and groups the changes;
-                each group expands to the items, and each item links to it.
+                compares the draft with the last release, one card per area
+                (Locations, Trainers, Encounters, NPCs…).
+              </li>
+              <li>
+                <b>One area, mixed changes:</b> the card's summary shows each
+                kind as a count (+2 added, ~1 changed, −1 removed). Expanded, it
+                lists Added, then Changed, then Removed, each item with what
+                changed and a link. Removed items say what happened to anything
+                that pointed at them.
               </li>
               <li>
                 <b>Warnings</b> are listed with a link to Region Health but
@@ -114,56 +121,109 @@
         </div>
       </div>
       <script>
-        var GROUPS = [
-          [
-            'is-add',
-            '+',
-            '3 locations added',
-            ['Route 2', 'Viridian Forest', 'Pewter City'],
-            true,
-          ],
-          [
-            'is-change',
-            '~',
-            '2 trainers changed',
-            [
-              '<span class="t-mono">{name:rival}</span>: party variants reordered',
-              'Brock: Onix level 12 → 14',
+        var AREAS = [
+          {
+            name: 'Locations',
+            icon: 'pin',
+            open: true,
+            add: [['Route 2'], ['Viridian Forest']],
+            change: [
+              ['Pewter City', 'Description and a new connection to Route 2'],
             ],
-          ],
-          [
-            'is-change',
-            '~',
-            '1 encounter table changed',
-            ['Route 1, Walk in grass: Pikachu added at 2%'],
-          ],
-          [
-            'is-add',
-            '+',
-            '1 NPC added',
-            ['Brock, from the Gym Leader template'],
-          ],
+            remove: [
+              [
+                'Route 2 Gate',
+                'Merged into Route 2. Its 2 connections now point to Route 2.',
+              ],
+            ],
+          },
+          {
+            name: 'Trainers',
+            icon: 'swap',
+            change: [
+              [
+                '<span class="t-mono">{name:rival}</span>',
+                'Party variants reordered',
+              ],
+              ['Brock', 'Onix level 12 → 14'],
+            ],
+          },
+          {
+            name: 'Encounters',
+            icon: 'leaf',
+            change: [['Route 1 · Walk in grass', 'Pikachu added at 2%']],
+          },
+          {
+            name: 'NPCs',
+            icon: 'chat',
+            add: [['Brock', 'From the Gym Leader template']],
+          },
         ];
+        var SIGNS = {
+          add: ['is-add', '+', 'Added', 'success', 'added'],
+          change: ['is-change', '~', 'Changed', 'brand', 'changed'],
+          remove: ['is-remove', '−', 'Removed', 'danger', 'removed'],
+        };
         function diff() {
           return (
             '<div class="ps-diff">' +
-            GROUPS.map(function (g) {
+            AREAS.map(function (a) {
+              var kinds = ['add', 'change', 'remove'].filter(function (k) {
+                return a[k] && a[k].length;
+              });
+              var counts = kinds
+                .map(function (k) {
+                  var g = SIGNS[k];
+                  return (
+                    '<span class="ps-badge ps-badge--' +
+                    g[3] +
+                    '"><span aria-hidden="true">' +
+                    g[1] +
+                    '</span>' +
+                    a[k].length +
+                    ' ' +
+                    g[4] +
+                    '</span>'
+                  );
+                })
+                .join('');
+              var body = kinds
+                .map(function (k) {
+                  var g = SIGNS[k];
+                  return (
+                    '<div class="ps-diff-sub"><span>' +
+                    g[2] +
+                    '</span>' +
+                    a[k]
+                      .map(function (it) {
+                        return (
+                          '<div class="ps-diff-item"><span class="ps-diff-sign ' +
+                          g[0] +
+                          '" aria-hidden="true">' +
+                          g[1] +
+                          '</span><span>' +
+                          it[0] +
+                          (it[1] ? '<small>' + it[1] + '</small>' : '') +
+                          '</span></div>'
+                        );
+                      })
+                      .join('') +
+                    '</div>'
+                  );
+                })
+                .join('');
               return (
                 '<details' +
-                (g[4] ? ' open' : '') +
-                '><summary><span class="ps-diff-sign ' +
-                g[0] +
-                '" aria-hidden="true">' +
-                g[1] +
-                '</span><span>' +
-                g[2] +
-                '</span><span data-i="chevD"></span></summary><ul>' +
-                g[3]
-                  .map(function (i) {
-                    return '<li>' + i + '</li>';
-                  })
-                  .join('') +
-                '</ul></details>'
+                (a.open ? ' open' : '') +
+                '><summary><span class="ps-kind" data-i="' +
+                a.icon +
+                '"></span><span><b style="font-weight:600">' +
+                a.name +
+                '</b><span class="ps-diff-counts">' +
+                counts +
+                '</span></span><span data-i="chevD"></span></summary>' +
+                body +
+                '</details>'
               );
             }).join('') +
             '</div>'
@@ -176,7 +236,7 @@
           '<div class="ps-field"><label class="ps-label" for="cl">Notes for players <span class="ps-opt">(optional)</span></label><textarea class="ps-textarea" id="cl" style="min-height:88px">Route 2 and Viridian Forest are open! Brock is waiting in Pewter City.</textarea></div>' +
           '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">How it looks in Discord</span></div><div class="ps-embed"><b>Kanto Classic v8 is out</b><span>Route 2 and Viridian Forest are open! Brock is waiting in Pewter City.</span><span class="ps-embed-muted">Pallet Town League · new sessions start on v8</span></div></div>';
         var warn =
-          '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>3 warnings. They don’t block publishing. <a class="ps-link" href="#">Review in Region Health</a></span></div>';
+          '<div class="ps-callout ps-callout--warning"><span data-i="alert" data-s="18"></span><span>2 warnings and 1 dismissed. They don’t block publishing. <a class="ps-link" href="#">Review in Region Health</a></span></div>';
         var blockedCallout =
           '<div class="ps-callout"><span data-i="error" data-s="18"></span><span><b>3 errors block publishing.</b> Fix them first; your changes are saved in the draft. <a class="ps-link" href="#">Open Region Health</a></span></div>';
         function bar(disabled) {
