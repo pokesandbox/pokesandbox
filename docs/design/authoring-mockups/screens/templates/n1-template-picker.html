@@ -50,15 +50,20 @@
                 a raw step list.
               </li>
               <li>
-                Each card says what it's for and what it creates. Gym Leader is
-                the only one designed this round; the others are available but
-                open a "not designed yet" note in this mockup.
+                Each card says what it's for and what it creates. Starter Gift,
+                Gym Leader, Gift NPC and Forced Encounter are designed; Route
+                Trainer opens a "not designed yet" note in this mockup. Starter
+                Gift is the one being opened here.
               </li>
               <li>
-                Doc 07 also lists Gauntlet, In-game Trade and Simple Talker, and
+                Gauntlet and In-game Trade come with the full step editor, and
                 regions with trials instead of gyms will want a Trial Captain
                 template; they're shown as "Also planned" so the list doesn't
                 look final.
+              </li>
+              <li>
+                There's no talker template: someone who just talks is a Talk
+                script of Text steps.
               </li>
               <li>
                 Templates can also start from other places later (a location's
@@ -80,35 +85,38 @@
       <script>
         var T = [
           [
+            'bag',
+            'Starter Gift',
+            'Let the player pick one of a few Pokémon, with the rival picking the one strong against theirs.',
+            'Creates a script, a Talk script and a choice progression',
+            true,
+          ],
+          [
             'gym',
             'Gym Leader',
             'A leader in their gym who battles and awards a badge and a TM.',
             'Creates an NPC, a trainer, a script and a badge reward',
-            true,
+            false,
+          ],
+          [
+            'heart',
+            'Gift NPC',
+            'Someone who hands over items or a Pokémon once.',
+            'Creates an NPC and a script',
+            false,
+          ],
+          [
+            'swap',
+            'Forced Encounter',
+            'A trainer steps in and battles when the player arrives, leaves or explores.',
+            'Creates an event and a script on a location',
+            false,
           ],
           [
             'route',
             'Route Trainer',
             'A trainer who battles players exploring a route.',
             'Creates an NPC and a trainer',
-          ],
-          [
-            'bag',
-            'Starter Gift',
-            'Let the player pick one of a few Pokémon.',
-            'Creates an NPC and a script',
-          ],
-          [
-            'heart',
-            'Item Gift NPC',
-            'Someone who hands over an item once.',
-            'Creates an NPC and a script',
-          ],
-          [
-            'swap',
-            'Forced Rival Encounter',
-            'The rival steps in and battles when the player arrives.',
-            'Creates a script on a location',
           ],
         ];
         function cards(cols) {
@@ -133,19 +141,19 @@
                 '</span><span class="t-body-sm ps-subtle">' +
                 t[3] +
                 '</span>' +
-                (t[4]
-                  ? ''
-                  : '<span class="ps-badge ps-badge--outline" style="align-self:flex-start;margin-top:4px">Not designed yet</span>') +
+                (t[4] === undefined
+                  ? '<span class="ps-badge ps-badge--outline" style="align-self:flex-start;margin-top:4px">Not designed yet</span>'
+                  : '') +
                 '</span></button>'
               );
             }).join('') +
             '</div>' +
-            '<div class="ps-field"><span class="ps-label ps-muted">Also planned</span><div class="ps-tags"><span class="ps-badge">Gauntlet</span><span class="ps-badge">In-game Trade</span><span class="ps-badge">Simple Talker</span><span class="ps-badge">Trial Captain</span></div></div>'
+            '<div class="ps-field"><span class="ps-label ps-muted">Also planned</span><div class="ps-tags"><span class="ps-badge">Gauntlet</span><span class="ps-badge">In-game Trade</span><span class="ps-badge">Trial Captain</span></div></div>'
           );
         }
         var addSheet =
           '<div class="ps-scrim"></div><div class="ps-sheet" role="dialog" aria-label="Add NPC"><div class="ps-grabber"></div><div class="ps-sheet-head"><h2 class="t-title-3">Add NPC</h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
-          '<button class="ps-choice"><span class="ps-feature-tile ps-feature-tile--solid" data-i="code" data-s="24"></span><span class="ps-choice-text"><b>From a template</b><span>Gym Leader, Route Trainer, Starter Gift and more. Fills in the script for you.</span></span></button>' +
+          '<button class="ps-choice"><span class="ps-feature-tile ps-feature-tile--solid" data-i="code" data-s="24"></span><span class="ps-choice-text"><b>From a template</b><span>Starter Gift, Gym Leader, Gift NPC and more. Fills in the script for you.</span></span></button>' +
           '<button class="ps-choice"><span class="ps-feature-tile" data-i="user" data-s="24"></span><span class="ps-choice-text"><b>Blank NPC</b><span>Just a name and a place. Add talk or battles later.</span></span></button></div>';
         document.querySelectorAll('.slot').forEach(function (el) {
           var v = el.getAttribute('data-v');

@@ -17,7 +17,7 @@
         <small
           >S1 · Basic step editor ★ · Scripts list, steps list (light, dark),
           row menu, dragging, add a step, each step&#x27;s sheet, validation,
-          empty, read-only; desktop 1440</small
+          empty, read-only; desktop 1440 (Scripts list, then a script)</small
         ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
@@ -156,9 +156,10 @@
             >
               <li>
                 <b>Scripts</b> is its own section in the builder: every script
-                in the region with its step count and what uses it, searchable.
-                "+ Script" starts an empty one. Scripts also open from wherever
-                they're used.
+                in the region with its step count and what uses it, searchable
+                and filterable (used by NPCs or events, made with a template,
+                not used, has issues). "+ Script" starts an empty one. Scripts
+                also open from wherever they're used.
               </li>
               <li>
                 <b>A script is a list of steps</b> that run in order. This
@@ -181,7 +182,8 @@
                 trainer and Heal; Move the player.
               </li>
               <li>
-                <b>Text</b> is the passage editor, with
+                <b>Text</b> holds one or more passages, each shown with Next (+
+                Passage adds another). It's the passage editor, with
                 <span class="t-mono">{name:player}</span> and
                 <span class="t-mono">{name:rival}</span> inserts and a Discord
                 preview that fills in sample names.
@@ -213,7 +215,17 @@
           </div>
         </div>
         <p class="ps-frame-label" style="margin-top: 32px">
-          Desktop 1440 · steps beside the step being edited
+          Desktop 1440 · Scripts, from the sidebar
+        </p>
+        <div data-theme="light">
+          <div
+            class="ps-desktop slot"
+            data-v="desktopList"
+            style="height: 900px"
+          ></div>
+        </div>
+        <p class="ps-frame-label" style="margin-top: 32px">
+          Desktop 1440 · a script: steps beside the step being edited
         </p>
         <div data-theme="light">
           <div
@@ -357,6 +369,7 @@
           '</textarea>' +
           hints +
           '</div>' +
+          '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start"><span data-i="plus" data-s="18"></span>Passage</button>' +
           '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">How it looks in Discord</span><span class="t-body-sm ps-subtle">Sample name: Ash</span></div><div class="ps-embed"><b>Professor Oak</b><span>' +
           TEXT.replace('{name:player}', 'Ash') +
           '</span><div class="ps-embed-buttons"><span>Next</span></div></div></div>';
@@ -513,7 +526,7 @@
         var scriptsList =
           PS.phoneBar(
             'Scripts',
-            'Kanto Classic · 24',
+            'Kanto Classic · 25',
             '<button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="New script"><span data-i="plus"></span></button>',
           ) +
           '<div class="ps-scroll"><div style="padding:12px 16px 4px"><div class="ps-input-wrap"><span class="ps-lead" data-i="search"></span><input class="ps-input" placeholder="Search scripts"></div></div>' +
@@ -531,6 +544,90 @@
             );
           }).join('') +
           '</div>';
+        var USEDBY = {
+          'oak-deliver-parcel': [['user', 'Professor Oak · Talk']],
+          'mart-parcel': [['building', 'Viridian Mart · Enters']],
+          'new-game': [['settings', 'Region settings · New game']],
+          'fishing-guru-gift': [['user', 'Fishing Guru · Talk']],
+          'bill-cottage': [['user', 'Bill · Talk']],
+          'museum-entry': [['building', 'Pewter Museum · Enters']],
+          'r22-old-man': [['route', 'Route 22 · Enters']],
+        };
+        function desktopList() {
+          var all = SCRIPTS.concat([
+            [
+              'Old intro draft',
+              'intro-draft',
+              '6 steps · Not used',
+              '<span class="ps-badge ps-badge--outline">Not used</span>',
+            ],
+          ]);
+          var chips = [
+            ['All', 25, true],
+            ['Used by NPCs', 14],
+            ['Used by events', 9],
+            ['Made with a template', 6],
+            ['Not used', 1],
+            ['Has issues', 1],
+          ];
+          var rows = all
+            .map(function (x, i) {
+              var steps = x[2].split(' · ')[0],
+                used =
+                  (USEDBY[x[1]] || [])
+                    .map(function (u) {
+                      return (
+                        '<a class="ps-link" href="#" style="display:inline-flex;gap:6px;align-items:center"><span data-i="' +
+                        u[0] +
+                        '" data-s="16"></span>' +
+                        u[1] +
+                        '</a>'
+                      );
+                    })
+                    .join('') || '<span class="ps-subtle">Nothing yet</span>';
+              return (
+                '<tr' +
+                (i === 0 ? ' aria-selected="true"' : '') +
+                '><td><b>' +
+                x[0] +
+                '</b><br><span class="t-mono ps-subtle" style="font-size:12px">' +
+                x[1] +
+                '</span></td><td>' +
+                steps +
+                '</td><td>' +
+                used +
+                '</td><td>' +
+                (x[3] || '') +
+                '</td><td><span data-i="chevR"></span></td></tr>'
+              );
+            })
+            .join('');
+          return (
+            PS.sidebar('scripts') +
+            '<div class="ps-main">' +
+            PS.topbar() +
+            '<div class="ps-main-body">' +
+            '<div class="ps-section-head"><div><h1 class="t-title-1">Scripts</h1><p class="t-body-sm ps-subtle">What runs when a player talks to someone, arrives somewhere or starts the game. Open one to edit its steps.</p></div><div class="ps-row"><button class="ps-btn ps-btn--ghost">New from template</button><button class="ps-btn ps-btn--secondary"><span data-i="plus"></span>Script</button></div></div>' +
+            '<div class="ps-row" style="gap:12px;align-items:center"><div class="ps-input-wrap" style="width:320px"><span class="ps-lead" data-i="search"></span><input class="ps-input" placeholder="Search by name or key"></div>' +
+            chips
+              .map(function (c) {
+                return (
+                  '<button class="ps-chip"' +
+                  (c[2] ? ' aria-pressed="true"' : '') +
+                  '>' +
+                  c[0] +
+                  ' <span class="ps-subtle">' +
+                  c[1] +
+                  '</span></button>'
+                );
+              })
+              .join('') +
+            '</div>' +
+            '<table class="ps-slot-table is-links" style="max-width:1080px"><thead><tr><th>Script</th><th style="width:110px">Steps</th><th>Used by</th><th style="width:150px"></th><th style="width:40px"></th></tr></thead><tbody>' +
+            rows +
+            '</tbody></table></div></div>'
+          );
+        }
         function desktop() {
           var panel =
             '<div class="ps-scrim" style="z-index:2"></div><aside class="ps-sidepanel" role="dialog" aria-label="Edit step 1"><div class="ps-appbar" style="padding:0 8px 0 24px"><h2 class="ps-appbar-title">Text<small>Step 1 of 5</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div>' +
@@ -674,6 +771,7 @@
               );
           if (v === 'scripts') el.innerHTML = scriptsList;
           if (v === 'desktop') el.innerHTML = desktop();
+          if (v === 'desktopList') el.innerHTML = desktopList();
         });
         PS.mount(document);
       </script>

@@ -14,17 +14,30 @@
       <a href="../../index.html">All mockups</a
       ><span
         >H · Region settings
-        <small>H · Region settings · phone, desktop 1440</small></span
+        <small
+          >H · Region settings · phone with New game, the New game script and
+          its welcome text, desktop 1440</small
+        ></span
       ><button id="mk-theme" type="button">Dark mode</button>
     </header>
-    <main class="mk-stage" style="min-width: 1500px">
+    <main class="mk-stage" style="min-width: 2140px">
       <div class="ps-root ps-pad" style="background: transparent">
         <div class="ps-demos" style="flex-wrap: nowrap">
           <div>
             <p class="ps-frame-label">Phone</p>
             <div class="ps-phone ps-phone--tall slot" data-v="phone"></div>
           </div>
-          <div style="width: 520px" class="ps-stack">
+          <div>
+            <p class="ps-frame-label">New game script</p>
+            <div class="ps-phone ps-phone--tall slot" data-v="newgame"></div>
+          </div>
+          <div>
+            <p class="ps-frame-label">
+              Step 1 · Oak’s welcome (several passages)
+            </p>
+            <div class="ps-phone ps-phone--tall slot" data-v="welcome"></div>
+          </div>
+          <div style="width: 420px" class="ps-stack">
             <p class="ps-frame-label">Notes</p>
             <ul
               class="t-body-sm ps-muted"
@@ -39,6 +52,16 @@
               <li>
                 Every field autosaves on blur; the app bar shows Saving… then
                 Saved. No Save button.
+              </li>
+              <li>
+                <b>New game</b> is the script that runs when a player starts
+                this region. The row shows its step count and opens it in the
+                step editor. Kanto Classic starts with Oak’s welcome, naming the
+                rival, and the move to Your House 2F.
+              </li>
+              <li>
+                <b>Starting location</b> is where a player lands if the New game
+                script has no Move step (or there's no script).
               </li>
               <li>
                 Starting and respawn locations use the location SearchCombobox
@@ -92,12 +115,13 @@
             '<section class="ps-form-section"><h2 class="t-title-2">Currency</h2>' +
             '<div class="ps-pair"><div class="ps-field"><label class="ps-label">Name</label><input class="ps-input" value="Poké Dollars"></div><div class="ps-field"><label class="ps-label">Symbol</label><input class="ps-input" value="₽"></div></div>' +
             '<p class="ps-help" style="margin-top:-8px">Prices show as <b style="color:var(--ink)">₽500</b>.</p></section>' +
+            '<section class="ps-form-section"><h2 class="t-title-2">New game</h2><div class="ps-link-row"><span data-i="code"></span><span>New game<small>The script that runs when a player starts this region · 4 steps</small></span><button class="ps-btn ps-btn--ghost">Open</button></div></section>' +
             '<section class="ps-form-section"><h2 class="t-title-2">Locations</h2>' +
             loc(
               'Starting location',
               'Pallet Town',
               'town',
-              'Where every new journey begins.',
+              'Where a player lands if the New game script doesn’t move them.',
             ) +
             loc(
               'Default respawn location',
@@ -106,14 +130,78 @@
               'Where players go after losing a battle, until they heal somewhere else.',
             ) +
             '</section>' +
-            '<section class="ps-form-section"><h2 class="t-title-2">Encounter methods</h2><div class="ps-link-row"><span data-i="leaf"></span><span>6 methods<small>Walk in the grass, Explore the cave, Surf, and 3 rods</small></span><button class="ps-btn ps-btn--ghost">Edit</button></div></section>' +
+            '<section class="ps-form-section"><h2 class="t-title-2">Encounter methods</h2><div class="ps-link-row"><span data-i="leaf"></span><span>7 methods<small>Walk in the grass, Explore the cave, Surf, 3 rods and Look around</small></span><button class="ps-btn ps-btn--ghost">Edit</button></div></section>' +
             '<section class="ps-form-section"><h2 class="t-title-2">Rules</h2><div class="ps-field"><span class="ps-label">Rules preset</span>' +
             '<button class="ps-trigger"><span>Classic Gen 1</span><span data-i="chevD"></span></button><p class="ps-help">Only Classic Gen 1 is available for now. You can change rules later; changes are checked when you publish.</p>' +
             '<div class="ps-tags"><span class="ps-badge ps-badge--outline">Classic Gen 2 · coming later</span><span class="ps-badge ps-badge--outline">Custom rules · coming later</span></div></div>' +
             '<div class="ps-field"><span class="ps-label">TMs and HMs</span><div class="ps-readonly"><span data-i="disc" data-s="18"></span><div><b>TMs are single use · HMs are reusable</b><p class="t-body-sm ps-muted">Set by Classic Gen 1. The TMs & HMs screen follows this.</p></div></div></div></section>'
           );
         }
+        var mono = function (s) {
+          return '<span class="t-mono">' + s + '</span>';
+        };
+        var NEWGAME = [
+          {
+            t: 'text',
+            sum: 'Text · Oak: “Hello there! Welcome to the world …” · 3 passages',
+          },
+          {
+            t: 'name',
+            sum: 'Ask for a name · ' + mono('rival') + ' · default “Gary”',
+          },
+          {
+            t: 'text',
+            sum: 'Text · Oak: “' + mono('{name:rival}') + '! That’s right …”',
+          },
+          { t: 'move', sum: 'Move to Your House 2F · Pallet Town' },
+        ];
+        var newgame =
+          PS.phoneBar('New game', 'Script · new-game', PS.saved + PS.moreBtn) +
+          '<div class="ps-scroll"><div class="ps-form">' +
+          PS.usedBy([
+            [
+              'settings',
+              'Region settings · New game',
+              'When a player starts Kanto Classic',
+            ],
+          ]) +
+          '<div class="ps-section-head"><h2 class="t-title-3">Steps</h2><span class="t-body-sm ps-subtle">Run in order</span></div>' +
+          PS.stepList(NEWGAME, {}) +
+          '</div></div>';
+        var PASS = [
+          'Hello there! Welcome to the world of Pokémon! My name is Oak. People call me the Pokémon Prof!',
+          'This world is inhabited by creatures called Pokémon! For some people, Pokémon are pets. Others use them for fights.',
+          'Myself… I study Pokémon as a profession. First, what is your name?',
+        ];
+        var welcome =
+          newgame +
+          '<div class="ps-scrim"></div><div class="ps-sheet ps-sheet--tall" role="dialog" aria-label="Text" style="top:72px"><div class="ps-grabber" style="margin:0 auto 4px"></div><div class="ps-sheet-head"><h2 class="t-title-3">Text<small class="t-body-sm ps-subtle" style="display:block;font-weight:400">Step 1 of 4</small></h2><button class="ps-btn ps-btn--ghost ps-btn--icon" aria-label="Close"><span data-i="x"></span></button></div><div class="ps-sheet-scroll">' +
+          '<div class="ps-field"><span class="ps-label">Speaker <span class="ps-opt">(optional)</span></span><button class="ps-trigger"><span style="display:flex;gap:10px;align-items:center"><span data-i="user"></span>Professor Oak</span><span data-i="chevD"></span></button></div>' +
+          PASS.map(function (t, i) {
+            return (
+              '<div class="ps-field"><div class="ps-section-head"><label class="ps-label">Passage ' +
+              (i + 1) +
+              '</label>' +
+              PS.moreBtn +
+              '</div><textarea class="ps-textarea" style="min-height:72px">' +
+              t +
+              '</textarea></div>'
+            );
+          }).join('') +
+          '<button class="ps-btn ps-btn--ghost" style="align-self:flex-start"><span data-i="plus" data-s="18"></span>Passage</button>' +
+          '<div class="ps-field"><div class="ps-preview-label"><span class="ps-label">How it looks in Discord</span><span class="t-body-sm ps-subtle">Passage 1 of 3</span></div><div class="ps-embed"><b>Professor Oak</b><span>' +
+          PASS[0] +
+          '</span><div class="ps-embed-buttons"><span>Next</span></div></div></div>' +
+          '</div><div class="ps-bottom-bar"><button class="ps-btn ps-btn--primary ps-btn--block">Save</button></div></div>';
         document.querySelectorAll('.slot').forEach(function (el) {
+          if (el.getAttribute('data-v') === 'newgame') {
+            el.innerHTML = newgame;
+            return;
+          }
+          if (el.getAttribute('data-v') === 'welcome') {
+            el.innerHTML = welcome;
+            return;
+          }
           if (el.getAttribute('data-v') === 'phone')
             el.innerHTML =
               PS.phoneBar('Settings', 'Kanto Classic · Draft', PS.saved) +

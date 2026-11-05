@@ -2779,3 +2779,55 @@
   flex: 1;
   min-width: 0;
 }
+.ps-slot-table.is-links td {
+  padding: 10px 12px;
+}
+.ps-slot-table.is-links th {
+  padding: 10px 12px;
+}
+.ps-slot-table.is-links tbody tr {
+  cursor: pointer;
+}
+.ps-slot-table.is-links tbody tr:hover td {
+  background: var(--surface-muted);
+}
+
+/* Starter Gift option cards */
+.ps-starter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.ps-starter-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-3) var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-align: center;
+}
+.ps-starter-card > .ps-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.ps-starter-card > b {
+  font: 600 14px/18px var(--font-sans);
+}
+.ps-starter-lv {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 13px/18px var(--font-sans);
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+.ps-starter-lv .ps-input {
+  width: 56px;
+  padding: 0 8px;
+  text-align: right;
+}

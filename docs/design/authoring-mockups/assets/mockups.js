@@ -1378,7 +1378,7 @@ window.PS = (function () {
         return n[2] === 'npcs';
       }) + 1,
       0,
-      ['Scripts', 'code', 'scripts', '24'],
+      ['Scripts', 'code', 'scripts', '25'],
     );
   PS.icons.pen = '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>';
   PS.icons.gift =
