@@ -5,6 +5,7 @@ import {
   type Interaction,
 } from 'discord.js';
 
+import { createNoopLogger } from '@core/logging';
 import { getServerFeatures } from '@shared/flags';
 
 import { BotClient } from '@bot/classes';
@@ -41,6 +42,8 @@ describe('interactionCreate', () => {
         type: InteractionType.ApplicationCommandAutocomplete,
         commandName: 'region',
         guildId: 'guild-1',
+        id: 'interaction-1',
+        user: { id: 'user-1' },
         respond: jest.fn(),
       };
 
@@ -61,15 +64,26 @@ describe('interactionCreate', () => {
       env: 'prod',
       envOverrides: { 'discord.authoring': true },
     };
-    const logError = jest.spyOn(client.logger, 'error');
+    const interactionLogger = createNoopLogger();
+    const logError = jest.spyOn(interactionLogger, 'error');
+    const child = jest
+      .spyOn(client.logger, 'child')
+      .mockReturnValue(interactionLogger);
 
     await emit(client, {
       type: InteractionType.ApplicationCommandAutocomplete,
       commandName: 'dex',
       guildId: 'guild-1',
+      id: 'interaction-1',
+      user: { id: 'user-1' },
       respond: jest.fn(),
     });
 
+    expect(child).toHaveBeenCalledWith({
+      interactionId: 'interaction-1',
+      guildId: 'guild-1',
+      userId: 'user-1',
+    });
     expect(logError).toHaveBeenCalledWith('Autocomplete failed', {
       command: 'dex',
       err: error,
@@ -90,6 +104,8 @@ function chatInput(commandName: string, guildId: string) {
     type: InteractionType.ApplicationCommand,
     commandName,
     guildId,
+    id: 'interaction-1',
+    user: { id: 'user-1' },
     isChatInputCommand: () => true,
     isMessageContextMenuCommand: () => false,
     isUserContextMenuCommand: () => false,
