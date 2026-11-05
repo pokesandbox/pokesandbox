@@ -52,6 +52,7 @@ Npc {
 - **Per-placement `interact`** lets a shared NPC say something local ("Welcome to Cerulean's Pokémon Center") without a separate NPC and without a "current location" condition.
 - **Flags are shared across placements**, since they're keyed by the NPC's, script's, or trainer's key: "talked to Joy" is one flag wherever it happened. Per-location state, if wanted, is a flag the placement's own script sets.
 - **Validation:** a `single` NPC whose placements can match at the same time gets a warning (the first one wins, which may not be what the author meant).
+- **Builder wording (decided Nov 2026, #250):** `everywhere` never means every location in the region, only every _listed_ placement whose condition matches. The builder labels the two modes **"One place at a time"** (`single`) and **"Every listed place"** (`everywhere`), each with a one-line explanation. The stored values don't change. "Some of these places at once" is just `everywhere` with a short list and per-placement conditions.
 
 ### Party variants
 
@@ -127,3 +128,4 @@ The condition uses a new MVP fact, `location.trainersDefeated` (distinct trainer
 
 - ~~Default trainer movesets?~~ **Decided (Oct 2026):** yes. A trainer Pokémon with no moves set gets the last 4 moves it would know at its level from the region's learnsets (Gen 1 for Kanto Classic), as RBY does. Moves the author sets always win.
 - ~~Trainer bag items in MVP AI?~~ **Decided (Oct 2026):** yes, kept minimal. A trainer party's `items` list is used by every AI profile except `random`: heal when the active Pokémon's HP is low, or cure a status the item cures. It goes through the same external choice hook as the player's bag (see [14](14-battle-system-and-showdown.md#ai-trainers)). Gen 1 gym leaders and the Elite Four use items, so Kanto Classic needs it.
+- **Exactly _k_ of _n_ places at random (post-MVP, recorded Nov 2026):** e.g. a traveling merchant who appears in 2 of 5 towns each day. `everywhere` with a random-chance condition on each placement gives _about_ _k_ (some days 0, some days 4), not exactly _k_. To guarantee exactly _k_, something must choose the places: a daily-seeded pick written to region state ([24](24-shared-state-region-and-server.md)), or a script that sets flags the placements check. If it's needed, the preferred shape is a new condition fact (a seeded daily pick from a named set) rather than a third presence mode.
