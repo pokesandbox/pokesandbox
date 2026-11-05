@@ -122,7 +122,7 @@ PassageBlock = { id: string } & (     // stable id: translations and flavor pick
 ### Mitigating the authoring cost of option B
 
 1. **Templates** generate whole scripts from forms: "Gym Leader" (name, party, badge, TM, intro/defeat text), "Starter Gift" (N options), "Forced Encounter", "Gift NPC", "Gauntlet". Most admins never see a raw step list, so the friendly builder UIs from option A survive _as templates over B_.
-2. A **webapp step editor**, mobile-first, for everything templates don't cover: reorder, insert, edit steps and passages with a Discord preview (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)). A Discord step-list editor for small edits is post-MVP.
+2. A **webapp step editor**, mobile-first, for everything templates don't cover, in two stages (decision 8): reorder, insert, edit steps and passages with a Discord preview (Q36, [28](28-webapp-authoring-and-mobile-first-ux.md)). A Discord step-list editor for small edits is post-MVP.
 3. **JSON/YAML import** for power users.
 
 ## Guardrails
@@ -135,7 +135,7 @@ PassageBlock = { id: string } & (     // stable id: translations and flavor pick
 
 - Trigger events: `journeyStarted`, `enterLocation`, `leaveLocation`, `interact`, `battleEnd`, `explore`, and `useItem` (the Poké Flute on Snorlax). `useMove` is post-MVP.
 - Steps: `passage` (with `say` as shorthand), `choice`, `if`, `effects`, `battle`, `wildBattle`, `npcTrade`, `askName`, `heal`, `shop`, `travel`, `goto/label/end`. `{name:<slot>}` text placeholders.
-- Templates: Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet, Simple Talker.
+- Templates: Gym Leader, Starter/Pick-N Gift, Forced Encounter, Gift NPC, In-game Trade, Gauntlet. (Simple Talker was dropped in Nov 2026: a talker is a Talk event whose script is Text steps, made in the basic step editor.)
 
 ## Decisions (Oct 2026)
 
@@ -155,6 +155,12 @@ Option B was adopted: one Script + Trigger system, **on the condition that build
    - **`explore`** picks its methods and a frequency. `always` runs first, before the roll, whenever its condition passes. `chance` lives only as an event row in each listed method's outcome table at that location, so the percent is stored once; one authoring command writes the trigger and its rows together. Adding a chance never lowers other rows: the builder warns that the table no longer sums to 100. A `once` event leaves the table after it runs. So explore events don't need the `chance` predicate ([05](05-requirements.md)).
    - **`useMove`** is post-MVP. Obstacles that only block a path stay as requirements on the connection, and Headbutt and Rock Smash stay encounter methods ([10](10-encounters.md)).
    - **Templates:** Forced Encounter starts on enter, leave or explore, uses an existing or new trainer without copying it, and has `canLose` and heal-after options. Gift NPC gives items or a Pokémon once per journey; a full party sends the Pokémon to the PC per the region's rules. Every template's text step is called "Text".
+8. **Basic step editor first (decided Nov 2026, [#250](https://github.com/pokesandbox/pokesandbox/issues/250)):** CP1 ships a **linear** step editor, and the full editor follows in CP2.
+   - **Basic (CP1):** a flat list of steps (add, edit in a sheet, move up/down, delete). Step types: Text (`passage`), Ask for a name (`askName`), Give an item or Pokémon and Take an item (`effects`), Set a flag, progression or badge (`effects`), Heal, Battle a trainer (`canLose`), and Move the player (`travel`). Any script containing `choice`, `if`, `label` or `goto` opens read-only. The `Step` union is unchanged; the editor shows a subset.
+   - **Full (CP2):** choices, branches, labels and gotos, with the Gauntlet and In-game Trade templates.
+   - **Conditions stay on triggers.** Branching by state ("Oak, once you have the parcel") is a second trigger with a condition and a higher priority, so linear scripts cover CP1's content. An NPC's Talk row lists several scripts, each with an optional condition ("Talks differently when…"); underneath, these are separate `interact` triggers.
+   - **New game:** the `journeyStarted` script is opened from Region Settings → New game and edited in the basic editor. The Kanto Classic bundle seeds it (Oak's welcome, naming the rival, the move to the starting location).
+   - Templates stay for what's fiddly by hand: Starter Gift (pick 1 of N, the rival's counter-pick, the `choice` progression), Gym Leader, Forced Encounter, Gift NPC.
 
 ## Open questions
 

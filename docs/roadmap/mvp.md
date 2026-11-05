@@ -271,7 +271,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Mode machine + persisted script cursor + resume on input (M)
 - [ ] Trigger dispatch: journeyStarted (payload: `newCharacter`, `carriedPokemon`), enterLocation (optional `from`/`via` filters; any arrival counts), interact; once/priority/forced (M)
 - [ ] NPC model (placements with single/everywhere presence and per-placement interact, trainer, engagement) (M)
-- [ ] `givePokemon` effect (PC + swap offer) and the Starter/Pick-N Gift and Simple Talker templates (M)
+- [ ] `givePokemon` effect (PC + swap offer) and the Starter/Pick-N Gift template (M)
 - [ ] Passage renderer: Components v2, `dialogue` and `prose` styles, markdown, auto-paging by text/component budget, choices on the last page (M)
 - [ ] `/play` hub renderer (mode-aware): claims the session (newest wins), resumes any mode incl. mid-battle requests and pending prompts, and shuts down superseded sessions cleanly (L)
 - [ ] Travel action (conditions, locked explanations, enter triggers, `visited:<key>` flags) (M)
@@ -331,6 +331,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Trigger events `battleEnd`, `explore` (methods, `always` / `chance`) and `leaveLocation` (with the `stay` step) (M)
 - [ ] Traversal requirements: location progress counters (lifetime/visit, incl. encounters), per-exit first-time + every-time costs, compiled exit gates (`traversal:<edge>:passed`) with explanations (M)
 - [ ] Templates: Gym Leader, Forced Encounter (the Route 22 rival; enter, leave or explore), Gift NPC (items or a Pokémon) (M)
+- [ ] Basic script step editor (webapp): linear steps (Text, Ask name, Give, Take, Set flag/progression/badge, Heal, Battle, Move player); several conditioned Talk scripts per NPC; Region Settings → New game opens the `journeyStarted` script; Starter Gift template form (M)
 - [ ] TM/HM lists ([#196](https://github.com/pokesandbox/pokesandbox/issues/196)) and teaching a TM from the bag (M)
 - [ ] Post-battle level evolution (S)
 - [ ] AI trainer item use ([#176](https://github.com/pokesandbox/pokesandbox/issues/176)) (S)
@@ -339,7 +340,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 ## CP2: Cascade Badge
 
-- [ ] Script step editor (webapp) (L)
+- [ ] Script step editor (webapp), full: choices, branches, labels and gotos on top of the CP1 basic editor (L)
 - [ ] Templates: Gauntlet (Nugget Bridge), In-game Trade; Script VM `npcTrade` step (M)
 - [ ] Stone evolution, Repel (safe steps), Escape Rope / Dig / Teleport via `teleport: respawn` (M)
 - [ ] PC boxes: deposit/withdraw/release, overflow, access per `RegionRules.systems.storage.access`; party reorder; full party → PC + "Swap into party?" offer for gifts and catches (M)
