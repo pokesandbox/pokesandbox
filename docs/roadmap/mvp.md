@@ -181,6 +181,15 @@ Legend: ✅ exists · 🟡 partial · ❌ missing
 - [ ] Migrate existing admin menus (pokedex, progression, locations) onto `libs/authoring` commands; they keep working until the webapp has parity with them, hidden in production behind the `discord.authoring` flag (Q36) (M)
 - [ ] `RegionRelease` model + publish/compile + `ContentProvider` + deployment status (draft/live/paused) separate from discovery (L)
 
+**Epic: Webapp UI Foundations** (Q36) ([#254](https://github.com/pokesandbox/pokesandbox/issues/254)). Moved from CP1 (Nov 2026) so CP1's screens can start as soon as their components exist. Each shared component is its own issue and blocks only the screens that use it.
+
+- [ ] **First (can start any time):** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks ([#202](https://github.com/pokesandbox/pokesandbox/issues/202)) (S)
+- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it ([#203](https://github.com/pokesandbox/pokesandbox/issues/203)) (M)
+- [ ] Design tokens and base primitives, incl. the dialog that becomes a bottom sheet and the confirm dialog ([#255](https://github.com/pokesandbox/pokesandbox/issues/255)) (M)
+- [ ] Search combobox: species, moves, items, locations ([#256](https://github.com/pokesandbox/pokesandbox/issues/256)) (M)
+- [ ] Sortable list with move up/down ([#257](https://github.com/pokesandbox/pokesandbox/issues/257)) (S)
+- [ ] Passage editor with Discord preview ([#258](https://github.com/pokesandbox/pokesandbox/issues/258)) (M)
+
 ## M1: Battle Core & Catalog
 
 **Adventure-only items moved to the checkpoints (Nov 2026).** M1 holds what the Arena needs plus the moves and learnsets catalog. The sim patches, `ItemDefinition`, `RegionRules`, and the Gen 1 formulas moved to the checkpoint that first needs them (CP0a–CP2). The **isolated custom-data dexes** (and assembling mixed-generation data into them) moved **past the MVP**: Kanto Classic is pure Gen 1, so Showdown's own `gen1` mod covers it, and the MVP ships only the Classic Gen 1 preset. They return with custom content, mixed-generation rules, and library-based Arena formats ([27](../architecture/concepts/27-server-content-library-and-overrides.md)).
@@ -297,10 +306,8 @@ Scheduled last on the Arena track. Development runs locally until then.
 
 **Epic: Webapp Builder (Q24, Q36)** ([#201](https://github.com/pokesandbox/pokesandbox/issues/201))
 
-- [ ] **First, before any webapp authoring work (can start any time):** headless library trial, React Aria vs Base UI under shadcn/ui; the owner picks ([#202](https://github.com/pokesandbox/pokesandbox/issues/202)) (S)
-- [ ] Move off antd onto Tailwind + the chosen library, remove antd and `@ant-design/*`, Tailwind 4 if the chosen library expects it ([#203](https://github.com/pokesandbox/pokesandbox/issues/203)) (M)
 - [ ] Webapp builder shell, mobile-first: Discord-role-checked access to a region's draft, list/detail layout, entity-level conflict handling, Playwright tests at phone width; blocked by [#202](https://github.com/pokesandbox/pokesandbox/issues/202) and [#203](https://github.com/pokesandbox/pokesandbox/issues/203) ([#204](https://github.com/pokesandbox/pokesandbox/issues/204)) (M)
-- [ ] Shared builder components: search combobox (species/moves/items), sortable list, confirm dialog, passage editor with Discord preview (M)
+- [ ] "Your servers" home with builder access ([#263](https://github.com/pokesandbox/pokesandbox/issues/263)) (M)
 - [ ] Open in builder links from `/region` (plain URLs, Discord OAuth sign-in) (S)
 - [ ] Shared condition builder component (flat "all of" + one nesting level + templates) (L)
 - [ ] Region config screen: currency object, starting location, respawn, rules preset (M)
@@ -308,6 +315,8 @@ Scheduled last on the Arena track. Development runs locally until then.
 - [ ] Encounter table grid (M)
 - [ ] Trainer party editor with conditioned variants (unset moves default to the last 4 level-up moves from the region's learnsets) and the "Lines" tab (M)
 - [ ] Validator Tier 1 + basic Tier 2 + Region Health (webapp view, plus a `/region` summary in Discord) (L)
+- [ ] Region Health: dismiss warnings ([#259](https://github.com/pokesandbox/pokesandbox/issues/259)) (M)
+- [ ] Progressions editor (webapp), parity with the Discord builder ([#262](https://github.com/pokesandbox/pokesandbox/issues/262)) (M)
 
 **Epic: Webapp Hosting (private)** (deferred from M2, decided Nov 2026: the Arena release is bot-only). Lands before CP1's stretch is authored on the PokeSandbox server; staff and testers only until the MVP Release.
 
@@ -377,6 +386,7 @@ Scheduled last on the Arena track. Development runs locally until then.
 ## MVP Release 🚀
 
 - [ ] Webapp goes public: player profile and character pages (with their journeys), privacy settings, the adventure log view (M)
+- [ ] Pokédex visibility settings ([#260](https://github.com/pokesandbox/pokesandbox/issues/260)) and the player region Pokédex and species pages ([#261](https://github.com/pokesandbox/pokesandbox/issues/261)) (M)
 - [ ] Report content + staff takedown tools for discovery, public pages, and narration ([#206](https://github.com/pokesandbox/pokesandbox/issues/206)) (L)
 - [ ] Load test: N concurrent players + battles on target hosting (M)
 - [ ] Dependency security re-check: no open critical/high Dependabot alerts before release (S)
