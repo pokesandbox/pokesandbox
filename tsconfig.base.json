@@ -16,6 +16,7 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
+      "@battle/*": ["./libs/battle/src/*"],
       "@bot/cache": ["./apps/bot/src/cache/index.ts"],
       "@bot/classes": ["./apps/bot/src/classes/index.ts"],
       "@bot/embeds/*": ["./apps/bot/src/embeds/*"],
