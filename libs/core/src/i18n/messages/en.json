@@ -1,0 +1,8 @@
+{
+  "command": {
+    "unavailable": "This command isn't available on this server yet."
+  },
+  "money": {
+    "amount": "₽{amount, number, integer}"
+  }
+}
