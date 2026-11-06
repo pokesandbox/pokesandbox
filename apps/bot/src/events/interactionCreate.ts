@@ -9,6 +9,7 @@ import {
   type ModalSubmitInteraction,
 } from 'discord.js';
 
+import { resolveLocale, t } from '@core/i18n';
 import type { Logger } from '@core/logging';
 
 import type { BotClient } from '@bot/classes';
@@ -25,10 +26,7 @@ import type {
   IUserContextCommand,
   IUserSelectMenu,
 } from '@bot/structures/interfaces';
-import {
-  canRunCommand,
-  COMMAND_UNAVAILABLE_REPLY,
-} from '@bot/structures/managers/commandGate';
+import { canRunCommand } from '@bot/structures/managers/commandGate';
 
 export const InteractionCreate: IBotEvent = {
   name: 'interactionCreate',
@@ -212,7 +210,14 @@ const replyIfUnavailable = async (
     return true;
   }
   await interaction.reply({
-    content: COMMAND_UNAVAILABLE_REPLY,
+    content: t(
+      'command.unavailable',
+      {},
+      resolveLocale({
+        interactionLocale: interaction.locale,
+        serverLocale: interaction.guildLocale,
+      }),
+    ),
     ephemeral: true,
   });
   return false;
