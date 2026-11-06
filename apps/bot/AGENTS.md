@@ -24,7 +24,7 @@ Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/inter
 - **Unreleased commands declare a `flag`** (e.g. `flag: 'discord.authoring'` on every `/region` builder). Registration and the interaction handler both follow it:
   - development: one put to `DEV_GUILD_ID` with every command the flags enable there;
   - production: released commands register globally; a flagged command that's off by default registers only as a guild command on servers whose `settings.features` turns it on;
-  - the handler checks the flag before running a command (`commandGate.ts`), so a stale registration replies "This command isn't available on this server yet." instead of running.
+  - the handler checks the flag before running a command (`commandGate.ts`), so a stale registration replies `command.unavailable` ("This command isn't available on this server yet.") instead of running.
 - **`client.syncGuildCommands(guildId)` is the only way to rewrite a server's guild commands** in production. It runs at startup for every server with overrides. Code that changes a server's `settings.features` must call it after the write. Today overrides are set by hand in the database, so a change needs a restart; removing a server's last override leaves its guild commands registered (but blocked by the handler) until that server is synced.
 
 ## Rules
@@ -35,7 +35,7 @@ Reference command: the Pokédex builder, [`regionManagement/pokedex/`](src/inter
 - **Restart-safe surfaces** (Arena challenges, public battle messages, trades) are plain discord.js handlers with stable custom IDs that encode only persisted data: `<feature>:<verb>:<recordId>`.
 - **Locked options always explain themselves**: a 🔒 marker plus a reachable reason, never a bare disabled button. The explanation comes from the engine.
 - **Fixed engine-response wording** ([26 § Menus and feedback](../../docs/architecture/concepts/26-discord-surface-and-ux-patterns.md#menus-and-feedback)): "Updated: that menu was out of date", "This game was continued in another session", "Still working on your last action…", "Battle is resuming, press again in a moment".
-- **Player-facing text** goes through `t(key, params)` once #115 lands; never build sentences by concatenation. Until then, keep new strings in one place per feature so the migration is mechanical.
+- **Player-facing text** goes through `t(key, params, locale)` from `@core/i18n`, with the message in `libs/core/src/i18n/messages/en.json`; never build sentences by concatenation. Pick the locale with `resolveLocale({ interactionLocale: interaction.locale, serverLocale: interaction.guildLocale })`, or `resolveSharedLocale` for messages several players see. `src/testing/rendererText.test.ts` fails on literal text in view builders; the renderers it lists as legacy are migrated as they're touched (take a file off the list once it's clean).
 - **Feature flags**: the Discord authoring commands sit behind `discord.authoring` (on in dev, off in prod). New unreleased commands declare a flag (#109, #108).
 - **Errors**: user-facing errors use `buildErrorEmbed` (`src/embeds/errorEmbed.ts`).
 - **Logging**: use `client.logger` (`@core/logging` port, set in `main.ts`), never `console`. `interactionCreate` makes a child logger per interaction tagged with `interactionId`, `guildId`, and `userId`; pass it to what handles the interaction. Pass correlation fields (`journeyId`, `battleId`, …) and errors as `err`.
