@@ -52,3 +52,6 @@ out
 # Claude Code: personal settings and instructions stay local
 .claude/settings.local.json
 CLAUDE.local.md
+
+# GitHub Pages build output (scripts/build-pages.sh)
+_site/
