@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Colours from design tokens (accent, brand, brand-ink, brand-soft, bg, ink); sand #F3E3C6 and shade #E3C796 are warmed from surface-muted. -->
+  <rect width="32" height="32" fill="#FAAD14"/>
+  <path d="M16 3.4 V11" stroke="#1F1B14" stroke-width="1.26" stroke-linecap="round"/>
+  <path d="M16.6 3.4 L25 6.3 L16.6 9.2 Z" fill="#0E7490"/>
+  <g stroke="#874D00" stroke-width="1.15" stroke-linejoin="round">
+    <path d="M9 20 H23 L23.7 33.5 H8.3 Z" fill="#F3E3C6"/>
+    <path d="M19.6 20.6 Q21.2 26 21 33.5 H23.7 L23 20.6 Z" fill="#E3C796" stroke="none"/>
+    <path d="M10.4 21.2 L10 32" stroke="#FBF8F1" stroke-width="1.03" stroke-linecap="round" opacity=".9"/>
+    <path d="M9 20 H23 L23.7 33.5 H8.3 Z" fill="none"/>
+    <path d="M7 11 H11.5 V13.5 H13.75 V11 H18.25 V13.5 H20.5 V11 H25 V18 L23 20 H9 L7 18 Z" fill="#F3E3C6"/>
+    <path d="M7 16.6 H25 V18 L23 20 H9 L7 18 Z" fill="#E3C796" stroke="none"/>
+    <path d="M8.2 11.8 V16" stroke="#FBF8F1" stroke-width="1.03" stroke-linecap="round" opacity=".9"/>
+    <path d="M7 11 H11.5 V13.5 H13.75 V11 H18.25 V13.5 H20.5 V11 H25 V18 L23 20 H9 L7 18 Z" fill="none"/>
+    
+  </g>
+</svg>

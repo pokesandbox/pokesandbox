@@ -32,7 +32,15 @@ The GitHub Pages build (`scripts/build-pages.sh`) copies the desktop banners int
 | `png/icon-1024.png`                | Discord app icon, store and directory listings           |
 | `png/icon-{16,32,48,64,128}.png`   | Anywhere else that needs a fixed size                    |
 
-Both icons are a full-bleed teal square; Discord and other platforms crop them to a circle, and everything important sits inside it. Re-export the PNGs and `favicon.ico` from the SVGs rather than editing them. The sand shades (`#F3E3C6`, `#E3C796`) are warmed from `--surface-muted` toward `--brand-ink`, because the token itself reads grey against the teal.
+The gold variant swaps the background to `--brand` and the flag to `--accent`. It stands out more in Discord's server list, on both dark and light themes.
+
+| File                              | Use                                       |
+| --------------------------------- | ----------------------------------------- |
+| `pokesandbox-icon-gold.svg`       | Gold variant, 48px and up                 |
+| `pokesandbox-icon-gold-small.svg` | Gold variant, 32px and below              |
+| `png/gold/icon-*.png`             | Gold variant exports, same sizes as above |
+
+All icons are a full-bleed square; Discord and other platforms crop them to a circle, and everything important sits inside it. Re-export the PNGs and `favicon.ico` from the SVGs rather than editing them. The sand shades (`#F3E3C6`, `#E3C796`) are warmed from `--surface-muted` toward `--brand-ink`, because the token itself reads grey against the teal.
 
 ## `social/`
 
