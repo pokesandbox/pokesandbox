@@ -126,6 +126,15 @@ Atlas tiers: **Free = 512 MB**, **Flex = up to ~5 GB**, **M10 = 10 GB** default 
 
 Keeping the **database managed (Atlas)** removes the hardest self-hosting parts (replica sets, durability, upgrades). The VPS only runs stateless containers.
 
+## GitHub Pages site (interim)
+
+Until the webapp is hosted, `pokesandbox.com` is a static site on GitHub Pages ([#264](https://github.com/pokesandbox/pokesandbox/issues/264)). The root is an Under construction page (`site/`). Two unlisted paths serve the authoring mockups and their clickable prototype (`docs/design/authoring-mockups/`), so they can be shared by URL and opened on a phone.
+
+- **Build:** `scripts/build-pages.sh` assembles `_site/` from `site/`, the banners in `docs/design/assets/`, and `tokens.css`. `.github/workflows/pages.yml` runs it and deploys on pushes to `develop` that touch those files, or by hand.
+- **Unlisted paths:** the repo variables `DESIGN_PATH` (mockups) and `PROTOTYPE_PATH` (prototype) hold the slugs, so they aren't in the repo. To change one, edit the variable and re-run the Pages workflow; an unset variable skips that page. Every served page gets `noindex`. The repo is public, so this keeps the pages out of search, not private.
+- **Locally:** `DESIGN_PATH=mockups PROTOTYPE_PATH=prototype scripts/build-pages.sh`, then serve `_site/` with any static server.
+- **Later:** when the webapp goes on the managed host, the apex domain moves there, and this site moves to a subdomain or is retired.
+
 ## Environments
 
 | Env         | Purpose                                                                 | Infra                                                                                                                    |
