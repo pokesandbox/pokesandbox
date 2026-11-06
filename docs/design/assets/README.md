@@ -11,7 +11,14 @@ Images for the landing page, the Pages site, Discord, and community posts. Origi
 
 Serve both through `srcset` (`1712w`, `3424w`) with `object-fit: cover` and `object-position: 75% 50%`, so narrow screens crop the empty sea on the left and keep the castle in view. Keep headline copy to about 480px wide over the open sea on the left.
 
-The GitHub Pages build (`scripts/build-pages.sh`) copies both banners into the site, where the Under construction page (`site/index.html`) uses them.
+| File                    | Size      | Use                                     |
+| ----------------------- | --------- | --------------------------------------- |
+| `hero-mobile-1200.webp` | 1200×1500 | Mobile landing banner (4:5), 3× screens |
+| `hero-mobile-800.webp`  | 800×1000  | Mobile landing banner (4:5), 2× screens |
+
+Serve the mobile banner through `srcset` (`800w`, `1200w`) at its own 4:5 ratio. The open sky and sea above the island is only the top quarter or so, enough for a headline; put any subline and buttons below the image.
+
+The GitHub Pages build (`scripts/build-pages.sh`) copies the desktop banners into the site, where the Under construction page (`site/index.html`) uses them.
 
 ## `icon/`
 
