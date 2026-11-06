@@ -14,3 +14,15 @@ Mid-fidelity mockups for the webapp's public pages and region builder (issue #25
 Phone frames are drawn at 390×844 and desktop frames at 1440, side by side on one page, so the pages aren't responsive. Screens marked ★ also show a dark version; the top bar's toggle switches everything else.
 
 These files are generated: change the design system, then re-export, rather than editing them by hand. The `ps-*` classes are reference styles for the mockups, not production CSS; the webapp builds these with Tailwind and shadcn/ui (see [28](../../architecture/concepts/28-webapp-authoring-and-mobile-first-ux.md)).
+
+## Clickable prototype
+
+[`prototype.html`](prototype.html) puts the same screens on one page you can tap through, starting at the landing page. It's a single file that works offline, with phone and desktop modes, dark mode, and a Tap targets toggle (or press H) that shows what's wired. The side list jumps to any screen or state.
+
+The prototype is generated, not drawn: it shows each frame exactly as it renders above, and [`prototype/rules.js`](prototype/rules.js) says which tap goes to which frame. After a re-export, rebuild it from the repo root:
+
+```bash
+node docs/design/authoring-mockups/prototype/build.js
+```
+
+The build renders every page in headless Chrome, so it needs Chrome or Playwright's Chromium. It ends by listing any rule that no longer matches a tap target, which usually means a button was renamed or a page's frames were reordered. Fix those in `rules.js` and build again. A new page needs a key in `build.js` before `rules.js` can wire it.

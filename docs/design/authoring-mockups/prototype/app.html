@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clickable authoring mockups</title>
+    <style>
+      /*__CSS__*/
+    </style>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-size: 14px;
+        overflow: hidden;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+      }
+      .pt-app {
+        display: grid;
+        grid-template-rows: 56px 1fr;
+        height: 100vh;
+      }
+      .pt-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        min-width: 0;
+      }
+      .pt-bar h1 {
+        font: 600 15px/20px var(--font-sans);
+        margin: 0 8px 0 4px;
+        white-space: nowrap;
+      }
+      .pt-crumb {
+        flex: 1;
+        min-width: 0;
+        color: var(--ink-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .pt-crumb b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .pt-b {
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        cursor: pointer;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .pt-b:hover {
+        border-color: var(--border-strong);
+      }
+      .pt-b:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      .pt-b[aria-pressed='true'] {
+        background: var(--ink);
+        color: var(--bg);
+        border-color: var(--ink);
+      }
+      .pt-seg {
+        display: inline-flex;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .pt-seg .pt-b {
+        border: 0;
+        border-radius: 0;
+      }
+      .pt-body {
+        display: grid;
+        grid-template-columns: 270px 1fr 300px;
+        min-height: 0;
+      }
+      .pt-side {
+        overflow: auto;
+        border-right: 1px solid var(--border);
+        background: var(--surface);
+        padding: 8px 8px 40px;
+      }
+      .pt-info {
+        overflow: auto;
+        border-left: 1px solid var(--border);
+        background: var(--surface);
+        padding: 16px 16px 40px;
+      }
+      .pt-search {
+        width: 100%;
+        height: 36px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0 10px;
+        background: var(--bg);
+        color: var(--ink);
+        font: inherit;
+        margin-bottom: 8px;
+      }
+      .pt-group {
+        font: 600 11px/16px var(--font-sans);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-subtle);
+        padding: 14px 8px 4px;
+      }
+      .pt-scr {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: 0;
+        border-radius: 6px;
+        padding: 6px 8px;
+        cursor: pointer;
+        color: var(--ink);
+        line-height: 18px;
+      }
+      .pt-scr:hover {
+        background: var(--surface-muted);
+      }
+      .pt-scr.is-cur {
+        font-weight: 600;
+        background: var(--brand-soft);
+      }
+      .pt-states {
+        margin: 0 0 4px 12px;
+        border-left: 2px solid var(--border);
+      }
+      .pt-st {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: 0;
+        padding: 4px 8px;
+        cursor: pointer;
+        color: var(--ink-muted);
+        font-size: 13px;
+        line-height: 17px;
+        border-radius: 0 6px 6px 0;
+      }
+      .pt-st:hover {
+        background: var(--surface-muted);
+        color: var(--ink);
+      }
+      .pt-st.is-cur {
+        color: var(--ink);
+        font-weight: 600;
+        background: var(--surface-muted);
+      }
+      .pt-st .pt-sheet-tag {
+        font-size: 11px;
+        color: var(--ink-subtle);
+        font-weight: 400;
+      }
+      .pt-stage {
+        position: relative;
+        overflow: auto;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 24px;
+        background: var(--surface-muted);
+      }
+      .pt-device {
+        position: relative;
+      }
+      .pt-viewport {
+        max-height: 844px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-radius: 28px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+      }
+      .pt-viewport .ps-phone {
+        margin: 0;
+      }
+      .pt-viewport.is-desk {
+        max-height: none;
+        overflow: visible;
+        border-radius: 12px;
+      }
+      .pt-device .ps-root {
+        background: transparent;
+      }
+      .pt-toast {
+        position: absolute;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%) translateY(20px);
+        opacity: 0;
+        transition: 0.18s;
+        background: var(--ink);
+        color: var(--bg);
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 500;
+        pointer-events: none;
+        max-width: 360px;
+        text-align: center;
+        z-index: 50;
+        position: fixed;
+      }
+      .pt-toast.is-on {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .pt-info h2 {
+        font: 600 16px/22px var(--font-sans);
+        margin: 0 0 2px;
+      }
+      .pt-info h3 {
+        font: 600 11px/16px var(--font-sans);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-subtle);
+        margin: 20px 0 6px;
+      }
+      .pt-info p {
+        margin: 0;
+        color: var(--ink-muted);
+        line-height: 20px;
+      }
+      .pt-tap {
+        display: flex;
+        gap: 6px;
+        width: 100%;
+        text-align: left;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 8px;
+        margin-bottom: 4px;
+        cursor: pointer;
+        line-height: 18px;
+      }
+      .pt-tap:hover {
+        border-color: var(--accent);
+      }
+      .pt-tap span:first-child {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 500;
+      }
+      .pt-tap span:last-child {
+        color: var(--ink-subtle);
+        white-space: nowrap;
+        max-width: 55%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .pt-tap.is-toast span:last-child {
+        font-style: italic;
+      }
+      .pt-notes {
+        white-space: pre-wrap;
+        font-size: 13px;
+      }
+      .pt-hint {
+        font-size: 12px;
+        color: var(--ink-subtle);
+        margin-top: 8px;
+        line-height: 17px;
+      }
+      .pt-kbd {
+        font: 600 11px/16px var(--font-mono, monospace);
+        border: 1px solid var(--border);
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        padding: 0 4px;
+      }
+      /* Tap targets */
+      .pt-show .pt-hot,
+      .pt-flash .pt-hot {
+        outline: 2px solid #3b82f6 !important;
+        outline-offset: -2px;
+        box-shadow: inset 0 0 0 999px rgba(59, 130, 246, 0.14) !important;
+        border-radius: 6px;
+      }
+      .pt-show .pt-soft,
+      .pt-flash .pt-soft {
+        outline: 2px dashed rgba(127, 127, 127, 0.7) !important;
+        outline-offset: -2px;
+      }
+      .pt-device [data-pt] {
+        cursor: pointer;
+      }
+      .pt-device .pt-hot:hover {
+        box-shadow: inset 0 0 0 999px rgba(59, 130, 246, 0.1) !important;
+      }
+      @media (max-width: 1100px) {
+        .pt-body {
+          grid-template-columns: 230px 1fr;
+        }
+        .pt-info {
+          display: none;
+        }
+      }
+      @media (max-width: 760px) {
+        .pt-body {
+          grid-template-columns: 1fr;
+        }
+        .pt-side {
+          display: none;
+        }
+        .pt-bar h1,
+        .pt-crumb {
+          display: none;
+        }
+        .pt-stage {
+          padding: 8px;
+        }
+      }
+    </style>
+    <script>
+      /*__PSJS__*/
+    </script>
+  </head>
+  <body>
+    <div class="pt-app">
+      <header class="pt-bar">
+        <h1>Authoring mockups · clickable</h1>
+        <button class="pt-b" id="pt-back" title="Back (Esc closes a sheet)">
+          ← Back
+        </button>
+        <button
+          class="pt-b"
+          id="pt-home"
+          title="Start over at the landing page"
+        >
+          Start
+        </button>
+        <button class="pt-b" id="pt-builder">Builder home</button>
+        <div class="pt-crumb" id="pt-crumb"></div>
+        <div class="pt-seg">
+          <button class="pt-b" id="pt-m-phone" aria-pressed="true">Phone</button
+          ><button class="pt-b" id="pt-m-desk" aria-pressed="false">
+            Desktop
+          </button>
+        </div>
+        <button
+          class="pt-b"
+          id="pt-hot"
+          aria-pressed="false"
+          title="Highlight what you can tap (H)"
+        >
+          Tap targets
+        </button>
+        <button class="pt-b" id="pt-theme">Dark</button>
+      </header>
+      <div class="pt-body">
+        <nav class="pt-side" id="pt-side" aria-label="Screens"></nav>
+        <main class="pt-stage" id="pt-stage">
+          <div class="pt-device ps-root" id="pt-device" data-theme="light">
+            <div class="pt-viewport" id="pt-vp"></div>
+          </div>
+        </main>
+        <aside class="pt-info" id="pt-info"></aside>
+      </div>
+    </div>
+    <div class="pt-toast" id="pt-toast"></div>
+    <script>
+      /*__DATA__*/
+      /*__RULES__*/
+      (function () {
+        var S = DATA.screens,
+          F = DATA.frames;
+        var GROUPS = [
+          ['Public and entry', ['a', 'b', 'c', 'd', 'e']],
+          ['Player pages', ['rp', 'sp']],
+          ['Builder · overview', ['f', 'g', 'h', 'r4', 'o1', 'o2', 'st']],
+          [
+            'Builder · locations',
+            ['il', 'ic', 'j', 'r1', 'r2', 'r3', 'k3', 'k2'],
+          ],
+          ['Builder · NPCs', ['npc', 'l2']],
+          ['Builder · scripts', ['s1', 's2']],
+          ['Builder · templates', ['n1', 'n2', 'n3', 'n4', 'n5']],
+          ['Builder · content', ['q1', 'qp', 'p1', 'q2']],
+          ['Pickers', ['si', 'sc']],
+        ];
+        var CAND =
+          'button, a, input, textarea, select, [role=tab], [role=option], [role=menuitem], [role=button], .ps-list-row, .ps-review-row, .ps-link-row, .ps-choice, .ps-chip, .ps-trigger, .ps-switch-row, .ps-sort-main, .ps-nav-item, .ps-dex-card, .ps-option, .ps-mon, .ps-health-item, .ps-scrim, .ps-badge, .ps-check, tbody tr';
+        var $ = function (id) {
+          return document.getElementById(id);
+        };
+        var vp = $('pt-vp'),
+          device = $('pt-device'),
+          stage = $('pt-stage');
+        var cur = null,
+          stack = [],
+          mode = 'phone',
+          showHot = false,
+          openKey = null,
+          timer = null;
+
+        function norm(s) {
+          return (s || '').replace(/\s+/g, ' ').trim();
+        }
+        function textOf(el) {
+          return norm(el.innerText || el.textContent);
+        }
+        function labelOf(el) {
+          return norm(el.getAttribute('aria-label'));
+        }
+        function rx(p) {
+          return new RegExp(p, 'i');
+        }
+        function test(p, el) {
+          if (p.indexOf('css:') === 0) return el.matches(p.slice(4));
+          var r = rx(p),
+            t = textOf(el),
+            l = labelOf(el);
+          return (t && r.test(t)) || (l && r.test(l));
+        }
+        // Checks the element's surroundings, widening until the area holds another tappable just like it.
+        function nearTest(p, pat, el) {
+          var r = rx(p),
+            n = el.parentElement;
+          while (n && vp.contains(n)) {
+            var twins = 0;
+            n.querySelectorAll(CAND).forEach(function (c) {
+              if (
+                test(pat, c) &&
+                (pat.indexOf('css:') === 0 || textOf(c) === textOf(el))
+              )
+                twins++;
+            });
+            if (twins > 1) return false;
+            if (r.test(norm(n.textContent))) return true;
+            n = n.parentElement;
+          }
+          return false;
+        }
+        function inSheet(el) {
+          return !!el.closest('.ps-sheet, .ps-dialog, .ps-sidepanel');
+        }
+        function title() {
+          var t = vp.querySelector(
+            '.ps-appbar-title > :first-child, .ps-appbar-title',
+          );
+          return t ? norm(t.textContent) : '';
+        }
+        function isDesk(id) {
+          return F[id] && F[id].kind === 'desktop';
+        }
+        function deskOf(key) {
+          return (S[key] && S[key].frames.filter(isDesk)[0]) || null;
+        }
+        function phoneOf(key) {
+          return (
+            (S[key] &&
+              S[key].frames.filter(function (f) {
+                return !isDesk(f);
+              })[0]) ||
+            null
+          );
+        }
+
+        // Work out where a tap on `el` goes. Returns a target string or null.
+        function resolve(el) {
+          var id = cur,
+            f = F[id],
+            rules = FRAME[id] || [];
+          for (var i = 0; i < rules.length; i++) {
+            var r = rules[i];
+            if (test(r[0], el) && (!r[2] || nearTest(r[2], r[0], el)))
+              return r[1];
+          }
+          if (el.classList.contains('ps-scrim')) return 'back';
+          if (el.matches('.ps-nav-item') && f.kind === 'desktop') {
+            for (var d = 0; d < DESK_NAV.length; d++)
+              if (test(DESK_NAV[d][0], el)) return DESK_NAV[d][1];
+          }
+          if (el.matches('[role=tab], .ps-tab')) {
+            var t = textOf(el).replace(/\s*\d+$/, '');
+            if (/^(Details|Connections|Explore|Events)$/.test(t))
+              return '@loc:' + t;
+            if (/^(Person|Battle|Party|Lines)$/.test(t)) return '@npc:' + t;
+          }
+          if (inSheet(el) && test(SHEET_DONE, el)) return 'back';
+          for (var g = 0; g < GLOBAL.length; g++)
+            if (test(GLOBAL[g][0], el)) return GLOBAL[g][1];
+          return null;
+        }
+
+        // Turn special targets into a frame id (or an action).
+        function concrete(t) {
+          if (!t) return null;
+          if (t === 'back' || t.indexOf('toast:') === 0) return t;
+          var f = F[cur];
+          if (t === 'next' || t === 'prev') {
+            var seq = WIZ[f.key];
+            if (!seq) return t === 'prev' ? 'back' : null;
+            var pos = WIZ_ALT[cur] != null ? WIZ_ALT[cur] : seq.indexOf(f.i);
+            var n = seq[pos + (t === 'next' ? 1 : -1)];
+            return n == null ? (t === 'prev' ? 'back' : null) : f.key + '/' + n;
+          }
+          if (t.indexOf('@loc:') === 0) {
+            var tab = t.slice(5);
+            if (f.kind === 'desktop') return DESK_TABS[tab] || null;
+            var m = LOC_TABS[title()] || {};
+            return m[tab] || LOC_TABS._[tab];
+          }
+          if (t.indexOf('@npc:') === 0) {
+            var nt = t.slice(5),
+              nm = NPC_TABS[title()] || {};
+            return (
+              nm[nt] ||
+              (f.kind === 'desktop'
+                ? null
+                : 'toast:The ' +
+                  nt +
+                  ' tab isn’t drawn for ' +
+                  (title() || 'this NPC'))
+            );
+          }
+          if (t === '@desk') return null;
+          // On desktop, prefer the desktop version of wherever we're going.
+          if (mode === 'desk' && F[t] && !isDesk(t))
+            return deskOf(F[t].key) || t;
+          return F[t] ? t : null;
+        }
+
+        function act(t, el) {
+          if (t === 'back') return back();
+          if (t.indexOf('toast:') === 0) return toast(t.slice(6));
+          go(t, true);
+        }
+
+        function back() {
+          if (F[cur] && WIZ[F[cur].key] && !F[cur].sheet) {
+            var p = concrete('prev');
+            if (p && p !== 'back') {
+              stack.pop();
+              return go(p, false);
+            }
+          }
+          if (stack.length) return go(stack.pop(), false);
+          var up = UP_FRAME[cur] || UP[F[cur].key];
+          if (up && up !== cur)
+            go(mode === 'desk' ? deskOf(F[up].key) || up : up, false);
+        }
+
+        function go(id, push) {
+          if (!F[id]) return;
+          if (push && cur && cur !== id) stack.push(cur);
+          if (stack.length > 200) stack.shift();
+          cur = id;
+          var f = F[id];
+          mode = f.kind === 'desktop' ? 'desk' : 'phone';
+          openKey = f.key;
+          render();
+          try {
+            history.replaceState(null, '', '#' + id);
+          } catch (e) {}
+          clearTimeout(timer);
+          if (id === 'o2/4')
+            timer = setTimeout(function () {
+              if (cur === 'o2/4') go('o2/5', true);
+            }, 1800);
+        }
+
+        function render() {
+          var f = F[cur];
+          vp.innerHTML = f.html;
+          vp.className =
+            'pt-viewport' + (f.kind === 'desktop' ? ' is-desk' : '');
+          vp.scrollTop = 0;
+          PS.mount(vp);
+          vp.querySelectorAll('a[href]').forEach(function (a) {
+            a.removeAttribute('href');
+            a.setAttribute('role', a.getAttribute('role') || 'link');
+          });
+          fit();
+          markTargets();
+          renderSide();
+          renderInfo();
+          $('pt-crumb').innerHTML =
+            '<b>' + esc(S[f.key].title) + '</b> · ' + esc(f.label);
+          $('pt-back').disabled =
+            !stack.length && !(UP_FRAME[cur] || UP[f.key]);
+          $('pt-m-phone').setAttribute('aria-pressed', mode === 'phone');
+          $('pt-m-desk').setAttribute('aria-pressed', mode === 'desk');
+        }
+
+        function fit() {
+          var f = F[cur];
+          if (f.kind !== 'desktop') {
+            vp.style.zoom = '';
+            return;
+          }
+          var avail = stage.clientWidth - 48;
+          vp.style.zoom = Math.min(1, avail / (f.w + 2));
+        }
+
+        var taps = [];
+        function markTargets() {
+          taps = [];
+          var seen = {};
+          vp.querySelectorAll(CAND).forEach(function (el) {
+            if (el.matches('input, textarea, select')) return;
+            var t = concrete(resolve(el));
+            if (!t) return;
+            var isToast = t.indexOf('toast:') === 0;
+            el.classList.add(isToast ? 'pt-soft' : 'pt-hot');
+            el.setAttribute('data-pt', '');
+            var name = labelOf(el) || textOf(el);
+            if (name.length > 60) name = name.slice(0, 58) + '…';
+            var k = name + '→' + t;
+            if (seen[k] || !name) return;
+            seen[k] = 1;
+            taps.push({ name: name, t: t, el: el });
+          });
+        }
+
+        function destName(t) {
+          if (t === 'back') return '← back';
+          if (t.indexOf('toast:') === 0) return 'not drawn';
+          var f = F[t];
+          return S[f.key].title.replace(/ ★/, '') + ' · ' + f.label;
+        }
+
+        function renderInfo() {
+          var f = F[cur],
+            s = S[f.key];
+          var h =
+            '<h2>' +
+            esc(s.title) +
+            '</h2><p>' +
+            esc(f.label) +
+            (f.sheet ? ' (sheet)' : '') +
+            '</p>';
+          if (s.desc) h += '<p class="pt-hint">' + esc(s.desc) + '</p>';
+          h += '<h3>Tap targets here</h3>';
+          var nav = taps.filter(function (x) {
+            return x.t.indexOf('toast:') !== 0;
+          });
+          var soft = taps.filter(function (x) {
+            return x.t.indexOf('toast:') === 0;
+          });
+          if (!nav.length)
+            h += '<p>Nothing wired on this one. Use Back or the list.</p>';
+          nav.concat(soft).forEach(function (x, i) {
+            h +=
+              '<button class="pt-tap' +
+              (x.t.indexOf('toast:') === 0 ? ' is-toast' : '') +
+              '" data-tap="' +
+              taps.indexOf(x) +
+              '"><span>' +
+              esc(x.name) +
+              '</span><span>' +
+              esc(destName(x.t)) +
+              '</span></button>';
+          });
+          var others = s.frames.filter(function (id) {
+            return id !== cur;
+          });
+          if (others.length) {
+            h += '<h3>Other states of this screen</h3>';
+            others.forEach(function (id) {
+              h +=
+                '<button class="pt-tap" data-go="' +
+                id +
+                '"><span>' +
+                esc(F[id].label) +
+                '</span><span>' +
+                (isDesk(id) ? 'desktop' : F[id].sheet ? 'sheet' : '') +
+                '</span></button>';
+            });
+          }
+          if (s.notes)
+            h += '<h3>Notes</h3><p class="pt-notes">' + esc(s.notes) + '</p>';
+          h +=
+            '<p class="pt-hint" style="margin-top:20px">Tapping something that isn’t wired flashes what is. <span class="pt-kbd">H</span> toggles tap targets, <span class="pt-kbd">Esc</span> closes a sheet. Some states differ in their example data (Route 1 vs Route 22) because that’s how the mockups were drawn.</p>';
+          $('pt-info').innerHTML = h;
+        }
+
+        var filter = '';
+        function renderSide() {
+          var h =
+            '<input class="pt-search" id="pt-q" placeholder="Filter screens" value="' +
+            esc(filter) +
+            '">';
+          var q = filter.toLowerCase();
+          GROUPS.forEach(function (g) {
+            var rows = '';
+            g[1].forEach(function (k) {
+              var s = S[k];
+              if (!s) return;
+              var fr = s.frames.filter(function (id) {
+                return mode === 'desk' ? isDesk(id) : !isDesk(id);
+              });
+              if (!fr.length) return;
+              var hay = (
+                s.title +
+                ' ' +
+                s.desc +
+                ' ' +
+                fr
+                  .map(function (id) {
+                    return F[id].label;
+                  })
+                  .join(' ')
+              ).toLowerCase();
+              if (q && hay.indexOf(q) < 0) return;
+              var isCur = F[cur].key === k;
+              rows +=
+                '<button class="pt-scr' +
+                (isCur ? ' is-cur' : '') +
+                '" data-scr="' +
+                k +
+                '">' +
+                esc(s.title) +
+                '</button>';
+              if (openKey === k || q) {
+                rows +=
+                  '<div class="pt-states">' +
+                  fr
+                    .map(function (id) {
+                      return (
+                        '<button class="pt-st' +
+                        (id === cur ? ' is-cur' : '') +
+                        '" data-go="' +
+                        id +
+                        '">' +
+                        esc(F[id].label) +
+                        (F[id].sheet
+                          ? ' <span class="pt-sheet-tag">sheet</span>'
+                          : '') +
+                        '</button>'
+                      );
+                    })
+                    .join('') +
+                  '</div>';
+              }
+            });
+            if (rows) h += '<div class="pt-group">' + g[0] + '</div>' + rows;
+          });
+          var side = $('pt-side'),
+            st = side.scrollTop,
+            focused =
+              document.activeElement && document.activeElement.id === 'pt-q';
+          side.innerHTML = h;
+          side.scrollTop = st;
+          var qi = $('pt-q');
+          qi.addEventListener('input', function () {
+            filter = qi.value;
+            renderSide();
+            var n = $('pt-q');
+            n.focus();
+            n.setSelectionRange(n.value.length, n.value.length);
+          });
+          if (focused) qi.focus();
+          var c = side.querySelector('.pt-st.is-cur');
+          if (c && !focused) {
+            var r = c.getBoundingClientRect(),
+              sr = side.getBoundingClientRect();
+            if (r.top < sr.top || r.bottom > sr.bottom)
+              c.scrollIntoView({ block: 'center' });
+          }
+        }
+
+        var tt = null;
+        function toast(msg) {
+          var t = $('pt-toast');
+          t.textContent = msg;
+          t.classList.add('is-on');
+          clearTimeout(tt);
+          tt = setTimeout(function () {
+            t.classList.remove('is-on');
+          }, 1600);
+        }
+        function flash() {
+          device.classList.add('pt-flash');
+          setTimeout(function () {
+            device.classList.remove('pt-flash');
+          }, 650);
+        }
+        function esc(s) {
+          return String(s).replace(/[&<>"]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+          });
+        }
+
+        // Local toggles so switches, segmented controls and chips feel alive even when they don't navigate.
+        function localToggle(el) {
+          var sw = el.matches('.ps-switch')
+            ? el
+            : el.matches('.ps-switch-row')
+              ? el.querySelector('.ps-switch')
+              : null;
+          if (sw) {
+            sw.setAttribute(
+              'aria-checked',
+              sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true',
+            );
+            return true;
+          }
+          if (el.matches('.ps-seg > button')) {
+            el.parentElement.querySelectorAll('button').forEach(function (b) {
+              b.setAttribute('aria-pressed', b === el);
+            });
+            return true;
+          }
+          if (el.matches('.ps-check')) {
+            el.setAttribute(
+              'aria-checked',
+              el.getAttribute('aria-checked') === 'true' ? 'false' : 'true',
+            );
+            return true;
+          }
+          if (el.matches('.ps-chip[aria-pressed]')) {
+            var sib = el.parentElement.querySelectorAll(
+              '.ps-chip[aria-pressed]',
+            );
+            if (sib.length > 1)
+              sib.forEach(function (b) {
+                b.setAttribute('aria-pressed', b === el);
+              });
+            else
+              el.setAttribute(
+                'aria-pressed',
+                el.getAttribute('aria-pressed') !== 'true',
+              );
+            return true;
+          }
+          if (el.matches('.ps-choice')) {
+            if (
+              el.getAttribute('aria-disabled') === 'true' ||
+              /Coming later/.test(textOf(el))
+            ) {
+              toast('Coming later');
+              return true;
+            }
+            el.parentElement
+              .querySelectorAll('.ps-choice')
+              .forEach(function (b) {
+                b.setAttribute('aria-checked', b === el);
+              });
+            return true;
+          }
+          if (el.matches('[role=tab]')) {
+            el.parentElement
+              .querySelectorAll('[role=tab]')
+              .forEach(function (b) {
+                b.setAttribute('aria-selected', b === el);
+              });
+            toast('That tab isn’t drawn for this example');
+            return true;
+          }
+          if (el.matches('[role=option]') && el.closest('[role=listbox]')) {
+            el.parentElement
+              .querySelectorAll('[role=option]')
+              .forEach(function (b) {
+                b.setAttribute('aria-selected', b === el);
+              });
+            return true;
+          }
+          return false;
+        }
+
+        vp.addEventListener('click', function (e) {
+          var el = e.target.closest(CAND);
+          if (el && el.matches('input, textarea, select')) return;
+          e.preventDefault();
+          // Walk outward through nested tappables until one has somewhere to go.
+          for (
+            var n = el;
+            n && vp.contains(n);
+            n = n.parentElement && n.parentElement.closest(CAND)
+          ) {
+            var t = concrete(resolve(n));
+            if (t) return act(t, n);
+          }
+          for (
+            var m = el;
+            m && vp.contains(m);
+            m = m.parentElement && m.parentElement.closest(CAND)
+          )
+            if (localToggle(m)) return;
+          flash();
+        });
+
+        document.addEventListener('click', function (e) {
+          var g = e.target.closest('[data-go]');
+          if (g) return go(g.getAttribute('data-go'), true);
+          var s = e.target.closest('[data-scr]');
+          if (s) {
+            var k = s.getAttribute('data-scr');
+            var id = mode === 'desk' ? deskOf(k) : phoneOf(k);
+            if (id) go(id, true);
+            return;
+          }
+          var tp = e.target.closest('[data-tap]');
+          if (tp) {
+            var x = taps[+tp.getAttribute('data-tap')];
+            if (x) act(x.t, x.el);
+          }
+        });
+        $('pt-back').onclick = back;
+        $('pt-home').onclick = function () {
+          stack = [];
+          go(mode === 'desk' ? 'f/2' : 'a/0', false);
+        };
+        $('pt-builder').onclick = function () {
+          go(mode === 'desk' ? 'f/2' : 'f/0', true);
+        };
+        $('pt-m-phone').onclick = function () {
+          if (mode !== 'phone') go(phoneOf(F[cur].key) || 'f/0', true);
+        };
+        $('pt-m-desk').onclick = function () {
+          if (mode !== 'desk') go(deskOf(F[cur].key) || 'f/2', true);
+        };
+        function setHot(v) {
+          showHot = v;
+          device.classList.toggle('pt-show', v);
+          $('pt-hot').setAttribute('aria-pressed', v);
+        }
+        $('pt-hot').onclick = function () {
+          setHot(!showHot);
+        };
+        function setTheme(t) {
+          document.documentElement.setAttribute('data-theme', t);
+          device.setAttribute('data-theme', t);
+          $('pt-theme').textContent = t === 'dark' ? 'Light' : 'Dark';
+          try {
+            localStorage.setItem('pt-theme', t);
+          } catch (e) {}
+        }
+        $('pt-theme').onclick = function () {
+          setTheme(
+            device.getAttribute('data-theme') === 'dark' ? 'light' : 'dark',
+          );
+        };
+        document.addEventListener('keydown', function (e) {
+          if (
+            e.target.matches &&
+            e.target.matches('input, textarea, select, [contenteditable]')
+          )
+            return;
+          if (e.key === 'Escape') {
+            if (F[cur].sheet) back();
+          } else if (e.key === 'h' || e.key === 'H') setHot(!showHot);
+          else if (e.key === 'ArrowLeft' && (e.altKey || e.metaKey)) back();
+        });
+        window.addEventListener('resize', fit);
+
+        var saved = 'light';
+        try {
+          saved = localStorage.getItem('pt-theme') || 'light';
+        } catch (e) {}
+        setTheme(saved);
+        window.__pt = {
+          go: go,
+          taps: function () {
+            return taps;
+          },
+          cur: function () {
+            return cur;
+          },
+          resolve: resolve,
+          concrete: concrete,
+        };
+        var start = (location.hash || '').slice(1);
+        go(F[start] ? start : 'a/0', false);
+      })();
+    </script>
+  </body>
+</html>
