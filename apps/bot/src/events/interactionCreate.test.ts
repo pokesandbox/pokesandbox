@@ -5,12 +5,12 @@ import {
   type Interaction,
 } from 'discord.js';
 
+import { t } from '@core/i18n';
 import { createNoopLogger } from '@core/logging';
 import { getServerFeatures } from '@shared/flags';
 
 import { BotClient } from '@bot/classes';
 import type { ISlashCommand } from '@bot/structures/interfaces';
-import { COMMAND_UNAVAILABLE_REPLY } from '@bot/structures/managers/commandGate';
 import { InteractionCreate } from './interactionCreate';
 
 jest.mock('@shared/flags', () => ({
@@ -28,7 +28,7 @@ describe('interactionCreate', () => {
       await emit(client, interaction);
 
       expect(interaction.reply).toHaveBeenCalledWith({
-        content: COMMAND_UNAVAILABLE_REPLY,
+        content: t('command.unavailable'),
         ephemeral: true,
       });
       expect(getServerFeatures).toHaveBeenCalledWith('guild-1');

@@ -51,6 +51,7 @@
     "antd": "^6.2.2",
     "client-only": "^0.0.1",
     "discord.js": "^14.25.1",
+    "intl-messageformat": "^12.1.4",
     "lodash": "^4.17.23",
     "mongoose": "^9.1.5",
     "next": "16.4.5",

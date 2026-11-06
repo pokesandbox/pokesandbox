@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
+    "allowJs": true,
     "target": "es2017",
     "types": ["jest", "node"]
   },

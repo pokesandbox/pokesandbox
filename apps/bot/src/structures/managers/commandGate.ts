@@ -4,9 +4,6 @@ import { getServerFeatures, type FlagEnv } from '@shared/flags';
 import type { ChatInputCommand } from '../interfaces';
 import { isCommandEnabled } from './commandRegistration';
 
-export const COMMAND_UNAVAILABLE_REPLY =
-  "This command isn't available on this server yet.";
-
 // Fails closed for flagged commands when the flag environment isn't loaded.
 export async function canRunCommand(
   command: Pick<ChatInputCommand, 'flag'>,
