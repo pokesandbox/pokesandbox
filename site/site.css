@@ -1,0 +1,129 @@
+/* Layout for the Pages site. Colours, spacing, radii and type come from tokens.css. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.hero-art {
+  display: block;
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  object-position: 75% 50%;
+}
+
+.hero-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-4) var(--space-8);
+  max-width: var(--form-max);
+}
+
+.hero-panel h1,
+.hero-panel p {
+  margin: 0;
+}
+
+.hero-panel p {
+  color: var(--ink-muted);
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  text-transform: uppercase;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-6);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.button-secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+}
+
+.button-secondary:hover {
+  background: var(--surface-muted);
+}
+
+.button-discord {
+  background: var(--discord);
+  color: var(--on-discord);
+}
+
+.button-discord:hover {
+  background: var(--discord-hover);
+}
+
+/* On wide landscape screens the panel floats over the open sea; the crop keeps the sea on the left. */
+@media (min-width: 1024px) and (min-aspect-ratio: 5/4) {
+  .hero {
+    position: relative;
+    justify-content: center;
+  }
+
+  .hero-art {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    object-position: 40% 50%;
+  }
+
+  .hero-panel {
+    position: relative;
+    max-width: 440px;
+    margin: var(--space-12) var(--space-8);
+    padding: var(--space-8);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--surface) 86%, transparent);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-pop);
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero-panel {
+    margin-left: var(--space-12);
+  }
+}
