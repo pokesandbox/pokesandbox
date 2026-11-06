@@ -114,7 +114,7 @@ You don't need to format code or order imports by hand. Prettier formats everyth
 
 1. Node built-ins (`node:fs`, `path`)
 2. npm packages (`discord.js`, `zod`, `@flowcord/core`)
-3. Other workspace packages (`@shared/*`, `@core/*`)
+3. Other workspace packages (`@shared/*`, `@core/*`, `@battle/*`)
 4. The current package (`@bot/*` or `@webapp/*`, then relative imports)
 
 Use the Node version in `.nvmrc` (run `nvm use`) before you install. `npm install` and `npm ci` fail with `EBADDEVENGINES` on any other Node or npm major, because a different npm rewrites `package-lock.json` in a way CI rejects. Switch versions and install again; see [Local development](docs/local-development.md#prerequisites).
@@ -143,12 +143,12 @@ To have an agent pick up `agent-ready` issues on a schedule, set up a Claude Cod
 
 The repo ships context for coding agents. It describes the same rules as this page, plus the repo layout and commands:
 
-| File                                             | For                                                                                                                                                                                                                 |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`AGENTS.md`](AGENTS.md)                         | The rules every agent loads: musts, architecture rules, the legacy table                                                                                                                                            |
-| `AGENTS.md` in each package                      | Package conventions (`shared/`, `apps/bot/`, `apps/webapp/`, `libs/core/`). Each package also has a one-line `CLAUDE.md` that imports it, because Claude Code reads only `CLAUDE.md` files once the root one exists |
-| [`CLAUDE.md`](CLAUDE.md)                         | Imports `AGENTS.md` for Claude Code                                                                                                                                                                                 |
-| [`.claude/skills/`](.claude/skills/)             | Step-by-step procedures: picking up an issue, shipping a PR, adding a model                                                                                                                                         |
-| [`.claude/settings.json`](.claude/settings.json) | Claude Code hooks: install dependencies in cloud sessions (and ask to rename a badly named branch), block the git commands and branch names the rules forbid, run `npm run affected` before a push                  |
+| File                                             | For                                                                                                                                                                                                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`AGENTS.md`](AGENTS.md)                         | The rules every agent loads: musts, architecture rules, the legacy table                                                                                                                                                            |
+| `AGENTS.md` in each package                      | Package conventions (`shared/`, `apps/bot/`, `apps/webapp/`, `libs/core/`, `libs/battle/`). Each package also has a one-line `CLAUDE.md` that imports it, because Claude Code reads only `CLAUDE.md` files once the root one exists |
+| [`CLAUDE.md`](CLAUDE.md)                         | Imports `AGENTS.md` for Claude Code                                                                                                                                                                                                 |
+| [`.claude/skills/`](.claude/skills/)             | Step-by-step procedures: picking up an issue, shipping a PR, adding a model                                                                                                                                                         |
+| [`.claude/settings.json`](.claude/settings.json) | Claude Code hooks: install dependencies in cloud sessions (and ask to rename a badly named branch), block the git commands and branch names the rules forbid, run `npm run affected` before a push                                  |
 
 If your PR changes a convention, command, or structure these files describe, update them in the same PR.

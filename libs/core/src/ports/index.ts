@@ -1,3 +1,3 @@
 // Port interfaces (BattlePort, Clock, Rng, Scheduler).
 
-export {};
+export * from './battle';

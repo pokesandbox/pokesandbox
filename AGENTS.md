@@ -10,7 +10,8 @@ A Discord bot plus a web app that lets Discord servers build their own Pokémon 
 | `apps/webapp`   | Next.js App Router + tRPC. Authoring (mobile-first), profiles         |
 | `shared`        | Mongoose + Zod models and DTOs, DB connection, cache                  |
 | `libs/core`     | Pure TypeScript: schemas, ports, registries, formulas. No I/O         |
-| `libs/*` (soon) | `engine` (#153), `battle` (#123), `authoring` (#145), `presentation`  |
+| `libs/battle`   | Battles on the Showdown fork, behind `BattlePort`. Scaffold until M1  |
+| `libs/*` (soon) | `engine` (#153), `authoring` (#145), `presentation`                   |
 | `docs/`         | Architecture concepts, decision record (`open-questions.md`), roadmap |
 | `scripts/`      | Seed data (`scripts/seed`), ERD generator, env setup                  |
 
@@ -67,7 +68,7 @@ Every change, human or agent. ⚙ = enforced by a hook or CI.
 **Tests**
 
 - New behavior gets tests, named `*.test.ts(x)` and placed next to the code (⚙ CI rejects `*.spec.*` files). Test the behavior the acceptance criteria describe; a test that only executes lines without asserting anything meaningful doesn't count.
-- ⚙ SonarCloud requires 80% coverage of new and changed lines in `apps/bot`, `apps/webapp`, `shared`, and `libs/core`. It runs only in CI, after you push, so check first: `npx nx test <project> --coverage` prints a summary and writes line detail to `coverage/<project>/index.html`.
+- ⚙ SonarCloud requires 80% coverage of new and changed lines in `apps/bot`, `apps/webapp`, `shared`, `libs/core`, and `libs/battle`. It runs only in CI, after you push, so check first: `npx nx test <project> --coverage` prints a summary and writes line detail to `coverage/<project>/index.html`.
 - Libraries are tested headless with in-memory ports. Discord view builders are pure functions: test their output directly.
 - Follow [`docs/testing.md`](docs/testing.md) for test style: which level to test at, inline setup, and bot integration tests.
 

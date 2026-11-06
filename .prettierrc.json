@@ -7,7 +7,7 @@
     "",
     "<THIRD_PARTY_MODULES>",
     "",
-    "^@(shared|core)(/.*)?$",
+    "^@(shared|core|battle)(/.*)?$",
     "",
     "^@(bot|webapp)(/.*)?$",
     "^[.]"
