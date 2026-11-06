@@ -18,7 +18,7 @@ check_slug() {
 rm -rf "$out"
 mkdir -p "$out/assets"
 cp -R site/. "$out/"
-cp docs/design/assets/hero-desktop-*.webp "$mockups/assets/tokens.css" "$out/assets/"
+cp docs/design/assets/hero/hero-desktop-*.webp "$mockups/assets/tokens.css" "$out/assets/"
 
 if [[ -n "${DESIGN_PATH:-}" ]]; then
   check_slug DESIGN_PATH "$DESIGN_PATH"
